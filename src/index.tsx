@@ -1,30 +1,32 @@
-import React from 'react';
-import * as ReactDOMClient from 'react-dom/client';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from "react";
+import * as ReactDOMClient from "react-dom/client";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import { Close } from '@mui/icons-material';
-import { useState } from 'react';
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import { Close } from "@mui/icons-material";
+import { useState } from "react";
 
-import theme from './theme';
+import theme from "./theme";
 
-import NotFound from './pages/404';
-import Login from './pages/login';
+import NotFound from "./pages/404";
+import Login from "./pages/login";
 
-import { UserProvider } from './context/user';
-import { UIProvider, useUI } from './context/ui';
-import { startLoading, stopLoading, hideMessage } from './actions/ui';
+import { UserProvider } from "./context/user";
+import { UIProvider, useUI } from "./context/ui";
+import { startLoading, stopLoading, hideMessage } from "./actions/ui";
 
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
-import PrivateRoute from './components/routes/private';
+import PrivateRoute from "./components/routes/private";
 
-import Layout from './layout';
-import TestCollection from './pages/testcollection/index';
-
+import Layout from "./layout";
+import TestCollection from "./pages/testcollection/index";
+import { Home } from "./pages/home/Home";
+import "./assets/css/Index.css";
+import { PublicLayout } from "./layout/public/PublicLayout";
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -34,20 +36,30 @@ const GeneralSnackbar = () => {
       open={UIContext.state.isSnackbarOpen}
       autoHideDuration={4000}
       // message={UIContext.state.message}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       onClose={hideMessage(UIContext)}
       action={
-        <IconButton size='small' aria-label='close' color='inherit' onClick={hideMessage(UIContext)}>
-          <Close fontSize='small' />
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={hideMessage(UIContext)}
+        >
+          <Close fontSize="small" />
         </IconButton>
-      }>
-      <Alert onClose={hideMessage(UIContext)} severity={UIContext.state.severity} sx={{ width: '100%' }}>
+      }
+    >
+      <Alert
+        onClose={hideMessage(UIContext)}
+        severity={UIContext.state.severity}
+        sx={{ width: "100%" }}
+      >
         {UIContext.state.message}
       </Alert>
     </Snackbar>
   );
 };
-const container = document.getElementById('root') as HTMLElement;
+const container = document.getElementById("root") as HTMLElement;
 // @ts-ignore
 const rootContainer = ReactDOMClient.createRoot(container!);
 
@@ -60,15 +72,23 @@ function App() {
           <GeneralSnackbar />
           <BrowserRouter>
             <Routes>
-              <Route path='/login' element={<Login />} />
+              <Route path="/login" element={<Login />} />
               <Route
-                path='/*'
+                path="/"
+                element={
+                  <PublicLayout>
+                    <Home />
+                  </PublicLayout>
+                }
+              />
+              <Route
+                path="/*"
                 element={
                   <PrivateRoute>
                     <Layout>
                       <Routes>
-                        <Route path='/' element={<TestCollection />} />
-                        <Route path='*' element={<NotFound />} />
+                        <Route path="/dashboard" element={<TestCollection />} />
+                        <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Layout>
                   </PrivateRoute>

@@ -1,6 +1,6 @@
-import Avatar from '@mui/material/Avatar';
-import { SxProps } from '@mui/system';
-import React from 'react';
+import Avatar from "@mui/material/Avatar";
+import { SxProps } from "@mui/system";
+import React from "react";
 
 const stringToColor = (name: string) => {
   let hash = 0;
@@ -12,7 +12,7 @@ const stringToColor = (name: string) => {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = '#';
+  let color = "#";
 
   for (i = 0; i < 3; i += 1) {
     // tslint:disable-next-line: no-bitwise
@@ -25,9 +25,9 @@ const stringToColor = (name: string) => {
 };
 
 const stringAvatar = (name: string) => {
-  const s = name.split(' ');
+  const s = name.split(" ");
   const firstName = s[0];
-  let lastName = '';
+  let lastName = "";
   if (s.length > 1) {
     lastName = s[s.length - 1];
   }
@@ -35,13 +35,22 @@ const stringAvatar = (name: string) => {
     sx: {
       // width: '30px',
       // height: '30px',
-      bgcolor: stringToColor(name)
+      bgcolor: stringToColor(name),
     },
-    children: `${firstName[0]}${lastName ? lastName[0] : ''}`
+    children: `${firstName[0]}${lastName ? lastName[0] : ""}`,
   };
 };
 
-export default React.forwardRef((props: { name: string | null; style?: any }, ref: any) => {
-  if (!props || !props.name) return null;
-  return <Avatar {...props} {...stringAvatar(props.name)} style={props.style} ref={ref} />;
-});
+export default React.forwardRef(
+  (props: { name: string | null; style?: any }, ref: any) => {
+    if (!props || !props.name) return null;
+    return (
+      <Avatar
+        {...props}
+        {...stringAvatar(props.name)}
+        style={props.style}
+        ref={ref}
+      />
+    );
+  }
+);

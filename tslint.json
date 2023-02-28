@@ -1,13 +1,6 @@
 {
-  "extends": [
-    "prettier"
-  ],
-  "plugins": [
-    "react",
-    "cypress",
-    "prettier",
-    "react-hooks"
-  ],
+  "extends": ["prettier"],
+  "plugins": ["react", "cypress", "prettier", "react-hooks"],
   "rules": {
     "camelcase": [
       0,

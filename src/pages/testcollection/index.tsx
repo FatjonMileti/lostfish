@@ -1,18 +1,18 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { DataGrid, GridSelectionModel } from '@mui/x-data-grid';
-import { Delete, Edit } from '@mui/icons-material';
-import moment from 'moment';
-import { useUI } from '../../context/ui';
-import { useUser } from '../../context/user';
-import config from '../../config';
-import { showMessage } from '../../actions/ui';
+import React from "react";
+import { useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { DataGrid, GridSelectionModel } from "@mui/x-data-grid";
+import { Delete, Edit } from "@mui/icons-material";
+import moment from "moment";
+import { useUI } from "../../context/ui";
+import { useUser } from "../../context/user";
+import config from "../../config";
+import { showMessage } from "../../actions/ui";
 
-import Search from './search';
-import DetailsModal from './modal';
+import Search from "./search";
+import DetailsModal from "./modal";
 
 export default () => {
   const userContext = useUser();
@@ -29,11 +29,11 @@ export default () => {
     pageSize: 10,
     page: 1,
     rowCount: 0,
-    sort: 'createdAt',
+    sort: "createdAt",
     asc: false,
 
     selectedIds: [],
-    search: ''
+    search: "",
   });
 
   const getItems = async () => {
@@ -52,26 +52,29 @@ export default () => {
         query += `&search=${search}`;
       }
 
-      const response = await fetch(`${config.apiUrl}/api/testCollection${query}`, {
-        method: 'GET',
-        headers: { Authorization: `Bearer ${userContext.state.token}` }
-      });
+      const response = await fetch(
+        `${config.apiUrl}/api/testCollection${query}`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${userContext.state.token}` },
+        }
+      );
 
       if (!response.ok || response.status !== 200) {
-        throw new Error('NOK');
+        throw new Error("NOK");
       }
 
       json = await response.json();
     } catch (err) {
       console.error(err);
-      showMessage(UIContext)('An error occured!', 'error');
+      showMessage(UIContext)("An error occured!", "error");
     }
 
     setList((prev) => ({
       ...prev,
       loading: false,
       rows: json ? json.docs : [],
-      rowCount: json ? json.totalDocs : 0
+      rowCount: json ? json.totalDocs : 0,
     }));
   };
 
@@ -82,7 +85,7 @@ export default () => {
 
   const [modal, setModal] = useState<{ open: boolean; item: null | object }>({
     open: false,
-    item: null
+    item: null,
   });
 
   const [deleting, setDeleting] = useState(false);
@@ -92,17 +95,17 @@ export default () => {
       for (const id of list.selectedIds) {
         deletePromises.push(
           fetch(`${config.apiUrl}/api/testCollection/${id}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${userContext.state.token}` }
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${userContext.state.token}` },
           })
         );
       }
       await Promise.all(deletePromises);
-      showMessage(UIContext)('Successfully added!', 'success');
+      showMessage(UIContext)("Successfully added!", "success");
       getItems();
     } catch (err) {
       console.error(err);
-      showMessage(UIContext)('An error occured!', 'error');
+      showMessage(UIContext)("An error occured!", "error");
     }
     return true;
   };
@@ -113,7 +116,9 @@ export default () => {
         search={(value) => {
           setList((prev) => ({ ...prev, search: value }));
         }}
-        openModal={() => setModal((prev) => ({ ...prev, open: true, item: null }))}
+        openModal={() =>
+          setModal((prev) => ({ ...prev, open: true, item: null }))
+        }
       />
       {list.selectedIds.length > 0 ? (
         <LoadingButton
@@ -122,21 +127,22 @@ export default () => {
             await deleteSelectedIds();
             setDeleting(false);
           }}
-          variant='contained'
-          color='error'
+          variant="contained"
+          color="error"
           disabled={deleting}
           loading={deleting}
           sx={{
-            display: 'flex',
-            boxShadow: 'none',
-            '&:hover': {
-              boxShadow: 'none'
-            }
-          }}>
-          <Delete fontSize='small' />
+            display: "flex",
+            boxShadow: "none",
+            "&:hover": {
+              boxShadow: "none",
+            },
+          }}
+        >
+          <Delete fontSize="small" />
         </LoadingButton>
       ) : null}
-      <Box sx={{ width: '100%', paddingTop: '25px' }}>
+      <Box sx={{ width: "100%", paddingTop: "25px" }}>
         <DataGrid
           checkboxSelection={true}
           disableSelectionOnClick={true}
@@ -149,21 +155,21 @@ export default () => {
           onSelectionModelChange={(selectionModel: GridSelectionModel) => {
             setList((prev) => ({
               ...prev,
-              selectedIds: selectionModel.map((x) => x.toString())
+              selectedIds: selectionModel.map((x) => x.toString()),
             }));
           }}
           columns={[
             {
-              field: 'edit',
+              field: "edit",
               sortable: false,
-              type: 'actions',
+              type: "actions",
               width: 55,
               renderCell: (params: any) => {
                 return (
                   <IconButton
                     // variant='contained'
-                    color='primary'
-                    size='large'
+                    color="primary"
+                    size="large"
                     sx={
                       {
                         // width: '24px',
@@ -176,54 +182,55 @@ export default () => {
                       setModal((prev) => ({
                         ...prev,
                         open: true,
-                        item: params.row
+                        item: params.row,
                       }));
-                    }}>
-                    <Edit fontSize='small' />
+                    }}
+                  >
+                    <Edit fontSize="small" />
                   </IconButton>
                 );
-              }
+              },
             },
             {
-              field: 'uniqueId',
-              headerName: 'CNP/CUI',
-              type: 'string',
-              width: 140
+              field: "uniqueId",
+              headerName: "CNP/CUI",
+              type: "string",
+              width: 140,
             },
             {
-              field: 'isCompany',
-              headerName: 'Companie',
+              field: "isCompany",
+              headerName: "Companie",
               width: 180,
-              type: 'boolean'
+              type: "boolean",
             },
             {
-              field: 'firstName',
-              headerName: 'Prenume',
+              field: "firstName",
+              headerName: "Prenume",
               width: 180,
-              type: 'string'
+              type: "string",
             },
             {
-              field: 'createdAt',
-              headerName: 'Creat la',
+              field: "createdAt",
+              headerName: "Creat la",
               width: 180,
-              type: 'date',
+              type: "date",
               renderCell: (params: any) => {
-                return moment(params.row.createdAt).format('HH:mm DD.MM.YY');
-              }
-            }
+                return moment(params.row.createdAt).format("HH:mm DD.MM.YY");
+              },
+            },
           ].map((column) => ({
             ...column,
-            filterable: false
+            filterable: false,
           }))}
           onRowDoubleClick={(params: any) => {
             setModal((prev) => ({
               ...prev,
               open: true,
-              item: params.row
+              item: params.row,
             }));
           }}
           showCellRightBorder
-          paginationMode='server'
+          paginationMode="server"
           page={list.page - 1}
           pageSize={list.pageSize}
           onPageChange={(d: number) => {
@@ -232,12 +239,16 @@ export default () => {
           onPageSizeChange={(d: number) => {
             setList((prev) => ({ ...prev, page: 1, pageSize: d }));
           }}
-          sortingMode='server'
-          sortingOrder={['asc', 'desc']}
-          sortModel={[{ field: list.sort, sort: list.asc ? 'asc' : 'desc' }]}
+          sortingMode="server"
+          sortingOrder={["asc", "desc"]}
+          sortModel={[{ field: list.sort, sort: list.asc ? "asc" : "desc" }]}
           onSortModelChange={(d: any) => {
             if (d && d.length > 0) {
-              setList((prev) => ({ ...prev, sort: d[0].field, asc: d[0].sort === 'asc' }));
+              setList((prev) => ({
+                ...prev,
+                sort: d[0].field,
+                asc: d[0].sort === "asc",
+              }));
             }
           }}
         />
