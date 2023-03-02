@@ -1,26 +1,22 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Modal from "@mui/material/Modal";
-import IconButton from "@mui/material/IconButton";
-import LoadingButton from "@mui/lab/LoadingButton";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Alert from "@mui/material/Alert";
-import { Close } from "@mui/icons-material";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Alert from '@mui/material/Alert';
+import { Close } from '@mui/icons-material';
 
-import { useUI } from "../../context/ui";
-import { useUser } from "../../context/user";
-import config from "../../config";
-import { showMessage } from "../../actions/ui";
+import { useUI } from '../../context/ui';
+import { useUser } from '../../context/user';
+import config from '../../config';
+import { showMessage } from '../../actions/ui';
 
-export default (props: {
-  isOpen: boolean;
-  item?: any | null;
-  close: (reloadList: boolean) => void;
-}) => {
+export default (props: { isOpen: boolean; item?: any | null; close: (reloadList: boolean) => void }) => {
   const userContext = useUser();
   const UIContext = useUI();
   if (!userContext || !UIContext) return null;
@@ -35,10 +31,10 @@ export default (props: {
   }>({
     id: null,
     isCompany: false,
-    uniqueId: "",
-    firstName: "",
-    lastName: "",
-    companyName: "",
+    uniqueId: '',
+    firstName: '',
+    lastName: '',
+    companyName: ''
   });
 
   useEffect(() => {
@@ -46,9 +42,9 @@ export default (props: {
       setState(props.item);
       setErrors((prev) => ({
         ...prev,
-        server: "",
+        server: '',
         uniqueId: false,
-        uniqueIdMessage: "",
+        uniqueIdMessage: ''
       }));
     }
   }, [props.isOpen]);
@@ -58,9 +54,9 @@ export default (props: {
     uniqueId: boolean;
     uniqueIdMessage: string;
   }>({
-    server: "",
+    server: '',
     uniqueId: false,
-    uniqueIdMessage: "",
+    uniqueIdMessage: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -69,21 +65,21 @@ export default (props: {
     setErrors((prev) => ({
       ...prev,
       uniqueId: false,
-      uniqueIdMessage: "",
-      server: "",
+      uniqueIdMessage: '',
+      server: ''
     }));
 
     //validation
     let isValid = true;
     if (!state.uniqueId) {
-      setErrors((prev) => ({ ...prev, uniqueId: true, uniqueIdMessage: "" }));
+      setErrors((prev) => ({ ...prev, uniqueId: true, uniqueIdMessage: '' }));
       isValid = false;
     }
     if (state.uniqueId.length < 3) {
       setErrors((prev) => ({
         ...prev,
         uniqueId: true,
-        uniqueIdMessage: "CNP/CUI invalid",
+        uniqueIdMessage: 'CNP/CUI invalid'
       }));
       isValid = false;
     }
@@ -94,7 +90,7 @@ export default (props: {
 
     const req: any = {
       uniqueId: state.uniqueId,
-      isCompany: state.isCompany,
+      isCompany: state.isCompany
     };
     if (state.isCompany) {
       req.companyName = state.companyName || undefined;
@@ -109,12 +105,12 @@ export default (props: {
       if (!state.id) {
         //is new
         const response = await fetch(`${config.apiUrl}/api/testCollection`, {
-          method: "POST",
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${userContext.state.token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(req),
+          body: JSON.stringify(req)
         });
 
         const json: IAPIResponse = await response.json();
@@ -122,41 +118,38 @@ export default (props: {
           if (json.message) throw new Error(json.message);
         }
         if (!response.ok || response.status !== 200) {
-          throw new Error("An error occured");
+          throw new Error('An error occured');
         }
 
         props.close(true);
-        showMessage(UIContext)("Successfully added!", "success");
+        showMessage(UIContext)('Successfully added!', 'success');
         return json;
       } else {
         //is edit
-        const response = await fetch(
-          `${config.apiUrl}/api/testCollection/${state.id}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${userContext.state.token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(req),
-          }
-        );
+        const response = await fetch(`${config.apiUrl}/api/testCollection/${state.id}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${userContext.state.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(req)
+        });
 
         const json: IAPIResponse = await response.json();
         if (!response.ok || response.status === 400) {
           if (json.message) throw new Error(json.message);
         }
         if (!response.ok || response.status !== 200) {
-          throw new Error("An error occured");
+          throw new Error('An error occured');
         }
 
         props.close(true);
-        showMessage(UIContext)("Successfully changed!", "success");
+        showMessage(UIContext)('Successfully changed!', 'success');
         return json;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setErrors((prev) => ({ ...prev, server: err.message }));
+      setErrors((prev) => ({ ...prev, server: err?.message }));
       return null;
     } finally {
       setLoading(false);
@@ -167,107 +160,87 @@ export default (props: {
     <Modal
       open={props.isOpen}
       onClose={(event, reason) => {
-        if (reason && reason === "backdropClick") return;
+        if (reason && reason === 'backdropClick') return;
         props.close(false);
-      }}
-    >
+      }}>
       <Box
         sx={{
-          width: { xs: "370px", sm: "460px" },
-          bgcolor: "#ffffff",
-          boxShadow: "24px",
-          padding: "32px",
+          width: { xs: '370px', sm: '460px' },
+          bgcolor: '#ffffff',
+          boxShadow: '24px',
+          padding: '32px',
           borderRadius: 4,
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Typography component="h2" variant="h6" sx={{ color: "#222326" }}>
-            {state.id ? "Modifica prospect" : "Prospect nou"}
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}>
+        <Box display='flex' flexDirection='row' justifyContent='space-between'>
+          <Typography component='h2' variant='h6' sx={{ color: '#222326' }}>
+            {state.id ? 'Modifica prospect' : 'Prospect nou'}
           </Typography>
           <IconButton onClick={() => props.close(false)}>
-            <Close sx={{ alignSelf: "center", color: "#AAACB3" }} />
+            <Close sx={{ alignSelf: 'center', color: '#AAACB3' }} />
           </IconButton>
         </Box>
-        <Box>
-          {errors.server ? (
-            <Alert severity="error">{errors.server}</Alert>
-          ) : null}
-        </Box>
-        <Box
-          sx={{ minWidth: 120, mt: "16px", rowGap: "16px" }}
-          display="flex"
-          flexDirection="column"
-        >
+        <Box>{errors.server ? <Alert severity='error'>{errors.server}</Alert> : null}</Box>
+        <Box sx={{ minWidth: 120, mt: '16px', rowGap: '16px' }} display='flex' flexDirection='column'>
           <FormControlLabel
             control={
               <Checkbox
                 checked={state.isCompany}
-                onChange={() =>
-                  setState((prev) => ({ ...prev, isCompany: !state.isCompany }))
-                }
+                onChange={() => setState((prev) => ({ ...prev, isCompany: !state.isCompany }))}
               />
             }
-            label="Companie"
+            label='Companie'
           />
           <TextField
-            onChange={(e) =>
-              setState((prev) => ({ ...prev, uniqueId: e.target.value }))
-            }
-            variant="standard"
+            onChange={(e) => setState((prev) => ({ ...prev, uniqueId: e.target.value }))}
+            variant='standard'
             value={state.uniqueId}
             required
             fullWidth
-            label={state.isCompany ? "CUI" : "CNP"}
-            name="uniqueId"
+            label={state.isCompany ? 'CUI' : 'CNP'}
+            name='uniqueId'
             error={errors.uniqueId}
             helperText={errors.uniqueIdMessage}
             onChangeCapture={() =>
               setErrors((prev) => ({
                 ...prev,
                 uniqueId: false,
-                uniqueIdMessage: "",
+                uniqueIdMessage: ''
               }))
             }
           />
           {state.isCompany ? (
             <TextField
-              onChange={(e) =>
-                setState((prev) => ({ ...prev, companyName: e.target.value }))
-              }
-              variant="standard"
+              onChange={(e) => setState((prev) => ({ ...prev, companyName: e.target.value }))}
+              variant='standard'
               value={state.companyName}
               required
               fullWidth
-              label="Denumire"
-              name="companyName"
+              label='Denumire'
+              name='companyName'
             />
           ) : (
             <>
               <TextField
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, firstName: e.target.value }))
-                }
-                variant="standard"
+                onChange={(e) => setState((prev) => ({ ...prev, firstName: e.target.value }))}
+                variant='standard'
                 required
                 value={state.firstName}
                 fullWidth
-                label="Prenume"
-                name="firstName"
+                label='Prenume'
+                name='firstName'
               />
               <TextField
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, lastName: e.target.value }))
-                }
-                variant="standard"
+                onChange={(e) => setState((prev) => ({ ...prev, lastName: e.target.value }))}
+                variant='standard'
                 value={state.lastName}
                 required
                 fullWidth
-                label="Nume"
-                name="lastName"
+                label='Nume'
+                name='lastName'
               />
             </>
           )}
@@ -275,10 +248,9 @@ export default (props: {
             onClick={save}
             disabled={loading}
             loading={loading}
-            variant="contained"
-            sx={{ alignSelf: "flex-end", mt: "8px", minWidth: "80px" }}
-          >
-            {state.id ? "Modifica" : "Adauga"}
+            variant='contained'
+            sx={{ alignSelf: 'flex-end', mt: '8px', minWidth: '80px' }}>
+            {state.id ? 'Modifica' : 'Adauga'}
           </LoadingButton>
         </Box>
       </Box>
