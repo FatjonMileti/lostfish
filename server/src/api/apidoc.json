@@ -1,0 +1,11 @@
+{
+  "name": "Lost Fish API",
+  "title": "Lost Documentation",
+  "version": "0.0.1",
+  "description": "",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true,
+    "forceLanguage": "en"
+  }
+}
