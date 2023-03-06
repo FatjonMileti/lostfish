@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express';
-const router: Router = Router();
 
+const router: Router = Router();
+import { UserController } from './User/user.controller';
+import { AccountController } from './Account/account.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -30,5 +32,4 @@ const router: Router = Router();
 router.use('/account', require('./account'));
 router.use('/testCollection', require('./testCollection'));
 router.use('/user', require('./user'));
-
 module.exports = router;
