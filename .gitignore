@@ -5,12 +5,14 @@
 
 # Node artifact files
 node_modules/
-dist/
 server/node_modules/
 server/build/
 server/dist/
 server/docs/
 server/.idea/
+
+client/node_modules/
+client/build/
 
 # Compiled Java class files
 *.class

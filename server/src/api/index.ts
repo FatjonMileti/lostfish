@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 const router: Router = Router();
 import { UserController } from './User/user.controller';
 import { AccountController } from './Account/account.controller';
+import { OfferController } from './Offer/offer.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -32,4 +33,9 @@ import { AccountController } from './Account/account.controller';
 router.use('/account', require('./account'));
 router.use('/testCollection', require('./testCollection'));
 router.use('/user', require('./user'));
+const offerController = new OfferController();
+router.use('/offer', offerController.router);
+router.use('/test', () => {
+  return 'kbdsvkjkjvhkjfdhkj';
+});
 module.exports = router;

@@ -28,9 +28,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "npx prettier -w ./",
-    "server": "npm start --prefix server",
-    "both": "concurrently \"npm run server\" \"npm run start\""
+    "format": "npx prettier -w ..",
+    "server": "npm start --prefix ../server",
+    "both": "concurrently \\\"npm run server\\\" \\\"npm run start\\\""
   },
   "browserslist": {
     "production": [
