@@ -1,10 +1,10 @@
-import { Router, Request, Response } from "express";
-import offerService from "./offer.service";
+import { Router, Request, Response } from 'express';
+import offerService from './offer.service';
 
 const router: Router = Router();
 
 export class OfferController {
-  public path = "/";
+  public path = '/';
   public router = router;
 
   constructor() {
@@ -34,7 +34,6 @@ export class OfferController {
   };
 
   public createAsset = async (req: Request, res: Response) => {
-
     const response = await offerService.createAsset();
     console.log({ body: response });
     res.send({ ok: true });

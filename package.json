@@ -5,6 +5,6 @@
   "scripts": {
     "server": "npm start --prefix server",
     "client": "npm start --prefix client",
-    "both": "concurrently \"npm run server\" \"npm run client\""
+    "start": "concurrently \"npm run server\" \"npm run client\""
   }
 }

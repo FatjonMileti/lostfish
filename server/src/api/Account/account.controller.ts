@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
 
 const router: Router = Router();
-import userService from '../User/user.service';
+
 import { UserDocument } from '../User/user.interface';
-import { UserModel } from '../User/user.schema';
+import UserModel from '../../data/user';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import authorize from '../../middleware/authorize';
 import createError from 'http-errors';
@@ -16,12 +16,9 @@ import jwt from 'jsonwebtoken';
 import UsedRefreshToken from '../../data/usedRefreshToken';
 import RevokedToken from '../../data/revokedToken';
 import accountService from './account.service';
-import User, { IUser } from '../../data/user';
 
 export class AccountController {
-  public path = '/';
   public router = router;
-  private userService = userService;
   private accountService = accountService;
 
   constructor() {
@@ -54,7 +51,6 @@ export class AccountController {
 
   private login = async (req: express.Request, res: express.Response) => {
     const model = res.locals.model! as { username: string; password: string };
-    console.log({ model });
     const loginError = () => createError(400, 'Bad username or password');
     const user: UserDocument | null = await UserModel.findOne({
       username: model.username,
@@ -63,11 +59,15 @@ export class AccountController {
     if (!user) throw loginError();
 
     const passCheck: boolean = await new Promise((resolve) => {
-      bcrypt.compare(req.body.password, user!.hash, (err: Error | undefined, same: boolean) => {
-        if (same) return resolve(true);
+      bcrypt.compare(
+        req.body.password,
+        user!.hash,
+        (err: Error | undefined, same: boolean) => {
+          if (same) return resolve(true);
 
-        return resolve(false);
-      });
+          return resolve(false);
+        }
+      );
     });
     if (!passCheck) throw loginError();
 
@@ -99,7 +99,7 @@ export class AccountController {
         <jwt.Secret>process.env.REFRESH_SECRET,
         {
           issuer: 'lost.fish',
-          audience: 'digital.advertising:token',
+          audience: 'lost.fish:token',
           algorithms: ['HS256']
         },
         (err, decoded) => {
@@ -116,7 +116,11 @@ export class AccountController {
     const used = await UsedRefreshToken.findOne({ token: refresh_token });
     if (used) throw createError(401, 'refresh_token is already used');
 
-    const user = await UserModel.findOne({ _id: payload.sub!, isDisabled: false });
+    const user = await UserModel.findOne({
+      _id: payload.sub!,
+      isDisabled: false
+    });
+
     if (!user) throw createError(401, 'unauthorized');
 
     await new UsedRefreshToken({

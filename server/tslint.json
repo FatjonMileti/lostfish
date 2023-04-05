@@ -1,9 +1,16 @@
 {
   "extends": "tslint:recommended",
   "rulesDirectory": [],
+  "parserOptions": {
+    "project": [
+      "./tsconfig.json"
+    ]
+  },
   "rules": {
     "max-line-length": {
-      "options": [220]
+      "options": [
+        80
+      ]
     },
     "semicolon": true,
     "comment-format": false,
@@ -15,15 +22,29 @@
     "no-consecutive-blank-lines": false,
     "no-console": {
       "severity": "warning",
-      "options": ["debug", "info", "time", "timeEnd", "trace"]
+      "options": [
+        "debug",
+        "info",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
     },
+    "skipBlankLines": false,
     "no-trailing-whitespace": false,
     "no-any": true,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ]
   },
   "jsRules": {
     "max-line-length": {
-      "options": [220]
+      "options": [
+        220
+      ]
     }
   }
 }

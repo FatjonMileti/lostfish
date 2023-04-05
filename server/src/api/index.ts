@@ -1,9 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from "express";
 
 const router: Router = Router();
-import { UserController } from './User/user.controller';
-import { AccountController } from './Account/account.controller';
-import { OfferController } from './Offer/offer.controller';
+import { UserController } from "./User/user.controller";
+import { AccountController } from "./Account/account.controller";
+import { OfferController } from "./Offer/offer.controller";
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -30,12 +30,12 @@ import { OfferController } from './Offer/offer.controller';
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
-router.use('/account', require('./account'));
-router.use('/testCollection', require('./testCollection'));
-router.use('/user', require('./user'));
 const offerController = new OfferController();
-router.use('/offer', offerController.router);
-router.use('/test', () => {
-  return 'kbdsvkjkjvhkjfdhkj';
-});
+const userController = new UserController();
+const accountController = new AccountController();
+
+router.use("/account", accountController.router);
+router.use("/user", userController.router);
+router.use("/offer", offerController.router);
+
 module.exports = router;

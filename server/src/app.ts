@@ -19,7 +19,8 @@ const dbConnect = require('./data');
 
 const app: Application = express();
 app.use(compression());
-if (process.env.NODE_ENV !== 'test') dbConnect(process.env.DB_CONNECTION_STRING);
+if (process.env.NODE_ENV !== 'test')
+  dbConnect(process.env.DB_CONNECTION_STRING);
 if (process.env.BEHIND_PROXY) {
   console.log(chalk.bold.red('app set to trust proxy'));
   app.set('trust proxy', 1);
@@ -27,7 +28,11 @@ if (process.env.BEHIND_PROXY) {
 
 const packagejson = require('../package.json');
 console.log(
-  chalk.bold.green(`Started ${packagejson.name} PORT ${process.env.PORT || 3000} NODE_ENV ${app.get('env')}`)
+  chalk.bold.green(
+    `Started ${packagejson.name} PORT ${
+      process.env.PORT || 3000
+    } NODE_ENV ${app.get('env')}`
+  )
 );
 
 // view engine setup
@@ -93,8 +98,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // error handler
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-  if (process.env.NODE_ENV !== 'test' && ((err.status && err.status !== 404) || !err.status)) {
-    console.error(chalk.red(new Date().toISOString(), err.stack || err.message || err));
+  if (
+    process.env.NODE_ENV !== 'test' &&
+    ((err.status && err.status !== 404) || !err.status)
+  ) {
+    console.error(
+      chalk.red(new Date().toISOString(), err.stack || err.message || err)
+    );
   }
 
   res.status(err.status || 500).json({

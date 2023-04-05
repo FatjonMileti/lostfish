@@ -1,20 +1,20 @@
 //cli program
-require('dotenv/config');
+require("dotenv/config");
 
-const chalk = require('chalk');
-const dbConnect = require('./src/data');
+const chalk = require("chalk");
+const dbConnect = require("./src/data");
 dbConnect(process.env.DB_CONNECTION_STRING, false);
 
-import { UserDocument } from './src/api/User/user.interface';
-import { UserModel } from './src/api/User/user.schema';
+import { UserDocument } from "./src/api/User/user.interface";
+import User from "./src/data/user";
 
-const bcrypt = require('bcrypt');
-const inquirer = require('inquirer');
-const joi = require('joi');
-import { Schema, ValidationResult } from 'joi';
-import { Role } from './src/enums';
+const bcrypt = require("bcrypt");
+const inquirer = require("inquirer");
+const joi = require("joi");
+import { Schema, ValidationResult } from "joi";
+import { Role } from "./src/enums";
 
-console.log(chalk.green('Configure default user'));
+console.log(chalk.green("Configure digital advertising default user"));
 // tslint:disable-next-line: no-any
 const validate = (schema: Schema) => (answers: any) => {
   return !schema.validate(answers).error;
@@ -29,27 +29,27 @@ const validate = (schema: Schema) => (answers: any) => {
   };
   const response: Response = await inquirer.prompt([
     {
-      type: 'input',
-      name: 'email',
-      message: 'email/username',
+      type: "input",
+      name: "email",
+      message: "email/username",
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: 'input',
-      name: 'password',
-      message: 'password',
+      type: "input",
+      name: "password",
+      message: "password",
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: 'input',
-      name: 'firstName',
-      message: 'firstName',
+      type: "input",
+      name: "firstName",
+      message: "firstName",
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: 'input',
-      name: 'lastName',
-      message: 'lastName',
+      type: "input",
+      name: "lastName",
+      message: "lastName",
       validate: validate(joi.string().required().trim().min(3))
     }
   ]);
@@ -62,8 +62,8 @@ const validate = (schema: Schema) => (answers: any) => {
     });
   });
   try {
-    await new UserModel({
-      roles: ['Admin'],
+    await new User({
+      roles: ["admin"],
       username: response.email,
       hash,
       role: Role.Admin,
@@ -76,7 +76,7 @@ const validate = (schema: Schema) => (answers: any) => {
     }).save();
   } catch (err) {
     console.error(err);
-    console.log(chalk.red('could not save user'));
+    console.log(chalk.red("could not save user"));
   }
 
   return process.exit(0);
