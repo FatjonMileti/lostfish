@@ -1,10 +1,10 @@
-import { Router, Request, Response } from 'express';
-import offerService from './offer.service';
+import { Router, Request, Response } from "express";
+import offerService from "./offer.service";
 
 const router: Router = Router();
 
 export class OfferController {
-  public path = '/';
+  public path = "/";
   public router = router;
 
   constructor() {
@@ -13,6 +13,7 @@ export class OfferController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
+    this.router.post(this.path, this.createAsset);
   }
 
   /**
@@ -30,5 +31,12 @@ export class OfferController {
     } catch (error: any) {
       return res.send(error?.response?.data);
     }
+  };
+
+  public createAsset = async (req: Request, res: Response) => {
+
+    const response = await offerService.createAsset();
+    console.log({ body: response });
+    res.send({ ok: true });
   };
 }
