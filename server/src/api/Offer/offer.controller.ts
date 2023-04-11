@@ -31,11 +31,22 @@ export class OfferController {
     } catch (error: any) {
       return res.send(error?.response?.data);
     }
-  };
-
+  }
+  
+  /**
+   * @api {post} /api/offer Post
+   * @apiDescription Add a new asset
+   * @apiGroup Offer
+   * @apiSampleRequest /api/offer
+   *
+   * @apiBody {string} name
+   * @apiBody {string} descrption
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
   public createAsset = async (req: Request, res: Response) => {
     const response = await offerService.createAsset();
-    console.log({ body: response });
     res.send({ ok: true });
-  };
+  }
 }

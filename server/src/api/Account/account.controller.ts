@@ -49,12 +49,24 @@ export class AccountController {
     this.router.post('/logout', authorize(), this.logout);
   }
 
+
+  /**
+   * @api {post} /api/account/login Login
+   * @apiDescription Login user
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/login
+   *
+   * @apiBody {string} username
+   * @apiBody {string} password
+   *
+   * @apiPermission anonymous
+   */
   private login = async (req: express.Request, res: express.Response) => {
     const model = res.locals.model! as { username: string; password: string };
     const loginError = () => createError(400, 'Bad username or password');
     const user: UserDocument | null = await UserModel.findOne({
       username: model.username,
-      isDisabled: false
+      is_disabled: false
     });
     if (!user) throw loginError();
 
@@ -71,7 +83,7 @@ export class AccountController {
     });
     if (!passCheck) throw loginError();
 
-    user.lastLogin = new Date();
+    user.last_login = new Date();
     await user.save();
 
     const { token, refresh } = this.accountService.generateTokens(user);
@@ -91,6 +103,17 @@ export class AccountController {
     });
   };
 
+
+  /**
+   * @api {post} /api/account/refresh Refresh
+   * @apiDescription Refresh access_token
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/refresh
+   *
+   * @apiBody {string} refresh_token
+   *
+   * @apiPermission anonymous
+   */
   private refresh = async (req: express.Request, res: express.Response) => {
     const { refresh_token } = res.locals.model as { refresh_token: string };
     const payload: jwt.JwtPayload | false = await new Promise((resolve) => {
@@ -145,6 +168,15 @@ export class AccountController {
     });
   };
 
+  /**
+   * @api {post} /api/account/logout Logout
+   * @apiDescription Logout user and revoke access_token
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/logout
+   *
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
   private logout = async (req: express.Request, res: express.Response) => {
     await new RevokedToken({
       token: res.locals.token,
@@ -152,7 +184,7 @@ export class AccountController {
     }).save();
 
     await new LoginLog({
-      user: res.locals.userId,
+      user: res.locals.user_id,
       info: res.locals.username,
       action: LoginLogAction.Logout
     }).save();

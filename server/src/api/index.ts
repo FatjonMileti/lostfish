@@ -1,9 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Router } from 'express';
 
 const router: Router = Router();
-import { UserController } from "./User/user.controller";
-import { AccountController } from "./Account/account.controller";
-import { OfferController } from "./Offer/offer.controller";
+import { UserController } from './User/user.controller';
+import { AccountController } from './Account/account.controller';
+import { OfferController } from './Offer/offer.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -34,8 +34,9 @@ const offerController = new OfferController();
 const userController = new UserController();
 const accountController = new AccountController();
 
-router.use("/account", accountController.router);
-router.use("/user", userController.router);
-router.use("/offer", offerController.router);
+router.use('/account', accountController.router);
+router.use('/user', userController.router);
+router.use('/offer', offerController.router);
+
 
 module.exports = router;

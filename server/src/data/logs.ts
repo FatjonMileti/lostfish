@@ -1,11 +1,13 @@
-import { Schema, model, ObjectId, Document, Model } from "mongoose";
-import moment from "moment";
+import { Schema, model, ObjectId, Document, Model } from 'mongoose';
+import moment from 'moment';
+
 
 export enum LoginLogAction {
-  Login = "login",
-  Refresh = "refresh",
-  Logout = "logout",
+  Login = 'login',
+  Refresh = 'refresh',
+  Logout = 'logout',
 }
+
 export interface ILoginLog extends Document {
   user: ObjectId | string;
   action: LoginLogAction;
@@ -13,17 +15,18 @@ export interface ILoginLog extends Document {
   date: Date;
   expiresAt: Date;
 }
+
 const loginLogSchema = new Schema<ILoginLog>({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "user",
+    ref: 'user',
     required: true,
-    index: true,
+    index: true
   },
   action: {
     type: String,
     enum: [LoginLogAction.Login, LoginLogAction.Refresh, LoginLogAction.Logout],
-    required: true,
+    required: true
   },
   info: Object,
   date: { type: Date, required: true, default: () => new Date() },
@@ -31,20 +34,21 @@ const loginLogSchema = new Schema<ILoginLog>({
     type: Date,
     default: () => {
       return moment()
-        .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), "day")
+        .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day')
         .toDate();
-    },
-  },
+    }
+  }
 });
 loginLogSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-export const LoginLog = model<ILoginLog>("login.log", loginLogSchema);
+export const LoginLog = model<ILoginLog>('login.log', loginLogSchema);
 
 export enum LogAction {
-  Create = "create",
-  Read = "read",
-  Update = "update",
-  Delete = "delete",
+  Create = 'create',
+  Read = 'read',
+  Update = 'update',
+  Delete = 'delete',
 }
+
 export interface ILog extends Document {
   user: ObjectId | string;
   action: LogAction;
@@ -53,15 +57,16 @@ export interface ILog extends Document {
   date: Date;
   expiresAt: Date;
 }
+
 const generateModel: (collection: string) => Model<ILog> = (
   collection: string
 ) => {
   const schema = new Schema<ILog>({
     user: {
       type: Schema.Types.ObjectId,
-      ref: "user",
+      ref: 'user',
       required: true,
-      index: true,
+      index: true
     },
     action: {
       type: String,
@@ -69,9 +74,9 @@ const generateModel: (collection: string) => Model<ILog> = (
         LogAction.Create,
         LogAction.Read,
         LogAction.Update,
-        LogAction.Delete,
+        LogAction.Delete
       ],
-      required: true,
+      required: true
     },
     ref: { type: Schema.Types.ObjectId, ref: collection, index: true },
     info: Object,
@@ -80,15 +85,15 @@ const generateModel: (collection: string) => Model<ILog> = (
       type: Date,
       default: () => {
         return moment()
-          .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), "day")
+          .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day')
           .toDate();
-      },
-    },
+      }
+    }
   });
   schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
   return model<ILog>(`${collection}.log`, schema);
 };
 
-export const UserLog = generateModel("user");
-export const TestCollectionLog = generateModel("test.collection");
+export const UserLog = generateModel('user');
+export const TestCollectionLog = generateModel('test.collection');

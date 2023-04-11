@@ -1,20 +1,17 @@
 //cli program
-require("dotenv/config");
-
-const chalk = require("chalk");
-const dbConnect = require("./src/data");
+require('dotenv/config');
+const chalk = require('chalk');
+const dbConnect = require('./src/data');
 dbConnect(process.env.DB_CONNECTION_STRING, false);
+import User from './src/data/user';
 
-import { UserDocument } from "./src/api/User/user.interface";
-import User from "./src/data/user";
+const bcrypt = require('bcrypt');
+const inquirer = require('inquirer');
+const joi = require('joi');
+import { Schema } from 'joi';
+import { Role } from './src/enums';
 
-const bcrypt = require("bcrypt");
-const inquirer = require("inquirer");
-const joi = require("joi");
-import { Schema, ValidationResult } from "joi";
-import { Role } from "./src/enums";
-
-console.log(chalk.green("Configure digital advertising default user"));
+console.log(chalk.green('Configure digital advertising default user'));
 // tslint:disable-next-line: no-any
 const validate = (schema: Schema) => (answers: any) => {
   return !schema.validate(answers).error;
@@ -24,32 +21,32 @@ const validate = (schema: Schema) => (answers: any) => {
     username: string;
     password: string;
     email: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
   };
   const response: Response = await inquirer.prompt([
     {
-      type: "input",
-      name: "email",
-      message: "email/username",
+      type: 'input',
+      name: 'email',
+      message: 'email/username',
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: "input",
-      name: "password",
-      message: "password",
+      type: 'input',
+      name: 'password',
+      message: 'password',
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: "input",
-      name: "firstName",
-      message: "firstName",
+      type: 'input',
+      name: 'first_name',
+      message: 'first_name',
       validate: validate(joi.string().required().trim().min(3))
     },
     {
-      type: "input",
-      name: "lastName",
-      message: "lastName",
+      type: 'input',
+      name: 'last_name',
+      message: 'last_name',
       validate: validate(joi.string().required().trim().min(3))
     }
   ]);
@@ -63,20 +60,19 @@ const validate = (schema: Schema) => (answers: any) => {
   });
   try {
     await new User({
-      roles: ["admin"],
       username: response.email,
       hash,
       role: Role.Admin,
-      isDisabled: false,
+      is_disabled: false,
       email: response.email,
-      firstName: response.firstName,
-      lastName: response.lastName,
-
-      createdAt: new Date()
+      first_name: response.first_name,
+      last_name: response.last_name,
+      created_at: new Date()
     }).save();
+    
   } catch (err) {
     console.error(err);
-    console.log(chalk.red("could not save user"));
+    console.log(chalk.red('could not save user'));
   }
 
   return process.exit(0);

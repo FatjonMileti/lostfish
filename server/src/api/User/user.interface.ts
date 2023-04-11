@@ -1,4 +1,4 @@
-import { Document, ObjectId } from "mongoose";
+import { Document, ObjectId } from 'mongoose';
 
 export interface UserDocument extends Document {
   _id: ObjectId | string;
@@ -7,16 +7,17 @@ export interface UserDocument extends Document {
   role: Role;
   email: string;
   phone: string;
-  firstName: string;
-  lastName: string;
-  isDisabled: boolean;
-  lastLogin: Date;
-  editedAt?: Date;
-  editedBy?: ObjectId | string;
-  createdAt: Date;
-  createdBy?: ObjectId | string;
+  first_name: string;
+  last_name: string;
+  is_disabled: boolean;
+  last_login: Date;
+  edited_at?: Date;
+  edited_by?: ObjectId | string;
+  created_at: Date;
+  created_by?: ObjectId | string;
 }
 
 export enum Role {
-  Admin = "Admin",
+  Admin = 'Admin',
+  Guest = 'Guest'
 }

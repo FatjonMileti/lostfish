@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { Role } from "../enums";
-import createError, { HttpError } from "http-errors";
-import jwt from "jsonwebtoken";
-import RevokedToken, { IRevokedToken } from "../data/revokedToken";
+import { Request, Response, NextFunction } from 'express';
+import { Role } from '../enums';
+import createError, { HttpError } from 'http-errors';
+import jwt from 'jsonwebtoken';
+import RevokedToken, { IRevokedToken } from '../data/revokedToken';
 
 export default (roles?: Role[]) => {
   return async (
@@ -11,8 +11,8 @@ export default (roles?: Role[]) => {
     next: NextFunction
   ): Promise<Response | void> => {
     let token: string | undefined = req.headers.authorization;
-    if (!token || !token.startsWith("Bearer "))
-      throw createError(401, "authorization bearer header is required");
+    if (!token || !token.startsWith('Bearer '))
+      throw createError(401, 'authorization bearer header is required');
 
     token = token.slice(7, token.length);
 
@@ -21,9 +21,9 @@ export default (roles?: Role[]) => {
         token!,
         <jwt.Secret>process.env.JWT_SECRET,
         {
-          issuer: "lost.fish",
-          audience: "lost.fish:api",
-          algorithms: ["HS256"],
+          issuer: 'lost.fish',
+          audience: 'lost.fish:api',
+          algorithms: ['HS256']
         },
         (err, decoded) => {
           if (err) return resolve(false);
@@ -34,18 +34,18 @@ export default (roles?: Role[]) => {
       );
     });
 
-    if (!payload) throw createError(401, "invalid token");
+    if (!payload) throw createError(401, 'invalid token');
 
     const revoked = await RevokedToken.findOne({ token });
-    if (revoked) throw createError(401, "token was revoked");
+    if (revoked) throw createError(401, 'token was revoked');
 
     if (roles && roles.length > 0 && roles.indexOf(<Role>payload.role) === -1) {
-      throw createError(401, "not allowed");
+      throw createError(401, 'not allowed');
     }
 
     res.locals.token = token;
     res.locals.claims = payload;
-    res.locals.userId = res.locals.claims.sub;
+    res.locals.user_id = res.locals.claims.sub;
     res.locals.username = payload.username;
     res.locals.role = <Role>payload.role;
     return next();
