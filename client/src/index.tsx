@@ -23,10 +23,14 @@ import Alert from '@mui/material/Alert';
 import PrivateRoute from './components/routes/private';
 
 import Layout from './layout';
-import { Home } from './pages/home/Home';
+// import { Home } from './pages/home/Home';
 import './assets/css/Index.css';
 import { PublicLayout } from './layout/public/PublicLayout';
 
+//
+import { Home } from './pages/Home';
+import { PreviewComponents } from './pages/PreviewComponents';
+//
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -57,12 +61,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+
       <UserProvider>
         <UIProvider>
           <GeneralSnackbar />
+
           <BrowserRouter>
             <Routes>
               <Route path='/login' element={<Login />} />
+              <Route path='/components' element={<PreviewComponents />} />
               <Route
                 path='/'
                 element={
@@ -71,6 +78,7 @@ function App() {
                   </PublicLayout>
                 }
               />
+
               <Route
                 path='/*'
                 element={

@@ -1,12 +1,12 @@
-.button {
-    box-sizing: border-box;
-    left: 86.17%;
-    border-radius: 23.5243px;
-    width: 136px;
-    text-align: center;
-    margin-top: 2rem;
-    border: 0.72px solid #274D6A
-}
+/*.button {*/
+/*    box-sizing: border-box;*/
+/*    left: 86.17%;*/
+/*    border-radius: 23.5243px;*/
+/*    width: 136px;*/
+/*    text-align: center;*/
+/*    margin-top: 2rem;*/
+/*    border: 0.72px solid #274D6A*/
+/*}*/
 
 .button buttonText {
     font-family: Roobert TRIAL;
@@ -18,11 +18,11 @@
     margin: 6px 6px 6px 6px
 }
 
-.menu {
-    display: flex;
-    margin-top: 30px;
-    margin-left: 30px;
-}
+/*.menu {*/
+/*    display: flex;*/
+/*    margin-top: 30px;*/
+/*    margin-left: 30px;*/
+/*}*/
 
 .menu-button {
     display: flex;

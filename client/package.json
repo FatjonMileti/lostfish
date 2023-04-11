@@ -8,9 +8,8 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.60",
     "@mui/material": "^5.2.5",
-    "@mui/x-data-grid": "^6.0.4",
+    "@mui/x-data-grid": "^5.17.26",
     "@types/react": "^18.0.33",
-    "concurrently": "^7.0.0",
     "date-fns": "^2.28.0",
     "moment": "^2.29.1",
     "react": "^18.0.3",
@@ -24,9 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "npx prettier -w ..",
-    "server": "npm start --prefix ../server",
-    "both": "concurrently \\\"npm run server\\\" \\\"npm run start\\\""
+    "format": "npx prettier -w .."
   },
   "browserslist": {
     "production": [
