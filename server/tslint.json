@@ -9,10 +9,10 @@
   "rules": {
     "max-line-length": {
       "options": [
-        80
+        220
       ]
     },
-    "semicolon": true,
+    "semicolon": false,
     "comment-format": false,
     "no-angle-bracket-type-assertion": false,
     "new-parens": true,

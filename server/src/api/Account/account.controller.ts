@@ -60,6 +60,10 @@ export class AccountController {
    * @apiBody {string} password
    *
    * @apiPermission anonymous
+   * @apiSuccess {String} token_type
+   * @apiSuccess {String} access_token
+   * @apiSuccess {String} expires_in
+   * @apiSuccess {String} refresh_token
    */
   private login = async (req: express.Request, res: express.Response) => {
     const model = res.locals.model! as { username: string; password: string };

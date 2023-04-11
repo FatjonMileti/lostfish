@@ -21,12 +21,7 @@ export class UserController {
   }
 
   private initializeRoutes() {
-    this.router.get(
-      '/',
-      authorize([Role.Admin]),
-      paging({ sort: { created_at: -1 } }),
-      this.getAll
-    );
+    this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post('/', authorize([Role.Admin]), this.create);
     this.router.put('/:id', authorize([Role.Admin]), this.update);
@@ -51,6 +46,7 @@ export class UserController {
    * @apiQuery {date} [createdAtSince] filter
    * @apiQuery {date} [createdAtUntil] filter
    */
+
   private getAll = async (req: express.Request, res: express.Response) => {
     const { search } = req.query;
 
@@ -122,6 +118,7 @@ export class UserController {
    * @apiGroup User
    * @apiSampleRequest /api/user/:id
    *
+   * @apiParam id user id
    * @apiPermission authorize
    * @apiUse bearer
    */
@@ -165,7 +162,7 @@ export class UserController {
 
     const errors: ValidationError[] = await validate(user);
 
-    const existingUser = await userService.findOne({ username: user.email });
+    const existingUser: UserDocument | null = await userService.findOne({ username: user.email });
     if (existingUser) {
       throw createError(400, 'User already exists');
     }
