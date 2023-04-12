@@ -1,40 +1,41 @@
-import UserModel from "../../data/user";
-import { UserDocument } from "./user.interface";
-import createError from "http-errors";
+import UserModel from '../../data/user';
+import { UserDocument } from '../../data/interfaces/user.interface';
+import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
   return UserModel.paginate(query, {
     ...pagingOptions,
-    select: ["-hash"],
+    select: ['-hash'],
     populate: [
       {
-        path: "createdBy",
-        select: ["email", "username", "firstName", "lastName"],
+        path: 'created_by',
+        select: ['email', 'username', 'firstName', 'lastName']
       },
       {
-        path: "editedBy",
-        select: ["email", "username", "firstName", "lastName"],
-      },
-    ],
+        path: 'edited_by',
+        select: ['email', 'username', 'firstName', 'lastName']
+      }
+    ]
   });
 };
 
+
 const getById = async (id: string): Promise<UserDocument | undefined> => {
-  const user = await UserModel.findOne({ _id: id }, null, {
-    select: ["-hash"],
+  const user: UserDocument | null = await UserModel.findOne({ _id: id }, null, {
+    select: ['-hash'],
     populate: [
       {
-        path: "createdBy",
-        select: ["email", "username", "firstName", "lastName"],
+        path: 'created_by',
+        select: ['email', 'username', 'firstName', 'lastName']
       },
       {
-        path: "editedBy",
-        select: ["email", "username", "firstName", "lastName"],
-      },
-    ],
+        path: 'edited_by',
+        select: ['email', 'username', 'firstName', 'lastName']
+      }
+    ]
   });
   if (!user) {
-    throw createError(400, "The item does not exist");
+    throw createError(404, 'The item does not exist');
   }
 
   return mapToUser(user);
@@ -46,7 +47,7 @@ const findOne = async (query: any) => {
 
 const create = async (user: UserDocument): Promise<UserDocument> => {
   const userDocument = new UserModel({
-    ...user,
+    ...user
   });
 
   const savedUser = await userDocument.save();

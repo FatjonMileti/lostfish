@@ -1,21 +1,21 @@
-import jwt from "jsonwebtoken";
-import { Role } from "../enums";
+import jwt from 'jsonwebtoken';
+import { Role } from '../enums';
 
-declare module "express" {
+declare module 'express' {
   interface Response {
     locals: {
       model?: object;
       claims?: jwt.JwtPayload;
-      userId?: string;
+      user_id?: string;
       username?: string;
       token?: string;
       role?: Role;
-      pagingOptions?: object;
+      paging_options?: object;
     };
   }
 }
 
-declare module "express-session" {
+declare module 'express-session' {
   interface Session {
     color?: string;
   }

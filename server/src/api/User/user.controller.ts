@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import userService from './user.service';
-import { UserDocument } from './user.interface';
+import { UserDocument } from '../../data/interfaces/user.interface';
 import { validate, ValidationError } from 'class-validator';
 import { LogAction, UserLog } from '../../data/logs';
 import { Role } from '../../enums';
@@ -8,6 +8,7 @@ import moment from 'moment/moment';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import createError from 'http-errors';
+
 
 import { generatePassword, hashPassword } from './user.helpers';
 
@@ -21,24 +22,38 @@ export class UserController {
   }
 
   private initializeRoutes() {
-    this.router.get(
-      '/',
-      authorize([Role.Admin]),
-      paging({ sort: { createdAt: -1 } }),
-      this.getAll
-    );
+    this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post('/', authorize([Role.Admin]), this.create);
     this.router.put('/:id', authorize([Role.Admin]), this.update);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
-    
+
   }
+
+  /**
+   * @api {get} /api/user Get
+   * @apiDescription Get all users
+   * @apiGroup User
+   * @apiSampleRequest /api/user
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   * @apiUse paging
+   *
+   * @apiQuery {string} [search] search by firstName, lastName, phone, email
+   *
+   * @apiQuery {boolean} [isDisabled] filter
+   * @apiQuery {string} [role] filter
+   * @apiQuery {date} [createdAtSince] filter
+   * @apiQuery {date} [createdAtUntil] filter
+   */
 
   private getAll = async (req: express.Request, res: express.Response) => {
     const { search } = req.query;
+
     const query: {
-      createdAt?: any;
-      isDisabled?: boolean;
+      created_at?: any;
+      is_disabled?: boolean;
       role?: Role;
       $or?: { [key: string]: RegExp }[];
     } = {};
@@ -52,12 +67,12 @@ export class UserController {
       ];
     }
 
-    const { isDisabled, role } = req.query;
-    let createdAtSince: any | null = req.query.createdAtSince;
-    let createdAtUntil: any | null = req.query.createdAtUntil;
+    const { is_disabled, role } = req.query;
+    let createdAtSince: any | null = req.query.created_atSince;
+    let createdAtUntil: any | null = req.query.created_atUntil;
 
-    if (isDisabled) {
-      query.isDisabled = isDisabled === 'true';
+    if (is_disabled) {
+      query.is_disabled = is_disabled === 'true';
     }
 
     if (role) {
@@ -84,29 +99,36 @@ export class UserController {
 
     //both
     if (createdAtSince) {
-      if (!query.createdAt) query.createdAt = {};
-      query.createdAt.$gt = createdAtSince.toDate();
+      if (!query.created_at) query.created_at = {};
+      query.created_at.$gt = createdAtSince.toDate();
     }
 
     if (createdAtUntil) {
-      if (!query.createdAt) query.createdAt = {};
-      query.createdAt.$lte = createdAtUntil.toDate();
+      if (!query.created_at) query.created_at = {};
+      query.created_at.$lte = createdAtUntil.toDate();
     }
 
-    const users = await userService.getAll(query, res.locals.pagingOptions);
+    const users = await userService.getAll(query, res.locals.paging_options);
     res.json(users);
   };
 
+
+  /**
+   * @api {get} /api/user/:id Get by Id
+   * @apiDescription Get user
+   * @apiGroup User
+   * @apiSampleRequest /api/user/:id
+   *
+   * @apiParam id user id
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
   private getById = async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
     const user = await userService.getById(id);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
     await new UserLog({
-      user: res.locals.userId,
+      user: res.locals.user_id,
       action: LogAction.Read,
       ref: id,
       info: null
@@ -115,12 +137,29 @@ export class UserController {
     res.json(user);
   };
 
+  /**
+   * @api {post} /api/user Post
+   * @apiDescription Register
+   * @apiGroup User
+   * @apiSampleRequest /api/user
+   *
+   * @apiBody {string=Admin} role
+   * @apiBody {string} email
+   * @apiBody {string} [phone]
+   * @apiBody {string} firstName
+   * @apiBody {string} lastName
+   *
+   * @apiBody {boolean} [isDisabled=false]
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
   private create = async (req: express.Request, res: express.Response) => {
     const user: UserDocument = req.body as UserDocument;
 
     const errors: ValidationError[] = await validate(user);
 
-    const existingUser = await userService.findOne({ username: user.email });
+    const existingUser: UserDocument | null = await userService.findOne({ username: user.email });
     if (existingUser) {
       throw createError(400, 'User already exists');
     }
@@ -132,12 +171,12 @@ export class UserController {
     const password: string = generatePassword();
     user.hash = <string>await hashPassword(password);
 
-    user.isDisabled = user.isDisabled || false;
-    user.createdBy = res.locals.userId;
+    user.is_disabled = user.is_disabled || false;
+    user.created_by = res.locals.user_id;
     const createdUser: UserDocument = await userService.create(user);
 
     await new UserLog({
-      user: res.locals.userId,
+      user: res.locals.user_id,
       action: LogAction.Create,
       ref: createdUser._id,
       info: createdUser
@@ -146,6 +185,24 @@ export class UserController {
     return res.json({ ...createdUser, hash: undefined });
   };
 
+
+  /**
+   * @api {put} /api/user/:id Put
+   * @apiDescription Edit user
+   * @apiGroup User
+   * @apiSampleRequest /api/user/:id
+   *
+   * @apiBody {string=admin} role
+   * @apiBody {string} email
+   * @apiBody {string} [phone]
+   * @apiBody {string} firstName
+   * @apiBody {string} lastName
+   *
+   * @apiBody {boolean} [isDisabled=false]
+   * @apiParam id
+   * @apiPermission admin
+   * @apiUse bearer
+   */
   private update = async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
     const user = req.body as UserDocument;
@@ -157,12 +214,22 @@ export class UserController {
     }
 
     try {
-      const updatedUser = await userService.updateUser(id, user);
+      const updatedUser: UserDocument | undefined = await userService.updateUser(id, user);
       res.json(updatedUser);
     } catch (error) {
       res.status(404).json({ message: 'User not found' });
     }
   };
+
+  /**
+   * @api {delete} /api/user/:id Delete
+   * @apiDescription Delete user
+   * @apiGroup User
+   * @apiSampleRequest /api/user/:id
+   * @apiParam id
+   * @apiPermission admin
+   * @apiUse bearer
+   */
 
   private delete = async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
