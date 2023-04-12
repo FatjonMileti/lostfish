@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 
 import React from 'react';
 import { Header } from './Header';
-import { Typography } from './Typography';
+import { Typography } from '../../components/Typography';
 
 import Illustration1 from '../../assets/images/illustration1.png';
 import illustration2 from '../../assets/images/illustration2.png';
-import { Button } from './Button';
-import { Card } from './Card';
+import { Button } from '../../components/Button';
+import { Card } from '../../components/Card';
 import Icon from '../../components/Icon';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -140,7 +140,6 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         </Button>
       </div>
       <div className='footer-section'>
-        <p>lala </p>
         <div className='columns-layout'>
           <div>Column</div>
           <div>Column</div>
@@ -494,6 +493,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
 
   .footer-section {
     margin-top: 88px;
+    height: 484px;
     background-color: #0d2a38;
 
     .columns-layout {

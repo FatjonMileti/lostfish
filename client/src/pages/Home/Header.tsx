@@ -1,7 +1,7 @@
 import LogoLostFishColored from '../../assets/svg/LogoLostFishColored.svg';
-import { Link } from './Link';
-import { Button } from './Button';
-import { Logo } from './Logo';
+import { Link } from '../../components/Link';
+import { Button } from '../../components/Button';
+import { Logo } from '../../components/Logo';
 import React from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';

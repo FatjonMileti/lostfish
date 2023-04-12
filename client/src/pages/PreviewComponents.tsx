@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 
-import { Logo } from './Home/Logo';
-import { Link } from './Home/Link';
-import { Button } from './Home/Button';
-import { Typography } from './Home/Typography';
+import { Logo } from '../components/Logo';
+import { Link } from '../components/Link';
+import { Button } from '../components/Button';
+import { Typography } from '../components/Typography';
 
 import Icon from '../components/Icon';
 

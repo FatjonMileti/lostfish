@@ -1,4 +1,4 @@
-import LogoLostFishColored from '../../assets/svg/LogoLostFishColored.svg';
+import LogoLostFishColored from '../assets/svg/LogoLostFishColored.svg';
 import React from 'react';
 import styled from '@emotion/styled';
 
