@@ -6,8 +6,17 @@ import { Link } from './Home/Link';
 import { Button } from './Home/Button';
 import { Typography } from './Home/Typography';
 
+import Icon from '../components/Icon';
+
+import IcoMoon, { iconList } from 'react-icomoon';
+
+import iconSet from '../assets/selection.json';
+import React from 'react';
+
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
+
+  console.log(iconList(iconSet));
 
   return (
     <div className={`preview-components ${className}`}>
@@ -17,14 +26,34 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
 
       <Button onClick={() => navigate('/')}>Button Go Home</Button>
 
-      <Typography variant='h1'>Typography h1</Typography>
-      <Typography variant='h2'>Typography h1</Typography>
-      <Typography variant='h3'>Typography h1</Typography>
-      <Typography variant='body1'>Typography body1</Typography>
-      <Typography variant='body2'>Typography body2</Typography>
-      <Typography variant='body3'>Typography body3</Typography>
-      <Typography variant='body4'>Typography body4</Typography>
-      <Typography variant='body5'>Typography body5</Typography>
+      <Button variant='contained' onClick={() => navigate('/')}>
+        contained
+      </Button>
+      <Button variant='text' onClick={() => navigate('/')}>
+        text
+      </Button>
+      <Button variant='outlined' onClick={() => navigate('/')}>
+        outlined
+      </Button>
+
+      <Typography variant='h1'>Typography h1 64/72</Typography>
+      <Typography variant='h2'>Typography h1 56/64</Typography>
+      <Typography variant='h3'>Typography h1 48/56</Typography>
+      <Typography variant='body1'>Typography body1 40/46</Typography>
+      <Typography variant='body2'>Typography body2 32/40</Typography>
+      <Typography variant='body3'>Typography body3 24/32</Typography>
+      <Typography variant='body4'>Typography body4 16/24</Typography>
+      <Typography variant='body5'>Typography body5 14/20</Typography>
+      <Typography variant='menu'>Typography menu 16/20</Typography>
+
+      <div className='icons-list'>
+        {iconList(iconSet).map((icon) => (
+          <div className='icon-item'>
+            <Icon icon={icon} size={20} color='black' />
+            <p>{icon}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 })`
@@ -34,5 +63,17 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .icons-list {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 24px;
+
+      .icon-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   }
 `;

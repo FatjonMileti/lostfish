@@ -1,13 +1,11 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import { Close } from '@mui/icons-material';
-import { useState } from 'react';
 
 import theme from './theme';
 
@@ -23,7 +21,6 @@ import Alert from '@mui/material/Alert';
 import PrivateRoute from './components/routes/private';
 
 import Layout from './layout';
-// import { Home } from './pages/home/Home';
 import './assets/css/Index.css';
 import { PublicLayout } from './layout/public/PublicLayout';
 
@@ -60,8 +57,6 @@ const rootContainer = ReactDOMClient.createRoot(container!);
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-
       <UserProvider>
         <UIProvider>
           <GeneralSnackbar />

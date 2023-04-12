@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
-  variant?: 'body1' | 'body2' | 'body3' | 'body4' | 'body5' | 'h1' | 'h2' | 'h3';
+  variant?: 'body1' | 'body2' | 'body3' | 'body4' | 'body5' | 'h1' | 'h2' | 'h3' | 'menu';
 }
 
 export const Typography = styled(
@@ -18,6 +18,7 @@ export const Typography = styled(
 
   &.h1 {
     font-size: 64px;
+    line-height: 72px;
   }
 
   &.h2 {
@@ -42,9 +43,18 @@ export const Typography = styled(
 
   &.body4 {
     font-size: 16px;
+    line-height: 24px;
   }
 
   &.body5 {
     font-size: 14px;
+  }
+
+  &.menu {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #184d6d;
   }
 `;
