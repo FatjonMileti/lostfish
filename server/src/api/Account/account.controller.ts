@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 
 const router: Router = Router();
 
-import { UserDocument } from '../User/user.interface';
+import { UserDocument } from '../../data/interfaces/user.interface';
 import UserModel from '../../data/user';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import authorize from '../../middleware/authorize';

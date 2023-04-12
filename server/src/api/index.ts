@@ -3,7 +3,7 @@ import { Router } from 'express';
 const router: Router = Router();
 import { UserController } from './User/user.controller';
 import { AccountController } from './Account/account.controller';
-import { OfferController } from './Offer/offer.controller';
+import { AssetController } from './Asset/asset.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -19,7 +19,8 @@ import { OfferController } from './Offer/offer.controller';
 
 /**
  * @apiDefine bearer
- * @apiHeader {string} Authorization accepts JWTs. Ex: `Bearer IiwiYXVkI.joic3Vycm91bmQuZWNvc3lzdGVtIiwic2NvcGUi.OlsicmVmcmVza`
+ * @apiHeader {string} Authorization accepts JWTs.
+ * Ex: `Bearer IiwiYXVkI.joic3Vycm91bmQuZWNvc3lzdGVtIiwic2NvcGUi.OlsicmVmcmVza`
  */
 
 /**
@@ -30,13 +31,13 @@ import { OfferController } from './Offer/offer.controller';
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
-const offerController = new OfferController();
+const offerController = new AssetController();
 const userController = new UserController();
 const accountController = new AccountController();
 
 router.use('/account', accountController.router);
 router.use('/user', userController.router);
-router.use('/offer', offerController.router);
+router.use('/asset', offerController.router);
 
 
 module.exports = router;

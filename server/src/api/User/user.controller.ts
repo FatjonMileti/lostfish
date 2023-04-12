@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import userService from './user.service';
-import { UserDocument } from './user.interface';
+import { UserDocument } from '../../data/interfaces/user.interface';
 import { validate, ValidationError } from 'class-validator';
 import { LogAction, UserLog } from '../../data/logs';
 import { Role } from '../../enums';
@@ -8,6 +8,7 @@ import moment from 'moment/moment';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import createError from 'http-errors';
+
 
 import { generatePassword, hashPassword } from './user.helpers';
 
@@ -126,10 +127,6 @@ export class UserController {
     const id = req.params.id;
     const user = await userService.getById(id);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
     await new UserLog({
       user: res.locals.user_id,
       action: LogAction.Read,
@@ -202,7 +199,7 @@ export class UserController {
    * @apiBody {string} lastName
    *
    * @apiBody {boolean} [isDisabled=false]
-   *
+   * @apiParam id
    * @apiPermission admin
    * @apiUse bearer
    */
@@ -217,7 +214,7 @@ export class UserController {
     }
 
     try {
-      const updatedUser = await userService.updateUser(id, user);
+      const updatedUser: UserDocument | undefined = await userService.updateUser(id, user);
       res.json(updatedUser);
     } catch (error) {
       res.status(404).json({ message: 'User not found' });
@@ -229,7 +226,7 @@ export class UserController {
    * @apiDescription Delete user
    * @apiGroup User
    * @apiSampleRequest /api/user/:id
-   *
+   * @apiParam id
    * @apiPermission admin
    * @apiUse bearer
    */

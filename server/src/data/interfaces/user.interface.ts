@@ -10,6 +10,10 @@ export interface UserDocument extends Document {
   first_name: string;
   last_name: string;
   is_disabled: boolean;
+  address: {
+    name: string;
+    street: string
+  };
   last_login: Date;
   edited_at?: Date;
   edited_by?: ObjectId | string;

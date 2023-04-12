@@ -1,5 +1,5 @@
-import { ValidationResult, Schema } from "joi";
-import { Request, Response, NextFunction } from "express";
+import { ValidationResult, Schema } from 'joi';
+import { Request, Response, NextFunction } from 'express';
 
 export default (schema: Schema, data?: object) => {
   return (req: Request, res: Response, next: NextFunction): Response | void => {
@@ -9,9 +9,9 @@ export default (schema: Schema, data?: object) => {
 
     if (model.error) {
       return res.status(400).json({
-        message: "Cererea include erori de validare",
+        message: 'The request includes validation errors',
         errors: model.error.details,
-        valid: false,
+        valid: false
       });
     } else {
       res.locals.model = model.value;

@@ -1,5 +1,5 @@
 import UserModel from '../../data/user';
-import { UserDocument } from './user.interface';
+import { UserDocument } from '../../data/interfaces/user.interface';
 import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
@@ -35,7 +35,7 @@ const getById = async (id: string): Promise<UserDocument | undefined> => {
     ]
   });
   if (!user) {
-    throw createError(400, 'The item does not exist');
+    throw createError(404, 'The item does not exist');
   }
 
   return mapToUser(user);
