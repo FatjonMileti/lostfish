@@ -48,6 +48,7 @@ export const Typography = styled(
 
   &.body5 {
     font-size: 14px;
+    line-height: 20px;
   }
 
   &.menu {

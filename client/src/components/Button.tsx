@@ -21,9 +21,7 @@ export const Button = styled(({ className, children, variant = 'text', ...rest }
   border-radius: 250px;
   padding: 12px 24px;
   text-transform: uppercase;
-
   cursor: pointer;
-
   border: none;
 
   &.text {

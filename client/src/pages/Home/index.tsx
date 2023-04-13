@@ -10,6 +10,9 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import Icon from '../../components/Icon';
 
+import { Footer } from './Footer';
+import { IconButton } from '../../components/IconButton';
+
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
@@ -29,14 +32,14 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
           <Typography variant='body4'>I’m looking for a tenant</Typography>
           <div className='circles'>
             <div className='circle first'>
-              <div className='plus-button'>
+              <IconButton className='plus-button'>
                 <Icon icon='plus' size={24} color='white' />
-              </div>
+              </IconButton>
             </div>
             <div className='circle second'>
-              <div className='plus-button'>
+              <IconButton className='plus-button'>
                 <Icon icon='plus' size={24} color='white' />
-              </div>
+              </IconButton>
             </div>
           </div>
           <Typography variant='body4'>I’m looking for a place</Typography>
@@ -139,14 +142,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
           <Icon icon='arrow-right' size={28} />
         </Button>
       </div>
-      <div className='footer-section'>
-        <div className='columns-layout'>
-          <div>Column</div>
-          <div>Column</div>
-          <div>Column</div>
-          <div>Column</div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 })`
@@ -222,12 +218,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
               bottom: calc(50% - 24px);
               left: -24px;
               background-color: #e5155a;
-              border-radius: 50%;
-              height: 48px;
-              width: 48px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              border: none;
             }
           }
 
@@ -253,12 +244,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
               bottom: calc(50% - 24px);
               right: -24px;
               background-color: #e5155a;
-              border-radius: 50%;
-              height: 48px;
-              width: 48px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              border: none;
             }
           }
         }
@@ -463,6 +449,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         flex-direction: column;
         row-gap: 16px;
         justify-content: space-between;
+        padding: 48px;
       }
 
       .no-waiting {
@@ -488,17 +475,6 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       display: flex;
       column-gap: 10px;
       align-items: center;
-    }
-  }
-
-  .footer-section {
-    margin-top: 88px;
-    height: 484px;
-    background-color: #0d2a38;
-
-    .columns-layout {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 2fr;
     }
   }
 `;
