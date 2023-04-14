@@ -1,18 +1,19 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  size?: 'small' | 'medium' | 'large';
+}
 
-export const IconButton = styled(({ className, children, ...rest }: IconButtonProps) => {
+export const IconButton = styled(({ className, children, size = 'medium', ...rest }: IconButtonProps) => {
   return (
-    <button className={`icon-button ${className}`} {...rest}>
+    <button className={`icon-button ${className} ${size}`} {...rest}>
       {children}
     </button>
   );
 })`
   font-weight: 600;
   font-size: 16px;
-
   color: #184d6d;
 
   display: flex;
@@ -21,8 +22,19 @@ export const IconButton = styled(({ className, children, ...rest }: IconButtonPr
 
   background-color: transparent;
   border-radius: 50%;
-  padding: 12px;
   cursor: pointer;
 
   border: 1px solid #184d6d;
+
+  &.small {
+    padding: 6px;
+  }
+
+  &.medium {
+    padding: 12px;
+  }
+
+  &.large {
+    padding: 16px;
+  }
 `;

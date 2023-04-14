@@ -24,7 +24,7 @@ export const Header = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='right'>
-        <Link>Login</Link>
+        <Link onClick={() => navigate('/login')}>Login</Link>
         <Button variant='outlined' onClick={() => navigate('/components')}>
           Sign Up
         </Button>

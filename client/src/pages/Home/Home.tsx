@@ -8,7 +8,7 @@ import Illustration1 from '../../assets/images/illustration1.png';
 import illustration2 from '../../assets/images/illustration2.png';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import Icon from '../../components/Icon';
+import { Icon } from '../../components/Icon';
 
 import { Footer } from './Footer';
 import { IconButton } from '../../components/IconButton';
@@ -86,8 +86,12 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
               DAILY NEWS
             </Typography>
             <div className='icons-wrapper'>
-              <Icon icon='share' size={18} color='white' />
-              <Icon icon='label-vertical' size={18} color='white' />
+              <IconButton size='small'>
+                <Icon icon='share' size={18} color='white' />
+              </IconButton>
+              <IconButton size='small'>
+                <Icon icon='label-vertical' size={18} color='white' />
+              </IconButton>
             </div>
           </div>
           <Typography variant='body1' className='body-text-1'>
@@ -101,7 +105,9 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             <Typography variant='body4' className='progress-tracker'>
               1/3
             </Typography>
-            <Icon icon='arrow-right' size={36} color='white' />
+            <IconButton size='small'>
+              <Icon icon='arrow-right' size={36} color='white' />
+            </IconButton>
           </div>
         </div>
       </div>
@@ -137,9 +143,8 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         </div>
       </div>
       <div className='join-our-community-section'>
-        <Button variant='contained'>
+        <Button variant='contained' endIcon={<Icon icon='arrow-right' size={28} />}>
           Join our community
-          <Icon icon='arrow-right' size={28} />
         </Button>
       </div>
       <Footer />

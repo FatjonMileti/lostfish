@@ -5,10 +5,11 @@ import { Logo } from '../components/Logo';
 import { Link } from '../components/Link';
 import { Button } from '../components/Button';
 import { Typography } from '../components/Typography';
+import { IconButton } from '../components/IconButton';
 
-import Icon from '../components/Icon';
+import { Icon } from '../components/Icon';
 
-import IcoMoon, { iconList } from 'react-icomoon';
+import { iconList } from 'react-icomoon';
 
 import iconSet from '../assets/selection.json';
 import React from 'react';
@@ -29,11 +30,29 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
       <Button variant='contained' onClick={() => navigate('/')}>
         contained
       </Button>
+
       <Button variant='text' onClick={() => navigate('/')}>
         text
       </Button>
+
       <Button variant='outlined' onClick={() => navigate('/')}>
         outlined
+      </Button>
+
+      <Button size='small'>small</Button>
+      <Button size='medium'>medium</Button>
+      <Button size='large'>large</Button>
+
+      <IconButton>
+        <Icon icon='plus' />
+      </IconButton>
+
+      <Button variant='outlined' startIcon={<Icon icon='plus' size='20' />}>
+        startIcon
+      </Button>
+
+      <Button variant='outlined' endIcon={<Icon icon='plus' size={20} />}>
+        endIcon
       </Button>
 
       <Typography variant='h1'>Typography h1 64/72</Typography>

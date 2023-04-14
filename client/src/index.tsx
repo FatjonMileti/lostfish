@@ -10,7 +10,7 @@ import { Close } from '@mui/icons-material';
 import theme from './theme';
 
 import NotFound from './pages/404';
-import Login from './pages/login';
+// import Login from './pages/login';
 
 import { UserProvider } from './context/user';
 import { UIProvider, useUI } from './context/ui';
@@ -25,8 +25,9 @@ import './assets/css/Index.css';
 import { PublicLayout } from './layout/public/PublicLayout';
 
 //
-import { Home } from './pages/Home';
+import { Home } from './pages/Home/Home';
 import { PreviewComponents } from './pages/PreviewComponents';
+import { Login } from './pages/Login/Login';
 //
 const GeneralSnackbar = () => {
   const UIContext = useUI();
