@@ -12,6 +12,7 @@ import { Icon } from '../../components/Icon';
 
 import { Footer } from './Footer';
 import { IconButton } from '../../components/IconButton';
+import { Intersection } from './Intersection';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -28,22 +29,8 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             What’s in it for you?
           </Typography>
         </div>
-        <div className='looking-for-section'>
-          <Typography variant='body4'>I’m looking for a tenant</Typography>
-          <div className='circles'>
-            <div className='circle first'>
-              <IconButton className='plus-button'>
-                <Icon icon='plus' size={24} color='white' />
-              </IconButton>
-            </div>
-            <div className='circle second'>
-              <IconButton className='plus-button'>
-                <Icon icon='plus' size={24} color='white' />
-              </IconButton>
-            </div>
-          </div>
-          <Typography variant='body4'>I’m looking for a place</Typography>
-        </div>
+
+        <Intersection />
       </div>
       <img className='illustration1' src={Illustration1} alt='illustration' />
       <Typography variant='menu' className='text3'>
@@ -180,80 +167,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       }
     }
 
-    .looking-for-section {
-      margin-top: 84px;
-
-      display: flex;
-      align-items: center;
-
-      column-gap: 72px;
-      justify-content: center;
-      .typography {
-        color: #184d6d;
-      }
-
-      .circles {
-        width: 568px;
-        height: 324px;
-        position: relative;
-
-        .circle {
-          display: inline-block;
-          border-radius: 50%;
-          width: 324px;
-          height: 324px;
-
-          mix-blend-mode: multiply;
-          transition: all 0.5s;
-          cursor: pointer;
-
-          &.first {
-            background-color: red;
-            background-image: url('./images/imLookingForTenant.png');
-            position: absolute;
-            left: 0;
-
-            :hover {
-              z-index: 1;
-              transform: scale(1.2);
-            }
-
-            .plus-button {
-              position: absolute;
-              bottom: calc(50% - 24px);
-              left: -24px;
-              background-color: #e5155a;
-              border: none;
-            }
-          }
-
-          &.second {
-            background-color: #eee0d3;
-            background-blend-mode: darken;
-
-            background-image: url('./images/imLookingForPlace.png');
-            background-size: 276px;
-            background-position: center;
-            background-repeat: no-repeat;
-
-            position: absolute;
-            right: 0;
-
-            :hover {
-              z-index: 1;
-              transform: scale(1.2);
-            }
-
-            .plus-button {
-              position: absolute;
-              bottom: calc(50% - 24px);
-              right: -24px;
-              background-color: #e5155a;
-              border: none;
-            }
-          }
-        }
-      }
+    .intersection {
     }
   }
 

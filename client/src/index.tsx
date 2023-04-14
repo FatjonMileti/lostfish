@@ -28,6 +28,7 @@ import { PublicLayout } from './layout/public/PublicLayout';
 import { Home } from './pages/Home/Home';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { Login } from './pages/Login/Login';
+import { Intersection } from './pages/Home/Intersection';
 //
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -65,6 +66,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path='/login' element={<Login />} />
+              <Route path='/intersection' element={<Intersection />} />
               <Route path='/components' element={<PreviewComponents />} />
               <Route
                 path='/'
