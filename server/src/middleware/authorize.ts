@@ -4,6 +4,26 @@ import createError, { HttpError } from 'http-errors';
 import jwt from 'jsonwebtoken';
 import RevokedToken, { IRevokedToken } from '../data/revokedToken';
 
+export const verifyToken = async (token: string): Promise<jwt.JwtPayload | false> => {
+  return await new Promise((resolve) => {
+    jwt.verify(
+      token!,
+      <jwt.Secret>process.env.JWT_SECRET,
+      {
+        issuer: 'lost.fish',
+        audience: 'lost.fish:api',
+        algorithms: ['HS256']
+      },
+      (err, decoded) => {
+        if (err) return resolve(false);
+
+        // @ts-ignore
+        return resolve(decoded!);
+      }
+    );
+  });
+};
+
 export default (roles?: Role[]) => {
   return async (
     req: Request,
@@ -16,23 +36,7 @@ export default (roles?: Role[]) => {
 
     token = token.slice(7, token.length);
 
-    const payload: jwt.JwtPayload | false = await new Promise((resolve) => {
-      jwt.verify(
-        token!,
-        <jwt.Secret>process.env.JWT_SECRET,
-        {
-          issuer: 'lost.fish',
-          audience: 'lost.fish:api',
-          algorithms: ['HS256']
-        },
-        (err, decoded) => {
-          if (err) return resolve(false);
-
-          // @ts-ignore
-          return resolve(decoded!);
-        }
-      );
-    });
+    const payload: jwt.JwtPayload | false = verifyToken(token);
 
     if (!payload) throw createError(401, 'invalid token');
 

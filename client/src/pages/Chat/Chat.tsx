@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './Chat.css'
-function Chat(props: any) {
+export const  Chat = (props: any)=> {
 
     const { socket, username,user_id, room } = props
     const [currentMessage, setCurrentMessage] = useState("");
@@ -97,5 +97,3 @@ function Chat(props: any) {
         </div>
     );
 }
-
-export default Chat;

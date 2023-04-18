@@ -29,7 +29,17 @@ import { Home } from './pages/Home/Home';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { Login } from './pages/Login/Login';
 import { Intersection } from './pages/Home/Intersection';
+import {ChatPage} from "./pages/Chat";
 //
+
+import {
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
+
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -58,42 +68,45 @@ const rootContainer = ReactDOMClient.createRoot(container!);
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <UserProvider>
-        <UIProvider>
-          <GeneralSnackbar />
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <UserProvider>
+          <UIProvider>
+            <GeneralSnackbar />
 
-          <BrowserRouter>
-            <Routes>
-              <Route path='/login' element={<Login />} />
-              <Route path='/intersection' element={<Intersection />} />
-              <Route path='/components' element={<PreviewComponents />} />
-              <Route
-                path='/'
-                element={
-                  <PublicLayout>
-                    <Home />
-                  </PublicLayout>
-                }
-              />
+            <BrowserRouter>
+              <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route path='/messages' element={<ChatPage />} />
+                <Route path='/intersection' element={<Intersection />} />
+                <Route path='/components' element={<PreviewComponents />} />
+                <Route
+                  path='/'
+                  element={
+                    <PublicLayout>
+                      <Home />
+                    </PublicLayout>
+                  }
+                />
 
-              <Route
-                path='/*'
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Routes>
-                        <Route path='*' element={<NotFound />} />
-                      </Routes>
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        </UIProvider>
-      </UserProvider>
-    </ThemeProvider>
+                <Route
+                  path='/*'
+                  element={
+                    <PrivateRoute>
+                      <Layout>
+                        <Routes>
+                          <Route path='*' element={<NotFound />} />
+                        </Routes>
+                      </Layout>
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </UIProvider>
+        </UserProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
