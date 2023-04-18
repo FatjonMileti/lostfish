@@ -14,6 +14,8 @@ import { iconList } from 'react-icomoon';
 import iconSet from '../assets/selection.json';
 import React from 'react';
 
+import { Switch } from '../components/Switch';
+
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
 
@@ -21,6 +23,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
 
   return (
     <div className={`preview-components ${className}`}>
+      <Switch />
       <Logo />
 
       <Link>Link Name</Link>
@@ -56,8 +59,8 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
       </Button>
 
       <Typography variant='h1'>Typography h1 64/72</Typography>
-      <Typography variant='h2'>Typography h1 56/64</Typography>
-      <Typography variant='h3'>Typography h1 48/56</Typography>
+      <Typography variant='h2'>Typography h2 56/64</Typography>
+      <Typography variant='h3'>Typography h3 48/56</Typography>
       <Typography variant='body1'>Typography body1 40/46</Typography>
       <Typography variant='body2'>Typography body2 32/40</Typography>
       <Typography variant='body3'>Typography body3 24/32</Typography>

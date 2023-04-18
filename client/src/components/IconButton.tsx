@@ -5,13 +5,15 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   size?: 'small' | 'medium' | 'large';
 }
 
-export const IconButton = styled(({ className, children, size = 'medium', ...rest }: IconButtonProps) => {
-  return (
-    <button className={`icon-button ${className} ${size}`} {...rest}>
-      {children}
-    </button>
-  );
-})`
+export const IconButton = styled(
+  ({ className, children, size = 'medium', type = 'button', ...rest }: IconButtonProps) => {
+    return (
+      <button type={type} className={`icon-button ${className} ${size}`} {...rest}>
+        {children}
+      </button>
+    );
+  }
+)`
   font-weight: 600;
   font-size: 16px;
   color: #184d6d;

@@ -19,10 +19,16 @@ export const Button = styled(
     startIcon,
     endIcon,
     size = 'medium',
+    color,
+    disabled,
     ...rest
   }: ButtonProps) => {
     return (
-      <button type={type} className={`button ${className} ${variant} ${size}`} {...rest}>
+      <button
+        type={type}
+        disabled={disabled}
+        className={`button ${className} ${variant} ${size} ${color} ${disabled ? 'disabled' : ''}`}
+        {...rest}>
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
         {endIcon && React.cloneElement(endIcon, { className: 'end-icon' })}
@@ -47,33 +53,31 @@ export const Button = styled(
 
   &.text {
   }
-
   &.contained {
     color: white;
     background-color: #184d6d;
   }
-
   &.outlined {
     border: 1px solid #184d6d;
   }
-
   .start-icon {
     margin-right: 8px;
   }
-
   .end-icon {
     margin-left: 8px;
   }
-
   &.small {
     padding: 8px 16px;
   }
-
   &.medium {
     padding: 12px 24px;
   }
-
   &.large {
     padding: 20px 32px;
+  }
+
+  &.disabled {
+    background-color: #a7a7a7;
+    cursor: not-allowed;
   }
 `;
