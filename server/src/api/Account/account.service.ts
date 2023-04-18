@@ -11,6 +11,7 @@ const generateTokens = (
       aud: 'lost.fish:api',
       sub: user._id.toString(),
       fname: user.first_name,
+      user_id: user._id.toString(),
       username: user.username,
       role: user.role
     },
