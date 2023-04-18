@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { Typography } from '../../components/Typography';
 import { Link } from '../../components/Link';
-import Icon from '../../components/Icon';
+import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 
@@ -19,16 +19,16 @@ export const Footer = styled(({ className = '' }) => {
             inform customers in the buying, selling, and renting process.
           </Typography>
           <div className='social-networks'>
-            <IconButton>
+            <IconButton size='large'>
               <Icon icon='facebook-f' color='white' size={16} />
             </IconButton>
-            <IconButton>
+            <IconButton size='large'>
               <Icon icon='twitter' color='white' size={16} />
             </IconButton>
-            <IconButton>
+            <IconButton size='large'>
               <Icon icon='instagram' color='white' size={16} />
             </IconButton>
-            <IconButton>
+            <IconButton size='large'>
               <Icon icon='linkedin-in' color='white' size={16} />
             </IconButton>
           </div>
@@ -67,7 +67,7 @@ export const Footer = styled(({ className = '' }) => {
         <Typography className='copyright-text' variant='body5'>
           2023 © LOSTFISH LIMITED. ALL RIGHTS RESERVED
         </Typography>
-        <IconButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <IconButton size='small' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <Icon icon='arrow-up' color='white' />
         </IconButton>
       </div>
@@ -101,6 +101,7 @@ export const Footer = styled(({ className = '' }) => {
 
         .social-networks {
           display: flex;
+          align-items: center;
           column-gap: 16px;
         }
       }
