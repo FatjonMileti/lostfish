@@ -19,6 +19,8 @@ export const login =
 
       const json = await response.json();
 
+      sessionStorage.setItem('access_token', json.access_token)
+
       userContext.dispatch({
         type: UserActionType.LOGIN,
         payload: {
