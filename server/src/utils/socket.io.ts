@@ -13,9 +13,11 @@ io.on('connection', (socket: any) => {
 
   socket.on('join_room', (data: any) => {
     socket.join(data);
+    console.log('User joined room ' + data.room_id);
   });
 
   socket.on('send_message', async (data: any) => {
+    console.log({ data });
     await chatService.handleNewMessage(socket, data);
   });
 

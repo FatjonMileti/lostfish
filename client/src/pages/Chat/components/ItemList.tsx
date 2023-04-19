@@ -7,6 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import { useGlobalState } from "../../../globalState";
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -41,13 +42,17 @@ export const ItemList = (props: {rows: any[], joinRoom: (roomId?: string) => voi
 
     const { rows, joinRoom } = props
 
-    const user = useUser()
+    let {
+        user: [user]
+    } = useGlobalState();
+
+    const { userDetails } = user
 
     return (
         <List key={1} sx={{ width: '100%', bgcolor: '#CED5CEFF', cursor: 'pointer' }}>
             {rows.map((row: any) => {
 
-                const fullName = user?.state?.user_id === row.author._id
+                const fullName = userDetails?.user_id === row.author._id
                   ? `${row.participant.first_name} ${row.participant.last_name}`
                   : `${row.author.first_name} ${row.author.last_name}`;
 

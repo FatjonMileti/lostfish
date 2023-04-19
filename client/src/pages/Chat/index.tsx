@@ -11,6 +11,7 @@ import { ItemList } from './components/ItemList'
 import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import { Compose } from "./components/Compose";
+import { useGlobalState } from "../../globalState";
 
 type Username = string | undefined | null
 type Room = any | null
@@ -21,11 +22,15 @@ export const ChatPage = () => {
 
   const [messages, setMessages] = useState<any>([])
 
-  const user = useUser()
+  let {
+    user: [user]
+  } = useGlobalState();
+
+  const { userDetails, auth } = user
 
   useEffect(() => {
-    setUsername(user?.state?.username)
-  },[user])
+    setUsername(userDetails?.username)
+  },[userDetails])
 
   // @ts-ignore
   useEffect(() => {
@@ -35,7 +40,7 @@ export const ChatPage = () => {
       await getMessagesForRoom(data._id)
     });
 
-    return () => socket.disconnect()
+    // return () => socket.disconnect()
 
   }, [socket]);
 
@@ -45,12 +50,12 @@ export const ChatPage = () => {
   }
 
   const getMessagesForRoom = async (roomId: string) => {
-    const response = await request(user?.state?.token).get('/api/chat/'+roomId+'?pageSize=10&page=1')
+    const response = await request(auth.access_token).get('/api/chat/'+roomId+'?pageSize=10&page=1')
     setMessages(response.data.docs)
   }
 
   const getMessageList = async () => {
-    const response = await request(user?.state?.token).get('/api/chat')
+    const response = await request(auth.access_token).get('/api/chat')
     return response.data.docs
   }
 
@@ -103,15 +108,15 @@ export const ChatPage = () => {
         </Grid>
         <Grid item xs={8}>
           {isOnCreate && !room && <Compose
-              username={user?.state?.username}
-              user_id={user?.state?.user_id}
+              username={userDetails?.username}
+              user_id={userDetails?.user_id}
               socket={socket}
               handleBehavior={handleChatAfterCreation}
             /> }
           {room && <Chat
-              username={user?.state?.username}
+              username={userDetails?.username}
               room={room}
-              user_id={user?.state?.user_id}
+              user_id={userDetails?.user_id}
               messages={messages}
               socket={socket}
           />}

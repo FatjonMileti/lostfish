@@ -1,34 +1,93 @@
+import React from 'react';
 import styled from '@emotion/styled';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { registerStore, useGlobalState } from '../../globalState';
+
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-
-import loginIllustration from './loginIllustration.svg';
 import { Link } from '../../components/Link';
 import { Switch } from '../../components/Switch';
-
-import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { IconButton } from '../../components/IconButton';
-import React from 'react';
+import loginIllustration from './loginIllustration.svg';
+
+import config from '../../config';
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(8).max(32).required()
+  email: yup.string().required('email is required'),
+  password: yup.string().min(6).max(32).required()
 });
+
+registerStore(
+  'user',
+  {
+    rememberMe: false,
+    auth: null,
+    userDetails: null
+  },
+  { persist: true }
+);
 
 export const Login = styled(({ className = '' }) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isValid }
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const onSubmit = (data: any) => console.log(data);
+  const {
+    user: [user, setUser]
+  } = useGlobalState();
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!!user.auth) navigate('/');
+  }, [user.auth]);
+
+  const setRememberMe = (rememberMe: boolean) => {
+    setUser((user: any) => ({ ...user, rememberMe }));
+  };
+
+  const onSubmit = async (data: any) => {
+    const { email, password } = data;
+
+    try {
+      const response = await axios.post(`${config.apiUrl}/api/account/login`, {
+        email,
+        password
+      });
+
+      const userDetails = JSON.parse(window.atob(response.data.access_token.split(".")[1]));
+
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails  }));
+
+      console.log(response.data);
+    } catch (err: AxiosError | any) {
+      const message = err?.response?.data?.message;
+
+      if (!message) throw err;
+
+      if (message === 'user_not_found') {
+        return setError('email', { message: 'user not found!', type: 'server' });
+      }
+
+      if (message === 'incorrect_password') {
+        return setError('password', { message: 'incorrect password', type: 'server' });
+      }
+
+      throw err;
+    }
+  };
 
   return (
     <div className={`login-page ${className}`}>
@@ -47,9 +106,9 @@ export const Login = styled(({ className = '' }) => {
               label='Email'
               className='email-input'
               required
+              {...register('email')}
               error={!!errors.email}
               helperText={errors.email?.message?.toString()}
-              {...register('email')}
             />
 
             <TextField
@@ -67,8 +126,14 @@ export const Login = styled(({ className = '' }) => {
               helperText={errors.password?.message?.toString()}
             />
             <div className='keep-me-signed-in-section'>
-              <Typography variant='body4'>Keep me signed in</Typography>
-              <Switch />
+              <label className='switch-label'>
+                <Typography variant='body4'>Keep me signed in</Typography>
+                <Switch
+                  checked={user.rememberMe}
+                  onChange={({ target: { checked } }) => setRememberMe(checked)}
+                />
+              </label>
+
               <Link>Reset password</Link>
             </div>
             <Button
@@ -126,7 +191,13 @@ export const Login = styled(({ className = '' }) => {
         margin-top: 16px;
         display: grid;
         align-items: center;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: auto auto;
+        column-gap: 34px;
+        .switch-label {
+          display: flex;
+          column-gap: 34px;
+          align-items: center;
+        }
 
         .link {
           justify-self: flex-end;

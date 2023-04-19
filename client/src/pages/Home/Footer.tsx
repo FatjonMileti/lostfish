@@ -5,6 +5,7 @@ import { Link } from '../../components/Link';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
+import { TextField } from '../../components/TextField';
 
 import LogoPlusTextWhite from '../../assets/images/LogoPlusTextWhite.svg';
 
@@ -58,6 +59,7 @@ export const Footer = styled(({ className = '' }) => {
           <Typography variant='body4'>
             Keep in touch with our latest news by subscribing to our newsletter.
           </Typography>
+          <TextField placeholder='Enter your email address' className='email-address' />
           <Button className='subscribe-button' variant='outlined'>
             Subscribe
           </Button>
@@ -142,12 +144,18 @@ export const Footer = styled(({ className = '' }) => {
         align-items: flex-start;
         row-gap: 24px;
 
+        padding-inline: 58px;
+
         .typography {
           color: white;
 
           &.column-title {
             color: #c0daff;
           }
+        }
+
+        .email-address {
+          width: 100%;
         }
 
         .subscribe-button {
