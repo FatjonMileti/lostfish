@@ -60,7 +60,7 @@ const Login = () => {
     );
     stopLoading(UIContext)();
     if (success) {
-      navigate('/');
+      navigate('/messages');
     } else {
       setState((prev) => ({
         ...prev,

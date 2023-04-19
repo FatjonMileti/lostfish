@@ -1,79 +1,82 @@
 import React, { useEffect, useState } from "react";
 import './Chat.css'
-export const  Chat = (props: any)=> {
 
-    const { socket, username,user_id, room } = props
+export const  Chat = (props: any)=> {
+    const { socket, username,user_id, room, messages } = props
     const [currentMessage, setCurrentMessage] = useState("");
     const [messageList, setMessageList] = useState([]);
+    const isAuthor = room.author._id.toString() === user_id.toString()
 
     useEffect(() => {
-        joinRoom()
-    },[])
-
-    const joinRoom = () => {
-        if (username !== "" && room !== "") {
-            socket.emit("join_room", room._id);
-        }
-    };
-
-    console.log({room})
+        setMessageList(messages.reverse())
+    },[messages])
 
     const sendMessage = async () => {
-        if (currentMessage !== "") {
-            const messageBody: any = {
-                "conversation_id": room._id,
-                "participant_one": room.participant_one._id,
-                "participant_two": room.participant_two._id,
-                "sender": user_id,
-                "message": currentMessage,
-                "author": username,
-                "time":
-                  new Date(Date.now()).getHours() +
-                  ":" +
-                  new Date(Date.now()).getMinutes(),
-            }
-
-
-            await socket.emit("send_message", messageBody);
-            // @ts-ignore
-            setMessageList((list: any) => [...list, messageBody]);
-            setCurrentMessage("");
+        if(!currentMessage){
+            return
         }
+        const messageBody: any = {
+            "room_id": room._id,
+            "participant": !isAuthor ? user_id : room.participant._id,
+            "author": isAuthor ? user_id : room.participant._id,
+            "message": currentMessage,
+            "sender": user_id,
+            "time":
+              new Date(Date.now()).getHours() +
+              ":" +
+              new Date(Date.now()).getMinutes(),
+        }
+        await socket.emit("send_message", messageBody);
+        messageBody.isCurrentUser = true
+        // @ts-ignore
+        setMessageList((prevMessages: any) => [...prevMessages, messageBody])
+        setCurrentMessage("");
+
     };
 
     useEffect(() => {
         socket.on("receive_message", (data: any) => {
-            console.log({data})
             // @ts-ignore
-
             setMessageList((list: any) => [...list, data]);
         });
-
-        return () => socket.disconnect()
     }, [socket]);
+
 
     return (
         <div className="chat-window">
             <div className="chat-header">
-                <p>Live Chat</p>
+                <p>Live Chat with: {isAuthor
+                  ? `${room.participant.first_name} ${room.participant.last_name}`
+                  : `${room.author.first_name} ${room.author.last_name}` }</p>
             </div>
             <div className="chat-body">
                 <div className="message-container">
                     {messageList.map((messageContent: any, index: number) => {
+
+                        const authorId = messageContent?.author?._id ?? messageContent.author
+
                         return (
                             <div
                                 className="message"
-                                id={room.last_message.sender._id === messageContent.sender ? "you" : "other"}
+                                id={authorId.toString() === user_id.toString() ? "you" : "other"}
                                 key={index}
                             >
                                 <div>
                                     <div className="message-content">
                                         <p>{messageContent.message}</p>
                                     </div>
-                                    <div className="message-meta">
-                                        <p id="time">{messageContent.time}</p>
-                                        <p id="author">{messageContent.author}</p>
-                                    </div>
+                                    {messageContent.isCurrentUser
+                                      ? <div className="message-meta">
+                                          <p id="time">{messageContent.time}</p>
+                                          <p id="author">{username}</p>
+                                      </div>
+                                        :
+                                      <div className="message-meta">
+                                          <p id="time">{messageContent.time}</p>
+                                          <p id="author">{messageContent?.sender?.first_name}</p>
+                                      </div>
+                                    }
+
                                 </div>
                             </div>
                         );

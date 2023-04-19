@@ -36,7 +36,7 @@ export default (roles?: Role[]) => {
 
     token = token.slice(7, token.length);
 
-    const payload: jwt.JwtPayload | false = verifyToken(token);
+    const payload: jwt.JwtPayload | false = await verifyToken(token);
 
     if (!payload) throw createError(401, 'invalid token');
 

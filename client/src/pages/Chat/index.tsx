@@ -1,39 +1,77 @@
-import {useState, useEffect} from "react";
-import socket from "../../context/socket";
+import React, {useState, useEffect} from "react";
+import socket from '../../context/socket';
 import { Chat } from './Chat'
 import { useQuery } from '@tanstack/react-query'
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import axiosInstance from "../../utils/axios";
+import request from "../../utils/axios";
 import { useUser } from "../../context/user";
+import Button from '@mui/material/Button';
+import { ItemList } from './components/ItemList'
+import TextField from '@mui/material/TextField';
+import Typography from "@mui/material/Typography";
+import { Compose } from "./components/Compose";
 
+type Username = string | undefined | null
+type Room = any | null
 export const ChatPage = () => {
-  const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
-  const [showChat, setShowChat] = useState(false);
+  const [username, setUsername] = useState<Username>(null);
+  const [room, setRoom] = useState<Room>(null);
+  const [isOnCreate, setIsOnCreate] = useState(false)
 
-  const joinRoom = () => {
-    if (username !== "" && room !== "") {
-      socket.emit("join_room", room);
-      setShowChat(true);
-    }
-  };
-
+  const [messages, setMessages] = useState<any>([])
 
   const user = useUser()
 
+  useEffect(() => {
+    setUsername(user?.state?.username)
+  },[user])
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ['repoData'],
-    queryFn: () => getMessageList(),
-  })
+  // @ts-ignore
+  useEffect(() => {
+    socket.on("receive_room_id", async (data: any) => {
+      setRoom(data)
+      socket.emit("join_room", data._id);
+      await getMessagesForRoom(data._id)
+    });
 
+    return () => socket.disconnect()
+
+  }, [socket]);
+
+  const handleChatAfterCreation = async () => {
+    await getMessagesForRoom(room._id)
+    setIsOnCreate(false)
+  }
+
+  const getMessagesForRoom = async (roomId: string) => {
+    const response = await request(user?.state?.token).get('/api/chat/'+roomId+'?pageSize=10&page=1')
+    setMessages(response.data.docs)
+  }
 
   const getMessageList = async () => {
-    const response = await axiosInstance.get('/api/chat')
+    const response = await request(user?.state?.token).get('/api/chat')
     return response.data.docs
   }
+
+
+  const { isLoading, isFetching, isFetched, data, refetch } = useQuery(
+    ['messages', room],
+    () => getMessageList()
+  );
+
+  if(!user || isLoading){
+    return <h1>Loading...</h1>
+  }
+
+  const joinRoom = async (roomObj?: any | null) => {
+    if (username && roomObj) {
+      await getMessagesForRoom(roomObj._id)
+      setRoom(roomObj)
+      return socket.emit("join_room", roomObj._id);
+    }
+  };
+
 
   if(isLoading){
     return <h1>Loading...</h1>
@@ -42,35 +80,41 @@ export const ChatPage = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <div className="App">
-            {!showChat ? (
-              <div className="joinChatContainer">
-                <h3>Join A Chat</h3>
-                <input
-                  type="text"
-                  placeholder="John..."
-                  onChange={(event) => {
-                    setUsername(event.target.value);
-                  }}
-                />
-                <input
-                  type="text"
-                  placeholder="Room ID..."
-                  onChange={(event) => {
-                    setRoom(event.target.value);
-                  }}
-                />
-                <button onClick={joinRoom}>Join A Room</button>
-              </div>
-            ) : (
-              <Chat socket={socket} username={username} room={room} />
-            )}
-          </div>
+      <Grid container spacing={2} >
+        <Grid item xs={4} >
+
+          <Box>
+            <Typography variant='h3'>Chats</Typography>
+            <hr/>
+            <TextField
+              label="Serch chat"
+              variant="outlined"
+              placeholder='Start typing'
+              size='small'
+              sx={{marginBottom: '3rem', width: '70%', marginLeft: '1rem'}}
+            />
+            <Button variant="contained" size='small' sx={{marginLeft: '1rem', marginTop: '3px'}} onClick={() => {
+              setIsOnCreate(true)
+              setRoom(null)
+            }}>Compose</Button>
+          </Box>
+
+          <ItemList rows={data} joinRoom={joinRoom}/>
         </Grid>
         <Grid item xs={8}>
-          <Chat socket={socket} username={username} room={room} />
+          {isOnCreate && !room && <Compose
+              username={user?.state?.username}
+              user_id={user?.state?.user_id}
+              socket={socket}
+              handleBehavior={handleChatAfterCreation}
+            /> }
+          {room && <Chat
+              username={user?.state?.username}
+              room={room}
+              user_id={user?.state?.user_id}
+              messages={messages}
+              socket={socket}
+          />}
         </Grid>
 
       </Grid>

@@ -28,7 +28,7 @@ const socketApi = require('../utils/socket.io');
 const io = socketApi.io;
 io.attach(server, {
   cors: {
-    origin: '*'
+    origin: 'http://localhost:4000'
   }
 });
 
