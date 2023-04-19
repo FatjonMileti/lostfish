@@ -4,6 +4,7 @@ const router: Router = Router();
 import { UserController } from './User/user.controller';
 import { AccountController } from './Account/account.controller';
 import { AssetController } from './Asset/asset.controller';
+import { ChatController } from './Chat/chat.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -34,10 +35,12 @@ import { AssetController } from './Asset/asset.controller';
 const offerController = new AssetController();
 const userController = new UserController();
 const accountController = new AccountController();
+const chatController = new ChatController();
 
 router.use('/account', accountController.router);
 router.use('/user', userController.router);
 router.use('/asset', offerController.router);
+router.use('/chat/', chatController.router);
 
 
 module.exports = router;

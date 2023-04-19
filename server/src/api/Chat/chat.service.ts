@@ -1,0 +1,124 @@
+import ChatModel from '../../data/message';
+import { ChatDocument } from '../../data/interfaces/chat.interface';
+import createError from 'http-errors';
+import RoomModel from '../../data/room';
+
+const getAll = async (query: any, pagingOptions: any) => {
+  return RoomModel.paginate(query, {
+    ...pagingOptions,
+    populate: [
+      {
+        path: 'author',
+        select: ['first_name', 'last_name']
+      },
+      {
+        path: 'participant',
+        select: ['first_name', 'last_name']
+      }
+    ]
+  });
+};
+
+
+const getById = async (id: string): Promise<ChatDocument | undefined> => {
+  const chat: ChatDocument | null = await ChatModel.findOne({ _id: id }, null, {
+    populate: [
+      {
+        path: 'author',
+        select: ['first_name', 'last_name']
+      },
+      {
+        path: 'first_name',
+        select: ['firstName', 'last_name']
+      }
+    ]
+  });
+  if (!chat) {
+    throw createError(404, 'The item does not exist');
+  }
+
+  return chat;
+};
+
+const getConversations = async (id: string, query: any, pagingOptions: any) => {
+  return ChatModel.paginate(query, {
+    ...pagingOptions,
+    populate: [
+      {
+        path: 'author',
+        select: ['first_name', 'last_name']
+      },
+      {
+        path: 'participant',
+        select: ['first_name', 'last_name']
+      },
+      {
+        path: 'sender',
+        select: ['first_name', 'last_name']
+      }
+    ],
+    sort: {
+      created_at: -1
+    }
+  });
+};
+
+
+const getLatestMessage = async (query: any) => {
+  return ChatModel.findOne({ ...query })
+    .populate('author', ['first_name', 'last_name'])
+    .populate('sender', ['first_name', 'last_name'])
+    .populate('participant', ['first_name', 'last_name'])
+    .sort({ created_at: -1 });
+};
+
+const getRoomDetails = async (query: any) => {
+  return RoomModel.findOne({ ...query })
+    .populate('author', ['first_name', 'last_name'])
+    .populate('participant', ['first_name', 'last_name']);
+};
+
+
+const findOne = async (query: any) => {
+  return ChatModel.findOne({ ...query });
+};
+
+const create = async (chat: ChatDocument): Promise<ChatDocument> => {
+  const chatDocument = new ChatModel({
+    ...chat
+  });
+
+  return await chatDocument.save();
+};
+
+const deleteChat = async (id: string): Promise<any> => {
+  return ChatModel.findByIdAndDelete(id);
+};
+
+
+const handleNewMessage = async (socket: any, data: any) => {
+  if (!data.room_id) {
+    const createRoom = await RoomModel.create({ ...data });
+    const getRoom = await getRoomDetails({ _id: createRoom._id });
+    socket.emit('receive_room_id', getRoom);
+    data.room_id = createRoom._id;
+  }
+  const newMessage: ChatDocument = await create(data);
+  if (newMessage && newMessage?.room_id) {
+    const messagesData = await getLatestMessage({ room_id: { $eq: newMessage.room_id } });
+    socket.to(data.room_id).emit('receive_message', messagesData);
+  }
+};
+
+
+export default {
+  getAll,
+  getById,
+  findOne,
+  create,
+  deleteChat,
+  getConversations,
+  getRoomDetails,
+  getLatestMessage,
+  handleNewMessage
+};

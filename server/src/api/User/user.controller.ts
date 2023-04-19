@@ -11,6 +11,7 @@ import createError from 'http-errors';
 
 
 import { generatePassword, hashPassword } from './user.helpers';
+import mongoose from 'mongoose';
 
 const router: Router = Router();
 
@@ -56,7 +57,10 @@ export class UserController {
       is_disabled?: boolean;
       role?: Role;
       $or?: { [key: string]: RegExp }[];
+      _id?: any
     } = {};
+
+    query._id = {$nin: [new mongoose.Types.ObjectId(res.locals.user_id)]}
 
     if (search) {
       query.$or = [

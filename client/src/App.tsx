@@ -14,6 +14,7 @@ import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
 import { Close } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
+import { ChatPage } from "./pages/Chat";
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -50,7 +51,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<Login />} />
-
+          <Route path={'/messages'} element={<ChatPage /> } />
           <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
           <Route path='/components' element={<PreviewComponents />} />
 

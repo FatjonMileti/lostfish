@@ -10,7 +10,7 @@ export const login =
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username,
+          email: username,
           password,
         }),
       });
@@ -18,6 +18,8 @@ export const login =
       if (!response.ok || response.status !== 200) return false;
 
       const json = await response.json();
+
+      sessionStorage.setItem('access_token', json.access_token)
 
       userContext.dispatch({
         type: UserActionType.LOGIN,

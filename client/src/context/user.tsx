@@ -11,6 +11,7 @@ export interface IUserAction {
 }
 export interface IUserState {
   username: string | null;
+  user_id: string | null;
   role: Role | null;
   token: string | null;
   refreshToken: string | null;
@@ -20,6 +21,7 @@ export interface IUserState {
 const initialState: IUserState = {
   username: null,
   role: null,
+  user_id: null,
   token: localStorage.getItem("__a_token") || null,
   refreshToken: localStorage.getItem("__r_token") || null,
   rememberMe: localStorage.getItem("__rmb")
@@ -30,6 +32,7 @@ if (initialState.token) {
   const token = JSON.parse(window.atob(initialState.token.split(".")[1]));
   initialState.username = token.username;
   initialState.role = token.role;
+  initialState.user_id =  token.user_id
 }
 
 const reducer = (state: IUserState, action: IUserAction): IUserState => {
@@ -43,6 +46,7 @@ const reducer = (state: IUserState, action: IUserAction): IUserState => {
       localStorage.setItem("__rmb", payload.rememberMe);
 
       const token = JSON.parse(window.atob(payload.token.split(".")[1]));
+
       const username = token.username;
       const role: Role = token.role;
 
@@ -50,6 +54,7 @@ const reducer = (state: IUserState, action: IUserAction): IUserState => {
         ...state,
         username,
         role,
+        user_id: token.user_id,
         token: payload.token,
         refreshToken: payload.refreshToken,
         rememberMe: payload.rememberMe,

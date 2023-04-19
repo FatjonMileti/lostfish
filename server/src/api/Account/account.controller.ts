@@ -31,7 +31,7 @@ export class AccountController {
       loginLimiter,
       validator(
         joi.object({
-          username: joi.string().required(),
+          email: joi.string().required(),
           password: joi.string().required()
         })
       ),
@@ -66,10 +66,11 @@ export class AccountController {
    * @apiSuccess {String} refresh_token
    */
   private login = async (req: express.Request, res: express.Response) => {
-    const model = res.locals.model! as { username: string; password: string };
+    const model = res.locals.model! as { email: string; password: string };
+
     const loginError = (message: string, code: string) => createError(400, { message, code });
     const user: UserDocument | null = await UserModel.findOne({
-      username: model.username,
+      email: model.email,
       is_disabled: false
     });
     if (!user) throw loginError('user_not_found', 'User not found');

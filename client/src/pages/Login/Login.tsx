@@ -20,7 +20,7 @@ import loginIllustration from './loginIllustration.svg';
 import config from '../../config';
 
 const schema = yup.object().shape({
-  username: yup.string().required('username is required'),
+  email: yup.string().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
 
@@ -28,7 +28,8 @@ registerStore(
   'user',
   {
     rememberMe: false,
-    auth: null
+    auth: null,
+    userDetails: null
   },
   { persist: true }
 );
@@ -58,15 +59,17 @@ export const Login = styled(({ className = '' }) => {
   };
 
   const onSubmit = async (data: any) => {
-    const { username, password } = data;
+    const { email, password } = data;
 
     try {
       const response = await axios.post(`${config.apiUrl}/api/account/login`, {
-        username,
+        email,
         password
       });
 
-      setUser((user: any) => ({ ...user, auth: response.data }));
+      const userDetails = JSON.parse(window.atob(response.data.access_token.split(".")[1]));
+
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails  }));
 
       console.log(response.data);
     } catch (err: AxiosError | any) {
@@ -75,7 +78,7 @@ export const Login = styled(({ className = '' }) => {
       if (!message) throw err;
 
       if (message === 'user_not_found') {
-        return setError('username', { message: 'user not found!', type: 'server' });
+        return setError('email', { message: 'user not found!', type: 'server' });
       }
 
       if (message === 'incorrect_password') {
@@ -103,9 +106,9 @@ export const Login = styled(({ className = '' }) => {
               label='Email'
               className='email-input'
               required
-              {...register('username')}
-              error={!!errors.username}
-              helperText={errors.username?.message?.toString()}
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message?.toString()}
             />
 
             <TextField
