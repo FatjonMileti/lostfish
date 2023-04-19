@@ -1,48 +1,46 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-export interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+import MuiSwitch, { SwitchProps } from '@mui/material/Switch';
 
-export const Switch = styled(({ className, ...otherProps }: SwitchProps) => {
-  return <input className={`switch ${className}`} type='checkbox' {...otherProps} />;
-})`
+export const Switch = styled(
+  React.forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => <MuiSwitch {...props} ref={ref} />)
+)`
   & {
-    position: relative;
-    width: 0;
-    height: 0;
-    cursor: pointer;
+    &.MuiSwitch-root {
+      padding: 0;
+      width: 40px;
+      height: 24px;
 
-    &:checked {
-      &:after {
-        left: 16px;
-        background-color: #0d2a38;
-      }
-      &:before {
-        background-color: #c0daff;
+      .MuiButtonBase-root {
+        padding: 0;
+        &.Mui-checked {
+          transform: translateX(16px);
+
+          .MuiSwitch-thumb {
+            background-color: #0d2a38;
+          }
+
+          .MuiSwitch-track {
+            background-color: #c0daff;
+          }
+        }
       }
     }
 
-    &:after {
-      position: absolute;
-      content: '';
+    .MuiSwitch-thumb {
+      background-color: #a7a7a7;
       width: 24px;
       height: 24px;
-      background-color: #a7a7a7;
-      border-radius: 50%;
-      left: 0;
-      top: -12px;
-      transition: 0.4s;
+      box-shadow: none;
     }
 
-    &:before {
-      position: absolute;
-      content: '';
-      width: 40px;
-      height: 16px;
+    .MuiSwitch-track {
       background-color: #cfd5d5;
+      height: 16px;
+      width: 40px;
       border-radius: 8px;
-      left: 0;
-      top: -8px;
+      transform: translateY(4px);
     }
   }
 `;
