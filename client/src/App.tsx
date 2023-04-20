@@ -5,6 +5,7 @@ import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
+import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import PrivateRoute from './components/routes/private';
 import Layout from './layout';
 import NotFound from './pages/404';
@@ -14,7 +15,7 @@ import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
 import { Close } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
-import { ChatPage } from "./pages/Chat";
+import { ChatPage } from './pages/Chat';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -51,8 +52,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<Login />} />
-          <Route path={'/messages'} element={<ChatPage /> } />
+          <Route path={'/messages'} element={<ChatPage />} />
           <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+          <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/components' element={<PreviewComponents />} />
 
           <Route

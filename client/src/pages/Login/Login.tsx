@@ -148,7 +148,9 @@ export const Login = styled(({ className = '' }) => {
           </div>
           <div className='dont-have-account'>
             <Typography variant='body4'>Don’t have an account?</Typography>
-            <Link variant='body4'>Create one now</Link>
+            <Link variant='body4' onClick={() => navigate('/create-account')}>
+              Create one now
+            </Link>
           </div>
         </form>
       </div>

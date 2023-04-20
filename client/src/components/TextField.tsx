@@ -22,7 +22,7 @@ export const TextField = styled(
     ) => {
       const elementId = id || useId();
       return (
-        <div className={`${className} ${error ? 'error' : ''}`}>
+        <div className={`text-field ${className} ${error ? 'error' : ''}`}>
           <label htmlFor={elementId}>
             {label}
             {required && <span className='required-asterisk'> *</span>}
@@ -42,11 +42,13 @@ export const TextField = styled(
     }
   )
 )`
-  & {
+  &.text-field {
     display: flex;
     flex-direction: column;
     background-color: inherit;
     row-gap: 4px;
+
+    font-family: 'Roobert', serif;
 
     label {
       font-weight: 600;
