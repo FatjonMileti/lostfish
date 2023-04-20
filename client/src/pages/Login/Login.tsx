@@ -20,7 +20,7 @@ import loginIllustration from './loginIllustration.svg';
 import config from '../../config';
 
 const schema = yup.object().shape({
-  email: yup.string().required('email is required'),
+  email: yup.string().email().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
 
@@ -67,9 +67,9 @@ export const Login = styled(({ className = '' }) => {
         password
       });
 
-      const userDetails = JSON.parse(window.atob(response.data.access_token.split(".")[1]));
+      const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
 
-      setUser((user: any) => ({ ...user, auth: response.data, userDetails  }));
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
 
       console.log(response.data);
     } catch (err: AxiosError | any) {
