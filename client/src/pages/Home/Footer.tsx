@@ -56,7 +56,7 @@ export const Footer = styled(({ className = '' }) => {
           <Typography variant='menu' className='column-title'>
             stay updated
           </Typography>
-          <Typography variant='body4'>
+          <Typography variant='body4' className='keep-in-touch-text'>
             Keep in touch with our latest news by subscribing to our newsletter.
           </Typography>
           <TextField placeholder='Enter your email address' className='email-address' />
@@ -114,6 +114,7 @@ export const Footer = styled(({ className = '' }) => {
         row-gap: 24px;
         .column-title {
           color: #c0daff;
+          letter-spacing: 0.08em;
         }
 
         .link {
@@ -129,6 +130,7 @@ export const Footer = styled(({ className = '' }) => {
         row-gap: 24px;
         .column-title {
           color: #c0daff;
+          letter-spacing: 0.08em;
         }
 
         .link {
@@ -142,7 +144,7 @@ export const Footer = styled(({ className = '' }) => {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        row-gap: 24px;
+        //row-gap: 24px;
 
         padding-inline: 58px;
 
@@ -151,16 +153,23 @@ export const Footer = styled(({ className = '' }) => {
 
           &.column-title {
             color: #c0daff;
+            letter-spacing: 0.08em;
           }
         }
 
+        .keep-in-touch-text {
+          margin-top: 16px;
+        }
+
         .email-address {
+          margin-top: 16px;
           width: 100%;
         }
 
         .subscribe-button {
           color: white;
           border-color: white;
+          text-transform: none;
         }
       }
     }

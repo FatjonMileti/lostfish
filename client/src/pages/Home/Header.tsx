@@ -1,4 +1,3 @@
-import LogoLostFishColored from '../../assets/svg/LogoLostFishColored.svg';
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
@@ -25,7 +24,7 @@ export const Header = styled(({ className }: HeaderProps) => {
 
       <div className='right'>
         <Link onClick={() => navigate('/login')}>Login</Link>
-        <Button variant='outlined' onClick={() => navigate('/components')}>
+        <Button size='medium' variant='outlined' onClick={() => navigate('/components')}>
           Sign Up
         </Button>
       </div>
@@ -34,7 +33,6 @@ export const Header = styled(({ className }: HeaderProps) => {
 })`
   &.header {
     height: 112px;
-    //border: 1px solid black;
     align-items: center;
 
     padding: 24px 36px;

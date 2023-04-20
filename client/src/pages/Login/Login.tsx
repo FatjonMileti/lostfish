@@ -134,20 +134,21 @@ export const Login = styled(({ className = '' }) => {
                 />
               </label>
 
-              <Link>Reset password</Link>
+              <Link variant='body4'>Reset password</Link>
             </div>
             <Button
               className='login-button'
               variant='contained'
               endIcon={<Icon icon='arrow-right' color='white' />}
               type='submit'
-              disabled={!isValid}>
+              disabled={!isValid}
+              size='large'>
               Sign in
             </Button>
           </div>
           <div className='dont-have-account'>
             <Typography variant='body4'>Don’t have an account?</Typography>
-            <Link>Reset password</Link>
+            <Link variant='body4'>Create one now</Link>
           </div>
         </form>
       </div>
@@ -206,6 +207,7 @@ export const Login = styled(({ className = '' }) => {
 
       .login-button {
         margin-top: 48px;
+        text-transform: none;
       }
 
       .dont-have-account {

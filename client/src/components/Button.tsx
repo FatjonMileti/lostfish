@@ -27,7 +27,7 @@ export const Button = styled(
       <button
         type={type}
         disabled={disabled}
-        className={`button ${className} ${variant} ${size} ${color} ${disabled ? 'disabled' : ''}`}
+        className={`button ${className} ${variant} size-${size} ${color} ${disabled ? 'disabled' : ''}`}
         {...rest}>
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
@@ -42,7 +42,9 @@ export const Button = styled(
   color: #184d6d;
 
   background-color: transparent;
+
   border-radius: 250px;
+
   text-transform: uppercase;
   cursor: pointer;
   border: none;
@@ -51,29 +53,37 @@ export const Button = styled(
   justify-content: center; /* center the content horizontally */
   align-items: center;
 
+  box-sizing: border-box;
+
   &.text {
   }
+
   &.contained {
     color: white;
     background-color: #184d6d;
   }
+
   &.outlined {
     border: 1px solid #184d6d;
   }
+
   .start-icon {
     margin-right: 8px;
   }
   .end-icon {
     margin-left: 8px;
   }
-  &.small {
+
+  &.size-small {
     padding: 8px 16px;
   }
-  &.medium {
+  &.size-medium {
     padding: 12px 24px;
+    height: 48px;
   }
-  &.large {
+  &.size-large {
     padding: 20px 32px;
+    font-size: 18px;
   }
 
   &.disabled {

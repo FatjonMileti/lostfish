@@ -48,7 +48,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       <WhatDefinedUs />
 
       <div className='join-our-community-section'>
-        <Button variant='contained' endIcon={<Icon icon='arrow-right' size={28} />}>
+        <Button size='large' variant='contained' endIcon={<Icon icon='arrow-right' size={28} />}>
           Join our community
         </Button>
       </div>
