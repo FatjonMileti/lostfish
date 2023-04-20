@@ -19,36 +19,44 @@ export const Typography = styled(
   &.h1 {
     font-size: 64px;
     line-height: 72px;
+    font-family: 'At Gambit', serif;
   }
 
   &.h2 {
     font-size: 56px;
+    font-family: 'At Gambit', serif;
   }
 
   &.h3 {
     font-size: 48px;
+    font-family: 'At Gambit', serif;
   }
 
   &.body1 {
     font-size: 40px;
+    font-family: 'At Gambit', serif;
   }
 
   &.body2 {
     font-size: 32px;
+    font-family: 'At Gambit', serif;
   }
 
   &.body3 {
     font-size: 24px;
+    font-family: 'Roobert', serif;
   }
 
   &.body4 {
     font-size: 16px;
     line-height: 24px;
+    font-family: 'Roobert', serif;
   }
 
   &.body5 {
     font-size: 14px;
     line-height: 20px;
+    font-family: 'Roobert', serif;
   }
 
   &.menu {
@@ -57,5 +65,6 @@ export const Typography = styled(
     font-weight: 600;
     text-transform: uppercase;
     color: #184d6d;
+    font-family: 'Roobert', serif;
   }
 `;

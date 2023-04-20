@@ -2,126 +2,204 @@ body {
     margin: 0;
 }
 
-/*.button {*/
-/*    box-sizing: border-box;*/
-/*    left: 86.17%;*/
-/*    border-radius: 23.5243px;*/
-/*    width: 136px;*/
-/*    text-align: center;*/
-/*    margin-top: 2rem;*/
-/*    border: 0.72px solid #274D6A*/
-/*}*/
+/*Roobert 300 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Light.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
 
-/*.button buttonText {*/
-/*    font-family: Roobert TRIAL;*/
-/*    font-size: 16px;*/
-/*    font-weight: 600;*/
-/*    line-height: 24px;*/
-/*    letter-spacing: 0em;*/
-/*    text-align: center;*/
-/*    margin: 6px 6px 6px 6px*/
-/*}*/
+/*Roobert 300 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-LightItalic.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-LightItalic.woff2') format('woff2');
+    font-weight: 300;
+    font-style: italic;
+}
 
-/*.menu {*/
-/*    display: flex;*/
-/*    margin-top: 30px;*/
-/*    margin-left: 30px;*/
-/*}*/
+/*Roobert 400 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Regular.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-Light.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
 
-/*.menu-button {*/
-/*    display: flex;*/
-/*    margin-top: 0px;*/
-/*    align-items: center;*/
-/*}*/
+/*Roobert 400 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Regular.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-LightItalic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+}
 
-/*.header-link {*/
-/*    width: 75px;*/
-/*    height: 20px;*/
-/*    top: 49px;*/
-/*    font-family: "Roobert TRIAL";*/
-/*    font-style: normal;*/
-/*    font-weight: 600;*/
-/*    font-size: 16px;*/
-/*    line-height: 20px;*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    letter-spacing: 0.08em;*/
+/*Roobert 600 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Medium.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-Medium.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+}
 
-/*    color: #274d6a;*/
-/*}*/
+/*Roobert 600 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-MediumItalic.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-MediumItalic.woff2') format('woff2');
+    font-weight: 600;
+    font-style: italic;
+}
 
-/*.logo-handler {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    margin-top: 29px;*/
-/*}*/
+/*Roobert 700 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-SemiBold.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-SemiBold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
 
-/*.banner {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    margin-top: 29px;*/
-/*}*/
+/*Roobert 700 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-SemiBoldItalic.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-SemiBoldItalic.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+}
 
-/*.banner h1 {*/
-/*    font-family: At Gambit;*/
-/*    font-size: 64px;*/
-/*    font-weight: 400;*/
-/*    line-height: 0px;*/
-/*    letter-spacing: 0em;*/
-/*    text-align: center;*/
-/*}*/
+/*Roobert 800 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Bold.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-Bold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
 
-/*.banner h4 {*/
-/*    font-family: At Gambit;*/
-/*    font-size: 35px;*/
-/*    font-weight: 400;*/
-/*    line-height: 25px;*/
-/*    letter-spacing: 0em;*/
-/*    text-align: center;*/
+/*Roobert 800 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-BoldItalic.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-BoldItalic.woff2') format('woff2');
+    font-weight: 800;
+    font-style: italic;
+}
 
-/*}*/
+/*Roobert 900 normal*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-Heavy.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-Heavy.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
 
-/*.image-handler {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    height: 495px;*/
-/*}*/
+/*Roobert 900 italic*/
+@font-face {
+    font-family: 'Roobert';
+    src: local('Roobert'), url('../fonts/Roobert/Roobert-HeavyItalic.woff') format('woff'),
+    url('../fonts/Roobert/Roobert-HeavyItalic.woff2') format('woff2');
+    font-weight: 900;
+    font-style: italic;
+}
 
-/*.image-handler img {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    width: 90%;*/
-/*    height: 495px;*/
-/*}*/
 
-/*.about-us {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    margin-top: 29px;*/
-/*    align-items: center;*/
-/*    text-align: center;*/
-/*}*/
 
-/*.about-us p {*/
-/*    width: 500px;*/
-/*    margin-top: 15px;*/
-/*}*/
 
-/*.about-you {*/
-/*    display: block;*/
-/*    margin-inline: auto;*/
-/*    margin-top: 29px;*/
-/*    align-items: center;*/
-/*    text-align: center;*/
-/*    margin-top: 10rem;*/
-/*}*/
+/*At Gambit 300 normal*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-Light.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
 
-/*.about-you p {*/
-/*    width: 500px;*/
-/*    margin-top: 15px;*/
-/*}*/
+/*At Gambit 300 italic*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-LightItalic.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-LightItalic.woff2') format('woff2');
+    font-weight: 300;
+    font-style: italic;
+}
 
-/*.group {*/
-/*    display: inline-flex;*/
-/*    margin-inline: auto;*/
-/*}*/
+/*At Gambit 400 normal*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-Regular.woff2') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/*At Gambit 400 italic*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-RegularItalic.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-RegularItalic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+}
+
+
+/*At Gambit 600 normal*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-Semibold.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Semibold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+}
+
+/*At Gambit 600 italic*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-SemiboldItalic.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-SemiboldItalic.woff2') format('woff2');
+    font-weight: 600;
+    font-style: italic;
+}
+
+/*At Gambit 700 normal*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-Bold.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/*At Gambit 700 italic*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-BoldItalic.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-BoldItalic.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+}
+
+/*At Gambit 800 normal*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-Black.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Black.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+/*At Gambit 800 italic*/
+@font-face {
+    font-family: 'At Gambit';
+    src: local('At Gambit'), url('../fonts/AtGambit/AtGambit-BlackItalic.woff') format('woff'),
+    url('../fonts/AtGambit/AtGambit-Black.woff2') format('woff2');
+    font-weight: 800;
+    font-style: italic;
+}
