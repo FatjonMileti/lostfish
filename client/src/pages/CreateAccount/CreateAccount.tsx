@@ -11,18 +11,18 @@ import { TextField } from '../../components/TextField';
 import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
-
-import { registerStore, useGlobalState } from '../../globalState';
+import { Checkbox } from '../../components/Checkbox';
 
 import config from '../../config';
 
 import createAccountIllustration from './createAccountIllustration.png';
 
 const schema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
+  firstName: yup.string().required('first name is required'),
+  lastName: yup.string().required('last name is required'),
   email: yup.string().email().required('email is required'),
-  phoneNumber: yup.string()
+  phoneNumber: yup.string(),
+  privacyPolicy: yup.boolean().oneOf([true])
 });
 
 export const CreateAccount = styled(({ className = '' }) => {
@@ -33,29 +33,27 @@ export const CreateAccount = styled(({ className = '' }) => {
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
-  const [showPassword, setShowPassword] = React.useState(false);
-
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
-    const { email, password } = data;
+    const { firstName, lastName, email, phoneNumber } = data;
 
     try {
-      const response = await axios.post(`${config.apiUrl}/api/account/login`, {
+      const response = await axios.post(`${config.apiUrl}/api/user`, {
+        first_name: firstName,
+        last_name: lastName,
         email,
-        password
+        phone: phoneNumber
       });
+
+      console.log('response: ', response);
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
       if (!message) throw err;
 
-      if (message === 'user_not_found') {
-        return setError('email', { message: 'user not found!', type: 'server' });
-      }
-
-      if (message === 'incorrect_password') {
-        return setError('password', { message: 'incorrect password', type: 'server' });
+      if (message === 'user_already_exists') {
+        return setError('email', { message: 'user already registered!', type: 'server' });
       }
 
       throw err;
@@ -69,9 +67,7 @@ export const CreateAccount = styled(({ className = '' }) => {
           Join our community.
         </Typography>
 
-        <form
-        // onSubmit={handleSubmit(onSubmit)}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Typography variant='body4' className='description'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
             labore et dolore aliqua.
@@ -119,16 +115,9 @@ export const CreateAccount = styled(({ className = '' }) => {
           <div>
             <div className='policy-agreement-section keep-me-signed-in-section'>
               <label className='switch-label'>
-                {/*<Switch*/}
-                {/*// checked={user.rememberMe}*/}
-                {/*// onChange={({ target: { checked } }) => setRememberMe(checked)}*/}
-                {/*/>*/}
-                <input type='checkbox' />
-                <Typography variant='body5'>
-                  I agree to have my data processed as stated in the Privacy Policy
-                </Typography>
+                <Checkbox {...register('privacyPolicy')} />
+                <Typography variant='body5'>I agree to have my data processed as stated in the</Typography>
               </label>
-
               <Link variant='body4' underline='always'>
                 Privacy Policy
               </Link>
@@ -195,12 +184,11 @@ export const CreateAccount = styled(({ className = '' }) => {
       display: flex;
       align-items: center;
       grid-template-columns: auto auto;
-
-      column-gap: 34px;
+      column-gap: 8px;
 
       .switch-label {
         display: flex;
-        column-gap: 34px;
+        column-gap: 12px;
         align-items: center;
       }
     }
