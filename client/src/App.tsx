@@ -1,11 +1,7 @@
 import { useGlobalState } from './globalState';
 import { UIProvider, useUI } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Login } from './pages/Login/Login';
-import { PreviewComponents } from './pages/PreviewComponents';
-import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
-import { Home } from './pages/Home/Home';
-import { CreateAccount } from './pages/CreateAccount/CreateAccount';
+
 import PrivateRoute from './components/routes/private';
 import Layout from './layout';
 import NotFound from './pages/404';
@@ -16,6 +12,13 @@ import IconButton from '@mui/material/IconButton';
 import { Close } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
 import { ChatPage } from './pages/Chat';
+
+import { Login } from './pages/Login/Login';
+import { PreviewComponents } from './pages/PreviewComponents';
+import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
+import { Home } from './pages/Home/Home';
+import { CreateAccount } from './pages/CreateAccount/CreateAccount';
+import { SetPassword } from './pages/CreateAccount/SetPassword';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -55,7 +58,9 @@ function App() {
           <Route path={'/messages'} element={<ChatPage />} />
           <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
           <Route path='/create-account' element={<CreateAccount />} />
+          <Route path='/set-password/:token' element={<SetPassword />} />
           <Route path='/components' element={<PreviewComponents />} />
+          <Route path='*' element={<NotFound />} />
 
           <Route
             path='/*'

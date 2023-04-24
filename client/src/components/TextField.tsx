@@ -97,6 +97,7 @@ export const TextField = styled(
       }
 
       input {
+        width: 100%;
         height: 48px;
         padding: 12px;
         box-sizing: border-box;
@@ -111,6 +112,9 @@ export const TextField = styled(
         line-height: 24px;
 
         flex-grow: 1;
+        &[type='password'] {
+          font-size: xx-large;
+        }
       }
     }
   }

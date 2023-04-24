@@ -29,6 +29,7 @@ export class UserController {
       paging({ sort: { created_at: -1 } }),
       this.getAll
     );
+    this.router.get("/invitation/:token", this.getInvitation);
     this.router.get("/:id", authorize([Role.Admin]), this.getById);
     this.router.post("/", this.create);
     this.router.put("/invitation", this.acceptInvitation);
@@ -143,6 +144,37 @@ export class UserController {
     }).save();
 
     res.json(user);
+  };
+
+  /**
+   * @api {get} /api/user/invitation/:token Get invitation by token
+   * @apiDescription Get Invitation by token
+   * @apiGroup User
+   * @apiSampleRequest /api/user/invitation/:token
+   *
+   * @apiParam token user token
+   */
+  private getInvitation = async (
+    req: express.Request,
+    res: express.Response
+  ) => {
+    const token = req.params.token;
+    const user: any = await userService.findOne({ confirmation_token: token });
+
+    // await new UserLog({
+    //   user: res.locals.user_id,
+    //   action: LogAction.Read,
+    //   ref: id,
+    //   info: null,
+    // }).save();
+
+    if (!user) {
+      return res.status(404).json({ message: "user_not_found" });
+    }
+
+    res.json({
+      first_name: user.first_name,
+    });
   };
 
   /**

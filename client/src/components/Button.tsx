@@ -36,6 +36,7 @@ export const Button = styled(
     );
   }
 )`
+  font-family: Roobert;
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
