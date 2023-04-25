@@ -23,18 +23,20 @@ export const Header = styled(({ className }: HeaderProps) => {
 
   return (
     <div className={`header ${className}`}>
-      <div className='left'>
+      <div className='left-part'>
         <Logo />
+      </div>
 
+      <div className='middle-part'>
         <div className='menu'>
-          <Link>Rent</Link>
-          <Link>Buy</Link>
-          <Link>Sell</Link>
-          <Link>Lease</Link>
+          <Link>DAILY SUMMARY</Link>
+          <Link>MATCHES</Link>
+          <Link>PROPERTIES</Link>
+          <Link>MESSAGES</Link>
         </div>
       </div>
 
-      <div className='right'>
+      <div className='right-part'>
         {/*<Link onClick={() => navigate('/login')}>Login</Link>*/}
 
         <Button variant='outlined' onClick={logOut}>
@@ -52,13 +54,15 @@ export const Header = styled(({ className }: HeaderProps) => {
     padding: 24px 36px;
 
     display: grid;
-    grid-template-columns: min-content auto;
+    grid-template-columns: auto auto auto;
     justify-content: space-between;
 
-    .left {
+    .left-part {
       display: flex;
       column-gap: 24px;
+    }
 
+    .middle-part {
       .menu {
         list-style: none;
         display: flex;
@@ -69,7 +73,7 @@ export const Header = styled(({ className }: HeaderProps) => {
       }
     }
 
-    .right {
+    .right-part {
       display: flex;
       align-items: center;
       column-gap: 40px;
