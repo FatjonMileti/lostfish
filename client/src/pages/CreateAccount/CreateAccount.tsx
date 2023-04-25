@@ -12,10 +12,12 @@ import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
 import { Checkbox } from '../../components/Checkbox';
+import { Backdrop } from '../../components/Backdrop';
 
 import config from '../../config';
 
 import createAccountIllustration from './createAccountIllustration.png';
+import emailSentIllustration from './emailSentIllustration.png';
 
 const schema = yup.object().shape({
   firstName: yup.string().required('first name is required'),
@@ -33,20 +35,24 @@ export const CreateAccount = styled(({ className = '' }) => {
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
+  const [confirmationEmailSent, setConfirmationEmailSent] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState(false);
+
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
+    setLoading(true);
     const { firstName, lastName, email, phoneNumber } = data;
 
     try {
-      const response = await axios.post(`${config.apiUrl}/api/user`, {
+      await axios.post(`${config.apiUrl}/api/user`, {
         first_name: firstName,
         last_name: lastName,
         email,
         phone: phoneNumber
       });
 
-      console.log('response: ', response);
+      setConfirmationEmailSent(true);
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
@@ -57,11 +63,39 @@ export const CreateAccount = styled(({ className = '' }) => {
       }
 
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
+  const sendAnotherEmail = async () => {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(() => resolve(true), 1000));
+    setLoading(false);
+  };
+
   return (
-    <div className={`create-account-page ${className}`}>
+    <div className={`create-account-page ${className} ${confirmationEmailSent ? 'email-sent' : ''}`}>
+      <Backdrop open={loading}></Backdrop>
+      {confirmationEmailSent && (
+        <div className='confirmation-email-sent'>
+          <img src={emailSentIllustration} alt='' className='email-sent-illustration' />
+          <Typography variant='h3' className='confirmation-sent-title'>
+            A confirmation email was sent to you.
+          </Typography>
+          <Typography variant='body4' className='description'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliquaquis nostrud exercitation ullamco laboris nisi ut aliquip.
+          </Typography>
+
+          <div className='did-not-received-email'>
+            <Typography variant='body4'>Didn’t receive the email?</Typography>
+            <Link className='send-another-email-button' variant='body4' onClick={sendAnotherEmail}>
+              Send another email
+            </Link>
+          </div>
+        </div>
+      )}
       <div className='left-part'>
         <Typography variant='h3' className='main-title'>
           Join our community.
@@ -149,9 +183,56 @@ export const CreateAccount = styled(({ className = '' }) => {
   margin-inline: auto;
 
   display: grid;
+
   grid-template-columns: 59fr 41fr;
+
   min-height: 100vh;
   background: linear-gradient(180deg, #ffffff 0%, #f3edea 30.91%);
+
+  &.email-sent {
+    grid-template-columns: 1fr;
+    .left-part,
+    .right-part {
+      display: none;
+    }
+  }
+
+  .confirmation-email-sent {
+    display: grid;
+    justify-content: center;
+    justify-items: center;
+    align-content: center;
+
+    .email-sent-illustration {
+      mix-blend-mode: multiply;
+      height: 195px;
+    }
+
+    .confirmation-sent-title {
+      margin-top: 32px;
+      max-width: 904px;
+      text-align: center;
+    }
+
+    .description {
+      margin-top: 24px;
+      max-width: 672px;
+      text-align: center;
+    }
+
+    .did-not-received-email {
+      margin-top: 227px;
+      display: flex;
+      column-gap: 8px;
+
+      color: #a7a7a7;
+
+      .send-another-email-button {
+        //text-transform: none;
+        font-weight: 600;
+      }
+    }
+  }
 
   .left-part {
     padding-left: 36px;
