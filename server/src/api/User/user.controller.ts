@@ -1,40 +1,45 @@
-import express, { Router } from "express";
-import userService from "./user.service";
-import { UserDocument } from "../../data/interfaces/user.interface";
-import { validate, ValidationError } from "class-validator";
-import { LogAction, UserLog } from "../../data/logs";
-import { Role } from "../../enums";
-import moment from "moment/moment";
-import authorize from "../../middleware/authorize";
-import paging from "../../middleware/paging";
-import createError from "http-errors";
-
-import { generatePassword, hashPassword } from "./user.helpers";
-import mongoose from "mongoose";
-import { randomUUID } from "crypto";
+import express, { Router } from 'express';
+import userService from './user.service';
+import { UserDocument } from '../../data/interfaces/user.interface';
+import { validate, ValidationError } from 'class-validator';
+import { LogAction, LoginLog, LoginLogAction, UserLog } from '../../data/logs';
+import { Role } from '../../enums';
+import moment from 'moment/moment';
+import authorize from '../../middleware/authorize';
+import paging from '../../middleware/paging';
+import createError from 'http-errors';
+// import Mail from '../../utils/email/index';
+import { generatePassword, hashPassword } from './user.helpers';
+import mongoose from 'mongoose';
+import { randomUUID } from 'crypto';
+import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
+import MailService from '../../utils/email';
+import accountService from '../Account/account.service';
 
 const router: Router = Router();
 
 export class UserController {
   public router = router;
+  private accountService = accountService;
 
   constructor() {
     this.initializeRoutes();
   }
 
+
   private initializeRoutes() {
     this.router.get(
-      "/",
+      '/',
       authorize([Role.Admin]),
       paging({ sort: { created_at: -1 } }),
       this.getAll
     );
-    this.router.get("/invitation/:token", this.getInvitation);
-    this.router.get("/:id", authorize([Role.Admin]), this.getById);
-    this.router.post("/", this.create);
-    this.router.put("/invitation", this.acceptInvitation);
-    this.router.put("/:id", authorize([Role.Admin]), this.update);
-    this.router.delete("/:id", authorize([Role.Admin]), this.delete);
+    this.router.get('/invitation/:token', this.getInvitation);
+    this.router.get('/:id', authorize([Role.Admin]), this.getById);
+    this.router.post('/', this.create);
+    this.router.put('/invitation', this.acceptInvitation);
+    this.router.put('/:id', authorize([Role.Admin]), this.update);
+    this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
   /**
@@ -70,10 +75,10 @@ export class UserController {
 
     if (search) {
       query.$or = [
-        { firstName: new RegExp(<string>search, "i") },
-        { lastName: new RegExp(<string>search, "i") },
-        { phone: new RegExp(<string>search, "i") },
-        { email: new RegExp(<string>search, "i") },
+        { firstName: new RegExp(<string>search, 'i') },
+        { lastName: new RegExp(<string>search, 'i') },
+        { phone: new RegExp(<string>search, 'i') },
+        { email: new RegExp(<string>search, 'i') }
       ];
     }
 
@@ -82,7 +87,7 @@ export class UserController {
     let createdAtUntil: any | null = req.query.created_atUntil;
 
     if (is_disabled) {
-      query.is_disabled = is_disabled === "true";
+      query.is_disabled = is_disabled === 'true';
     }
 
     if (role) {
@@ -140,7 +145,7 @@ export class UserController {
       user: res.locals.user_id,
       action: LogAction.Read,
       ref: id,
-      info: null,
+      info: null
     }).save();
 
     res.json(user);
@@ -169,11 +174,11 @@ export class UserController {
     // }).save();
 
     if (!user) {
-      return res.status(404).json({ message: "user_not_found" });
+      return res.status(404).json({ message: 'user_not_found' });
     }
 
     res.json({
-      first_name: user.first_name,
+      first_name: user.first_name
     });
   };
 
@@ -196,15 +201,30 @@ export class UserController {
     const user: any = await userService.findOne({ confirmation_token: token });
 
     if (!user) {
-      return res.status(404).json({ message: "user_not_found" });
+      return res.status(404).json({ message: 'user_not_found' });
     }
 
     user.hash = <string>await hashPassword(password);
     user.is_disabled = false;
-
+    user.last_login = new Date();
+    user.confirmation_token = null;
     await userService.updateUser(user._id.toString(), user);
 
-    return res.json({ ...user._doc, hash: undefined });
+    const { token: accessToken, refresh } = this.accountService.generateTokens(user);
+
+    await new LoginLog({
+      user: user._id,
+      info: user.username,
+      action: LoginLogAction.Login
+    }).save();
+
+    return res.json({
+      token_type: 'bearer',
+      access_token: accessToken,
+      expires_in: process.env.JWT_EXPIRE_SECONDS,
+      refresh_token: refresh,
+      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+    });
   };
 
   /**
@@ -224,10 +244,10 @@ export class UserController {
     const errors: ValidationError[] = await validate(user);
 
     const existingUser: UserDocument | null = await userService.findOne({
-      email: user.email,
+      email: user.email
     });
     if (existingUser) {
-      throw createError(400, "user_already_exists");
+      throw createError(400, 'user_already_exists');
     }
 
     if (errors.length > 0) {
@@ -241,12 +261,14 @@ export class UserController {
 
     const createdUser: UserDocument = await userService.create(user);
 
-    // await new UserLog({
-    //   user: res.locals.user_id,
-    //   action: LogAction.Create,
-    //   ref: createdUser._id,
-    //   info: createdUser,
-    // }).save();
+    const emailTemplate = verifyEmailTamplate(`${process.env.FRONTEND_URL}/set-password/${user.confirmation_token}`);
+    const mailService = MailService.getInstance();
+    // @ts-ignore
+    await mailService.sendMail({
+      to: user.email,
+      subject: 'Test email',
+      html: emailTemplate.html
+    });
 
     return res.json({ ...createdUser, hash: undefined });
   };
@@ -283,7 +305,7 @@ export class UserController {
         await userService.updateUser(id, user);
       res.json(updatedUser);
     } catch (error) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: 'User not found' });
     }
   };
 
@@ -304,7 +326,7 @@ export class UserController {
       await userService.deleteUser(id);
       res.status(204).send();
     } catch (error) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: 'User not found' });
     }
   };
 }

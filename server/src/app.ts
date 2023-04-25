@@ -16,6 +16,7 @@ const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const dbConnect = require('./data');
 // const MongoStore = require('connect-mongo');
+import MailService from './utils/email/index';
 
 const app: Application = express();
 app.use(compression());
@@ -24,6 +25,14 @@ if (process.env.NODE_ENV !== 'test')
 if (process.env.BEHIND_PROXY) {
   console.log(chalk.bold.red('app set to trust proxy'));
   app.set('trust proxy', 1);
+}
+
+
+const mailService = MailService.getInstance();
+if (process.env.NODE_ENV === 'development') {
+  mailService.createLocalConnection();
+} else if (process.env.NODE_ENV === 'production') {
+  mailService.createConnection();
 }
 
 const packagejson = require('../package.json');

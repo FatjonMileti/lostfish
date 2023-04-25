@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios, { AxiosError } from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
@@ -15,6 +15,7 @@ import { IconButton } from '../../components/IconButton';
 import setPasswordIllustration from './setPasswordIllustration.png';
 
 import config from '../../config';
+import { registerStore, useGlobalState } from '../../globalState';
 
 const schema = yup.object().shape({
   password: yup.string().required(),
@@ -24,6 +25,16 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password')], 'passwords must match')
 });
 
+registerStore(
+  'user',
+  {
+    rememberMe: false,
+    auth: null,
+    userDetails: null
+  },
+  { persist: true }
+);
+
 export const SetPassword = styled(({ className = '' }) => {
   const {
     register,
@@ -32,31 +43,39 @@ export const SetPassword = styled(({ className = '' }) => {
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
+  const {
+    user: [user, setUser]
+  } = useGlobalState();
+
   const [showPassword, setShowPassword] = React.useState(false);
   const [userData, setUserData] = React.useState<null | { first_name: string }>(null);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`).then((response) => {
-      console.log('response user data: ', response);
-      setUserData(response.data);
-    });
+    if (!userData) {
+      axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`).then((response) => {
+        console.log('response user data: ', response);
+        setUserData(response.data);
+      });
+    }
   }, [params]);
-
-  console.log('params: ', params);
 
   const onSubmit = async (data: any) => {
     const { password } = data;
     const token = params.token;
 
     try {
-      const response = await axios.post(`${config.apiUrl}/api/user/invitation`, {
+      const response = await axios.put(`${config.apiUrl}/api/user/invitation`, {
         token,
         password
       });
 
-      console.log(response.data);
+      const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
+
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
+      navigate('/');
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
