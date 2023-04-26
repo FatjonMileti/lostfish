@@ -19,7 +19,7 @@ import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { SetPassword } from './pages/CreateAccount/SetPassword';
-
+import { Maps } from './pages/Maps/Maps';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -60,6 +60,7 @@ function App() {
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
           <Route path='/components' element={<PreviewComponents />} />
+          <Route path='/maps' element={<Maps />} />
           <Route path='*' element={<NotFound />} />
 
           <Route
