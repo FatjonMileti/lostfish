@@ -2,10 +2,11 @@ import React, { JSXElementConstructor, ReactElement } from 'react';
 import { styled } from '@mui/system';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'text' | 'contained' | 'outlined';
+  variant?: 'text' | 'contained' | 'outlined' | 'primary' | 'secondary';
   startIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   endIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   size?: 'small' | 'medium' | 'large';
+  inverted?: boolean;
 }
 
 export const Button = styled(
@@ -19,13 +20,16 @@ export const Button = styled(
     size = 'medium',
     color,
     disabled,
+    inverted = false,
     ...rest
   }: ButtonProps) => {
     return (
       <button
         type={type}
         disabled={disabled}
-        className={`button ${className} ${variant} size-${size} ${color} ${disabled ? 'disabled' : ''}`}
+        className={`button ${className} variant-${variant} size-${size} ${
+          inverted ? 'inverted' : ''
+        } ${color} ${disabled ? 'disabled' : ''}`}
         {...rest}>
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
@@ -37,14 +41,13 @@ export const Button = styled(
   font-family: Roobert;
   font-weight: 600;
   font-size: 16px;
-  line-height: 24px;
-  color: #184d6d;
 
-  background-color: transparent;
+  line-height: 24px;
 
   border-radius: 250px;
 
   text-transform: uppercase;
+
   cursor: pointer;
   border: none;
 
@@ -54,17 +57,63 @@ export const Button = styled(
 
   box-sizing: border-box;
 
-  &.text {
+  height: min-content;
+  width: max-content;
+
+  &.variant-text {
   }
 
-  &.contained {
+  &.variant-contained {
     color: white;
     background-color: #184d6d;
+    &:hover {
+      background-color: #0d2a38;
+    }
   }
 
-  &.outlined {
+  &.variant-outlined {
     border: 1px solid #184d6d;
+    &:hover {
+      background-color: #ffffff;
+    }
   }
+
+  //
+  &.variant-primary {
+    color: white;
+    background-color: #184d6d;
+    &:hover {
+      background-color: #0d2a38;
+    }
+
+    &.inverted {
+      color: #0d2a38;
+      background-color: #ffffff;
+      &:hover {
+        background-color: #c0daff;
+      }
+    }
+  }
+
+  &.variant-secondary {
+    border: 1px solid #184d6d;
+    color: #184d6d;
+    background-color: inherit;
+    &:hover {
+      color: #0d2a38;
+      background-color: white;
+    }
+
+    &.inverted {
+      color: white;
+      border: 1px solid white;
+      &:hover {
+        color: #c0daff;
+        border: 1px solid #c0daff;
+      }
+    }
+  }
+  //
 
   .start-icon {
     margin-right: 8px;
@@ -74,7 +123,7 @@ export const Button = styled(
   }
 
   &.size-small {
-    padding: 8px 16px;
+    padding: 12px 24px;
   }
   &.size-medium {
     padding: 12px 32px;
@@ -88,5 +137,8 @@ export const Button = styled(
   &.disabled {
     background-color: #a7a7a7;
     cursor: not-allowed;
+    &:hover {
+      background-color: #a7a7a7;
+    }
   }
 `;

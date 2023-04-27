@@ -32,14 +32,14 @@ export const Header = styled(({ className }: HeaderProps) => {
           <Link>DAILY SUMMARY</Link>
           <Link>MATCHES</Link>
           <Link>PROPERTIES</Link>
-          <Link>MESSAGES</Link>
+          <Link onClick={() => navigate('/messages-page')}>MESSAGES</Link>
         </div>
       </div>
 
       <div className='right-part'>
         {/*<Link onClick={() => navigate('/login')}>Login</Link>*/}
 
-        <Button variant='outlined' onClick={logOut}>
+        <Button variant='secondary' onClick={logOut}>
           Log out
         </Button>
       </div>

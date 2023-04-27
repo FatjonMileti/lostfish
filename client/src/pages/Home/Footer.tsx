@@ -60,7 +60,7 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
             Keep in touch with our latest news by subscribing to our newsletter.
           </Typography>
           <TextField placeholder='Enter your email address' className='email-address' />
-          <Button className='subscribe-button' variant='outlined'>
+          <Button className='subscribe-button' variant='secondary'>
             Subscribe
           </Button>
         </div>
@@ -167,8 +167,9 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
         }
 
         .subscribe-button {
-          color: white;
-          border-color: white;
+          //color: white;
+          //border-color: white;
+          margin-top: 24px;
           text-transform: none;
         }
       }

@@ -28,7 +28,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             Our goal is to revolutionise the property industry by utilising technology and data to empower and
             inform customers in the buying, selling, and renting process.
           </Typography>
-          <Button className='how-it-works-button' variant='outlined'>
+          <Button className='how-it-works-button' variant='secondary'>
             HOW IT WORKS
           </Button>
         </div>

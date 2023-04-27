@@ -9,7 +9,7 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
-import { Close } from '@mui/icons-material';
+import { Close, Message } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
 import { ChatPage } from './pages/Chat';
 
@@ -19,6 +19,7 @@ import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { SetPassword } from './pages/CreateAccount/SetPassword';
+import { Messages } from './pages/Messages/Messages';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -60,6 +61,7 @@ function App() {
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
           <Route path='/components' element={<PreviewComponents />} />
+          <Route path='/messages-page' element={<Messages />} />
           <Route path='*' element={<NotFound />} />
 
           <Route

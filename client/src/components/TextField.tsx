@@ -6,7 +6,7 @@ import { Typography } from './Typography';
 import { Icon } from './Icon';
 
 export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: string;
+  variant?: 'filled' | 'outlined' | 'standard';
   label?: string;
   required?: boolean;
   endAdornment?: ReactElement;
@@ -17,12 +17,23 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
 export const TextField = styled(
   React.forwardRef<HTMLInputElement, TextFieldProps>(
     (
-      { className, id, label, type = 'text', required = false, endAdornment, helperText, error, ...rest },
+      {
+        className,
+        id,
+        label,
+        type = 'text',
+        required = false,
+        endAdornment,
+        helperText,
+        error,
+        variant = 'outlined',
+        ...rest
+      },
       ref
     ) => {
       const elementId = id || useId();
       return (
-        <div className={`text-field ${className} ${error ? 'error' : ''}`}>
+        <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
           <label htmlFor={elementId}>
             {label}
             {required && <span className='required-asterisk'> *</span>}
@@ -33,10 +44,12 @@ export const TextField = styled(
             {endAdornment ? endAdornment : null}
           </div>
 
-          <span className='helper-text'>
-            {error && <Icon icon='warning' size={12} color='#b4263b' />}
-            <Typography variant='body4'>{helperText || ' '}</Typography>
-          </span>
+          {helperText && (
+            <span className='helper-text'>
+              {error && <Icon icon='warning' size={12} color='#b4263b' />}
+              <Typography variant='body4'>{helperText || ''}</Typography>
+            </span>
+          )}
         </div>
       );
     }
@@ -115,6 +128,16 @@ export const TextField = styled(
         &[type='password'] {
           font-size: xx-large;
         }
+      }
+    }
+
+    &.variant-standard {
+      .input-wrapper {
+        border: none;
+
+        border-bottom: 1px solid #a7a7a7;
+
+        border-radius: 0;
       }
     }
   }

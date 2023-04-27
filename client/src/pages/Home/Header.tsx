@@ -21,10 +21,10 @@ export const Header = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='right'>
-        <Button size='medium' variant='outlined' onClick={() => navigate('/login')}>
+        <Button size='medium' variant='secondary' onClick={() => navigate('/login')}>
           Login
         </Button>
-        <Button size='medium' variant='contained' onClick={() => navigate('/components')}>
+        <Button size='medium' variant='contained' onClick={() => navigate('/create-account')}>
           Join
         </Button>
       </div>

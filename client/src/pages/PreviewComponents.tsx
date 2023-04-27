@@ -30,21 +30,52 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
 
       <Button onClick={() => navigate('/')}>Button Go Home</Button>
 
-      <Button variant='contained' onClick={() => navigate('/')}>
-        contained
-      </Button>
+      <div className='buttons'>
+        <Button size='large' variant='primary'>
+          Primary Large
+        </Button>
+        <Button size='medium' variant='primary'>
+          Primary Medium
+        </Button>
 
-      <Button variant='text' onClick={() => navigate('/')}>
-        text
-      </Button>
+        <Button size='small' variant='primary'>
+          Primary Small
+        </Button>
 
-      <Button variant='outlined' onClick={() => navigate('/')}>
-        outlined
-      </Button>
+        <Button size='large' variant='primary' inverted>
+          Primary Large Inverted
+        </Button>
 
-      <Button size='small'>small</Button>
-      <Button size='medium'>medium</Button>
-      <Button size='large'>large</Button>
+        <Button size='medium' variant='primary' inverted>
+          Primary Medium Inverted
+        </Button>
+
+        <Button size='small' variant='primary' inverted>
+          Primary Small Inverted
+        </Button>
+
+        <Button size='large' variant='secondary'>
+          Secondary Large
+        </Button>
+        <Button size='medium' variant='secondary'>
+          Secondary Medium
+        </Button>
+        <Button size='small' variant='secondary'>
+          Secondary Small
+        </Button>
+
+        <Button size='large' variant='secondary' inverted>
+          Secondary Large Inverted
+        </Button>
+
+        <Button size='medium' variant='secondary' inverted>
+          Secondary Medium Inverted
+        </Button>
+
+        <Button size='small' variant='secondary' inverted>
+          Secondary Small Inverted
+        </Button>
+      </div>
 
       <IconButton>
         <Icon icon='plus' />
@@ -80,11 +111,18 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
   );
 })`
   &.preview-components {
+    background-color: #e3e3e3;
     padding: 64px;
     row-gap: 64px;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
 
     .icons-list {
       display: grid;
