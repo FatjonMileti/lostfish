@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -34,7 +34,7 @@ registerStore(
   { persist: true }
 );
 
-export const Login = styled(({ className = '' }) => {
+export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     register,
     handleSubmit,

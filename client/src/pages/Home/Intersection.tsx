@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
@@ -6,6 +6,7 @@ import { Icon } from '../../components/Icon';
 import tenantImage from './tenant.png';
 import imLookingForPlace from './imLookingForPlace.png';
 import { keyframes } from '@emotion/react';
+import React from 'react';
 
 // Create the keyframes
 const scale = keyframes`
@@ -48,7 +49,7 @@ const shapeChange2 = keyframes`
   }
 `;
 
-export const Intersection = styled(({ className = '' }) => {
+export const Intersection = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
       <div className='looking-for-section'>

@@ -1,7 +1,5 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
-import styled from '@emotion/styled';
-import { Icon } from './Icon';
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import { styled } from '@mui/system';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'text' | 'contained' | 'outlined';
@@ -79,7 +77,7 @@ export const Button = styled(
     padding: 8px 16px;
   }
   &.size-medium {
-    padding: 12px 24px;
+    padding: 12px 32px;
     height: 48px;
   }
   &.size-large {

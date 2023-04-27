@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { Backdrop as MuiBackdrop } from '@mui/material';
 
 import { keyframes } from '@emotion/react';

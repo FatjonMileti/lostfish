@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   variant?: 'body1' | 'body2' | 'body3' | 'body4' | 'body5' | 'h1' | 'h2' | 'h3' | 'menu';

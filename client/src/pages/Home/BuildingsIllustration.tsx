@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import illustration2 from '../../assets/images/illustration2.png';
 import React from 'react';
 
-export const BuildingsIllustration = styled(({ className = '' }) => {
+export const BuildingsIllustration = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`illustration-2-section ${className}`}>
       <img alt='' src={illustration2} />

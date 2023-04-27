@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import React from 'react';
 import { Typography } from '../../components/Typography';
 import { Link } from '../../components/Link';
@@ -9,7 +9,7 @@ import { TextField } from '../../components/TextField';
 
 import LogoPlusTextWhite from '../../assets/images/LogoPlusTextWhite.svg';
 
-export const Footer = styled(({ className = '' }) => {
+export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`footer-section ${className}`}>
       <div className='columns-layout'>

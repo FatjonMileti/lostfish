@@ -1,10 +1,10 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import React from 'react';
 
-export const DailyNews = styled(({ className = '' }) => {
+export const DailyNews = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`${className} daily-new-section`}>
       <div className='left-content'>

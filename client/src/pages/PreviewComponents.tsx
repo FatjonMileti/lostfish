@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
 import { Logo } from '../components/Logo';

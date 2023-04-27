@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 
 import { Footer } from '../Home/Footer';
 import { Header } from './Header';
@@ -9,7 +9,7 @@ import { BuildingsIllustration } from '../Home/BuildingsIllustration';
 import React from 'react';
 import { DailyNews } from '../Home/DailyNews';
 
-export const HomeLoggedIn = styled(({ className = '' }) => {
+export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
       <Header />
