@@ -61,7 +61,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     }
 
     /* Mobile (375px to 767px) */
-    ${(props) => props.theme.breakpoints.only('mobile')} {
+    ${(props) => props.theme.breakpoints.down('tablet')} {
       background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
         url(${binocularsMobile});
     }
@@ -90,12 +90,12 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         padding-inline: 36px;
       }
 
-      ${(props) => props.theme.breakpoints.only('mobile')} {
+      ${(props) => props.theme.breakpoints.down('tablet')} {
         padding-inline: 20px;
       }
 
       .title {
-        ${(props) => props.theme.breakpoints.only('mobile')} {
+        ${(props) => props.theme.breakpoints.down('tablet')} {
           font-size: 40px;
           line-height: 48px;
         }
