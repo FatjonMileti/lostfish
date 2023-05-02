@@ -1,14 +1,8 @@
 import { styled } from '@mui/system';
-
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-
-import Avatar from '@mui/material/Avatar';
 import { Typography } from '../../components/Typography';
 
 import React from 'react';
-import { useGlobalState } from '../../globalState';
-
-function stringToColor(string: string) {
+export function stringToColor(string: string) {
   let hash = 0;
   let i;
 
@@ -28,36 +22,12 @@ function stringToColor(string: string) {
   return color;
 }
 
-function stringAvatar(name: string) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name)
-    },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
-  };
-}
-
 export const Conversation = styled(
-  (props: {
-    rows: any[];
-    joinRoom: (roomId?: string) => void;
-    fullName: string;
-    row: any;
-    className?: string;
-  }) => {
-    const { rows, joinRoom, fullName, row, className } = props;
-
-    console.log({ rows });
-
-    let {
-      user: [user]
-    } = useGlobalState();
-
-    const { userDetails } = user;
+  (props: { joinRoom: (roomId?: string) => void; fullName: string; row: any; className?: string }) => {
+    const { joinRoom, fullName, row, className } = props;
 
     return (
       <div className={`conversation ${className}`} onClick={() => joinRoom(row)}>
-        {/*<Avatar {...stringAvatar(fullName)} />*/}
         <div className='avatar' style={{ backgroundColor: stringToColor(fullName) }}>
           {fullName.split(' ')[0][0]}
           {fullName.split(' ')[1][0]}

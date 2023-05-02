@@ -1,29 +1,27 @@
+import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, useState } from 'react';
-import { TextField } from '../../components/TextField';
-import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
-import { IconButton } from '../../components/IconButton';
-import { Typography } from '../../components/Typography';
 
+import { Button } from '../../components/Button';
+import { Typography } from '../../components/Typography';
 import { Conversation } from './Conversation';
 import { Chatbox } from './Chatbox';
+import { Header } from '../HomeLoggedIn/Header';
 
-import { ItemList } from '../Chat/components/ItemList';
 import { useQuery } from '@tanstack/react-query';
 import request from '../../utils/axios';
 import { useGlobalState } from '../../globalState';
+
+import socket from '../../context/socket';
 
 type Room = any | null;
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const {
-    user: [user]
+    user: [{ userDetails, auth }]
   } = useGlobalState();
 
-  const { userDetails, auth } = user;
-
   const [room, setRoom] = useState<Room>(null);
+  const [messages, setMessages] = useState<any>([]);
 
   const getMessageList = async () => {
     const response = await request(auth.access_token).get('/api/chat');
@@ -34,79 +32,98 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     getMessageList()
   );
 
+  const getMessagesForRoom = async (roomId: string) => {
+    const response = await request(auth.access_token).get('/api/chat/' + roomId + '?pageSize=10&page=1');
+
+    console.log('docs: ', response.data.docs);
+    setMessages(response.data.docs.reverse());
+  };
+
+  const joinRoom = async (roomObj?: any | null) => {
+    if (userDetails?.username && roomObj) {
+      await getMessagesForRoom(roomObj._id);
+      setRoom(roomObj);
+      return socket.emit('join_room', roomObj._id);
+    }
+  };
+
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
   return (
     <div className={`messages-page ${className}`}>
-      <div className='chats'>
-        <div className='tab-buttons'>
-          <Button size='small' className='all-messages'>
-            All Messages
-          </Button>
-          <Button size='small' variant='outlined' className='archived-messages'>
-            Archived
-          </Button>
-        </div>
-
-        <div className='unread'>
-          <Typography variant='menu' className='title'>
-            UNREAD
-          </Typography>
-        </div>
-
-        <div className='unread'>
-          <Typography variant='menu' className='title'>
-            PREVIOUS
-          </Typography>
-
-          <div className='conversations-list'>
-            {(data || []).map((row: any, rowIndex: number) => {
-              const fullName =
-                userDetails?.user_id === row.author._id
-                  ? `${row.participant.first_name} ${row.participant.last_name}`
-                  : `${row.author.first_name} ${row.author.last_name}`;
-
-              return <Conversation joinRoom={() => {}} rows={data} fullName={fullName} row={row} />;
-            })}
+      <Header />
+      <div className='container'>
+        <div className='chats'>
+          <div className='tab-buttons'>
+            <Button size='small' className='all-messages'>
+              All Messages
+            </Button>
+            <Button size='small' variant='outlined' className='archived-messages'>
+              Archived
+            </Button>
           </div>
 
-          {/*<ItemList joinRoom={() => {}} rows={data} />*/}
+          <div className='unread'>
+            <Typography variant='menu' className='title'>
+              UNREAD
+            </Typography>
+          </div>
+
+          <div className='previous'>
+            <Typography variant='menu' className='title'>
+              PREVIOUS
+            </Typography>
+
+            <div className='conversations-list'>
+              {(data || []).map((row: any, rowIndex: number) => {
+                const fullName =
+                  userDetails?.user_id === row.author._id
+                    ? `${row.participant.first_name} ${row.participant.last_name}`
+                    : `${row.author.first_name} ${row.author.last_name}`;
+
+                return <Conversation key={rowIndex} joinRoom={joinRoom} fullName={fullName} row={row} />;
+              })}
+            </div>
+          </div>
         </div>
+
+        {room && (
+          <Chatbox
+            username={userDetails?.username}
+            room={room}
+            user_id={userDetails?.user_id}
+            messages={messages}
+            socket={socket}
+          />
+        )}
       </div>
-
-      <Chatbox />
-
-      <div>{/*<ItemList joinRoom={() => {}} rows={data} />*/}</div>
     </div>
   );
 })`
   &.messages-page {
-    max-width: 1440px;
-    margin-inline: auto;
+    min-height: 0;
+    height: 100vh;
+    display: grid;
+    box-sizing: border-box;
+    grid-template-rows: min-content auto;
 
     background: linear-gradient(180deg, #ffffff 0%, #f3edea 30.91%);
 
-    min-height: 100vh;
-
-    display: grid;
-    align-items: flex-end;
-    justify-content: center;
-
-    grid-template-columns: 1fr 1.8fr 1fr;
-    column-gap: 24px;
-
-    padding: 32px;
-    box-sizing: border-box;
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap: 24px;
+      overflow-y: auto;
+      padding: 44px 36px;
+    }
 
     .chats {
       display: flex;
       flex-direction: column;
       row-gap: 32px;
-      padding-right: 24px;
       height: 100%;
-      border-right: 2px solid #d9d9d9;
 
       .tab-buttons {
         display: flex;
@@ -143,8 +160,17 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       }
 
       .previous {
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
         .title {
           color: #0d2a38;
+        }
+
+        .conversations-list {
+          display: flex;
+          flex-direction: column;
+          row-gap: 8px;
         }
       }
     }

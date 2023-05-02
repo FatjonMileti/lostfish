@@ -56,7 +56,6 @@ export const SetPassword = styled(({ className = '' }: React.HTMLAttributes<HTML
   React.useEffect(() => {
     if (!userData) {
       axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`).then((response) => {
-        console.log('response user data: ', response);
         setUserData(response.data);
       });
     }

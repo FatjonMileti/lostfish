@@ -47,11 +47,9 @@ export const Header = styled(({ className }: HeaderProps) => {
   );
 })`
   &.header {
-    height: 112px;
-    //border: 1px solid black;
     align-items: center;
 
-    padding: 24px 36px;
+    padding: 20px 36px;
 
     display: grid;
     grid-template-columns: auto auto auto;

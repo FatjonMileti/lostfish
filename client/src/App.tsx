@@ -61,7 +61,7 @@ function App() {
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
           <Route path='/components' element={<PreviewComponents />} />
-          <Route path='/messages-page' element={<Messages />} />
+          <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
           <Route path='*' element={<NotFound />} />
 
           <Route

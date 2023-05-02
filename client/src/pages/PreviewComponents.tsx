@@ -19,8 +19,6 @@ import { Switch } from '../components/Switch';
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
 
-  console.log(iconList(iconSet));
-
   return (
     <div className={`preview-components ${className}`}>
       <Switch />

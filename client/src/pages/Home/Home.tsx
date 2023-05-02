@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import { useTheme } from '@mui/material';
 import React from 'react';
 
 import { Typography } from '../../components/Typography';
@@ -12,9 +11,6 @@ import binocularsTablet from './binocularsTablet.png';
 import binocularsMobile from './binocularsMobile.png';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const theme = useTheme();
-  console.log(theme.breakpoints.up('tablet'));
-
   return (
     <div className={`home-page ${className}`}>
       <div className='container'>
