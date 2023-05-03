@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useEffect, useState } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import { styled } from '@mui/system';
 
 import { Button } from '../../components/Button';
@@ -12,30 +12,28 @@ import request from '../../utils/axios';
 import { useGlobalState } from '../../globalState';
 
 import socket from '../../context/socket';
-
-type Room = any | null;
+import { Skeleton } from '@mui/lab';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const {
     user: [{ userDetails, auth }]
   } = useGlobalState();
 
-  const [room, setRoom] = useState<Room>(null);
+  const [room, setRoom] = useState<any>(null);
   const [messages, setMessages] = useState<any>([]);
 
-  const getMessageList = async () => {
+  const previous = useQuery<any[]>(['messages'], async (): Promise<any[]> => {
     const response = await request(auth.access_token).get('/api/chat');
-    return response.data.docs;
-  };
 
-  const { isLoading, isFetching, isFetched, data, refetch } = useQuery(['messages', room], () =>
-    getMessageList()
-  );
+    return await new Promise((resolve) =>
+      setTimeout(() => {
+        resolve(response.data.docs);
+      }, 1000)
+    );
+  });
 
   const getMessagesForRoom = async (roomId: string) => {
     const response = await request(auth.access_token).get('/api/chat/' + roomId + '?pageSize=10&page=1');
-
-    console.log('docs: ', response.data.docs);
     setMessages(response.data.docs.reverse());
   };
 
@@ -46,10 +44,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       return socket.emit('join_room', roomObj._id);
     }
   };
-
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
 
   return (
     <div className={`messages-page ${className}`}>
@@ -77,7 +71,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             </Typography>
 
             <div className='conversations-list'>
-              {(data || []).map((row: any, rowIndex: number) => {
+              {(previous?.data || []).map((row: any, rowIndex: number) => {
                 const fullName =
                   userDetails?.user_id === row.author._id
                     ? `${row.participant.first_name} ${row.participant.last_name}`
@@ -85,6 +79,23 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
                 return <Conversation key={rowIndex} joinRoom={joinRoom} fullName={fullName} row={row} />;
               })}
+
+              {previous.isLoading &&
+                [1, 2].map(() => {
+                  return (
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'min-content auto',
+                        alignItems: 'center',
+                        columnGap: '10px',
+                        padding: '16px'
+                      }}>
+                      <Skeleton variant='circular' width={32} height={32} />
+                      <Skeleton height={20} />
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </div>

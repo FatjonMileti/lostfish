@@ -87,12 +87,6 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
             messageList[messageIndex - 1]?.author?._id === authorId &&
             (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.author?._id !== authorId);
 
-          console.log({
-            authorId,
-            next: messageList[messageIndex + 1],
-            previous: messageList[messageIndex - 1]
-          });
-
           return (
             <div
               className={`message ${fromMe ? 'from-me' : 'from-you'} ${
@@ -237,6 +231,7 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           }
 
           &.in-middle-of-group {
+            margin-top: -12px;
             .text {
               border-top-left-radius: 0;
               border-bottom-left-radius: 0;
@@ -244,14 +239,13 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           }
 
           &.last-in-group {
+            margin-top: -12px;
             .text {
               border-bottom-left-radius: 16px;
             }
           }
 
           & + .from-me {
-            margin-top: -8px;
-
             .text {
               border-top-left-radius: 0;
             }
@@ -274,6 +268,7 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           }
 
           &.in-middle-of-group {
+            margin-top: -12px;
             .text {
               border-top-right-radius: 0;
               border-bottom-right-radius: 0;
@@ -281,13 +276,13 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           }
 
           &.last-in-group {
+            margin-top: -12px;
             .text {
               border-top-right-radius: 0;
             }
           }
 
           & + .from-you {
-            margin-top: -8px;
             .text {
               border-top-right-radius: 0;
             }
