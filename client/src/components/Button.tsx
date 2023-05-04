@@ -46,8 +46,6 @@ export const Button = styled(
 
   border-radius: 250px;
 
-  text-transform: uppercase;
-
   cursor: pointer;
   border: none;
 

@@ -110,7 +110,10 @@ export const SetPassword = styled(({ className = '' }: React.HTMLAttributes<HTML
               error={!!errors.password}
               helperText={errors.password?.message?.toString()}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }
@@ -123,7 +126,10 @@ export const SetPassword = styled(({ className = '' }: React.HTMLAttributes<HTML
               required
               {...register('confirmPassword')}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }

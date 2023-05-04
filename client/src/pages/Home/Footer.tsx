@@ -20,16 +20,16 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
             inform customers in the buying, selling, and renting process.
           </Typography>
           <div className='social-networks'>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='facebook-f' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='twitter' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='instagram' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='linkedin-in' color='white' size={16} />
             </IconButton>
           </div>
@@ -69,7 +69,11 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
         <Typography className='copyright-text' variant='body5'>
           2023 © LOSTFISH LIMITED. ALL RIGHTS RESERVED
         </Typography>
-        <IconButton size='small' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <IconButton
+          size='small'
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          noBackground
+          inverted>
           <Icon icon='arrow-up' color='white' />
         </IconButton>
       </div>
@@ -105,6 +109,10 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
           display: flex;
           align-items: center;
           column-gap: 16px;
+
+          .icon-button {
+            border: 1px solid #184d6d;
+          }
         }
       }
 

@@ -126,7 +126,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
               required
               {...register('password')}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }

@@ -10,6 +10,7 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
   label?: string;
   required?: boolean;
   endAdornment?: ReactElement;
+  startAdornment?: ReactElement;
   helperText?: string;
   error?: boolean;
 }
@@ -24,6 +25,7 @@ export const TextField = styled(
         type = 'text',
         required = false,
         endAdornment,
+        startAdornment,
         helperText,
         error,
         variant = 'outlined',
@@ -34,14 +36,17 @@ export const TextField = styled(
       const elementId = id || useId();
       return (
         <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
-          <label htmlFor={elementId}>
-            {label}
-            {required && <span className='required-asterisk'> *</span>}
-          </label>
+          {(label || required) && (
+            <label htmlFor={elementId}>
+              {label}
+              {required && <span className='required-asterisk'> *</span>}
+            </label>
+          )}
 
           <div className='input-wrapper'>
+            {startAdornment || null}
             <input id={elementId} type={type} {...rest} ref={ref} />
-            {endAdornment ? endAdornment : null}
+            {endAdornment || null}
           </div>
 
           {helperText && (
@@ -107,6 +112,7 @@ export const TextField = styled(
 
       &:focus-within {
         border: 1px solid #184d6d;
+        background-color: #ffffff;
       }
 
       input {
@@ -125,8 +131,10 @@ export const TextField = styled(
         line-height: 24px;
 
         flex-grow: 1;
-        &[type='password'] {
-          font-size: xx-large;
+        &[type='password']:not(:placeholder-shown) {
+          font-family: 'pass';
+          font-weight: 400;
+          font-size: larger;
         }
       }
     }

@@ -16,10 +16,10 @@ export const DailyNews = styled(({ className = '' }: React.HTMLAttributes<HTMLDi
             DAILY NEWS
           </Typography>
           <div className='icons-wrapper'>
-            <IconButton size='small'>
+            <IconButton size='small' noBackground inverted>
               <Icon icon='share' size={18} color='white' />
             </IconButton>
-            <IconButton size='small'>
+            <IconButton size='small' noBackground inverted>
               <Icon icon='label-vertical' size={18} color='white' />
             </IconButton>
           </div>
@@ -35,7 +35,7 @@ export const DailyNews = styled(({ className = '' }: React.HTMLAttributes<HTMLDi
           <Typography variant='body4' className='progress-tracker'>
             1/3
           </Typography>
-          <IconButton size='small'>
+          <IconButton size='small' noBackground inverted>
             <Icon icon='arrow-right' size={36} color='white' />
           </IconButton>
         </div>

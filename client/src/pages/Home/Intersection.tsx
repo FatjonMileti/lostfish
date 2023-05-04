@@ -58,12 +58,12 @@ export const Intersection = styled(({ className = '' }: React.HTMLAttributes<HTM
             <Typography className='looking-for-text' variant='body4'>
               I’m looking for a place
             </Typography>
-            <IconButton className='plus-button'>
+            <IconButton className='plus-button' inverted>
               <Icon icon='plus' size={24} color='white' />
             </IconButton>
           </div>
           <div className='circle second'>
-            <IconButton className='plus-button'>
+            <IconButton className='plus-button' inverted>
               <Icon icon='plus' size={24} color='white' />
             </IconButton>
             <Typography className='looking-for-text' variant='body4'>
