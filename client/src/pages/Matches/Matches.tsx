@@ -10,7 +10,7 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
   );
 })`
   &.matches-page {
-    background: linear-gradient(141.18deg, #cdf0ea 10.08%, #f9f9f9 98.58%);
+    background: linear-gradient(90deg, #e8edf0 0%, #fce8ef 100%);
     height: 100vh;
   }
 `;

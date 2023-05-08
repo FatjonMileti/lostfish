@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from '@mui/system';
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
-  variant?: 'body1' | 'body2' | 'body3' | 'body4' | 'body5' | 'h1' | 'h2' | 'h3' | 'menu';
+  variant?: 'body1' | 'body2' | 'body3' | 'body4' | 'body5' | 'body6' | 'h1' | 'h2' | 'h3' | 'menu';
 }
 
 export const Typography = styled(
@@ -56,6 +56,12 @@ export const Typography = styled(
   &.body5 {
     font-size: 14px;
     line-height: 20px;
+    font-family: 'Roobert', serif;
+  }
+
+  &.body6 {
+    font-size: 12px;
+    line-height: 16px;
     font-family: 'Roobert', serif;
   }
 

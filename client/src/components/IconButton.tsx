@@ -29,58 +29,60 @@ export const IconButton = styled(
     );
   }
 )`
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f3f4f5;
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
+  &.icon-button {
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f5;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
 
-  &.no-background {
-    background: none;
-  }
-
-  > * {
-    color: #0d2a38;
-  }
-
-  &.inverted {
-    background-color: #184d6d;
-    &:hover {
-      background-color: #ffffff;
-      > * {
-        color: #0d2a38;
-      }
+    &.no-background {
+      background: none;
     }
 
     > * {
-      color: #ffffff;
+      color: #0d2a38;
     }
-  }
 
-  &:hover {
-    background-color: #c0daff;
-  }
+    &.inverted {
+      background-color: #184d6d;
+      &:hover {
+        background-color: #ffffff;
+        > * {
+          color: #0d2a38;
+        }
+      }
 
-  &.no-background {
-    background: none;
+      > * {
+        color: #ffffff;
+      }
+    }
+
     &:hover {
-      background-color: #e7e7e7;
+      background-color: #c0daff;
     }
-  }
 
-  &.small {
-    padding: 6px;
-  }
+    &.no-background {
+      background: none;
+      &:hover {
+        background-color: #e7e7e7;
+      }
+    }
 
-  &.medium {
-    padding: 12px;
-  }
+    &.small {
+      padding: 6px;
+    }
 
-  &.large {
-    padding: 18px;
+    &.medium {
+      padding: 12px;
+    }
+
+    &.large {
+      padding: 18px;
+    }
   }
 `;

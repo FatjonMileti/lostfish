@@ -1,7 +1,5 @@
 import React, { HTMLAttributes, useState } from 'react';
 import { styled } from '@mui/system';
-
-import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Conversation } from './Conversation';
 import { Chatbox } from './Chatbox';
@@ -50,55 +48,53 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       <Header />
       <div className='container'>
         <div className='chats'>
-          <div className='tab-buttons'>
-            <Button size='small' className='all-messages' inverted active>
-              All Messages
-            </Button>
-            <Button size='small' variant='outlined' className='archived-messages'>
-              Archived
-            </Button>
-          </div>
+          <Typography variant='body2'>My messages</Typography>
 
-          <div className='unread'>
-            <Typography variant='menu' className='title'>
-              UNREAD
-            </Typography>
-          </div>
+          <div className='conversations-list'>
+            {(previous?.data || []).map((row: any, rowIndex: number) => {
+              const fullName =
+                userDetails?.user_id === row.author._id
+                  ? `${row.participant.first_name} ${row.participant.last_name}`
+                  : `${row.author.first_name} ${row.author.last_name}`;
 
-          <div className='previous'>
-            <Typography variant='menu' className='title'>
-              PREVIOUS
-            </Typography>
+              return (
+                <Conversation
+                  key={rowIndex}
+                  joinRoom={joinRoom}
+                  fullName={fullName}
+                  row={row}
+                  active={room?._id === row?._id}
+                />
+              );
+            })}
 
-            <div className='conversations-list'>
-              {(previous?.data || []).map((row: any, rowIndex: number) => {
-                const fullName =
-                  userDetails?.user_id === row.author._id
-                    ? `${row.participant.first_name} ${row.participant.last_name}`
-                    : `${row.author.first_name} ${row.author.last_name}`;
-
-                return <Conversation key={rowIndex} joinRoom={joinRoom} fullName={fullName} row={row} />;
-              })}
-
-              {previous.isLoading &&
-                [1, 2].map(() => {
-                  return (
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'min-content auto',
-                        alignItems: 'center',
-                        columnGap: '10px',
-                        padding: '16px'
-                      }}>
-                      <Skeleton variant='circular' width={32} height={32} />
-                      <Skeleton height={20} />
+            {previous.isLoading &&
+              [1, 2].map((i) => {
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'min-content auto',
+                      alignItems: 'center',
+                      columnGap: '10px',
+                      padding: '16px'
+                    }}>
+                    <div style={{ display: 'flex' }}>
+                      <Skeleton variant='circular' width={48} height={48} />
+                      <Skeleton variant='circular' width={48} height={48} style={{ marginLeft: '-15px' }} />
                     </div>
-                  );
-                })}
-            </div>
+                    <div>
+                      <Skeleton height={20} width={200} />
+                      <Skeleton height={10} width={230} />
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
+
+        <div className='line'></div>
 
         {room && (
           <Chatbox
@@ -107,6 +103,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             user_id={userDetails?.user_id}
             messages={messages}
             socket={socket}
+            closeDeal={() => setRoom(null)}
           />
         )}
       </div>
@@ -120,67 +117,31 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     box-sizing: border-box;
     grid-template-rows: min-content auto;
 
-    background: linear-gradient(180deg, #ffffff 0%, #f3edea 30.91%);
+    background: #ffffff;
 
     .container {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      column-gap: 24px;
+      grid-template-columns: 1fr min-content 2.8fr;
+      column-gap: 69px;
       overflow-y: auto;
       padding: 44px 36px;
+
+      .line {
+        width: 2px;
+        background: #f3f4f5;
+      }
     }
 
     .chats {
       display: flex;
       flex-direction: column;
-      row-gap: 32px;
+      row-gap: 24px;
       height: 100%;
 
-      .tab-buttons {
-        display: flex;
-        column-gap: 8px;
-        .button {
-          text-transform: none;
-        }
-
-        .all-messages {
-        }
-
-        .archived-messages {
-          color: #0d2a38;
-          border-color: #c0daff;
-          font-weight: 400;
-        }
-      }
-
-      .unread {
+      .conversations-list {
         display: flex;
         flex-direction: column;
-        row-gap: 16px;
-        .title {
-          color: #0d2a38;
-        }
-
-        .conversations-list {
-          display: flex;
-          flex-direction: column;
-          row-gap: 8px;
-        }
-      }
-
-      .previous {
-        display: flex;
-        flex-direction: column;
-        row-gap: 16px;
-        .title {
-          color: #0d2a38;
-        }
-
-        .conversations-list {
-          display: flex;
-          flex-direction: column;
-          row-gap: 8px;
-        }
+        row-gap: 8px;
       }
     }
   }

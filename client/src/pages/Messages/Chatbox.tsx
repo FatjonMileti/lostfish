@@ -3,7 +3,7 @@ import { TextField } from '../../components/TextField';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
-import React, { HTMLAttributes, useEffect, useState } from 'react';
+import React, { HTMLAttributes, MouseEventHandler, useEffect, useState } from 'react';
 import { Typography } from '../../components/Typography';
 import { stringToColor } from './Conversation';
 
@@ -13,140 +13,174 @@ export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
   user_id: string;
   messages: any;
   socket: any;
+  closeDeal?: MouseEventHandler;
 }
 
-export const Chatbox = styled(({ className, username, room, user_id, messages, socket }: ChatboxProps) => {
-  const [currentMessage, setCurrentMessage] = useState('');
-  const [messageList, setMessageList] = useState<any[]>([]);
+export const Chatbox = styled(
+  ({ className, username, room, user_id, messages, socket, closeDeal = () => {} }: ChatboxProps) => {
+    const [currentMessage, setCurrentMessage] = useState('');
+    const [messageList, setMessageList] = useState<any[]>([]);
 
-  const isAuthor = room.author._id.toString() === user_id.toString();
+    const isAuthor = room.author._id.toString() === user_id.toString();
 
-  const once = React.useRef(false);
-  const conversationBoxRef = React.useRef<HTMLDivElement>(null);
+    const once = React.useRef(false);
+    const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setMessageList(messages);
-  }, [messages]);
+    useEffect(() => {
+      setMessageList(messages);
+    }, [messages]);
 
-  useEffect(() => {
-    if (!once.current) {
-      socket.on('receive_message', (data: any) => {
-        // @ts-ignore
-        setMessageList((list: any) => [...list, data]);
-      });
-      once.current = true;
-    }
-  }, [socket]);
+    useEffect(() => {
+      if (!once.current) {
+        socket.on('receive_message', (data: any) => {
+          // @ts-ignore
+          setMessageList((list: any) => [...list, data]);
+        });
+        once.current = true;
+      }
+    }, [socket]);
 
-  React.useEffect(() => {
-    if (conversationBoxRef.current) {
-      conversationBoxRef.current;
+    React.useEffect(() => {
+      if (conversationBoxRef.current) {
+        conversationBoxRef.current;
 
-      conversationBoxRef.current.scrollTop = conversationBoxRef.current.scrollHeight;
-    }
-  }, [messageList]);
+        conversationBoxRef.current.scrollTop = conversationBoxRef.current.scrollHeight;
+      }
+    }, [messageList]);
 
-  const sendMessage = async () => {
-    if (!currentMessage) {
-      return;
-    }
-    const messageBody: any = {
-      room_id: room._id,
-      participant: !isAuthor ? user_id : room.participant._id,
-      author: isAuthor ? room.author : room.participant,
-      message: currentMessage,
-      sender: user_id,
-      time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
+    const sendMessage = async () => {
+      if (!currentMessage) {
+        return;
+      }
+      const messageBody: any = {
+        room_id: room._id,
+        participant: !isAuthor ? user_id : room.participant._id,
+        author: isAuthor ? room.author : room.participant,
+        message: currentMessage,
+        sender: user_id,
+        time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
+      };
+      await socket.emit('send_message', messageBody);
+      messageBody.isCurrentUser = true;
+      // @ts-ignore
+      setMessageList((prevMessages: any) => [...prevMessages, messageBody]);
+      setCurrentMessage('');
     };
-    await socket.emit('send_message', messageBody);
-    messageBody.isCurrentUser = true;
-    // @ts-ignore
-    setMessageList((prevMessages: any) => [...prevMessages, messageBody]);
-    setCurrentMessage('');
-  };
 
-  return (
-    <div className={`chat-box ${className}`}>
-      <div className='conversation' ref={conversationBoxRef}>
-        {messageList.map((messageContent: any, messageIndex: number) => {
-          const authorId = messageContent?.author?._id;
+    return (
+      <div className={`chat-box ${className}`}>
+        <div className='chatbox-header'>
+          <div className='chatbox-header-texts'>
+            <Typography variant='body4' style={{ fontWeight: 600 }}>
+              Ready to close the deal?
+            </Typography>
+            <Typography variant='body5'>
+              Click the “Close deal” button and you’ll be redirected to complete the transaction.
+            </Typography>
+          </div>
+          <div className='chatbox-header-actions'>
+            <Button startIcon={<Icon icon='close' size={16} />}>Unmatch</Button>
+            <Button inverted startIcon={<Icon icon='checked' size={14} />} onClick={closeDeal}>
+              Close deal
+            </Button>
+          </div>
+        </div>
+        <div className='conversation' ref={conversationBoxRef}>
+          {messageList.map((messageContent: any, messageIndex: number) => {
+            const authorId = messageContent?.author?._id;
 
-          const fromMe = authorId.toString() === user_id.toString();
+            const fromMe = authorId.toString() === user_id.toString();
 
-          const isLastMessageFromAuthor =
-            messageList.findLastIndex((m) => m.author._id === authorId) === messageIndex;
+            const isLastMessageFromAuthor =
+              messageList.findLastIndex((m) => m.author._id === authorId) === messageIndex;
 
-          const isFirstInGroup =
-            !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.author?._id !== authorId;
+            const isFirstInGroup =
+              !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.author?._id !== authorId;
 
-          const inMiddleOfGroup =
-            messageList[messageIndex - 1]?.author?._id === authorId &&
-            messageList[messageIndex + 1]?.author?._id === authorId;
+            const inMiddleOfGroup =
+              messageList[messageIndex - 1]?.author?._id === authorId &&
+              messageList[messageIndex + 1]?.author?._id === authorId;
 
-          const lastInGroup =
-            messageList[messageIndex - 1]?.author?._id === authorId &&
-            (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.author?._id !== authorId);
+            const lastInGroup =
+              messageList[messageIndex - 1]?.author?._id === authorId &&
+              (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.author?._id !== authorId);
 
-          return (
-            <div
-              className={`message ${fromMe ? 'from-me' : 'from-you'} ${
-                isLastMessageFromAuthor ? 'last' : ''
-              } ${isFirstInGroup ? 'first-in-group' : ''} ${inMiddleOfGroup ? 'in-middle-of-group' : ''} ${
-                lastInGroup ? 'last-in-group' : ''
-              }`}
-              key={messageIndex}>
+            return (
               <div
-                className='avatar'
-                style={{
-                  backgroundColor: stringToColor(
-                    messageContent.author.first_name + ' ' + messageContent.author.last_name
-                  )
-                }}>
-                {messageContent.author.first_name[0]}
-                {messageContent.author.last_name[0]}
-              </div>
+                className={`message ${fromMe ? 'from-me' : 'from-you'} ${
+                  isLastMessageFromAuthor ? 'last' : ''
+                } ${isFirstInGroup ? 'first-in-group' : ''} ${inMiddleOfGroup ? 'in-middle-of-group' : ''} ${
+                  lastInGroup ? 'last-in-group' : ''
+                }`}
+                key={messageIndex}>
+                <div
+                  className='avatar'
+                  style={{
+                    backgroundColor: stringToColor(
+                      messageContent.author.first_name + ' ' + messageContent.author.last_name
+                    )
+                  }}>
+                  {messageContent.author.first_name[0]}
+                  {messageContent.author.last_name[0]}
+                </div>
 
-              <Typography variant='body5' className='text'>
-                {messageContent.message}
-              </Typography>
-            </div>
-          );
-        })}
+                <Typography variant='body5' className='text'>
+                  {messageContent.message}
+                </Typography>
+              </div>
+            );
+          })}
+        </div>
+        <div className='write-box'>
+          <TextField
+            placeholder='Type your message here...'
+            endAdornment={
+              <IconButton noBackground>
+                <Icon icon='attach' color='#184D6D' size={18} />
+              </IconButton>
+            }
+            value={currentMessage}
+            onChange={(event) => {
+              setCurrentMessage(event.target.value);
+            }}
+            onKeyPress={(event) => {
+              event.key === 'Enter' && sendMessage();
+            }}
+          />
+          <Button className='send-button' variant='secondary' size='small' onClick={sendMessage}>
+            Send
+          </Button>
+        </div>
       </div>
-      <div className='write-box'>
-        <TextField
-          variant='standard'
-          placeholder='Type your message here...'
-          endAdornment={
-            <IconButton style={{ border: 'none' }}>
-              <Icon icon='attach' color='#184D6D' size={18} />
-            </IconButton>
-          }
-          value={currentMessage}
-          onChange={(event) => {
-            setCurrentMessage(event.target.value);
-          }}
-          onKeyPress={(event) => {
-            event.key === 'Enter' && sendMessage();
-          }}
-        />
-        <Button
-          className='send-button'
-          size='small'
-          endIcon={<Icon icon='send-message' color='white' size={18} />}
-          onClick={sendMessage}>
-          Send
-        </Button>
-      </div>
-    </div>
-  );
-})`
+    );
+  }
+)`
   &.chat-box {
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.1));
     border-radius: 16px;
     display: grid;
-    grid-template-rows: auto 80px;
+    grid-template-rows: min-content auto 80px;
     overflow-y: auto;
+
+    .chatbox-header {
+      background-color: #0d2a38;
+      align-items: center;
+
+      display: flex;
+      padding: 16px 24px;
+      justify-content: space-between;
+
+      .chatbox-header-texts {
+        display: flex;
+        flex-direction: column;
+        color: white;
+      }
+
+      .chatbox-header-actions {
+        display: flex;
+        column-gap: 16px;
+      }
+    }
 
     .conversation {
       overflow-y: auto;
@@ -160,9 +194,6 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
       padding: 24px;
 
       background: #ffffff;
-
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
 
       box-sizing: border-box;
 
@@ -219,7 +250,7 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           justify-self: flex-start;
 
           .text {
-            background-color: rgba(192, 218, 255, 1);
+            background-color: #e7e7e7;
             color: rgba(13, 42, 56, 1);
             border-radius: 16px 16px 16px 16px;
           }
@@ -256,8 +287,8 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
           justify-self: flex-end;
 
           .text {
-            background-color: rgba(207, 213, 213, 1);
-            color: rgba(0, 0, 0, 1);
+            background-color: #184d6d;
+            color: white;
             border-radius: 16px 16px 16px 16px;
           }
 
@@ -300,7 +331,7 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
     .write-box {
       height: 80px;
 
-      background: #fafafa;
+      background: #e7e7e7;
 
       display: grid;
       grid-template-columns: auto min-content;
@@ -312,8 +343,16 @@ export const Chatbox = styled(({ className, username, room, user_id, messages, s
       border-bottom-left-radius: 16px;
       border-bottom-right-radius: 16px;
 
+      .text-field {
+        border-radius: 8px;
+        .input-wrapper {
+          border: none;
+          background-color: white;
+        }
+      }
+
       .send-button {
-        text-transform: none;
+        padding-inline: 67px;
       }
     }
   }

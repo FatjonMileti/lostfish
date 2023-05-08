@@ -72,6 +72,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Typography variant='body3'> body3 24/32</Typography>
           <Typography variant='body4'> body4 16/24</Typography>
           <Typography variant='body5'> body5 14/20</Typography>
+          <Typography variant='body6'> body6 12/16</Typography>
           <Typography variant='menu'> menu 16/20</Typography>
         </div>
 

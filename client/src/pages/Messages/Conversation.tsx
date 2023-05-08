@@ -1,7 +1,8 @@
+import React from 'react';
 import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 
-import React from 'react';
+import propertyMatchThumbnail from './propertyMatchThumbnail.png';
 export function stringToColor(string: string) {
   let hash = 0;
   let i;
@@ -23,17 +24,32 @@ export function stringToColor(string: string) {
 }
 
 export const Conversation = styled(
-  (props: { joinRoom: (roomId?: string) => void; fullName: string; row: any; className?: string }) => {
-    const { joinRoom, fullName, row, className } = props;
+  (props: {
+    joinRoom: (roomId?: string) => void;
+    fullName: string;
+    row: any;
+    className?: string;
+    active?: boolean;
+  }) => {
+    const { joinRoom, fullName, row, className, active } = props;
 
     return (
-      <div className={`conversation ${className}`} onClick={() => joinRoom(row)}>
-        <div className='avatar' style={{ backgroundColor: stringToColor(fullName) }}>
-          {fullName.split(' ')[0][0]}
-          {fullName.split(' ')[1][0]}
+      <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
+        <div className='match-avatar-intersection'>
+          <div className='avatar' style={{ backgroundColor: stringToColor(fullName) }}>
+            {fullName.split(' ')[0][0]}
+            {fullName.split(' ')[1][0]}
+          </div>
+
+          <img className='match-thumbnail' src={propertyMatchThumbnail} alt='match thumbnail' />
         </div>
 
-        <Typography variant='body4'>{fullName}</Typography>
+        <div className='details'>
+          <Typography variant='body4' className='property'>
+            Two bed flat with terrace
+          </Typography>
+          <Typography variant='body6'>Matched on February 27th 2023</Typography>
+        </div>
       </div>
     );
   }
@@ -43,24 +59,22 @@ export const Conversation = styled(
     column-gap: 10px;
     padding: 16px;
     align-items: center;
-
-    border-bottom: 1px solid #cfd5d5;
     box-sizing: border-box;
-
-    color: #0d2a38;
-    font-size: 16px;
-    line-height: 24px;
-    font-weight: 700;
 
     &:hover {
       cursor: pointer;
       border-radius: 12px;
-      background-color: #ffffff;
+      background-color: #f7f1e7;
+    }
+
+    &.active {
+      background-color: #f7f1e7;
+      border-radius: 12px;
     }
 
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
@@ -69,6 +83,51 @@ export const Conversation = styled(
       font-family: Roobert;
       font-size: 14px;
       font-weight: 500;
+    }
+
+    &.active {
+      .match-avatar-intersection {
+        .avatar {
+          :after {
+            background-color: #f7f1e7;
+          }
+        }
+      }
+    }
+
+    .match-avatar-intersection {
+      display: flex;
+
+      .avatar {
+        position: relative;
+        margin-right: -13px;
+        overflow: hidden;
+        :after {
+          background-color: #ffffff;
+          clip-path: circle(50%);
+          width: 100%;
+          height: 100%;
+          content: '';
+          position: absolute;
+          left: calc(100% - 13px);
+        }
+      }
+
+      .match-thumbnail {
+        border-radius: 50%;
+        height: 48px;
+        width: 48px;
+      }
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+
+      .property {
+        color: #0d2a38;
+        font-weight: 700;
+      }
     }
   }
 `;
