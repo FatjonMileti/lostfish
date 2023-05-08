@@ -5,6 +5,8 @@ import { Button } from '../../components/Button';
 import Grid from '@mui/material/Grid';
 import { Map } from './components/Map';
 import { NearestPlaces } from './components/NearestPlaces';
+import { NearestSchools } from './components/NearestSchools';
+import { NearestImportantPlaces } from './components/NearestImportantPlaces';
 
 const center = {
   lat: 41.315113718633036,
@@ -37,7 +39,17 @@ export const Maps = () => {
             <Button>Important places</Button>
           </Box>
           <Box>
-            <NearestPlaces location={center} />
+            <Grid container>
+              <Grid item md={4}>
+                <NearestPlaces location={center} />
+              </Grid>
+              <Grid item md={4}>
+                <NearestSchools location={center} />
+              </Grid>
+              <Grid item md={4}>
+                <NearestImportantPlaces location={center} />
+              </Grid>
+            </Grid>
           </Box>
         </Grid>
         <Grid item xs={4} md={4}></Grid>

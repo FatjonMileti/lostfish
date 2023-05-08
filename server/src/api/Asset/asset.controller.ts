@@ -1,16 +1,16 @@
-import { Router, Request, Response } from 'express';
-import offerService from './asset.service';
-import { AssetDocument } from '../../data/interfaces/asset.interface';
-import { validate, ValidationError } from 'class-validator';
-import authorize from '../../middleware/authorize';
-import validator from '../../middleware/validator';
-import { Role } from '../../enums';
-import * as joi from 'joi';
+import { Router, Request, Response } from "express";
+import offerService from "./asset.service";
+import { AssetDocument } from "../../data/interfaces/asset.interface";
+import { validate, ValidationError } from "class-validator";
+import authorize from "../../middleware/authorize";
+import validator from "../../middleware/validator";
+import { Role } from "../../enums";
+import * as joi from "joi";
 
 const router: Router = Router();
 
 export class AssetController {
-  public path = '/';
+  public path = "/";
   public router = router;
 
   constructor() {
@@ -19,18 +19,21 @@ export class AssetController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
-    this.router.get('/:id', authorize([Role.Admin]), this.getById);
-    this.router.post(this.path,
+    this.router.get("/:id", authorize([Role.Admin]), this.getById);
+    this.router.post(
+      this.path,
       authorize([Role.Admin]),
       validator(
         joi
           .object({
             name: joi.string().required(),
-            description: joi.string().required()
+            description: joi.string().required(),
           })
           .unknown()
-      ), this.createAsset);
-    this.router.delete('/:id', authorize([Role.Admin]), this.delete);
+      ),
+      this.createAsset
+    );
+    this.router.delete("/:id", authorize([Role.Admin]), this.delete);
   }
 
   /**
@@ -49,7 +52,6 @@ export class AssetController {
       return res.send(error?.response?.data);
     }
   };
-
 
   /**
    * @api {get} /api/asset/:id Get by Id
@@ -86,11 +88,9 @@ export class AssetController {
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
-    return res.send({ errors });
     const response = await offerService.createAsset();
     res.send({ ...response });
   };
-
 
   /**
    * @api {delete} /api/asset/:id Delete
@@ -109,7 +109,7 @@ export class AssetController {
       await offerService.deleteAsset(id);
       res.status(204).send();
     } catch (error) {
-      res.status(404).json({ message: 'Asset not found' });
+      res.status(404).json({ message: "Asset not found" });
     }
   };
 }
