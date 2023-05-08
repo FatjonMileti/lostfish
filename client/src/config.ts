@@ -1,4 +1,4 @@
 export default {
-  apiUrl: 'http://192.168.115.37:3000'
+  apiUrl: 'https://whole-zoos-act.loca.lt'
   // apiUrl: 'http://localhost:3002'
 };

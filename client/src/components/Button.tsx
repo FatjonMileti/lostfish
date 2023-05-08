@@ -7,6 +7,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   endIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   size?: 'small' | 'medium' | 'large';
   inverted?: boolean;
+  active?: boolean;
 }
 
 export const Button = styled(
@@ -14,13 +15,14 @@ export const Button = styled(
     type = 'button',
     className,
     children,
-    variant = 'contained',
+    variant = 'primary',
     startIcon,
     endIcon,
     size = 'medium',
     color,
     disabled,
     inverted = false,
+    active = false,
     ...rest
   }: ButtonProps) => {
     return (
@@ -29,7 +31,7 @@ export const Button = styled(
         disabled={disabled}
         className={`button ${className} variant-${variant} size-${size} ${
           inverted ? 'inverted' : ''
-        } ${color} ${disabled ? 'disabled' : ''}`}
+        } ${color} ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`}
         {...rest}>
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
@@ -58,9 +60,6 @@ export const Button = styled(
   height: min-content;
   width: max-content;
 
-  &.variant-text {
-  }
-
   &.variant-contained {
     color: white;
     background-color: #184d6d;
@@ -84,10 +83,18 @@ export const Button = styled(
       background-color: #0d2a38;
     }
 
+    &.active {
+      background-color: #0d2a38;
+    }
+
     &.inverted {
       color: #0d2a38;
       background-color: #ffffff;
       &:hover {
+        background-color: #c0daff;
+      }
+
+      &.active {
         background-color: #c0daff;
       }
     }
@@ -102,10 +109,20 @@ export const Button = styled(
       background-color: white;
     }
 
+    &.active {
+      color: #0d2a38;
+      background-color: white;
+    }
+
     &.inverted {
       color: white;
       border: 1px solid white;
       &:hover {
+        color: #c0daff;
+        border: 1px solid #c0daff;
+      }
+
+      &.active {
         color: #c0daff;
         border: 1px solid #c0daff;
       }

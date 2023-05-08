@@ -28,7 +28,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     return await new Promise((resolve) =>
       setTimeout(() => {
         resolve(response.data.docs);
-      }, 1000)
+      }, 300)
     );
   });
 
@@ -51,7 +51,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       <div className='container'>
         <div className='chats'>
           <div className='tab-buttons'>
-            <Button size='small' className='all-messages'>
+            <Button size='small' className='all-messages' inverted active>
               All Messages
             </Button>
             <Button size='small' variant='outlined' className='archived-messages'>
@@ -144,8 +144,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
         }
 
         .all-messages {
-          background-color: #c0daff;
-          color: #0d2a38;
         }
 
         .archived-messages {

@@ -20,6 +20,8 @@ import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { SetPassword } from './pages/CreateAccount/SetPassword';
 import { Messages } from './pages/Messages/Messages';
+import { Properties } from './pages/Properties/Properties';
+import { Matches } from './pages/Matches/Matches';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -60,6 +62,8 @@ function App() {
           <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
+          <Route path='/properties' element={<Properties />} />
+          <Route path='/matches' element={<Matches />} />
           <Route path='/components' element={<PreviewComponents />} />
           <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
           <Route path='*' element={<NotFound />} />

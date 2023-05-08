@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
+import { NavLink } from 'react-router-dom';
 
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
@@ -29,10 +30,34 @@ export const Header = styled(({ className }: HeaderProps) => {
 
       <div className='middle-part'>
         <div className='menu'>
-          <Link>DAILY SUMMARY</Link>
-          <Link>MATCHES</Link>
-          <Link>PROPERTIES</Link>
-          <Link onClick={() => navigate('/messages-page')}>MESSAGES</Link>
+          <NavLink to='/'>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Home
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/matches'>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Matches
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/properties'>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Properties
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/messages-page'>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Messages
+              </Button>
+            )}
+          </NavLink>
         </div>
       </div>
 
@@ -65,9 +90,13 @@ export const Header = styled(({ className }: HeaderProps) => {
         list-style: none;
         display: flex;
         align-items: center;
-        column-gap: 40px;
+        column-gap: 5px;
         margin: 0;
-        padding: 0;
+
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        padding: 5px;
+        border-radius: 30px;
+        background: #ffffff;
       }
     }
 
