@@ -5,6 +5,7 @@ import { UserController } from './User/user.controller';
 import { AccountController } from './Account/account.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
+import { MapController } from './Map/map.controller';
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -36,11 +37,11 @@ const offerController = new AssetController();
 const userController = new UserController();
 const accountController = new AccountController();
 const chatController = new ChatController();
-
+const mapController = new MapController();
 router.use('/account', accountController.router);
 router.use('/user', userController.router);
 router.use('/asset', offerController.router);
-router.use('/chat/', chatController.router);
-
+router.use('/chat', chatController.router);
+router.use('/map', mapController.router);
 
 module.exports = router;

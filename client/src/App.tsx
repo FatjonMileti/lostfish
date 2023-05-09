@@ -19,6 +19,7 @@ import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { SetPassword } from './pages/CreateAccount/SetPassword';
+import { Maps } from './pages/Maps/Maps';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
@@ -63,6 +64,7 @@ function App() {
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
           <Route path='/properties' element={<Properties />} />
+          <Route path='/properties/:id' element={<Maps />} />
           <Route path='/matches' element={<Matches />} />
           <Route path='/components' element={<PreviewComponents />} />
           <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
