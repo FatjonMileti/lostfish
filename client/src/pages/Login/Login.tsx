@@ -142,6 +142,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
                 <Switch
                   checked={user.rememberMe}
                   onChange={({ target: { checked } }) => setRememberMe(checked)}
+                  size='small'
                 />
               </label>
 
