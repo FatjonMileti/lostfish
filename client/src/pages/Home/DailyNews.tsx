@@ -1,10 +1,10 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import React from 'react';
 
-export const DailyNews = styled(({ className = '' }) => {
+export const DailyNews = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`${className} daily-new-section`}>
       <div className='left-content'>
@@ -16,10 +16,10 @@ export const DailyNews = styled(({ className = '' }) => {
             DAILY NEWS
           </Typography>
           <div className='icons-wrapper'>
-            <IconButton size='small'>
+            <IconButton size='small' noBackground inverted>
               <Icon icon='share' size={18} color='white' />
             </IconButton>
-            <IconButton size='small'>
+            <IconButton size='small' noBackground inverted>
               <Icon icon='label-vertical' size={18} color='white' />
             </IconButton>
           </div>
@@ -35,7 +35,7 @@ export const DailyNews = styled(({ className = '' }) => {
           <Typography variant='body4' className='progress-tracker'>
             1/3
           </Typography>
-          <IconButton size='small'>
+          <IconButton size='small' noBackground inverted>
             <Icon icon='arrow-right' size={36} color='white' />
           </IconButton>
         </div>

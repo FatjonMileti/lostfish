@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import React from 'react';
 import { Typography } from '../../components/Typography';
 import { Link } from '../../components/Link';
@@ -9,7 +9,7 @@ import { TextField } from '../../components/TextField';
 
 import LogoPlusTextWhite from '../../assets/images/LogoPlusTextWhite.svg';
 
-export const Footer = styled(({ className = '' }) => {
+export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`footer-section ${className}`}>
       <div className='columns-layout'>
@@ -20,16 +20,16 @@ export const Footer = styled(({ className = '' }) => {
             inform customers in the buying, selling, and renting process.
           </Typography>
           <div className='social-networks'>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='facebook-f' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='twitter' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='instagram' color='white' size={16} />
             </IconButton>
-            <IconButton size='large'>
+            <IconButton size='large' noBackground inverted>
               <Icon icon='linkedin-in' color='white' size={16} />
             </IconButton>
           </div>
@@ -60,7 +60,7 @@ export const Footer = styled(({ className = '' }) => {
             Keep in touch with our latest news by subscribing to our newsletter.
           </Typography>
           <TextField placeholder='Enter your email address' className='email-address' />
-          <Button className='subscribe-button' variant='outlined'>
+          <Button className='subscribe-button' variant='secondary'>
             Subscribe
           </Button>
         </div>
@@ -69,7 +69,11 @@ export const Footer = styled(({ className = '' }) => {
         <Typography className='copyright-text' variant='body5'>
           2023 © LOSTFISH LIMITED. ALL RIGHTS RESERVED
         </Typography>
-        <IconButton size='small' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <IconButton
+          size='small'
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          noBackground
+          inverted>
           <Icon icon='arrow-up' color='white' />
         </IconButton>
       </div>
@@ -105,6 +109,10 @@ export const Footer = styled(({ className = '' }) => {
           display: flex;
           align-items: center;
           column-gap: 16px;
+
+          .icon-button {
+            border: 1px solid #184d6d;
+          }
         }
       }
 
@@ -167,8 +175,9 @@ export const Footer = styled(({ className = '' }) => {
         }
 
         .subscribe-button {
-          color: white;
-          border-color: white;
+          //color: white;
+          //border-color: white;
+          margin-top: 24px;
           text-transform: none;
         }
       }

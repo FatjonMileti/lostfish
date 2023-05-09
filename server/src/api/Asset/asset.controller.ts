@@ -46,7 +46,8 @@ export class AssetController {
    */
   private getAll = async (req: Request, res: Response) => {
     try {
-      const offers = await offerService.getAll();
+      const offers = await offerService.getAll({}, res.locals.paging_options);
+
       return res.send(offers);
     } catch (error: any) {
       return res.send(error?.response?.data);

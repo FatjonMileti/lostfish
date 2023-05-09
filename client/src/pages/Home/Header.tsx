@@ -2,7 +2,7 @@ import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -14,51 +14,65 @@ export const Header = styled(({ className }: HeaderProps) => {
       <div className='left'>
         <Logo />
 
-        <div className='menu'>
-          <Link>Rent</Link>
-          <Link>Buy</Link>
-          <Link>Sell</Link>
-          <Link>Lease</Link>
+        <div className='menu-desktop'>
+          <Link>MISSION</Link>
+          <Link>ABOUT</Link>
         </div>
       </div>
 
       <div className='right'>
-        <Link onClick={() => navigate('/login')}>Login</Link>
-        <Button size='medium' variant='outlined' onClick={() => navigate('/components')}>
-          Sign Up
+        <Button size='medium' variant='secondary' onClick={() => navigate('/login')}>
+          Login
+        </Button>
+        <Button size='medium' variant='contained' onClick={() => navigate('/create-account')}>
+          Join
         </Button>
       </div>
     </div>
   );
 })`
   &.header {
-    height: 112px;
+    height: 104px;
     align-items: center;
 
-    padding: 24px 36px;
+    padding: 20px 36px;
+    box-sizing: border-box;
 
     display: grid;
     grid-template-columns: min-content auto;
     justify-content: space-between;
 
+    ${(props) => props.theme.breakpoints.down('laptop')} {
+      height: 80px;
+      padding: 16px 36px;
+    }
+
     .left {
       display: flex;
       column-gap: 24px;
 
-      .menu {
+      .menu-desktop {
         list-style: none;
         display: flex;
         align-items: center;
         column-gap: 40px;
         margin: 0;
         padding: 0;
+
+        ${(props) => props.theme.breakpoints.down('laptop')} {
+          display: none;
+        }
       }
     }
 
     .right {
       display: flex;
       align-items: center;
-      column-gap: 40px;
+      column-gap: 16px;
+
+      ${(props) => props.theme.breakpoints.down('laptop')} {
+        display: none;
+      }
     }
   }
 `;

@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { Card } from '../../components/Card';
 import React from 'react';
 
-export const WhatDefinedUs = styled(({ className = '' }) => {
+export const WhatDefinedUs = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`what-defines-us-section ${className}`}>
       <Typography variant='menu' className='section-title'>

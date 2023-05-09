@@ -1,14 +1,29 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'small' | 'medium' | 'large';
+  inverted?: boolean;
+  noBackground?: boolean;
 }
 
 export const IconButton = styled(
-  ({ className, children, size = 'medium', type = 'button', ...rest }: IconButtonProps) => {
+  ({
+    className,
+    children,
+    size = 'medium',
+    type = 'button',
+    inverted = false,
+    noBackground = false,
+    ...rest
+  }: IconButtonProps) => {
     return (
-      <button type={type} className={`icon-button ${className} ${size}`} {...rest}>
+      <button
+        type={type}
+        className={`icon-button ${className} ${size} ${inverted ? 'inverted' : ''} ${
+          noBackground ? 'no-background' : ''
+        }`}
+        {...rest}>
         {children}
       </button>
     );
@@ -16,17 +31,46 @@ export const IconButton = styled(
 )`
   font-weight: 600;
   font-size: 16px;
-  color: #184d6d;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background-color: transparent;
+  background-color: #f3f4f5;
   border-radius: 50%;
   cursor: pointer;
+  border: none;
 
-  border: 1px solid #184d6d;
+  &.no-background {
+    background: none;
+  }
+
+  > * {
+    color: #0d2a38;
+  }
+
+  &.inverted {
+    background-color: #184d6d;
+    &:hover {
+      background-color: #ffffff;
+      > * {
+        color: #0d2a38;
+      }
+    }
+
+    > * {
+      color: #ffffff;
+    }
+  }
+
+  &:hover {
+    background-color: #c0daff;
+  }
+
+  &.no-background {
+    background: none;
+    &:hover {
+      background-color: #e7e7e7;
+    }
+  }
 
   &.small {
     padding: 6px;
@@ -37,6 +81,6 @@ export const IconButton = styled(
   }
 
   &.large {
-    padding: 16px;
+    padding: 18px;
   }
 `;

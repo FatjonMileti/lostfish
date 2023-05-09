@@ -9,7 +9,7 @@ import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
-import { Close } from '@mui/icons-material';
+import { Close, Message } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
 import { ChatPage } from './pages/Chat';
 
@@ -20,6 +20,10 @@ import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { SetPassword } from './pages/CreateAccount/SetPassword';
 import { Maps } from './pages/Maps/Maps';
+import { Messages } from './pages/Messages/Messages';
+import { Properties } from './pages/Properties/Properties';
+import { Matches } from './pages/Matches/Matches';
+
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -59,8 +63,11 @@ function App() {
           <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
           <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/set-password/:token' element={<SetPassword />} />
+          <Route path='/properties' element={<Properties />} />
+          <Route path='/properties/:id' element={<Maps />} />
+          <Route path='/matches' element={<Matches />} />
           <Route path='/components' element={<PreviewComponents />} />
-          <Route path='/maps' element={<Maps />} />
+          <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
           <Route path='*' element={<NotFound />} />
 
           <Route

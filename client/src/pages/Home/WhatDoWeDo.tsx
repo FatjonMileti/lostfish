@@ -2,9 +2,9 @@ import { Typography } from '../../components/Typography';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 
-export const WhatDoWeDo = styled(({ className = '' }) => {
+export const WhatDoWeDo = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`what-do-we-do-section ${className}`}>
       <Typography variant='menu' className='text3'>

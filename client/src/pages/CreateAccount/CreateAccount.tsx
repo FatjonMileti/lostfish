@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
 import * as yup from 'yup';
@@ -27,7 +27,7 @@ const schema = yup.object().shape({
   privacyPolicy: yup.boolean().oneOf([true])
 });
 
-export const CreateAccount = styled(({ className = '' }) => {
+export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     register,
     handleSubmit,

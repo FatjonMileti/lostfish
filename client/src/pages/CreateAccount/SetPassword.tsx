@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -35,7 +35,7 @@ registerStore(
   { persist: true }
 );
 
-export const SetPassword = styled(({ className = '' }) => {
+export const SetPassword = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     register,
     handleSubmit,
@@ -56,7 +56,6 @@ export const SetPassword = styled(({ className = '' }) => {
   React.useEffect(() => {
     if (!userData) {
       axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`).then((response) => {
-        console.log('response user data: ', response);
         setUserData(response.data);
       });
     }
@@ -111,7 +110,10 @@ export const SetPassword = styled(({ className = '' }) => {
               error={!!errors.password}
               helperText={errors.password?.message?.toString()}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }
@@ -124,7 +126,10 @@ export const SetPassword = styled(({ className = '' }) => {
               required
               {...register('confirmPassword')}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }

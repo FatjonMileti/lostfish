@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import React, { ReactElement } from 'react';
 
 import { useId } from 'react';
@@ -6,10 +6,11 @@ import { Typography } from './Typography';
 import { Icon } from './Icon';
 
 export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: string;
+  variant?: 'filled' | 'outlined' | 'standard';
   label?: string;
   required?: boolean;
   endAdornment?: ReactElement;
+  startAdornment?: ReactElement;
   helperText?: string;
   error?: boolean;
 }
@@ -17,26 +18,43 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
 export const TextField = styled(
   React.forwardRef<HTMLInputElement, TextFieldProps>(
     (
-      { className, id, label, type = 'text', required = false, endAdornment, helperText, error, ...rest },
+      {
+        className,
+        id,
+        label,
+        type = 'text',
+        required = false,
+        endAdornment,
+        startAdornment,
+        helperText,
+        error,
+        variant = 'outlined',
+        ...rest
+      },
       ref
     ) => {
       const elementId = id || useId();
       return (
-        <div className={`text-field ${className} ${error ? 'error' : ''}`}>
-          <label htmlFor={elementId}>
-            {label}
-            {required && <span className='required-asterisk'> *</span>}
-          </label>
+        <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
+          {(label || required) && (
+            <label htmlFor={elementId}>
+              {label}
+              {required && <span className='required-asterisk'> *</span>}
+            </label>
+          )}
 
           <div className='input-wrapper'>
+            {startAdornment || null}
             <input id={elementId} type={type} {...rest} ref={ref} />
-            {endAdornment ? endAdornment : null}
+            {endAdornment || null}
           </div>
 
-          <span className='helper-text'>
-            {error && <Icon icon='warning' size={12} color='#b4263b' />}
-            <Typography variant='body4'>{helperText || ' '}</Typography>
-          </span>
+          {helperText && (
+            <span className='helper-text'>
+              {error && <Icon icon='warning' size={12} color='#b4263b' />}
+              <Typography variant='body4'>{helperText || ''}</Typography>
+            </span>
+          )}
         </div>
       );
     }
@@ -94,6 +112,7 @@ export const TextField = styled(
 
       &:focus-within {
         border: 1px solid #184d6d;
+        background-color: #ffffff;
       }
 
       input {
@@ -112,9 +131,21 @@ export const TextField = styled(
         line-height: 24px;
 
         flex-grow: 1;
-        &[type='password'] {
-          font-size: xx-large;
+        &[type='password']:not(:placeholder-shown) {
+          font-family: 'pass';
+          font-weight: 400;
+          font-size: larger;
         }
+      }
+    }
+
+    &.variant-standard {
+      .input-wrapper {
+        border: none;
+
+        border-bottom: 1px solid #a7a7a7;
+
+        border-radius: 0;
       }
     }
   }

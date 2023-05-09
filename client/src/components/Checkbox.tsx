@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import React from 'react';
 import { Checkbox as MuiCheckbox, CheckboxProps } from '@mui/material';
 import { Icon } from './Icon';

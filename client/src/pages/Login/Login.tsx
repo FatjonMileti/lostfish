@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,6 +18,7 @@ import { IconButton } from '../../components/IconButton';
 import loginIllustration from './loginIllustration.svg';
 
 import config from '../../config';
+import { Backdrop } from '../../components/Backdrop';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -34,7 +35,7 @@ registerStore(
   { persist: true }
 );
 
-export const Login = styled(({ className = '' }) => {
+export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     register,
     handleSubmit,
@@ -48,6 +49,8 @@ export const Login = styled(({ className = '' }) => {
     user: [user, setUser]
   } = useGlobalState();
 
+  const [loading, setLoading] = React.useState(false);
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -59,6 +62,8 @@ export const Login = styled(({ className = '' }) => {
   };
 
   const onSubmit = async (data: any) => {
+    setLoading(true);
+
     const { email, password } = data;
 
     try {
@@ -86,11 +91,14 @@ export const Login = styled(({ className = '' }) => {
       }
 
       throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className={`login-page ${className}`}>
+      <Backdrop open={loading}></Backdrop>
       <div className='left-part'>
         <Typography variant='h3' className='main-title'>
           See what’s in it for you.
@@ -118,7 +126,10 @@ export const Login = styled(({ className = '' }) => {
               required
               {...register('password')}
               endAdornment={
-                <IconButton style={{ border: 'none' }} onClick={() => setShowPassword((show) => !show)}>
+                <IconButton
+                  noBackground
+                  style={{ border: 'none' }}
+                  onClick={() => setShowPassword((show) => !show)}>
                   {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                 </IconButton>
               }

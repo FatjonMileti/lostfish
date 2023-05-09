@@ -1,72 +1,78 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import React from 'react';
 
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
-
 import { Header } from './Header';
-import { Footer } from './Footer';
 
-import { Intersection } from './Intersection';
-import { WhatDoWeDo } from './WhatDoWeDo';
-import { WhatDefinedUs } from './WhatDefinedUs';
-import { BuildingsIllustration } from './BuildingsIllustration';
-import { DailyNews } from './DailyNews';
-import { Interiorillustration } from './Interiorillustration';
-
-import homePageBackgroundImage from './homePageBackground.png';
+import binocularsDesktop from './binocularsDesktop.png';
+import binocularsLaptop from './binocularsLaptop.png';
+import binocularsTablet from './binocularsTablet.png';
+import binocularsMobile from './binocularsMobile.png';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={className}>
-      <div className='background-image-section'>
+    <div className={`home-page ${className}`}>
+      <div className='container'>
         <Header />
 
-        <div className='title-and-decription'>
-          <Typography variant='h1'>Welcome to Lostfish.</Typography>
+        <div className='title-and-description'>
+          <Typography variant='h1' className='title'>
+            Looking for your next home?
+          </Typography>
           <Typography variant='body4' className='text2'>
-            Our aim is to revolutionise the property industry by utilising technology and data to empower and
+            Our goal is to revolutionise the property industry by utilising technology and data to empower and
             inform customers in the buying, selling, and renting process.
           </Typography>
-          <Typography variant='body2' className='text3'>
-            What’s in it for you?
-          </Typography>
+          <Button className='how-it-works-button' variant='secondary'>
+            HOW IT WORKS
+          </Button>
         </div>
-
-        <Intersection />
       </div>
-
-      <Interiorillustration />
-
-      <WhatDoWeDo />
-
-      <DailyNews />
-
-      <BuildingsIllustration />
-
-      <WhatDefinedUs />
-
-      <div className='join-our-community-section'>
-        <Button size='large' variant='contained' endIcon={<Icon icon='arrow-right' size={28} />}>
-          Join our community
-        </Button>
-      </div>
-      <Footer />
     </div>
   );
 })`
-  max-width: 1440px;
-  margin-inline: auto;
+  &.home-page {
+    min-height: 100vh;
+    display: grid;
 
-  .background-image-section {
-    background-image: url(${homePageBackgroundImage});
+    background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
+      url(${binocularsDesktop});
+
+    background-color: #f7f1e7;
+    background-size: contain;
     background-repeat: no-repeat;
-    background-size: cover;
-    padding-bottom: 52px;
+    background-position: top;
 
-    .title-and-decription {
+    /* Laptops (1024px to 1439px) */
+    ${(props) => props.theme.breakpoints.only('laptop')} {
+      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
+        url(${binocularsLaptop});
+    }
+
+    /* Tablets (768px to 1023px) */
+    ${(props) => props.theme.breakpoints.only('tablet')} {
+      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
+        url(${binocularsTablet});
+    }
+
+    /* Mobile (375px to 767px) */
+    ${(props) => props.theme.breakpoints.down('tablet')} {
+      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
+        url(${binocularsMobile});
+    }
+
+    .container {
       margin-inline: auto;
+      height: 100%;
+      width: 100%;
+
+      display: grid;
+    }
+
+    .title-and-description {
+      margin-inline: auto;
+
       max-width: 904px;
       margin-top: 64px;
       text-align: center;
@@ -74,30 +80,33 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       display: flex;
       flex-direction: column;
       align-items: center;
+      align-self: flex-end;
+
+      ${(props) => props.theme.breakpoints.only('tablet')} {
+        padding-inline: 36px;
+      }
+
+      ${(props) => props.theme.breakpoints.down('tablet')} {
+        padding-inline: 20px;
+      }
+
+      .title {
+        ${(props) => props.theme.breakpoints.down('tablet')} {
+          font-size: 40px;
+          line-height: 48px;
+        }
+      }
 
       .text2 {
-        margin-top: 24px;
+        margin-top: 16px;
         max-width: 672px;
       }
 
-      .text3 {
-        margin-top: 64px;
+      .how-it-works-button {
+        margin-top: 48px;
       }
-    }
 
-    .intersection {
-    }
-  }
-
-  .join-our-community-section {
-    margin-top: 48px;
-    display: flex;
-    justify-content: center;
-    button {
-      text-transform: none;
-      display: flex;
-      column-gap: 10px;
-      align-items: center;
+      padding-bottom: 32px;
     }
   }
 `;
