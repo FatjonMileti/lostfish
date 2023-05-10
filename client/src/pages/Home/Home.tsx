@@ -1,8 +1,7 @@
-import { styled } from '@mui/system';
 import React from 'react';
+import { styled } from '@mui/system';
 
 import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
 import { Header } from './Header';
 
 import binocularsDesktop from './binocularsDesktop.png';
@@ -10,24 +9,43 @@ import binocularsLaptop from './binocularsLaptop.png';
 import binocularsTablet from './binocularsTablet.png';
 import binocularsMobile from './binocularsMobile.png';
 
+import { Carousel } from './Carousel';
+
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`home-page ${className}`}>
-      <div className='container'>
-        <Header />
+      <Header />
 
-        <div className='title-and-description'>
-          <Typography variant='h1' className='title'>
-            Looking for your next home?
-          </Typography>
-          <Typography variant='body4' className='text2'>
-            Our goal is to revolutionise the property industry by utilising technology and data to empower and
-            inform customers in the buying, selling, and renting process.
-          </Typography>
-          <Button className='how-it-works-button' variant='secondary'>
-            HOW IT WORKS
-          </Button>
-        </div>
+      <div className='slider-section'>
+        <Carousel>
+          <div className='slide'>
+            <Typography variant='h2' className='title'>
+              Looking for your next home?
+            </Typography>
+            <Typography variant='body4' className='description'>
+              Our goal is to revolutionise the property industry by utilising technology and data to empower
+              and inform customers in the buying, selling, and renting process.
+            </Typography>
+          </div>
+          <div className='slide'>
+            <Typography variant='h2' className='title'>
+              Can’t find perfect tenants?
+            </Typography>
+            <Typography variant='body4' className='description'>
+              Our goal is to revolutionise the property industry by utilising technology and data to empower
+              and inform customers in the buying, selling, and renting process.
+            </Typography>
+          </div>
+          <div className='slide'>
+            <Typography variant='h2' className='title'>
+              Tired of irrelevant offers?
+            </Typography>
+            <Typography variant='body4' className='description'>
+              Our goal is to revolutionise the property industry by utilising technology and data to empower
+              and inform customers in the buying, selling, and renting process.
+            </Typography>
+          </div>
+        </Carousel>
       </div>
     </div>
   );
@@ -35,6 +53,8 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   &.home-page {
     min-height: 100vh;
     display: grid;
+
+    grid-template-rows: min-content auto;
 
     background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
       url(${binocularsDesktop});
@@ -62,51 +82,29 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         url(${binocularsMobile});
     }
 
-    .container {
-      margin-inline: auto;
-      height: 100%;
-      width: 100%;
-
-      display: grid;
-    }
-
-    .title-and-description {
-      margin-inline: auto;
-
-      max-width: 904px;
-      margin-top: 64px;
-      text-align: center;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .slider-section {
+      background: white;
       align-self: flex-end;
 
-      ${(props) => props.theme.breakpoints.only('tablet')} {
-        padding-inline: 36px;
-      }
+      padding: 53px 36px;
 
-      ${(props) => props.theme.breakpoints.down('tablet')} {
-        padding-inline: 20px;
-      }
+      .slide {
+        display: grid;
+        grid-template-rows: 1fr;
+        row-gap: 16px;
+        width: 100%;
+        justify-content: center;
 
-      .title {
-        ${(props) => props.theme.breakpoints.down('tablet')} {
-          font-size: 40px;
-          line-height: 48px;
+        .title {
+          max-width: 904px;
+          text-align: center;
+        }
+
+        .description {
+          max-width: 672px;
+          text-align: center;
         }
       }
-
-      .text2 {
-        margin-top: 16px;
-        max-width: 672px;
-      }
-
-      .how-it-works-button {
-        margin-top: 48px;
-      }
-
-      padding-bottom: 32px;
     }
   }
 `;
