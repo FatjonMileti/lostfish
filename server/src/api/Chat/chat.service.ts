@@ -5,7 +5,8 @@ import RoomModel from '../../data/room';
 import notificationSender from '../../utils/notification-sender';
 import { NotificationType } from '../../data/interfaces/notification.interface';
 import socketApi from '../../utils/socket.io';
-
+import roomService from './room.service';
+import { Types } from 'mongoose';
 const getAll = async (query: any, pagingOptions: any) => {
   return RoomModel.paginate(query, {
     ...pagingOptions,
@@ -73,12 +74,6 @@ const getLatestMessage = async (query: any) => {
     .sort({ created_at: -1 });
 };
 
-const getRoomDetails = async (query: any) => {
-  return RoomModel.findOne({ ...query })
-    .populate('author', ['first_name', 'last_name'])
-    .populate('participant', ['first_name', 'last_name']);
-};
-
 const findOne = async (query: any) => {
   return ChatModel.findOne({ ...query });
 };
@@ -99,11 +94,11 @@ const handleNewMessage = async (socket: any, data: any) => {
   let room: any | null = null;
   if (!data.room_id) {
     const createRoom = await RoomModel.create({ ...data });
-    room = await getRoomDetails({ _id: createRoom._id });
+    room = await roomService.getRoomDetails({ _id: createRoom._id });
     socket.emit('receive_room_id', room);
     data.room_id = createRoom._id;
   } else {
-    room = await getRoomDetails({ _id: data.room_id });
+    room = await roomService.getRoomDetails({ _id: data.room_id });
   }
   data.participant = room.participant._id;
   data.author = room.author._id;
@@ -126,9 +121,16 @@ const handleNewMessage = async (socket: any, data: any) => {
         ? data.author.toString()
         : data.participant.toString();
 
+    const query: any = {
+      $or: [
+        { author: { $eq: new Types.ObjectId(userToBeNotified) } },
+        { participant: { $eq: new Types.ObjectId(userToBeNotified) } }
+      ]
+    };
+
+    const roomDetails = await roomService.findWithAggregate(data.room_id);
     socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
-      console.log({ socketId });
-      socket.to(socketId).emit('update_message_list', messagesData);
+      socket.to(socketId).emit('update_message_list', roomDetails);
     });
   }
 };
@@ -140,7 +142,6 @@ export default {
   create,
   deleteChat,
   getConversations,
-  getRoomDetails,
   getLatestMessage,
   handleNewMessage
 };

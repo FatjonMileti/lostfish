@@ -21,26 +21,23 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const [messages, setMessages] = useState<any>([]);
   const [conversations, setConversations] = useState<any>([]);
 
-  const evHandler = (data: any) => {
+  const reorderMessages = (data: any) => {
     const filteredMesages = conversations.filter(
-      (message: any) => message.id.toString() !== data.room_id.toString()
+      (message: any) => message._id.toString() !== data._id.toString()
     );
-    console.log({ data, filteredMesages });
     setConversations([data, ...filteredMesages]);
   };
-
-  console.log({ conversations });
 
   // @ts-ignore
   useEffect(() => {
     if (socket) {
-      socket.on('update_message_list', evHandler);
+      socket.on('update_message_list', reorderMessages);
 
       return () => {
         socket.off('update_message_list');
       };
     }
-  }, [socket]);
+  }, [reorderMessages]);
 
   const previous = useQuery<any[]>(['messages'], async (): Promise<any[]> => {
     const response = await request(auth.access_token).get('/api/chat');
@@ -76,7 +73,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           <div className='conversations-list'>
             {(conversations || []).map((row: any, rowIndex: number) => {
               const fullName =
-                userDetails?.user_id === row.author._id
+                userDetails?.user_id === row?.author?._id
                   ? `${row.participant.first_name} ${row.participant.last_name}`
                   : `${row.author.first_name} ${row.author.last_name}`;
 
@@ -127,6 +124,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             messages={messages}
             socket={socket}
             closeDeal={() => setRoom(null)}
+            updateList={reorderMessages}
           />
         )}
       </div>

@@ -11,13 +11,14 @@ export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
   room: any;
   user_id: string;
-  messages: any;
+  messages: any[];
   socket: any;
   closeDeal?: MouseEventHandler;
+  updateList?: (data: any) => void;
 }
 
 export const Chatbox = styled(
-  ({ className, username, room, user_id, messages, socket, closeDeal = () => {} }: ChatboxProps) => {
+  ({ className, updateList, room, user_id, messages, socket, closeDeal = () => {} }: ChatboxProps) => {
     const [currentMessage, setCurrentMessage] = useState('');
     const [messageList, setMessageList] = useState<any[]>([]);
 
@@ -59,14 +60,17 @@ export const Chatbox = styled(
       };
       const messageBody: any = {
         ...dataToSend,
-        participant: isAuthor ? user_id : room.participant._id,
+        participant: !isAuthor ? user_id : room.participant._id,
         author: isAuthor ? room.author : room.participant,
-        time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
+        time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
+        sender: isAuthor ? room.author : room.participant
       };
       await socket.emit('send_message', dataToSend);
       messageBody.isCurrentUser = true;
       // @ts-ignore
       setMessageList((prevMessages: any) => [...prevMessages, messageBody]);
+      room.last_message.message = currentMessage;
+      updateList && updateList(room);
       setCurrentMessage('');
     };
 
@@ -90,7 +94,7 @@ export const Chatbox = styled(
         </div>
         <div className='conversation' ref={conversationBoxRef}>
           {messageList.map((messageContent: any, messageIndex: number) => {
-            const authorId = messageContent?.author?._id;
+            const authorId = messageContent?.sender?._id;
 
             const fromMe = authorId.toString() === user_id.toString();
 

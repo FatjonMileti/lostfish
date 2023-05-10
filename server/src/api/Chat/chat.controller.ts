@@ -1,12 +1,12 @@
 import express, { Router } from 'express';
 import chatService from './chat.service';
+import roomService from './room.service';
 import { ChatDocument } from '../../data/interfaces/chat.interface';
 import { Role } from '../../enums';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
-import RoomModel from '../../data/room';
-import ChatModel from '../../data/message';
-import mongoose, { Document, ObjectId, Schema, Mongoose } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
+
 const router: Router = Router();
 
 export class ChatController {
@@ -44,19 +44,15 @@ export class ChatController {
   private getAll = async (req: express.Request, res: express.Response) => {
     const { search } = req.query;
 
-    const testQuery: any = {
-      $or: [{ author: { $eq: res.locals.user_id } }, { participant: { $eq: res.locals.user_id } }]
+    const query: any = {
+      $or: [
+        { author: { $eq: new Types.ObjectId(res.locals.user_id) } },
+        { participant: { $eq: new Types.ObjectId(res.locals.user_id) } }
+      ]
     };
 
-    const messages = await chatService.getAll(testQuery, res.locals.paging_options);
-
-    for (const msg of messages.docs) {
-      msg.last_message = await ChatModel.findOne({ room_id: msg._id })
-        .populate('sender', ['first_name', 'last_name'])
-        .sort({ created_at: -1 });
-    }
-
-    res.json(messages);
+    const response = await roomService.getAll(query, res.locals.paging_options);
+    res.send(response);
   };
 
   /**
@@ -98,11 +94,10 @@ export class ChatController {
   private create = async (req: express.Request, res: express.Response) => {
     const chat: ChatDocument = req.body as ChatDocument;
 
-    if (!chat.room_id) {
-      const newRoom = await RoomModel.create({
+    /*if (!chat.room_id) {
+      const newRoom = await roomService.create({
         author: chat.author,
-        participant: chat.participant,
-        created_at: new Date()
+        participant: chat.participant
       });
 
       if (newRoom) {
@@ -115,6 +110,7 @@ export class ChatController {
 
     await chatService.create(chat);
     return res.status(200).send(chat);
+    */
   };
 
   /**
@@ -131,7 +127,7 @@ export class ChatController {
     const id = req.params.id;
 
     try {
-      await chatService.deleteChat(id);
+      await roomService.deleteRoom(id);
       res.status(204).send();
     } catch (error) {
       res.status(404).json({ message: 'User not found' });

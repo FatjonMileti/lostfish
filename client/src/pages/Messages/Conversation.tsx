@@ -46,7 +46,7 @@ export const Conversation = styled(
 
         <div className='details'>
           <Typography variant='body4' className='property'>
-            Two bed flat with terrace
+            {row?.last_message?.message ?? ''}
           </Typography>
           <Typography variant='body6'>Matched on February 27th 2023</Typography>
         </div>
