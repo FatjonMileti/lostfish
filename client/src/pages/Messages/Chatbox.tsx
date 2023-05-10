@@ -23,7 +23,6 @@ export const Chatbox = styled(
 
     const isAuthor = room.author._id.toString() === user_id.toString();
 
-    const once = React.useRef(false);
     const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -31,13 +30,14 @@ export const Chatbox = styled(
     }, [messages]);
 
     useEffect(() => {
-      if (!once.current) {
-        socket.on('receive_message', (data: any) => {
-          // @ts-ignore
-          setMessageList((list: any) => [...list, data]);
-        });
-        once.current = true;
-      }
+      socket.on('receive_message', (data: any) => {
+        // @ts-ignore
+        setMessageList((list: any) => [...list, data]);
+      });
+
+      return () => {
+        socket.off('receive_message');
+      };
     }, [socket]);
 
     React.useEffect(() => {
@@ -52,15 +52,18 @@ export const Chatbox = styled(
       if (!currentMessage) {
         return;
       }
-      const messageBody: any = {
+      const dataToSend: any = {
         room_id: room._id,
-        participant: !isAuthor ? user_id : room.participant._id,
-        author: isAuthor ? room.author : room.participant,
         message: currentMessage,
-        sender: user_id,
+        sender: user_id
+      };
+      const messageBody: any = {
+        ...dataToSend,
+        participant: isAuthor ? user_id : room.participant._id,
+        author: isAuthor ? room.author : room.participant,
         time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
       };
-      await socket.emit('send_message', messageBody);
+      await socket.emit('send_message', dataToSend);
       messageBody.isCurrentUser = true;
       // @ts-ignore
       setMessageList((prevMessages: any) => [...prevMessages, messageBody]);

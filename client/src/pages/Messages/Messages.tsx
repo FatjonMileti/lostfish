@@ -1,15 +1,13 @@
-import React, { HTMLAttributes, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useState, useContext } from 'react';
 import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { Conversation } from './Conversation';
 import { Chatbox } from './Chatbox';
 import { Header } from '../HomeLoggedIn/Header';
-
 import { useQuery } from '@tanstack/react-query';
 import request from '../../utils/axios';
 import { useGlobalState } from '../../globalState';
-
-import socket from '../../context/socket';
+import SocketContext from '../../context/SocketContext';
 import { Skeleton } from '@mui/lab';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -17,14 +15,39 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     user: [{ userDetails, auth }]
   } = useGlobalState();
 
+  const { socket } = useContext(SocketContext);
+
   const [room, setRoom] = useState<any>(null);
   const [messages, setMessages] = useState<any>([]);
+  const [conversations, setConversations] = useState<any>([]);
+
+  const evHandler = (data: any) => {
+    const filteredMesages = conversations.filter(
+      (message: any) => message.id.toString() !== data.room_id.toString()
+    );
+    console.log({ data, filteredMesages });
+    setConversations([data, ...filteredMesages]);
+  };
+
+  console.log({ conversations });
+
+  // @ts-ignore
+  useEffect(() => {
+    if (socket) {
+      socket.on('update_message_list', evHandler);
+
+      return () => {
+        socket.off('update_message_list');
+      };
+    }
+  }, [socket]);
 
   const previous = useQuery<any[]>(['messages'], async (): Promise<any[]> => {
     const response = await request(auth.access_token).get('/api/chat');
 
     return await new Promise((resolve) =>
       setTimeout(() => {
+        setConversations(response.data.docs);
         resolve(response.data.docs);
       }, 300)
     );
@@ -39,7 +62,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     if (userDetails?.username && roomObj) {
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
-      return socket.emit('join_room', roomObj._id);
+      if (socket) return socket.emit('join_room', roomObj._id);
     }
   };
 
@@ -51,7 +74,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           <Typography variant='body2'>My messages</Typography>
 
           <div className='conversations-list'>
-            {(previous?.data || []).map((row: any, rowIndex: number) => {
+            {(conversations || []).map((row: any, rowIndex: number) => {
               const fullName =
                 userDetails?.user_id === row.author._id
                   ? `${row.participant.first_name} ${row.participant.last_name}`

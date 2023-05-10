@@ -8,6 +8,7 @@ import { Logo } from '../../components/Logo';
 
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../globalState';
+import request from '../../utils/axios';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -18,8 +19,12 @@ export const Header = styled(({ className }: HeaderProps) => {
     user: [user, setUser]
   } = useGlobalState();
 
-  const logOut = () => {
+  const logOut = async () => {
+    await request(user.auth.access_token).post('/api/account/logout', {
+      refresh_token: user.auth.refresh_token
+    });
     setUser((user: any) => ({ ...user, auth: null }));
+    navigate('/');
   };
 
   return (

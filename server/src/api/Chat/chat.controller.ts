@@ -6,7 +6,7 @@ import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import RoomModel from '../../data/room';
 import ChatModel from '../../data/message';
-import mongoose, {Document, ObjectId, Schema, Mongoose} from 'mongoose';
+import mongoose, { Document, ObjectId, Schema, Mongoose } from 'mongoose';
 const router: Router = Router();
 
 export class ChatController {
@@ -18,10 +18,9 @@ export class ChatController {
 
   private initializeRoutes() {
     this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/:id', authorize([Role.Admin]),paging({ sort: { created_at: -1 } }), this.getById);
+    this.router.get('/:id', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getById);
     this.router.post('/', authorize([Role.Admin]), this.create);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
-
   }
 
   /**
@@ -46,22 +45,19 @@ export class ChatController {
     const { search } = req.query;
 
     const testQuery: any = {
-      $or: [
-        { author: { $eq: res.locals.user_id } }, { participant: { $eq: res.locals.user_id } }
-      ]
+      $or: [{ author: { $eq: res.locals.user_id } }, { participant: { $eq: res.locals.user_id } }]
     };
-
 
     const messages = await chatService.getAll(testQuery, res.locals.paging_options);
 
     for (const msg of messages.docs) {
       msg.last_message = await ChatModel.findOne({ room_id: msg._id })
-          .populate('sender', ['first_name', 'last_name']).sort({ created_at: -1 });
+        .populate('sender', ['first_name', 'last_name'])
+        .sort({ created_at: -1 });
     }
 
     res.json(messages);
   };
-
 
   /**
    * @api {get} /api/chat/:id Get by room Id
@@ -75,9 +71,13 @@ export class ChatController {
    */
   private getById = async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
-    const messages = await chatService.getConversations(id,{
-      room_id: {$eq:  new mongoose.Types.ObjectId(id) }
-    }, res.locals.paging_options);
+    const messages = await chatService.getConversations(
+      id,
+      {
+        room_id: { $eq: new mongoose.Types.ObjectId(id) }
+      },
+      res.locals.paging_options
+    );
     res.json(messages);
   };
 
@@ -116,7 +116,6 @@ export class ChatController {
     await chatService.create(chat);
     return res.status(200).send(chat);
   };
-
 
   /**
    * @api {delete} /api/user/:id Delete

@@ -1,5 +1,4 @@
 import { Schema, model, PaginateModel } from 'mongoose';
-import { Role } from '../enums';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { ChatDocument } from './interfaces/chat.interface';
 
