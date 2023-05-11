@@ -1,29 +1,55 @@
-const sio = require('socket.io');
+import { verifyToken } from '../middleware/authorize';
+
+import { Server, Socket } from 'socket.io';
 import chatService from '../api/Chat/chat.service';
+import { JwtPayload } from 'jsonwebtoken';
 
 const users: any = {};
-const io = sio();
+const io: Server = new Server();
 const socketApi: any = {};
 
 socketApi.io = io;
 socketApi.users = users;
 
-io.on('connection', (socket: any) => {
+io.on('connection', async (socket: Socket) => {
   console.log(`User Connected: ${socket.id}`);
+  const token = socket.handshake.auth.token;
 
-  socket.on('join_room', (data: any) => {
-    socket.join(data);
-    console.log('User joined room ' + data.room_id);
+  const decoded: JwtPayload | boolean = await verifyToken(token);
+  if (!decoded) {
+    return;
+  }
+
+  if (!users[decoded.user_id]) {
+    users[decoded.user_id] = [];
+  }
+
+  users[decoded.user_id].push(socket.id);
+
+  socket.on('join_room', (room: string) => {
+    socket.join(room);
+    console.log('User joined room ' + room);
   });
 
   socket.on('send_message', async (data: any) => {
-    console.log({ data });
     await chatService.handleNewMessage(socket, data);
   });
 
   socket.on('disconnect', () => {
     console.log('User Disconnected', socket.id);
+
+    for (const userid in users) {
+      if (users.hasOwnProperty(userid)) {
+        const userIndex = users[userid].indexOf(socket.id);
+        if (userIndex !== -1) {
+          users[userid].splice(userIndex, 1);
+          if (users[userid].length === 0) {
+            delete users[userid];
+          }
+        }
+      }
+    }
   });
 });
 
-module.exports = socketApi;
+export default socketApi;

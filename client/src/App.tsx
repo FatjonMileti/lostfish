@@ -1,18 +1,16 @@
+import React, { useState, useMemo } from 'react';
 import { useGlobalState } from './globalState';
 import { UIProvider, useUI } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
+import { io, Socket } from 'socket.io-client';
 import PrivateRoute from './components/routes/private';
 import Layout from './layout';
 import NotFound from './pages/404';
-import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
-import { Close, Message } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
-import { ChatPage } from './pages/Chat';
-
 import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
@@ -23,6 +21,8 @@ import { Maps } from './pages/Maps/Maps';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
+import config from './config';
+import SocketContext from './context/SocketContext';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -52,39 +52,59 @@ function App() {
     user: [user]
   } = useGlobalState();
 
+  const [socket, setSocket] = useState<Socket | null>(null);
+  React.useEffect(() => {
+    if (user.auth) {
+      // @ts-ignore
+      const newSocket = io(config.apiUrl, {
+        auth: {
+          token: user.auth.access_token
+        }
+      });
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [user]);
+
+  const value = useMemo(() => ({ socket }), [socket]);
+
   return (
-    <UIProvider>
-      <GeneralSnackbar />
+    <SocketContext.Provider value={value}>
+      <UIProvider>
+        <GeneralSnackbar />
 
-      <BrowserRouter>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path={'/messages'} element={<ChatPage />} />
-          <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-          <Route path='/create-account' element={<CreateAccount />} />
-          <Route path='/set-password/:token' element={<SetPassword />} />
-          <Route path='/properties' element={<Properties />} />
-          <Route path='/properties/:id' element={<Maps />} />
-          <Route path='/matches' element={<Matches />} />
-          <Route path='/components' element={<PreviewComponents />} />
-          <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-          <Route path='*' element={<NotFound />} />
+        <BrowserRouter>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+            <Route path='/create-account' element={<CreateAccount />} />
+            <Route path='/set-password/:token' element={<SetPassword />} />
+            <Route path='/properties' element={<Properties />} />
+            <Route path='/properties/:id' element={<Maps />} />
+            <Route path='/matches' element={<Matches />} />
+            <Route path='/components' element={<PreviewComponents />} />
+            <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
+            <Route path='*' element={<NotFound />} />
 
-          <Route
-            path='/*'
-            element={
-              <PrivateRoute>
-                <Layout>
-                  <Routes>
-                    <Route path='*' element={<NotFound />} />
-                  </Routes>
-                </Layout>
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </UIProvider>
+            <Route
+              path='/*'
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Routes>
+                      <Route path='*' element={<NotFound />} />
+                    </Routes>
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </UIProvider>
+    </SocketContext.Provider>
   );
 }
 

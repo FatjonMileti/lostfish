@@ -2,7 +2,11 @@ import ChatModel from '../../data/message';
 import { ChatDocument } from '../../data/interfaces/chat.interface';
 import createError from 'http-errors';
 import RoomModel from '../../data/room';
-
+import notificationSender from '../../utils/notification-sender';
+import { NotificationType } from '../../data/interfaces/notification.interface';
+import socketApi from '../../utils/socket.io';
+import roomService from './room.service';
+import { Types } from 'mongoose';
 const getAll = async (query: any, pagingOptions: any) => {
   return RoomModel.paginate(query, {
     ...pagingOptions,
@@ -18,7 +22,6 @@ const getAll = async (query: any, pagingOptions: any) => {
     ]
   });
 };
-
 
 const getById = async (id: string): Promise<ChatDocument | undefined> => {
   const chat: ChatDocument | null = await ChatModel.findOne({ _id: id }, null, {
@@ -63,7 +66,6 @@ const getConversations = async (id: string, query: any, pagingOptions: any) => {
   });
 };
 
-
 const getLatestMessage = async (query: any) => {
   return ChatModel.findOne({ ...query })
     .populate('author', ['first_name', 'last_name'])
@@ -71,13 +73,6 @@ const getLatestMessage = async (query: any) => {
     .populate('participant', ['first_name', 'last_name'])
     .sort({ created_at: -1 });
 };
-
-const getRoomDetails = async (query: any) => {
-  return RoomModel.findOne({ ...query })
-    .populate('author', ['first_name', 'last_name'])
-    .populate('participant', ['first_name', 'last_name']);
-};
-
 
 const findOne = async (query: any) => {
   return ChatModel.findOne({ ...query });
@@ -95,21 +90,50 @@ const deleteChat = async (id: string): Promise<any> => {
   return ChatModel.findByIdAndDelete(id);
 };
 
-
 const handleNewMessage = async (socket: any, data: any) => {
+  let room: any | null = null;
   if (!data.room_id) {
     const createRoom = await RoomModel.create({ ...data });
-    const getRoom = await getRoomDetails({ _id: createRoom._id });
-    socket.emit('receive_room_id', getRoom);
+    room = await roomService.getRoomDetails({ _id: createRoom._id });
+    socket.emit('receive_room_id', room);
     data.room_id = createRoom._id;
+  } else {
+    room = await roomService.getRoomDetails({ _id: data.room_id });
   }
+  data.participant = room.participant._id;
+  data.author = room.author._id;
+
   const newMessage: ChatDocument = await create(data);
   if (newMessage && newMessage?.room_id) {
+    await notificationSender.notifyUser({
+      user: newMessage.participant,
+      entity: 'Message',
+      entity_id: newMessage._id,
+      data: newMessage,
+      type: NotificationType.CHAT
+    });
+
     const messagesData = await getLatestMessage({ room_id: { $eq: newMessage.room_id } });
     socket.to(data.room_id).emit('receive_message', messagesData);
+
+    const userToBeNotified =
+      data.sender.toString() === data.participant.toString()
+        ? data.author.toString()
+        : data.participant.toString();
+
+    const query: any = {
+      $or: [
+        { author: { $eq: new Types.ObjectId(userToBeNotified) } },
+        { participant: { $eq: new Types.ObjectId(userToBeNotified) } }
+      ]
+    };
+
+    const roomDetails = await roomService.findWithAggregate(data.room_id);
+    socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
+      socket.to(socketId).emit('update_message_list', roomDetails);
+    });
   }
 };
-
 
 export default {
   getAll,
@@ -118,7 +142,6 @@ export default {
   create,
   deleteChat,
   getConversations,
-  getRoomDetails,
   getLatestMessage,
   handleNewMessage
 };
