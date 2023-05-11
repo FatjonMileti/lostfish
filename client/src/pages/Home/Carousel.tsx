@@ -4,8 +4,12 @@ import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { motion } from 'framer-motion';
 
-export const Carousel = styled(({ children, className }: HTMLAttributes<HTMLDivElement>) => {
-  const [index, setIndex] = React.useState(0);
+export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
+  indexStore?: [number, (i: number) => void];
+}
+
+export const Carousel = styled(({ children, className, indexStore }: CarouselProps) => {
+  const [index, setIndex] = indexStore || React.useState<number>(0);
 
   const childrenArray = Array.isArray(children) ? children : [children];
 
@@ -44,7 +48,13 @@ export const Carousel = styled(({ children, className }: HTMLAttributes<HTMLDivE
 
       <div className='dots-wrapper'>
         {childrenArray.map((child: any, i: number) => (
-          <div className={`dot ${i === index ? 'active' : ''}`} onClick={() => setIndex(i)} />
+          <motion.div
+            animate={{ width: i === index ? '32px' : '12px' }}
+            className={`dot ${i === index ? 'active' : ''}`}
+            onClick={() => setIndex(i)}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+          />
         ))}
       </div>
 
@@ -86,7 +96,6 @@ export const Carousel = styled(({ children, className }: HTMLAttributes<HTMLDivE
         }
 
         &.active {
-          width: 32px;
           background-color: #e7e7e7;
         }
       }

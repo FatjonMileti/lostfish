@@ -44,22 +44,20 @@ export const IconButton = styled(
       background: none;
     }
 
+    color: #0d2a38;
+
     > * {
-      color: #0d2a38;
+      color: inherit;
     }
 
     &.inverted {
       background-color: #184d6d;
       &:hover {
+        color: #0d2a38;
         background-color: #ffffff;
-        > * {
-          color: #0d2a38;
-        }
       }
 
-      > * {
-        color: #ffffff;
-      }
+      color: #ffffff;
     }
 
     &:hover {

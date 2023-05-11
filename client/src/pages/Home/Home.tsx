@@ -4,20 +4,36 @@ import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { Header } from './Header';
 
-import binocularsDesktop from './binocularsDesktop.png';
-import binocularsLaptop from './binocularsLaptop.png';
-import binocularsTablet from './binocularsTablet.png';
-import binocularsMobile from './binocularsMobile.png';
+import lookingFor from './lookingFor.png';
+import cantFindTenants from './cantFindTenants.png';
+import tiredOf from './tiredOf.png';
 
 import { Carousel } from './Carousel';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
+  const indexStore = React.useState(0);
+  const indexSlide = indexStore[0];
+
   return (
-    <div className={`home-page ${className}`}>
+    <div className={`home-page ${className} slide${indexSlide}`}>
+      {[lookingFor, cantFindTenants, tiredOf].map((img, i: number) => (
+        <AnimatePresence>
+          {indexSlide === i && (
+            <motion.img
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              className='background-image'
+              src={img}></motion.img>
+          )}
+        </AnimatePresence>
+      ))}
       <Header />
 
       <div className='slider-section'>
-        <Carousel>
+        <Carousel indexStore={indexStore}>
           <div className='slide'>
             <Typography variant='h2' className='title'>
               Looking for your next home?
@@ -51,35 +67,27 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   );
 })`
   &.home-page {
+    position: relative;
     min-height: 100vh;
     display: grid;
 
     grid-template-rows: min-content auto;
 
-    background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
-      url(${binocularsDesktop});
-
-    background-color: #f7f1e7;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top;
-
-    /* Laptops (1024px to 1439px) */
-    ${(props) => props.theme.breakpoints.only('laptop')} {
-      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
-        url(${binocularsLaptop});
+    .header {
+      z-index: 1;
     }
 
-    /* Tablets (768px to 1023px) */
-    ${(props) => props.theme.breakpoints.only('tablet')} {
-      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
-        url(${binocularsTablet});
-    }
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
 
-    /* Mobile (375px to 767px) */
-    ${(props) => props.theme.breakpoints.down('tablet')} {
-      background-image: linear-gradient(180deg, rgba(247, 241, 231, 0) 75.26%, #f7f1e7 100%),
-        url(${binocularsMobile});
+      background-color: #f7f1e7;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: top;
     }
 
     .slider-section {
@@ -87,6 +95,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       align-self: flex-end;
 
       padding: 53px 36px;
+      z-index: 1;
 
       .slide {
         display: grid;
