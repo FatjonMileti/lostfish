@@ -71,11 +71,18 @@ export const Chatbox = styled(
         sender: isAuthor ? room.author : room.participant
       };
 
+      if (!room.hasOwnProperty('last_message')) {
+        room.last_message = {
+          message: ''
+        };
+      }
+
       if (socket) await socket.emit('send_message', messageBody);
 
       messageItem.isCurrentUser = true;
       setMessageList((prevMessages: IMessageItem[]) => [...prevMessages, messageItem]);
       room.last_message.message = currentMessage;
+      room.unseen_messages = 0;
       updateList && updateList(room);
       setCurrentMessage('');
     };

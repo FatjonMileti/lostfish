@@ -21,7 +21,7 @@
     "no-conditional-assignment": true,
     "no-consecutive-blank-lines": false,
     "object-literal-key-quotes": [
-      true,
+      false,
       "consistent-as-needed"
     ],
     "no-console": {

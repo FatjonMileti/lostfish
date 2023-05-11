@@ -23,7 +23,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const [conversations, setConversations] = useState<IRoom[]>([]);
 
   const reorderMessages = (data: any) => {
-    console.log({ data });
     const filteredRooms = conversations.filter((room: IRoom) => room._id.toString() !== data._id.toString());
     setConversations([data, ...filteredRooms]);
   };

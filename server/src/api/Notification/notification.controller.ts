@@ -3,6 +3,7 @@ import paging from '../../middleware/paging';
 import authorize from '../../middleware/authorize';
 import Notification from '../../data/notification';
 import { NotificationType } from '../../data/interfaces/notification.interface';
+import { Types } from 'mongoose';
 const router: Router = Router();
 
 export class NotificationController {
@@ -66,9 +67,31 @@ export class NotificationController {
   private getUnread = async (req: express.Request, res: express.Response) => {
     const userId = res.locals.user_id;
 
-    const unread = await Notification.countDocuments({ user: userId, viewed: false });
+    // const unread = await Notification.countDocuments({ user: userId, viewed: false });
+    const unread = await Notification.aggregate([
+      {
+        $match: {
+          viewed: false,
+          user: new Types.ObjectId(userId),
+          'data.room_id': { $exists: true }
+        }
+      },
+      {
+        $group: {
+          _id: { room_id: '$data.room_id' }
+        }
+      },
+      {
+        $group: {
+          _id: '$_id.room_id',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
 
-    return res.status(200).json(unread);
+    const unreadMessages: number = unread.length === 1 ? unread[0]?.count : 0;
+
+    return res.status(200).json({ unread: unreadMessages });
   };
 
   /**

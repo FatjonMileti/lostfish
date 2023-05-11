@@ -7,6 +7,7 @@ import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
 import MessageModel from '../../data/message';
+import Notification from '../../data/notification';
 const router: Router = Router();
 
 export class ChatController {
@@ -81,6 +82,15 @@ export class ChatController {
     const updateMany = await MessageModel.updateMany(
       { room_id, sender: { $ne: userId }, seen: false },
       { $set: { seen: true } }
+    );
+
+    await Notification.updateMany(
+      {
+        'data.room_id': { $eq: new Types.ObjectId(room_id) },
+        'data.sender': { $ne: new Types.ObjectId(userId) },
+        viewed: false
+      },
+      { $set: { viewed: true } }
     );
 
     res.send(updateMany);
