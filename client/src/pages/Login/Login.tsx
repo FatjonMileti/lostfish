@@ -13,7 +13,6 @@ import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
-import { Switch } from '../../components/Switch';
 import { IconButton } from '../../components/IconButton';
 
 import config from '../../config';
@@ -226,10 +225,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     .identity-providers {
       margin-top: 32px;
       display: flex;
-      column-gap: 16px;
       justify-content: space-between;
       .button {
         padding-inline: 28px;
+        border-width: 2px;
       }
     }
 
@@ -251,15 +250,12 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
     .content {
       margin-top: 24px;
-      .description {
-        margin-top: 24px;
-      }
 
       .email-input {
       }
 
       .password-input {
-        margin-top: 24px;
+        margin-top: 28px;
       }
 
       .keep-me-signed-in-section {

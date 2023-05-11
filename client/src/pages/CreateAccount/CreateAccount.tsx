@@ -4,27 +4,26 @@ import React from 'react';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
 import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
-import { Checkbox } from '../../components/Checkbox';
 import { Backdrop } from '../../components/Backdrop';
 
 import config from '../../config';
+import { Header } from '../Login/Header';
 
-import createAccountIllustration from './createAccountIllustration.png';
-import emailSentIllustration from './emailSentIllustration.png';
+import loginIllustration from '../Login/loginIllustration.png';
+import { IconButton } from '../../components/IconButton';
 
 const schema = yup.object().shape({
   firstName: yup.string().required('first name is required'),
   lastName: yup.string().required('last name is required'),
   email: yup.string().email().required('email is required'),
-  phoneNumber: yup.string(),
-  privacyPolicy: yup.boolean().oneOf([true])
+  password: yup.string().min(6).max(32).required()
 });
 
 export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -37,19 +36,20 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
 
   const [confirmationEmailSent, setConfirmationEmailSent] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    const { firstName, lastName, email, phoneNumber } = data;
+    const { firstName, lastName, email, password } = data;
 
     try {
       await axios.post(`${config.apiUrl}/api/user`, {
         first_name: firstName,
         last_name: lastName,
         email,
-        phone: phoneNumber
+        password
       });
 
       setConfirmationEmailSent(true);
@@ -76,118 +76,158 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
 
   return (
     <div className={`create-account-page ${className} ${confirmationEmailSent ? 'email-sent' : ''}`}>
+      <Header />
       <Backdrop open={loading}></Backdrop>
-      {confirmationEmailSent && (
-        <div className='confirmation-email-sent'>
-          <img src={emailSentIllustration} alt='' className='email-sent-illustration' />
-          <Typography variant='h3' className='confirmation-sent-title'>
-            A confirmation email was sent to you.
-          </Typography>
-          <Typography variant='body4' className='description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliquaquis nostrud exercitation ullamco laboris nisi ut aliquip.
+      <div className='container'>
+        {/* {confirmationEmailSent && ( */}
+        {/*   <div className='confirmation-email-sent'> */}
+        {/*     <img src={emailSentIllustration} alt='' className='email-sent-illustration' /> */}
+        {/*     <Typography variant='h3' className='confirmation-sent-title'> */}
+        {/*       A confirmation email was sent to you. */}
+        {/*     </Typography> */}
+        {/*     <Typography variant='body4' className='description'> */}
+        {/*       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut */}
+        {/*       labore et dolore magna aliquaquis nostrud exercitation ullamco laboris nisi ut aliquip. */}
+        {/*     </Typography> */}
+
+        {/*     <div className='did-not-received-email'> */}
+        {/*       <Typography variant='body4'>Didn’t receive the email?</Typography> */}
+        {/*       <Link className='send-another-email-button' variant='body4' onClick={sendAnotherEmail}> */}
+        {/*         Send another email */}
+        {/*       </Link> */}
+        {/*     </div> */}
+        {/*   </div> */}
+        {/* )} */}
+        <div className='left-part'>
+          <Typography variant='h3' className='main-title'>
+            Create an account
           </Typography>
 
-          <div className='did-not-received-email'>
-            <Typography variant='body4'>Didn’t receive the email?</Typography>
-            <Link className='send-another-email-button' variant='body4' onClick={sendAnotherEmail}>
-              Send another email
+          <div className='already-have-account'>
+            <Typography variant='body4' className='already-in-lostfish'>
+              Already have an account?
+            </Typography>
+            <Link variant='body4' onClick={() => navigate('/login')}>
+              Login
             </Link>
           </div>
-        </div>
-      )}
-      <div className='left-part'>
-        <Typography variant='h3' className='main-title'>
-          Join our community.
-        </Typography>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography variant='body4' className='description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore aliqua.
-          </Typography>
-
-          <div className='form-fields'>
-            <TextField
-              label='First Name'
-              className='first-name-input'
-              required
-              {...register('firstName')}
-              error={!!errors.firstName}
-              helperText={errors.firstName?.message?.toString()}
-              placeholder='Enter your first name'
-            />
-            <TextField
-              label='Last Name'
-              className='last-name-input'
-              required
-              {...register('lastName')}
-              error={!!errors.lastName}
-              helperText={errors.lastName?.message?.toString()}
-              placeholder='Enter your last name'
-            />
-            <TextField
-              label='Email'
-              className='email-input'
-              required
-              {...register('email')}
-              error={!!errors.email}
-              helperText={errors.email?.message?.toString()}
-              placeholder='Enter your email'
-            />
-
-            <TextField
-              label='Phone Number'
-              className='phone-number-input'
-              {...register('phoneNumber')}
-              error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber?.message?.toString()}
-              placeholder='Enter your phone number'
-            />
+          <div className='identity-providers'>
+            <Button variant='secondary'>
+              <Icon icon='apple' />
+            </Button>
+            <Button variant='secondary'>
+              <Icon icon='facebook' />
+            </Button>
+            <Button variant='secondary'>
+              <Icon icon='twitter' />
+            </Button>
+            <Button variant='secondary'>
+              <Icon icon='google' />
+            </Button>
           </div>
 
-          <div>
-            <div className='policy-agreement-section keep-me-signed-in-section'>
-              <label className='switch-label'>
-                <Checkbox {...register('privacyPolicy')} />
-                <Typography variant='body5'>I agree to have my data processed as stated in the</Typography>
-              </label>
-              <Link variant='body4' underline='always'>
-                Privacy Policy
-              </Link>
+          <div className='or-line'>
+            <span />
+            <Typography variant='body5'>OR</Typography>
+            <span />
+          </div>
+
+          <form className='content' onSubmit={handleSubmit(onSubmit)}>
+            <div className='form-fields'>
+              <TextField
+                label='First Name'
+                className='first-name-input'
+                required
+                {...register('firstName')}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message?.toString()}
+                placeholder='Enter your first name'
+              />
+              <TextField
+                label='Last Name'
+                className='last-name-input'
+                required
+                {...register('lastName')}
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message?.toString()}
+                placeholder='Enter your last name'
+              />
+              <TextField
+                label='Email'
+                className='email-input'
+                required
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message?.toString()}
+                placeholder='Enter your email'
+              />
+
+              <TextField
+                type={showPassword ? 'text' : 'password'}
+                label='Password'
+                className='password-input'
+                required
+                {...register('password')}
+                endAdornment={
+                  <IconButton
+                    noBackground
+                    style={{ color: '#184d6d' }}
+                    onClick={() => setShowPassword((show) => !show)}>
+                    {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
+                  </IconButton>
+                }
+                error={!!errors.password}
+                helperText={errors.password?.message?.toString()}
+              />
+
+              {/* <TextField */}
+              {/*   label='Phone Number' */}
+              {/*   className='phone-number-input' */}
+              {/*   {...register('phoneNumber')} */}
+              {/*   error={!!errors.phoneNumber} */}
+              {/*   helperText={errors.phoneNumber?.message?.toString()} */}
+              {/*   placeholder='Enter your phone number' */}
+              {/* /> */}
             </div>
+
             <Button
               className='login-button'
               variant='contained'
-              endIcon={<Icon icon='arrow-right' color='white' />}
               type='submit'
               disabled={!isValid}
               size='large'>
               Create Account
             </Button>
-          </div>
 
-          <div className='dont-have-account'>
-            <Typography variant='body4'>Have an account?</Typography>
-            <Link variant='body4' onClick={() => navigate('/login')}>
-              Sign in instead
-            </Link>
-          </div>
-        </form>
+            <div className='policy-agreement-section'>
+              <Typography variant='body5'>
+                By continuing, you agree to Lostfish
+                <NavLink to='/'> Privacy Policy </NavLink>
+                and
+                <NavLink to='/'> Terms of Service</NavLink>
+              </Typography>
+            </div>
+          </form>
+        </div>
+        <div className='right-part'></div>
       </div>
-      <div className='right-part'></div>
     </div>
   );
 })`
-  max-width: 1440px;
-  margin-inline: auto;
+  &.create-account-page {
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: min-content auto;
+    background-color: #ffffff;
 
-  display: grid;
-
-  grid-template-columns: 59fr 41fr;
-
-  min-height: 100vh;
-  background: linear-gradient(180deg, #ffffff 0%, #f3edea 30.91%);
+    .container {
+      display: grid;
+      grid-template-columns: 440px minmax(746px, 50%);
+      justify-content: space-between;
+      padding: 24px 36px 26px 36px;
+    }
+  }
 
   &.email-sent {
     grid-template-columns: 1fr;
@@ -235,62 +275,102 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
   }
 
   .left-part {
-    padding-left: 36px;
-    padding-right: 24px;
-    padding-bottom: 44px;
+    padding: 32px 24px 40px 36px;
+    box-shadow: 0 4px 48px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    height: max-content;
+    max-width: 440px;
 
     .main-title {
-      margin-top: 176px;
     }
 
-    .description {
-      margin-top: 24px;
-      max-width: 440px;
-    }
+    .already-have-account {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      column-gap: 8px;
 
-    .form-fields {
-      margin-top: 64px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-
-      max-width: 672px;
-
-      .email-input {
+      .already-in-lostfish {
+        color: #646464;
       }
     }
 
-    .policy-agreement-section {
-      margin-top: 16px;
+    .identity-providers {
+      margin-top: 32px;
       display: flex;
-      align-items: center;
-      grid-template-columns: auto auto;
-      column-gap: 8px;
+      justify-content: space-between;
+      .button {
+        padding-inline: 28px;
+        border-width: 2px;
+      }
+    }
 
-      .switch-label {
-        display: flex;
-        column-gap: 12px;
-        align-items: center;
+    .or-line {
+      display: grid;
+      grid-template-columns: auto min-content auto;
+      column-gap: 16px;
+      align-items: center;
+      margin-top: 24px;
+      .typography {
+        color: #a7a7a7;
+      }
+
+      span {
+        height: 2px;
+        background-color: #e7e7e7;
+      }
+    }
+
+    .form-fields {
+      margin-top: 24px;
+      display: grid;
+      grid-template:
+        'f l'
+        'e e'
+        'p p';
+
+      row-gap: 28px;
+      column-gap: 16px;
+
+      max-width: 672px;
+
+      .first-name-input {
+        grid-area: f;
+      }
+      .last-name-input {
+        grid-area: l;
+      }
+
+      .email-input {
+        grid-area: e;
+      }
+
+      .password-input {
+        grid-area: p;
       }
     }
 
     .login-button {
-      margin-top: 48px;
-      text-transform: none;
+      margin-top: 24px;
+      width: 100%;
     }
 
-    .dont-have-account {
-      margin-top: 112px;
+    .policy-agreement-section {
+      margin-top: 24px;
       display: flex;
-      align-items: center;
-      column-gap: 8px;
+      flex-wrap: wrap;
+      .typography,
+      a {
+        color: #646464;
+      }
     }
   }
 
   .right-part {
-    background-image: url(${createAccountIllustration});
+    background-image: url(${loginIllustration});
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: auto;
     background-color: white;
+    background-position: center;
   }
 `;
