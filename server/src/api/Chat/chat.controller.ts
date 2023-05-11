@@ -6,7 +6,7 @@ import { Role } from '../../enums';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
-
+import MessageModel from '../../data/message';
 const router: Router = Router();
 
 export class ChatController {
@@ -20,6 +20,7 @@ export class ChatController {
     this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/:id', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getById);
     this.router.post('/', authorize([Role.Admin]), this.create);
+    this.router.put('/read', authorize([Role.Admin]), this.readMessages);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
@@ -43,15 +44,12 @@ export class ChatController {
 
   private getAll = async (req: express.Request, res: express.Response) => {
     const { search } = req.query;
-
+    const userId = new Types.ObjectId(res.locals.user_id);
     const query: any = {
-      $or: [
-        { author: { $eq: new Types.ObjectId(res.locals.user_id) } },
-        { participant: { $eq: new Types.ObjectId(res.locals.user_id) } }
-      ]
+      $or: [{ author: { $eq: userId } }, { participant: { $eq: userId } }]
     };
 
-    const response = await roomService.getAll(query, res.locals.paging_options);
+    const response = await roomService.getAll(query, res.locals.paging_options, userId);
     res.send(response);
   };
 
@@ -67,14 +65,25 @@ export class ChatController {
    */
   private getById = async (req: express.Request, res: express.Response) => {
     const id = req.params.id;
-    const messages = await chatService.getConversations(
-      id,
-      {
-        room_id: { $eq: new mongoose.Types.ObjectId(id) }
-      },
-      res.locals.paging_options
+    const userId = new Types.ObjectId(res.locals.user_id);
+    const query: any = {
+      room_id: { $eq: new mongoose.Types.ObjectId(id) }
+    };
+
+    const response = await roomService.getMessages(query, res.locals.paging_options, userId);
+    res.send(response);
+  };
+
+  private readMessages = async (req: express.Request, res: express.Response) => {
+    const userId = res.locals.user_id;
+    const { room_id } = req.body;
+
+    const updateMany = await MessageModel.updateMany(
+      { room_id, sender: { $ne: userId }, seen: false },
+      { $set: { seen: true } }
     );
-    res.json(messages);
+
+    res.send(updateMany);
   };
 
   /**

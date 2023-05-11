@@ -3,6 +3,7 @@ import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 
 import propertyMatchThumbnail from './propertyMatchThumbnail.png';
+import { IRoom } from './messages.interface';
 export function stringToColor(string: string) {
   let hash = 0;
   let i;
@@ -25,7 +26,7 @@ export function stringToColor(string: string) {
 
 export const Conversation = styled(
   (props: {
-    joinRoom: (roomId?: string) => void;
+    joinRoom: (roomId: IRoom) => void;
     fullName: string;
     row: any;
     className?: string;
@@ -42,6 +43,7 @@ export const Conversation = styled(
           </div>
 
           <img className='match-thumbnail' src={propertyMatchThumbnail} alt='match thumbnail' />
+          {row.unseen_messages ? row.unseen_messages : ''}
         </div>
 
         <div className='details'>

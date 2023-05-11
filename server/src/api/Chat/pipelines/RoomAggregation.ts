@@ -1,20 +1,46 @@
-'use strict';
-interface IPipeline {
-  name: object;
-  findOne: object;
+import { Types } from 'mongoose';
+
+type PaginationPipelineFunc = (
+  page?: number,
+  skip?: number,
+  limit?: number,
+  sort?: object,
+  userId?: Types.ObjectId
+) => any[];
+
+type GetRoomPagingPipelineFunc = (
+  page?: number,
+  skip?: number,
+  limit?: number,
+  sort?: object,
+  userId?: Types.ObjectId
+) => any[];
+
+type GetOnePipelineFunc = (userId: Types.ObjectId) => any[];
+
+interface Pipelines {
+  getAll: PaginationPipelineFunc;
+  findOne: GetOnePipelineFunc;
+  getRoomMessages: GetRoomPagingPipelineFunc;
 }
-// tslint:disable-next-line:no-any
-export const getPipelineBySort = (sort = 'name'): any => {
-  const pipelinesBySort: IPipeline = {
-    name: PaginationPipeline,
-    findOne: GetOnePipeline
+
+export const getPipelineBySort = (type: keyof Pipelines = 'getAll'): Pipelines[keyof Pipelines] => {
+  const pipelinesBySort: Pipelines = {
+    getAll: PaginationPipeline,
+    findOne: GetOnePipeline,
+    getRoomMessages: ChatPagingPipeline
   };
 
-  // @ts-ignore
-  return pipelinesBySort[sort];
+  return pipelinesBySort[type];
 };
 
-const PaginationPipeline = (page = 1, skip = 0, limit = 10, sort = {}, afterLookapConditions: any) => {
+const PaginationPipeline: PaginationPipelineFunc = (
+  page = 1,
+  skip = 0,
+  limit = 10,
+  sort = {},
+  userId: Types.ObjectId | undefined
+) => {
   return [
     {
       $lookup: {
@@ -66,19 +92,26 @@ const PaginationPipeline = (page = 1, skip = 0, limit = 10, sort = {}, afterLook
             },
             null
           ]
+        },
+        unseen_messages: {
+          $size: {
+            $filter: {
+              input: '$messages',
+              as: 'message',
+              cond: {
+                $and: [{ $eq: ['$$message.seen', false] }, { $ne: ['$$message.sender', userId] }]
+              }
+            }
+          }
         }
       }
     },
     {
       $project: {
-        last_message: 1,
-        author: 1,
-        participant: 1
-      }
-    },
-    {
-      $match: {
-        ...afterLookapConditions
+        last_message: { message: 1, seen: 1, sender: 1 },
+        author: { first_name: 1, last_name: 1, _id: 1 },
+        participant: { first_name: 1, last_name: 1, _id: 1 },
+        unseen_messages: 1
       }
     },
     {
@@ -135,7 +168,120 @@ const PaginationPipeline = (page = 1, skip = 0, limit = 10, sort = {}, afterLook
   ];
 };
 
-const GetOnePipeline = () => {
+const ChatPagingPipeline: PaginationPipelineFunc = (
+  page = 1,
+  skip = 0,
+  limit = 10,
+  sort = {},
+  userId: Types.ObjectId | undefined
+) => {
+  return [
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author'
+      }
+    },
+    {
+      $unwind: {
+        path: '$author',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'participant',
+        foreignField: '_id',
+        as: 'participant'
+      }
+    },
+    {
+      $unwind: {
+        path: '$participant',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'sender',
+        foreignField: '_id',
+        as: 'sender'
+      }
+    },
+    {
+      $unwind: {
+        path: '$sender',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        author: { first_name: 1, last_name: 1, _id: 1 },
+        participant: { first_name: 1, last_name: 1, _id: 1 },
+        sender: { first_name: 1, last_name: 1, _id: 1 },
+        message: 1,
+        seen: 1,
+        created_at: 1
+      }
+    },
+    {
+      $sort: {
+        ...sort
+      }
+    },
+    {
+      $facet: {
+        total: [
+          {
+            $count: 'created_at'
+          }
+        ],
+        data: [
+          {
+            $addFields: {
+              _id: '$_id'
+            }
+          }
+        ]
+      }
+    },
+    {
+      $unwind: '$total'
+    },
+    {
+      $project: {
+        docs: {
+          $slice: [
+            '$data',
+            skip,
+            {
+              $ifNull: [limit, '$total.created_at']
+            }
+          ]
+        },
+
+        totalDocs: '$total.created_at',
+        limit: {
+          $literal: limit
+        },
+        page: {
+          $literal: page
+        },
+        totalPages: {
+          $ceil: {
+            $divide: ['$total.created_at', limit]
+          }
+        }
+      }
+    }
+  ];
+};
+
+const GetOnePipeline: GetOnePipelineFunc = (userId: Types.ObjectId) => {
   return [
     {
       $lookup: {
@@ -187,6 +333,17 @@ const GetOnePipeline = () => {
             },
             null
           ]
+        },
+        unseen_messages: {
+          $size: {
+            $filter: {
+              input: '$messages',
+              as: 'message',
+              cond: {
+                $and: [{ $eq: ['$$message.seen', false] }, { $ne: ['$$message.sender', userId] }]
+              }
+            }
+          }
         }
       }
     },
@@ -194,7 +351,8 @@ const GetOnePipeline = () => {
       $project: {
         last_message: 1,
         author: 1,
-        participant: 1
+        participant: 1,
+        unseen_messages: 1
       }
     }
   ];

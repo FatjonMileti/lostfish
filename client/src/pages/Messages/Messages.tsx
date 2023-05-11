@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useEffect, useState, useContext } from 'react';
+import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
 import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { Conversation } from './Conversation';
@@ -9,6 +9,7 @@ import request from '../../utils/axios';
 import { useGlobalState } from '../../globalState';
 import SocketContext from '../../context/SocketContext';
 import { Skeleton } from '@mui/lab';
+import { IMessageItem, IRoom } from './messages.interface';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const {
@@ -17,15 +18,14 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
   const { socket } = useContext(SocketContext);
 
-  const [room, setRoom] = useState<any>(null);
-  const [messages, setMessages] = useState<any>([]);
-  const [conversations, setConversations] = useState<any>([]);
+  const [room, setRoom] = useState<IRoom | null>(null);
+  const [messages, setMessages] = useState<IMessageItem[]>([]);
+  const [conversations, setConversations] = useState<IRoom[]>([]);
 
   const reorderMessages = (data: any) => {
-    const filteredMesages = conversations.filter(
-      (message: any) => message._id.toString() !== data._id.toString()
-    );
-    setConversations([data, ...filteredMesages]);
+    console.log({ data });
+    const filteredRooms = conversations.filter((room: IRoom) => room._id.toString() !== data._id.toString());
+    setConversations([data, ...filteredRooms]);
   };
 
   // @ts-ignore
@@ -53,13 +53,19 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const getMessagesForRoom = async (roomId: string) => {
     const response = await request(auth.access_token).get('/api/chat/' + roomId + '?pageSize=10&page=1');
     setMessages(response.data.docs.reverse());
+    previous.refetch();
   };
 
-  const joinRoom = async (roomObj?: any | null) => {
+  const handleReadMessages = async (room: IRoom) => {
+    return await request(auth.access_token).put('/api/chat/read', { room_id: room._id });
+  };
+
+  const joinRoom = async (roomObj?: IRoom | null) => {
     if (userDetails?.username && roomObj) {
+      await handleReadMessages(roomObj);
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
-      if (socket) return socket.emit('join_room', roomObj._id);
+      if (socket) socket.emit('join_room', roomObj._id);
     }
   };
 
@@ -71,7 +77,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           <Typography variant='body2'>My messages</Typography>
 
           <div className='conversations-list'>
-            {(conversations || []).map((row: any, rowIndex: number) => {
+            {(conversations || []).map((row: IRoom, rowIndex: number) => {
               const fullName =
                 userDetails?.user_id === row?.author?._id
                   ? `${row.participant.first_name} ${row.participant.last_name}`

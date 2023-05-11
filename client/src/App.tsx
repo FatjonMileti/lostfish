@@ -9,10 +9,8 @@ import NotFound from './pages/404';
 import Snackbar from '@mui/material/Snackbar';
 import { hideMessage } from './actions/ui';
 import IconButton from '@mui/material/IconButton';
-import { Close, Message } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import Alert from '@mui/material/Alert';
-import { ChatPage } from './pages/Chat';
-
 import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
@@ -25,6 +23,7 @@ import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
 import config from './config';
 import SocketContext from './context/SocketContext';
+
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -63,10 +62,8 @@ function App() {
         }
       });
       setSocket(newSocket);
-      console.log('socket connected...');
 
       return () => {
-        console.log('socket disconnected...');
         newSocket.disconnect();
       };
     }
@@ -82,7 +79,6 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/login' element={<Login />} />
-            <Route path={'/messages'} element={<ChatPage />} />
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
             <Route path='/set-password/:token' element={<SetPassword />} />

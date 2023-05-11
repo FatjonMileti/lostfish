@@ -1,8 +1,9 @@
 import RoomModel from '../../data/room';
+import ChatModel from '../../data/message';
 import { RoomDocument } from '../../data/interfaces/room.interface';
 import { getPipelineBySort } from './pipelines/RoomAggregation';
+import { Types } from 'mongoose';
 
-import mongoose, { Document, ObjectId, Schema, Mongoose, Types } from 'mongoose';
 const DefaultResponse: any = {
   docs: [],
   limit: 10,
@@ -25,15 +26,40 @@ interface IResponse {
   totalPages: number;
 }
 
-const getAll = async (query: any, pagingOptions: PaginationOptions | undefined): Promise<IResponse> => {
+const getAll = async (
+  query: any,
+  pagingOptions: PaginationOptions | undefined,
+  userId: Types.ObjectId
+): Promise<IResponse> => {
   const { page, limit }: PaginationOptions = pagingOptions || {};
   const sort: any = { 'last_message.created_at': -1 };
   const skip = page ? (page - 1) * 10 : 0;
+
   const response = await RoomModel.aggregate([
     {
       $match: { ...query }
     },
-    ...getPipelineBySort('name')(page, skip, limit, sort)
+    // @ts-ignore
+    ...getPipelineBySort('getAll')(page, skip, limit, sort, userId)
+  ]);
+
+  return response.length > 0 ? response[0] : DefaultResponse;
+};
+
+const getMessages = async (
+  query: any,
+  pagingOptions: PaginationOptions | undefined,
+  userId: Types.ObjectId
+) => {
+  const { page, limit }: PaginationOptions = pagingOptions || {};
+  const sort: any = { created_at: -1 };
+  const skip = page ? (page - 1) * 10 : 0;
+  const response = await ChatModel.aggregate([
+    {
+      $match: { ...query }
+    },
+    // @ts-ignore
+    ...getPipelineBySort('getRoomMessages')(page, skip, limit, sort, userId)
   ]);
 
   return response.length > 0 ? response[0] : DefaultResponse;
@@ -50,11 +76,14 @@ const findOne = async (query: any) => {
 };
 
 const findWithAggregate = async (id: string) => {
+  const userId = new Types.ObjectId(id);
+
   const response = await RoomModel.aggregate([
     {
-      $match: { _id: new Types.ObjectId(id) }
+      $match: { _id: userId }
     },
-    ...getPipelineBySort('findOne')()
+    // @ts-ignore
+    ...getPipelineBySort('findOne')(userId)
   ]);
 
   return response.length > 0 ? response[0] : DefaultResponse;
@@ -78,5 +107,6 @@ export default {
   create,
   getRoomDetails,
   deleteRoom,
-  findWithAggregate
+  findWithAggregate,
+  getMessages
 };

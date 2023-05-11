@@ -6,13 +6,15 @@ import { Button } from '../../components/Button';
 import React, { HTMLAttributes, MouseEventHandler, useEffect, useState } from 'react';
 import { Typography } from '../../components/Typography';
 import { stringToColor } from './Conversation';
+import { IMessageBody, IMessageItem } from './messages.interface';
+import { Socket } from 'socket.io-client';
 
 export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
   room: any;
   user_id: string;
-  messages: any[];
-  socket: any;
+  messages: IMessageItem[];
+  socket: Socket | null;
   closeDeal?: MouseEventHandler;
   updateList?: (data: any) => void;
 }
@@ -20,7 +22,7 @@ export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
 export const Chatbox = styled(
   ({ className, updateList, room, user_id, messages, socket, closeDeal = () => {} }: ChatboxProps) => {
     const [currentMessage, setCurrentMessage] = useState('');
-    const [messageList, setMessageList] = useState<any[]>([]);
+    const [messageList, setMessageList] = useState<IMessageItem[]>([]);
 
     const isAuthor = room.author._id.toString() === user_id.toString();
 
@@ -31,14 +33,15 @@ export const Chatbox = styled(
     }, [messages]);
 
     useEffect(() => {
-      socket.on('receive_message', (data: any) => {
-        // @ts-ignore
-        setMessageList((list: any) => [...list, data]);
-      });
+      if (socket) {
+        socket.on('receive_message', (data: any) => {
+          setMessageList((list: IMessageItem[]) => [...list, data]);
+        });
 
-      return () => {
-        socket.off('receive_message');
-      };
+        return () => {
+          socket.off('receive_message');
+        };
+      }
     }, [socket]);
 
     React.useEffect(() => {
@@ -53,22 +56,25 @@ export const Chatbox = styled(
       if (!currentMessage) {
         return;
       }
-      const dataToSend: any = {
+
+      const messageBody: IMessageBody = {
         room_id: room._id,
         message: currentMessage,
         sender: user_id
       };
-      const messageBody: any = {
-        ...dataToSend,
+
+      const messageItem: IMessageItem = {
+        ...messageBody,
         participant: !isAuthor ? user_id : room.participant._id,
         author: isAuthor ? room.author : room.participant,
         time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
         sender: isAuthor ? room.author : room.participant
       };
-      await socket.emit('send_message', dataToSend);
-      messageBody.isCurrentUser = true;
-      // @ts-ignore
-      setMessageList((prevMessages: any) => [...prevMessages, messageBody]);
+
+      if (socket) await socket.emit('send_message', messageBody);
+
+      messageItem.isCurrentUser = true;
+      setMessageList((prevMessages: IMessageItem[]) => [...prevMessages, messageItem]);
       room.last_message.message = currentMessage;
       updateList && updateList(room);
       setCurrentMessage('');
@@ -93,24 +99,23 @@ export const Chatbox = styled(
           </div>
         </div>
         <div className='conversation' ref={conversationBoxRef}>
-          {messageList.map((messageContent: any, messageIndex: number) => {
+          {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
             const authorId = messageContent?.sender?._id;
 
             const fromMe = authorId.toString() === user_id.toString();
-
             const isLastMessageFromAuthor =
-              messageList.findLastIndex((m) => m.author._id === authorId) === messageIndex;
+              messageList.findLastIndex((m) => m.sender._id === authorId) === messageIndex;
 
             const isFirstInGroup =
-              !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.author?._id !== authorId;
+              !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.sender?._id !== authorId;
 
             const inMiddleOfGroup =
-              messageList[messageIndex - 1]?.author?._id === authorId &&
-              messageList[messageIndex + 1]?.author?._id === authorId;
+              messageList[messageIndex - 1]?.sender?._id === authorId &&
+              messageList[messageIndex + 1]?.sender?._id === authorId;
 
             const lastInGroup =
-              messageList[messageIndex - 1]?.author?._id === authorId &&
-              (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.author?._id !== authorId);
+              messageList[messageIndex - 1]?.sender?._id === authorId &&
+              (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
 
             return (
               <div
@@ -127,8 +132,8 @@ export const Chatbox = styled(
                       messageContent.author.first_name + ' ' + messageContent.author.last_name
                     )
                   }}>
-                  {messageContent.author.first_name[0]}
-                  {messageContent.author.last_name[0]}
+                  {messageContent.sender.first_name[0]}
+                  {messageContent.sender.last_name[0]}
                 </div>
 
                 <Typography variant='body5' className='text'>

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import * as process from 'process';
+
 /**
  * Module dependencies.
  */
@@ -22,11 +24,11 @@ app.set('port', port);
 
 const server: Server = createServer(app);
 
-const socketApi = require('../utils/socket.io');
+import socketApi from '../utils/socket.io';
 const io = socketApi.io;
 io.attach(server, {
   cors: {
-    origin: '*'
+    origin: process.env.FRONTEND_URL
   }
 });
 
