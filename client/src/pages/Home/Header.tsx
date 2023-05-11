@@ -1,4 +1,3 @@
-import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
 import React from 'react';
