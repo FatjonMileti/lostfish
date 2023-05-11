@@ -23,6 +23,8 @@ import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
 import config from './config';
 import SocketContext from './context/SocketContext';
+import { About } from './pages/About/About';
+import { Mission } from './pages/Mission/Mission';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -85,6 +87,8 @@ function App() {
             <Route path='/properties' element={<Properties />} />
             <Route path='/properties/:id' element={<Maps />} />
             <Route path='/matches' element={<Matches />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/mission' element={<Mission />} />
             <Route path='/components' element={<PreviewComponents />} />
             <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
             <Route path='*' element={<NotFound />} />
