@@ -197,7 +197,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
   .container {
     display: grid;
-    grid-template-columns: 440px 746px;
+    grid-template-columns: 440px minmax(746px, 50%);
     justify-content: space-between;
     padding: 24px 36px 26px 36px;
   }
@@ -283,5 +283,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     background-repeat: no-repeat;
     background-size: auto;
     background-color: white;
+    background-position: center;
   }
 `;
