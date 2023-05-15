@@ -7,7 +7,7 @@ import config from '../../config';
 import { useGlobalState } from '../../globalState';
 import { Backdrop } from '../../components/Backdrop';
 
-export const SetPassword = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
+export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     user: [user, setUser]
   } = useGlobalState();

@@ -8,11 +8,11 @@ import moment from 'moment/moment';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import createError from 'http-errors';
-// import Mail from '../../utils/email/index';
-import { generatePassword, hashPassword } from './user.helpers';
+import { hashPassword } from './user.helpers';
 import mongoose from 'mongoose';
 import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
+import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
 import MailService from '../../utils/email';
 import accountService from '../Account/account.service';
 
@@ -31,9 +31,12 @@ export class UserController {
     this.router.get('/invitation/:token', this.getInvitation);
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post('/', this.create);
-    this.router.put('/invitation', this.acceptInvitation);
+
     this.router.put('/:id', authorize([Role.Admin]), this.update);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
+
+    this.router.post('/forgot-password', this.sendResetPasswordInstructions);
+    this.router.post('/reset-password', this.resetPassword);
   }
 
   /**
@@ -181,17 +184,16 @@ export class UserController {
    * @apiBody {string} token
    *
    */
-  private acceptInvitation = async (req: express.Request, res: express.Response) => {
-    const token = req.body.token;
+  private resetPassword = async (req: express.Request, res: express.Response) => {
+    const { token, password } = req.body;
 
     const user: any = await userService.findOne({ confirmation_token: token });
 
     if (!user) {
       return res.status(404).json({ message: 'user_not_found' });
     }
+    user.hash = <string>await hashPassword(password);
 
-    user.is_disabled = false;
-    user.last_login = new Date();
     user.confirmation_token = null;
     await userService.updateUser(user._id.toString(), user);
 
@@ -316,6 +318,47 @@ export class UserController {
       res.status(204).send();
     } catch (error) {
       res.status(404).json({ message: 'User not found' });
+    }
+  };
+
+  /**
+   * @api {post} /api/user/forgot-password Forgot Password
+   * @apiDescription sends recover account instructions
+   * @apiGroup User
+   * @apiSampleRequest /api/user/forgot-password
+   * @apiBody {string} email
+   */
+
+  private sendResetPasswordInstructions = async (req: express.Request, res: express.Response) => {
+    try {
+      const { email } = req.body;
+
+      const user: any = await userService.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({ message: 'user_not_found' });
+      }
+
+      user.confirmation_token = randomUUID();
+
+      await userService.updateUser(user._id.toString(), user);
+
+      const emailTemplate = resetPasswordTemplate({
+        link: `${process.env.FRONTEND_URL}/reset-password/${user.confirmation_token}`,
+        userName: user.first_name + user.last_name
+      });
+
+      const mailService = MailService.getInstance();
+      // @ts-ignore
+      await mailService.sendMail({
+        to: user.email,
+        subject: 'Reset Password',
+        html: emailTemplate.html
+      });
+
+      res.status(201).send('ok');
+    } catch (err) {
+      throw err;
     }
   };
 }

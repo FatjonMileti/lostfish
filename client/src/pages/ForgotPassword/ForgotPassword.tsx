@@ -37,14 +37,11 @@ export const ForgotPassword = styled(({ className }: React.HTMLAttributes<HTMLDi
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    const { firstName, lastName, email, password } = data;
+    const { email } = data;
 
     try {
-      await axios.post(`${config.apiUrl}/api/user`, {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        password
+      await axios.post(`${config.apiUrl}/api/user/forgot-password`, {
+        email
       });
 
       setConfirmationEmailSent(true);
@@ -53,11 +50,9 @@ export const ForgotPassword = styled(({ className }: React.HTMLAttributes<HTMLDi
 
       if (!message) throw err;
 
-      if (message === 'user_already_exists') {
-        return setError('email', { message: 'user already registered!', type: 'server' });
+      if (message === 'user_not_found') {
+        return setError('email', { message: 'User not found!', type: 'server' });
       }
-
-      throw err;
     } finally {
       setLoading(false);
     }
@@ -80,7 +75,7 @@ export const ForgotPassword = styled(({ className }: React.HTMLAttributes<HTMLDi
           </Typography>
           <Typography variant='body4' className='description'>
             We’ve sent you an email to verify that your account has a valid email address. Follow the
-            instructions sent to you to verify your email.
+            instructions sent to you to recover your account.
           </Typography>
 
           <Button className='sign-in-button' onClick={() => navigate('/login')}>
