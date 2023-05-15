@@ -25,6 +25,7 @@ import config from './config';
 import SocketContext from './context/SocketContext';
 import { About } from './pages/About/About';
 import { Mission } from './pages/Mission/Mission';
+import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -83,12 +84,13 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
-            <Route path='/set-password/:token' element={<SetPassword />} />
+            <Route path='/activate-account/:token' element={<SetPassword />} />
             <Route path='/properties' element={<Properties />} />
             <Route path='/properties/:id' element={<Maps />} />
             <Route path='/matches' element={<Matches />} />
             <Route path='/about' element={<About />} />
             <Route path='/mission' element={<Mission />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/components' element={<PreviewComponents />} />
             <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
             <Route path='*' element={<NotFound />} />

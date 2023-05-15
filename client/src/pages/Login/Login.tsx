@@ -103,7 +103,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       <Backdrop open={loading}></Backdrop>
       <div className='container'>
         <div className='left-part'>
-          <Typography variant='h3' className='main-title'>
+          <Typography variant='body2' className='main-title'>
             Log in
           </Typography>
 
@@ -177,7 +177,9 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
               <div className='keep-me-signed-in-section'>
                 <Typography variant='body4'>Forgot your password?</Typography>
-                <Link variant='body4'>Reset password</Link>
+                <Link variant='body4' onClick={() => navigate('/forgot-password')}>
+                  Reset password
+                </Link>
               </div>
             </div>
           </form>

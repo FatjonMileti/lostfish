@@ -26,14 +26,8 @@ export class UserController {
     this.initializeRoutes();
   }
 
-
   private initializeRoutes() {
-    this.router.get(
-      '/',
-      authorize([Role.Admin]),
-      paging({ sort: { created_at: -1 } }),
-      this.getAll
-    );
+    this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/invitation/:token', this.getInvitation);
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post('/', this.create);
@@ -159,10 +153,7 @@ export class UserController {
    *
    * @apiParam token user token
    */
-  private getInvitation = async (
-    req: express.Request,
-    res: express.Response
-  ) => {
+  private getInvitation = async (req: express.Request, res: express.Response) => {
     const token = req.params.token;
     const user: any = await userService.findOne({ confirmation_token: token });
 
@@ -187,16 +178,11 @@ export class UserController {
    * @apiDescription Accept invitation
    * @apiGroup User
    * @apiSampleRequest /api/user/invitation
-   * @apiBody {string} password
    * @apiBody {string} token
    *
    */
-  private acceptInvitation = async (
-    req: express.Request,
-    res: express.Response
-  ) => {
+  private acceptInvitation = async (req: express.Request, res: express.Response) => {
     const token = req.body.token;
-    const password = req.body.password;
 
     const user: any = await userService.findOne({ confirmation_token: token });
 
@@ -204,7 +190,6 @@ export class UserController {
       return res.status(404).json({ message: 'user_not_found' });
     }
 
-    user.hash = <string>await hashPassword(password);
     user.is_disabled = false;
     user.last_login = new Date();
     user.confirmation_token = null;
@@ -232,10 +217,10 @@ export class UserController {
    * @apiDescription Register
    * @apiGroup User
    * @apiSampleRequest /api/user
-   * @apiBody {string} email
-   * @apiBody {string} [phone]
    * @apiBody {string} first_name
    * @apiBody {string} last_name
+   * @apiBody {string} email
+   * @apiBody {string} password
    *
    */
   private create = async (req: express.Request, res: express.Response) => {
@@ -257,11 +242,16 @@ export class UserController {
     // const password: string = generatePassword();
     // user.hash = <string>await hashPassword(password);
 
+    const password = req.body.password;
+    user.hash = <string>await hashPassword(password);
+
     user.confirmation_token = randomUUID();
 
     const createdUser: UserDocument = await userService.create(user);
 
-    const emailTemplate = verifyEmailTamplate(`${process.env.FRONTEND_URL}/set-password/${user.confirmation_token}`);
+    const emailTemplate = verifyEmailTamplate(
+      `${process.env.FRONTEND_URL}/activate-account/${user.confirmation_token}`
+    );
     const mailService = MailService.getInstance();
     // @ts-ignore
     await mailService.sendMail({
@@ -301,8 +291,7 @@ export class UserController {
     }
 
     try {
-      const updatedUser: UserDocument | undefined =
-        await userService.updateUser(id, user);
+      const updatedUser: UserDocument | undefined = await userService.updateUser(id, user);
       res.json(updatedUser);
     } catch (error) {
       res.status(404).json({ message: 'User not found' });

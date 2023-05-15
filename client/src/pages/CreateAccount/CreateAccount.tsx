@@ -26,7 +26,7 @@ const schema = yup.object().shape({
   password: yup.string().min(6).max(32).required()
 });
 
-export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
+export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     register,
     handleSubmit,
@@ -79,27 +79,29 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
       <Header />
       <Backdrop open={loading}></Backdrop>
       <div className='container'>
-        {/* {confirmationEmailSent && ( */}
-        {/*   <div className='confirmation-email-sent'> */}
-        {/*     <img src={emailSentIllustration} alt='' className='email-sent-illustration' /> */}
-        {/*     <Typography variant='h3' className='confirmation-sent-title'> */}
-        {/*       A confirmation email was sent to you. */}
-        {/*     </Typography> */}
-        {/*     <Typography variant='body4' className='description'> */}
-        {/*       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut */}
-        {/*       labore et dolore magna aliquaquis nostrud exercitation ullamco laboris nisi ut aliquip. */}
-        {/*     </Typography> */}
+        <div className='confirmation-email-sent'>
+          <Typography variant='body2' className='confirmation-sent-title'>
+            Verify your email
+          </Typography>
+          <Typography variant='body4' className='description'>
+            We’ve sent you an email to verify that your account has a valid email address. Follow the
+            instructions sent to you to verify your email.
+          </Typography>
 
-        {/*     <div className='did-not-received-email'> */}
-        {/*       <Typography variant='body4'>Didn’t receive the email?</Typography> */}
-        {/*       <Link className='send-another-email-button' variant='body4' onClick={sendAnotherEmail}> */}
-        {/*         Send another email */}
-        {/*       </Link> */}
-        {/*     </div> */}
-        {/*   </div> */}
-        {/* )} */}
+          <Button className='sign-in-button' onClick={() => navigate('/login')}>
+            Sign In
+          </Button>
+
+          <div className='did-not-received-email'>
+            <Typography variant='body4'>Didn’t receive it?</Typography>
+            <Link className='send-another-email-button' variant='body4' onClick={sendAnotherEmail}>
+              Send another email
+            </Link>
+          </div>
+        </div>
+
         <div className='left-part'>
-          <Typography variant='h3' className='main-title'>
+          <Typography variant='body2' className='main-title'>
             Create an account
           </Typography>
 
@@ -180,15 +182,6 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
                 error={!!errors.password}
                 helperText={errors.password?.message?.toString()}
               />
-
-              {/* <TextField */}
-              {/*   label='Phone Number' */}
-              {/*   className='phone-number-input' */}
-              {/*   {...register('phoneNumber')} */}
-              {/*   error={!!errors.phoneNumber} */}
-              {/*   helperText={errors.phoneNumber?.message?.toString()} */}
-              {/*   placeholder='Enter your phone number' */}
-              {/* /> */}
             </div>
 
             <Button
@@ -210,6 +203,7 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
             </div>
           </form>
         </div>
+
         <div className='right-part'></div>
       </div>
     </div>
@@ -230,40 +224,40 @@ export const CreateAccount = styled(({ className = '' }: React.HTMLAttributes<HT
   }
 
   &.email-sent {
-    grid-template-columns: 1fr;
-    .left-part,
-    .right-part {
+    .left-part {
       display: none;
+    }
+
+    .confirmation-email-sent {
+      display: grid;
     }
   }
 
   .confirmation-email-sent {
-    display: grid;
-    justify-content: center;
-    justify-items: center;
-    align-content: center;
-
-    .email-sent-illustration {
-      mix-blend-mode: multiply;
-      height: 195px;
-    }
+    display: none;
+    padding: 32px 24px 40px 36px;
+    box-shadow: 0 4px 48px rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    height: max-content;
+    max-width: 440px;
 
     .confirmation-sent-title {
-      margin-top: 32px;
-      max-width: 904px;
-      text-align: center;
     }
 
     .description {
+      margin-top: 16px;
+    }
+
+    .sign-in-button {
       margin-top: 24px;
-      max-width: 672px;
-      text-align: center;
+      width: 100%;
     }
 
     .did-not-received-email {
-      margin-top: 227px;
+      margin-top: 32px;
       display: flex;
       column-gap: 8px;
+      justify-content: center;
 
       color: #a7a7a7;
 
