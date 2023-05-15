@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useGlobalState } from './globalState';
+import { registerStore, useGlobalState } from './globalState';
 import { UIProvider, useUI } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
@@ -26,6 +26,7 @@ import SocketContext from './context/SocketContext';
 import { About } from './pages/About/About';
 import { Mission } from './pages/Mission/Mission';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
+import request from './utils/axios';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -50,12 +51,26 @@ const GeneralSnackbar = () => {
   );
 };
 
+registerStore(
+  'notification',
+  {
+    unread: 0,
+    list: []
+  },
+  { persist: true }
+);
+
 function App() {
   const {
     user: [user]
   } = useGlobalState();
 
+  const {
+    notification: [notification, setNotification]
+  } = useGlobalState();
+
   const [socket, setSocket] = useState<Socket | null>(null);
+
   React.useEffect(() => {
     if (user.auth) {
       // @ts-ignore
@@ -66,11 +81,18 @@ function App() {
       });
       setSocket(newSocket);
 
+      getUnreadMessages();
+
       return () => {
         newSocket.disconnect();
       };
     }
   }, [user]);
+
+  const getUnreadMessages = async () => {
+    const response = await request(user.auth.access_token).get('/api/notification/unread');
+    setNotification((prevNotification: any) => ({ ...prevNotification, unread: response.data.unread }));
+  };
 
   const value = useMemo(() => ({ socket }), [socket]);
 

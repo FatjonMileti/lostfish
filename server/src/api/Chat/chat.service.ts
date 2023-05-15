@@ -105,8 +105,13 @@ const handleNewMessage = async (socket: any, data: any) => {
 
   const newMessage: ChatDocument = await create(data);
   if (newMessage && newMessage?.room_id) {
+    const userToBeNotified =
+      data.sender.toString() === data.participant.toString()
+        ? data.author.toString()
+        : data.participant.toString();
+
     await notificationSender.notifyUser({
-      user: newMessage.participant,
+      user: userToBeNotified,
       entity: 'Message',
       entity_id: newMessage._id,
       data: newMessage,
@@ -115,18 +120,6 @@ const handleNewMessage = async (socket: any, data: any) => {
 
     const messagesData = await getLatestMessage({ room_id: { $eq: newMessage.room_id } });
     socket.to(data.room_id).emit('receive_message', messagesData);
-
-    const userToBeNotified =
-      data.sender.toString() === data.participant.toString()
-        ? data.author.toString()
-        : data.participant.toString();
-
-    const query: any = {
-      $or: [
-        { author: { $eq: new Types.ObjectId(userToBeNotified) } },
-        { participant: { $eq: new Types.ObjectId(userToBeNotified) } }
-      ]
-    };
 
     const roomDetails = await roomService.findWithAggregate(data.room_id);
     socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
