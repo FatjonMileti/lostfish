@@ -7,12 +7,16 @@ import { Intersection } from '../Home/Intersection';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={className}>
+    <div className={`home-logged-in-page ${className}`}>
       <Header />
       <Intersection />
       <Footer />
     </div>
   );
 })`
-  margin-inline: auto;
+  &.home-logged-in-page {
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: min-content auto min-content;
+  }
 `;

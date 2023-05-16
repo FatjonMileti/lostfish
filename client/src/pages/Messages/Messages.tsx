@@ -11,6 +11,10 @@ import SocketContext from '../../context/SocketContext';
 import { Skeleton } from '@mui/lab';
 import { IMessageItem, IRoom } from './messages.interface';
 
+import noMessages from './noMessages.png';
+import { Footer } from '../Home/Footer';
+import { Backdrop } from '../../components/Backdrop';
+
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const {
     user: [{ userDetails, auth }]
@@ -69,9 +73,22 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   };
 
   return (
-    <div className={`messages-page ${className}`}>
+    <div
+      className={`messages-page ${
+        previous.isFetched && conversations.length === 0 ? 'no-messages' : ''
+      } ${className}`}>
       <Header />
+      <Backdrop open={previous.isLoading}></Backdrop>
       <div className='container'>
+        <div className='no-messages-view'>
+          <img src={noMessages} alt='no messages' />
+          <Typography variant='body2' className='title'>
+            You don’t have any messages at the moment.
+          </Typography>
+          <Typography variant='body5' className='description'>
+            Once you perfectly match with someone, you can start a conversation and it will appear here.
+          </Typography>
+        </div>
         <div className='chats'>
           <Typography variant='body2'>My messages</Typography>
 
@@ -93,29 +110,29 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
               );
             })}
 
-            {previous.isLoading &&
-              [1, 2].map((i) => {
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'min-content auto',
-                      alignItems: 'center',
-                      columnGap: '10px',
-                      padding: '16px'
-                    }}>
-                    <div style={{ display: 'flex' }}>
-                      <Skeleton variant='circular' width={48} height={48} />
-                      <Skeleton variant='circular' width={48} height={48} style={{ marginLeft: '-15px' }} />
-                    </div>
-                    <div>
-                      <Skeleton height={20} width={200} />
-                      <Skeleton height={10} width={230} />
-                    </div>
-                  </div>
-                );
-              })}
+            {/* {previous.isLoading && */}
+            {/*   [1, 2].map((i) => { */}
+            {/*     return ( */}
+            {/*       <div */}
+            {/*         key={i} */}
+            {/*         style={{ */}
+            {/*           display: 'grid', */}
+            {/*           gridTemplateColumns: 'min-content auto', */}
+            {/*           alignItems: 'center', */}
+            {/*           columnGap: '10px', */}
+            {/*           padding: '16px' */}
+            {/*         }}> */}
+            {/*         <div style={{ display: 'flex' }}> */}
+            {/*           <Skeleton variant='circular' width={48} height={48} /> */}
+            {/*           <Skeleton variant='circular' width={48} height={48} style={{ marginLeft: '-15px' }} /> */}
+            {/*         </div> */}
+            {/*         <div> */}
+            {/*           <Skeleton height={20} width={200} /> */}
+            {/*           <Skeleton height={10} width={230} /> */}
+            {/*         </div> */}
+            {/*       </div> */}
+            {/*     ); */}
+            {/*   })} */}
           </div>
         </div>
 
@@ -133,6 +150,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           />
         )}
       </div>
+
+      <Footer />
     </div>
   );
 })`
@@ -141,9 +160,23 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     height: 100vh;
     display: grid;
     box-sizing: border-box;
-    grid-template-rows: min-content auto;
-
+    grid-template-rows: min-content auto min-content;
     background: #ffffff;
+
+    &.no-messages {
+      .container {
+        grid-template-columns: 1fr;
+        .line,
+        .chats,
+        .chat-box {
+          display: none;
+        }
+
+        .no-messages-view {
+          display: grid;
+        }
+      }
+    }
 
     .container {
       display: grid;
@@ -168,6 +201,24 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
         display: flex;
         flex-direction: column;
         row-gap: 8px;
+      }
+    }
+
+    .no-messages-view {
+      display: none;
+      justify-items: center;
+      align-content: center;
+
+      img {
+        max-height: 280px;
+      }
+
+      .title {
+        margin-top: 24px;
+      }
+
+      .description {
+        margin-top: 16px;
       }
     }
   }

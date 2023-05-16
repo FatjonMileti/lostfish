@@ -12,174 +12,86 @@ import LogoPlusTextWhite from '../../assets/images/LogoPlusTextWhite.svg';
 export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`footer-section ${className}`}>
-      <div className='columns-layout'>
-        <div className='column-1'>
-          <img className='logo' alt='logo' src={LogoPlusTextWhite} />
-          <Typography variant='body4' className='column-title'>
-            Our aim is to revolutionise the property industry by utilising technology and data to empower and
-            inform customers in the buying, selling, and renting process.
-          </Typography>
-          <div className='social-networks'>
-            <IconButton size='large' noBackground inverted>
-              <Icon icon='facebook-f' color='white' size={16} />
-            </IconButton>
-            <IconButton size='large' noBackground inverted>
-              <Icon icon='twitter' color='white' size={16} />
-            </IconButton>
-            <IconButton size='large' noBackground inverted>
-              <Icon icon='instagram' color='white' size={16} />
-            </IconButton>
-            <IconButton size='large' noBackground inverted>
-              <Icon icon='linkedin-in' color='white' size={16} />
-            </IconButton>
-          </div>
+      <div className='column-1'>
+        <img className='logo' alt='logo' src={LogoPlusTextWhite} />
+
+        <div className='social-networks'>
+          <IconButton size='large' inverted>
+            <Icon icon='facebook-f' color='white' size={16} />
+          </IconButton>
+          <IconButton size='large' inverted>
+            <Icon icon='twitter' color='white' size={16} />
+          </IconButton>
+          <IconButton size='large' inverted>
+            <Icon icon='instagram' color='white' size={16} />
+          </IconButton>
+          <IconButton size='large' inverted>
+            <Icon icon='linkedin-in' color='white' size={16} />
+          </IconButton>
         </div>
-        <div className='column-2'>
-          <Typography variant='menu' className='column-title'>
-            TAKE ACTION
-          </Typography>
-          <Link>RENT</Link>
-          <Link>BUY</Link>
-          <Link>SELL</Link>
-        </div>
-        <div className='column-3'>
-          <Typography variant='menu' className='column-title'>
-            Useful links
-          </Typography>
-          <Link variant='body4'>About Lostfish</Link>
-          <Link variant='body4'>How Lostfish works</Link>
-          <Link variant='body4'>What defines us</Link>
-          <Link variant='body4'>Terms & Conditions</Link>
-          <Link variant='body4'>Privacy Policy</Link>
-        </div>
-        <div className='column-4'>
-          <Typography variant='menu' className='column-title'>
-            stay updated
-          </Typography>
-          <Typography variant='body4' className='keep-in-touch-text'>
-            Keep in touch with our latest news by subscribing to our newsletter.
-          </Typography>
-          <TextField placeholder='Enter your email address' className='email-address' />
-          <Button className='subscribe-button' variant='secondary'>
-            Subscribe
-          </Button>
-        </div>
+      </div>
+
+      <div className='links-row'>
+        <Link variant='body4'>About Lostfish</Link>
+        <Link variant='body4'>How Lostfish works</Link>
+        <Link variant='body4'>What defines us</Link>
+        <Link variant='body4'>Terms & Conditions</Link>
+        <Link variant='body4'>Privacy Policy</Link>
       </div>
       <div className='copyright-bar'>
         <Typography className='copyright-text' variant='body5'>
           2023 © LOSTFISH LIMITED. ALL RIGHTS RESERVED
         </Typography>
+
         <IconButton
-          size='small'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          noBackground
-          inverted>
-          <Icon icon='arrow-up' color='white' />
+          className='scroll-up-button'
+          size='large'
+          inverted
+          noBackground>
+          <Icon icon='arrow-up' color='white' size={16} />
         </IconButton>
       </div>
     </div>
   );
 })`
   &.footer-section {
-    margin-top: 88px;
-    padding-top: 80px;
-    padding-inline: 36px;
+    padding: 48px 36px;
     background-color: #0d2a38;
+    display: grid;
+    row-gap: 24px;
 
-    .columns-layout {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 2fr;
-      column-gap: 24px;
+    .column-1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-      .column-1 {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        row-gap: 24px;
-
-        img.logo {
-          height: 55px;
-        }
-
-        .typography {
-          color: white;
-        }
-
-        .social-networks {
-          display: flex;
-          align-items: center;
-          column-gap: 16px;
-
-          .icon-button {
-            border: 1px solid #184d6d;
-          }
-        }
+      img.logo {
+        height: 40px;
       }
 
-      .column-2 {
-        display: flex;
-        flex-direction: column;
-        row-gap: 24px;
-        .column-title {
-          color: #c0daff;
-          letter-spacing: 0.08em;
-        }
-
-        .link {
-          .typography {
-            color: white;
-          }
-        }
+      .typography {
+        color: white;
       }
 
-      .column-3 {
+      .social-networks {
         display: flex;
-        flex-direction: column;
-        row-gap: 24px;
-        .column-title {
-          color: #c0daff;
-          letter-spacing: 0.08em;
-        }
+        align-items: center;
+        column-gap: 16px;
 
-        .link {
-          .typography {
-            color: white;
-          }
+        .icon-button {
+          border: 1px solid #184d6d;
         }
       }
+    }
 
-      .column-4 {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        //row-gap: 24px;
+    .links-row {
+      display: flex;
+      column-gap: 32px;
+      align-items: center;
 
-        padding-inline: 58px;
-
-        .typography {
-          color: white;
-
-          &.column-title {
-            color: #c0daff;
-            letter-spacing: 0.08em;
-          }
-        }
-
-        .keep-in-touch-text {
-          margin-top: 16px;
-        }
-
-        .email-address {
-          margin-top: 16px;
-          width: 100%;
-        }
-
-        .subscribe-button {
-          //color: white;
-          //border-color: white;
-          margin-top: 24px;
-          text-transform: none;
-        }
+      > .link .typography {
+        color: white;
       }
     }
 
@@ -187,15 +99,14 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 24px;
-      padding-bottom: 36px;
 
       .copyright-text {
         color: #a7a7a7;
       }
 
-      .icon-button {
-        border: none;
+      .scroll-up-button {
+        border: 2px solid white;
+        box-sizing: border-box;
       }
     }
   }
