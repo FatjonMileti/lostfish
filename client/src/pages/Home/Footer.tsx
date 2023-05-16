@@ -89,6 +89,7 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
       display: flex;
       column-gap: 32px;
       align-items: center;
+      padding: 8px 0;
 
       > .link .typography {
         color: white;

@@ -11,6 +11,7 @@ import { useReactQueryHook } from '../../hooks/useReactQuery';
 import IconButton from '@mui/material/IconButton';
 import { Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { Footer } from '../Home/Footer';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id', flex: 1 },
@@ -53,23 +54,27 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   return (
     <div className={`properties-page ${className}`}>
       <Header />
-      {list.rows.length > 0 ? (
-        <div style={{ height: 400, width: '100%' }}>
-          <DataGrid
-            rows={list.rows}
-            columns={columns}
-            pageSize={list.pageSize}
-            rowsPerPageOptions={list.rowsPerPageOptions}
-          />
-        </div>
-      ) : (
-        <div className='no-properties'>
-          <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
-          <Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>
-            Add Property
-          </Button>
-        </div>
-      )}
+      <div>
+        {list.rows.length > 0 ? (
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={list.rows}
+              columns={columns}
+              pageSize={list.pageSize}
+              rowsPerPageOptions={list.rowsPerPageOptions}
+            />
+          </div>
+        ) : (
+          <div className='no-properties'>
+            <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
+            <Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>
+              Add Property
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <Footer />
     </div>
   );
 })`
@@ -78,13 +83,14 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     height: 100vh;
 
     display: grid;
-    grid-template-rows: min-content auto;
+    grid-template-rows: min-content auto min-content;
 
     .no-properties {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      height: 100%;
 
       .add-property-button {
         margin-top: 32px;

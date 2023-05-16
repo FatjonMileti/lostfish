@@ -26,8 +26,10 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
     <div className={`my-account-page ${className}`}>
       <Header />
       <div className='container'>
-        <div>
-          <Button onClick={logOut}>Sign out</Button>
+        <div className='left-menu'>
+          <Button onClick={logOut} className='log-out-button'>
+            Sign out
+          </Button>
         </div>
         <div className='line'></div>
         <div>
@@ -51,6 +53,13 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
       padding: 36px;
 
       grid-template-columns: 1fr min-content 2.79fr;
+
+      .left-menu {
+        display: grid;
+        .log-out-button {
+          align-self: flex-end;
+        }
+      }
 
       .line {
         width: 2px;
