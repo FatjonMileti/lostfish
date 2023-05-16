@@ -28,6 +28,7 @@ import { Mission } from './pages/Mission/Mission';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
 import request from './utils/axios';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
+import { MyAccount } from './pages/MyAccount/MyAccount';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -117,6 +118,7 @@ function App() {
             <Route path='/reset-password/:token' element={<ResetPassword />} />
             <Route path='/components' element={<PreviewComponents />} />
             <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
+            <Route path='my-account' element={!!user.auth ? <MyAccount /> : <Login />} />
             <Route path='*' element={<NotFound />} />
 
             <Route
