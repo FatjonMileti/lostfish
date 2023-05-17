@@ -1,16 +1,16 @@
-import { Router, Request, Response } from "express";
-import offerService from "./asset.service";
-import { AssetDocument } from "../../data/interfaces/asset.interface";
-import { validate, ValidationError } from "class-validator";
-import authorize from "../../middleware/authorize";
-import validator from "../../middleware/validator";
-import { Role } from "../../enums";
-import * as joi from "joi";
+import { Request, Response, Router } from 'express';
+import assetService from './asset.service';
+import { AssetDocument, IOffer, OfferStatus } from '../../data/interfaces/asset.interface';
+import { validate, ValidationError } from 'class-validator';
+import authorize from '../../middleware/authorize';
+import validator from '../../middleware/validator';
+import { Role } from '../../enums';
+import * as joi from 'joi';
 
 const router: Router = Router();
 
 export class AssetController {
-  public path = "/";
+  public path = '/';
   public router = router;
 
   constructor() {
@@ -19,7 +19,7 @@ export class AssetController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
-    this.router.get("/:id", authorize([Role.Admin]), this.getById);
+    this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post(
       this.path,
       authorize([Role.Admin]),
@@ -27,13 +27,14 @@ export class AssetController {
         joi
           .object({
             name: joi.string().required(),
-            description: joi.string().required(),
+            description: joi.string().required()
           })
           .unknown()
       ),
       this.createAsset
     );
-    this.router.delete("/:id", authorize([Role.Admin]), this.delete);
+    this.router.patch('/:id/offer', authorize(), this.makeOffer);
+    this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
   /**
@@ -46,7 +47,7 @@ export class AssetController {
    */
   private getAll = async (req: Request, res: Response) => {
     try {
-      const offers = await offerService.getAll({}, res.locals.paging_options);
+      const offers = await assetService.getAll({}, res.locals.paging_options);
 
       return res.send(offers);
     } catch (error: any) {
@@ -67,7 +68,7 @@ export class AssetController {
   private getById = async (req: Request, res: Response) => {
     const id = req.params.id;
 
-    const asset = await offerService.getById(id);
+    const asset = await assetService.getById(id);
     return res.json(asset);
   };
 
@@ -89,8 +90,34 @@ export class AssetController {
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
-    const response = await offerService.createAsset();
+    const response = await assetService.createAsset();
     res.send({ ...response });
+  };
+
+  /**
+   * @api {patch} /api/asset/:id/offer Patch
+   * @apiDescription Make an offer
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/offer
+   *
+   * @apiBody {number} amount
+   * @apiBody {number} client_id
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  public makeOffer = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const offer: IOffer = req.body as IOffer;
+
+    if (res.locals.user_id != null) {
+      offer.user_id = res.locals.user_id;
+    }
+    offer.created_at = new Date();
+    offer.status = OfferStatus.Pending;
+    offer.asset_id = id;
+    const response = await assetService.makeOffer(offer);
+
+    return res.send(response);
   };
 
   /**
@@ -107,10 +134,10 @@ export class AssetController {
     const id = req.params.id;
 
     try {
-      await offerService.deleteAsset(id);
+      await assetService.deleteAsset(id);
       res.status(204).send();
     } catch (error) {
-      res.status(404).json({ message: "Asset not found" });
+      res.status(404).json({ message: 'Asset not found' });
     }
   };
 }

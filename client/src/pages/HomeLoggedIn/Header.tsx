@@ -23,7 +23,7 @@ export const Header = styled(({ className }: HeaderProps) => {
     await request(user.auth.access_token).post('/api/account/logout', {
       refresh_token: user.auth.refresh_token
     });
-    setUser((user: any) => ({ ...user, auth: null }));
+    setUser((user: any) => ({ ...user, auth: null, userDetails: null }));
     navigate('/');
   };
 

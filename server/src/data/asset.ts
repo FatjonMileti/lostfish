@@ -10,8 +10,10 @@ import {
   CurrencyCode,
   MasterAssetTypeSring,
   RentalFrequency,
-  StatusString, TabName,
-  TransactionTypeString
+  StatusString,
+  TabName,
+  TransactionTypeString,
+  IOffer
 } from './interfaces/asset.interface';
 
 const Contact = {
@@ -81,16 +83,18 @@ const schema = new Schema<AssetDocument>({
   extra_branch_names: [String],
   walkthrough_url: { type: String, default: null },
   videos: [{ name: String, url: String }],
-  asset_attribute: [{
-    name: String,
-    type: {
-      type: String,
-      enum: Object.values(AssetAtribute),
-      default: null
-    },
-    value: String,
-    _id: false
-  }],
+  asset_attribute: [
+    {
+      name: String,
+      type: {
+        type: String,
+        enum: Object.values(AssetAtribute),
+        default: null
+      },
+      value: String,
+      _id: false
+    }
+  ],
   asset_sale: {
     asking_price: { type: Number, required: true },
     minimum_offer: { type: Number, required: true, default: 0 },
@@ -132,10 +136,11 @@ const schema = new Schema<AssetDocument>({
     completion_date: Date
   },
   client_id: { type: Number, default: null },
-  // client: Contact,
+  client: Contact,
   solicitor_id: { type: Number, default: null },
-  // solicitor: Contact,
+  solicitor: Contact,
   statistics: { type: Object, default: {} },
+  offers: [{ type: Object }],
   permission: {
     administrator_names: [String],
     display_administrator_names: [String],
@@ -146,15 +151,17 @@ const schema = new Schema<AssetDocument>({
       default: Access.flexible,
       _id: false
     },
-    tabs: [{
-      name: {
-        type: String,
-        enum: Object.keys(TabName),
-        default: null
-      },
-      roles: [String],
-      _id: false
-    }]
+    tabs: [
+      {
+        name: {
+          type: String,
+          enum: Object.keys(TabName),
+          default: null
+        },
+        roles: [String],
+        _id: false
+      }
+    ]
   },
   settings: { type: Object, default: {} },
   edited_at: Date,

@@ -27,41 +27,59 @@ export enum CountryCode {
   'CAN' = 'CAN'
 }
 
-
 export interface ContactDocument extends Document {
   firstname: string;
   surname: string;
-  legal_name: { type: string },
+  legal_name: { type: string };
   email: string;
   phone: string;
   company: string;
   contact_type: ContactType;
-  address: string
-};
+  address: string;
+}
+
+export interface IOffer {
+  amount: number;
+  asset_id: string;
+  client_id: string;
+  user_id: string;
+  status: OfferStatus;
+  created_at: Date;
+}
+
+export enum OfferStatus {
+  Unknown = 'Unknown',
+  Confirmed = 'Confirmed',
+  ClientWithdrawn = 'Client Withdrawn',
+  AgentWithdrawn = 'Agent Withdrawn',
+  Accepted = 'Accepted',
+  Rejected = 'Rejected',
+  Pending = 'Pending'
+}
 
 export enum StatusString {
-  'Draft' = 'Draft',
-  'Live' = 'Live',
-  'SaleAgreed' = 'Sale Agreed',
-  'Exchanged' = 'Exchanged',
-  'Completed' = 'Completed',
-  'Archived' = 'Archived',
-  'PreDraft' = 'Pre Draft'
+  Draft = 'Draft',
+  Live = 'Live',
+  SaleAgreed = 'Sale Agreed',
+  Exchanged = 'Exchanged',
+  Completed = 'Completed',
+  Archived = 'Archived',
+  PreDraft = 'Pre Draft'
 }
 
 export enum TransactionTypeString {
-  'Sale' = 'Sale',
-  'Auction' = 'Auction',
-  'Tender' = 'Tender',
-  'Rent' = 'Rent',
-  'NewHomes' = 'New Homes'
+  Sale = 'Sale',
+  Auction = 'Auction',
+  Tender = 'Tender',
+  Rent = 'Rent',
+  NewHomes = 'New Homes'
 }
 
 export enum MasterAssetTypeSring {
-  'Unknown' = 'Unknown',
-  'Residential' = 'Residential',
-  'Commercial' = 'Commercial',
-  'Marine' = 'Marine'
+  Unknown = 'Unknown',
+  Residential = 'Residential',
+  Commercial = 'Commercial',
+  Marine = 'Marine'
 }
 
 export enum AssetTypeString {
@@ -151,71 +169,74 @@ export interface AssetDocument extends Document {
     postal_town: string;
     postal_code: string;
     administrative_area_level_1: string;
-    country_code: CountryCode,
+    country_code: CountryCode;
     text: string;
-  },
-  status_string: StatusString,
-  transaction_type_string: TransactionTypeString,
-  master_asset_type_string: MasterAssetTypeSring,
-  asset_type_string: AssetTypeString,
-  currency_code: CurrencyCode,
+  };
+  status_string: StatusString;
+  transaction_type_string: TransactionTypeString;
+  master_asset_type_string: MasterAssetTypeSring;
+  asset_type_string: AssetTypeString;
+  currency_code: CurrencyCode;
   reserved: boolean;
   master_branch_name: string;
   extra_branch_names: [string];
   walkthrough_url: string;
-  videos: [{ name: string, url: string }],
-  asset_attribute: [AssetAtribute],
+  videos: [{ name: string; url: string }];
+  asset_attribute: [AssetAtribute];
   asset_sale: {
-    asking_price: number,
-    minimum_offer: number,
-    offer_increment_amount: number,
-    date_go_live: Date,
-    date_offer_deadline: Date,
-    date_exchanged: Date,
-    date_completion: Date,
-    offers_extension: number,
-    contract_deposit_percent: number,
-    booking_deposit_amount: number,
-    special_conditions: string,
-    show_all_offers: boolean,
-    show_highest_offer: boolean,
-    enable_downward_bidding: boolean,
-    downward_bidding_allowed_percentage: number
-  },
+    asking_price: number;
+    minimum_offer: number;
+    offer_increment_amount: number;
+    date_go_live: Date;
+    date_offer_deadline: Date;
+    date_exchanged: Date;
+    date_completion: Date;
+    offers_extension: number;
+    contract_deposit_percent: number;
+    booking_deposit_amount: number;
+    special_conditions: string;
+    show_all_offers: boolean;
+    show_highest_offer: boolean;
+    enable_downward_bidding: boolean;
+    downward_bidding_allowed_percentage: number;
+  };
   asset_rent: {
-    rental_amount: number,
-    rental_frequency: RentalFrequency,
-    deposit_amount: number,
-    interest_by: Date,
-    available_from: Date
-  },
-  'asset_auction': {
-    'guide_price': number,
-    'reserve_price': number,
-    'starting_bid': number,
-    'bidding_increments': number
-    'start_time': Date,
-    'end_time': Date,
-    'bidding_extension': number,
-    'deposit_due_date': Date,
-    'completion_date': Date
-  },
-  client_id: number,
-  client: ContactDocument,
-  solicitor_id: number,
-  solicitor: ContactDocument,
-  statistics: any,
+    rental_amount: number;
+    rental_frequency: RentalFrequency;
+    deposit_amount: number;
+    interest_by: Date;
+    available_from: Date;
+  };
+  asset_auction: {
+    guide_price: number;
+    reserve_price: number;
+    starting_bid: number;
+    bidding_increments: number;
+    start_time: Date;
+    end_time: Date;
+    bidding_extension: number;
+    deposit_due_date: Date;
+    completion_date: Date;
+  };
+  client_id: number;
+  client: ContactDocument;
+  solicitor_id: number;
+  solicitor: ContactDocument;
+  statistics: any;
   permission: {
-    administrator_names: [string],
-    display_administrator_names: [string],
-    branch_administrator_names: [string],
-    access: Access,
-    tabs: [{
-      name: TabName,
-      roles: [string]
-    }]
-  },
-  settings: any,
+    administrator_names: [string];
+    display_administrator_names: [string];
+    branch_administrator_names: [string];
+    access: Access;
+    tabs: [
+      {
+        name: TabName;
+        roles: [string];
+      }
+    ];
+  };
+  offers: IOffer[];
+  settings: any;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;
