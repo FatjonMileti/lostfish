@@ -2,6 +2,15 @@ body {
     margin: 0;
 }
 
+::-webkit-scrollbar {
+     width: 6px;
+ }
+
+::-webkit-scrollbar-thumb {
+     background-color: darkgrey;
+     outline: 1px solid slategrey;
+ }
+
 @font-face {
     font-family: 'pass';
     font-style: normal;

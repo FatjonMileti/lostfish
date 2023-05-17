@@ -18,7 +18,7 @@ const GlobalStateContext = React.createContext(defaultValue);
 export const useGlobalState = () => React.useContext(GlobalStateContext);
 
 let storages: { [key: string]: Storage } = {};
-export const registerStore = (name: string, defaultState: any, config: Storage['config']) => {
+export const registerStore = (name: string, defaultState: any, config: Storage['config'] | void) => {
   storages[name] = {
     name: name,
     defaultState,

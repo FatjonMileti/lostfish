@@ -43,7 +43,7 @@ export const Conversation = styled(
           </div>
 
           <img className='match-thumbnail' src={propertyMatchThumbnail} alt='match thumbnail' />
-          {row.unseen_messages ? row.unseen_messages : ''}
+          {row.unseen_messages > 0 && <span className='unseen-messages-nr'>{row.unseen_messages}</span>}
         </div>
 
         <div className='details'>
@@ -99,6 +99,7 @@ export const Conversation = styled(
 
     .match-avatar-intersection {
       display: flex;
+      position: relative;
 
       .avatar {
         position: relative;
@@ -119,6 +120,26 @@ export const Conversation = styled(
         border-radius: 50%;
         height: 48px;
         width: 48px;
+      }
+
+      .unseen-messages-nr {
+        height: 20px;
+        width: 20px;
+        color: white;
+        background-color: #e5155a;
+        border-radius: 50%;
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 16px;
+        font-family: 'Roobert';
       }
     }
 

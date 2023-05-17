@@ -49,7 +49,6 @@ export class AccountController {
     this.router.post('/logout', authorize(), this.logout);
   }
 
-
   /**
    * @api {post} /api/account/login Login
    * @apiDescription Login user
@@ -76,15 +75,11 @@ export class AccountController {
     if (!user) throw loginError('user_not_found', 'User not found');
 
     const passCheck: boolean = await new Promise((resolve) => {
-      bcrypt.compare(
-        req.body.password,
-        user!.hash,
-        (err: Error | undefined, same: boolean) => {
-          if (same) return resolve(true);
+      bcrypt.compare(req.body.password, user!.hash, (err: Error | undefined, same: boolean) => {
+        if (same) return resolve(true);
 
-          return resolve(false);
-        }
-      );
+        return resolve(false);
+      });
     });
     if (!passCheck) throw loginError('incorrect_password', 'Bad password');
 
@@ -107,7 +102,6 @@ export class AccountController {
       refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
     });
   };
-
 
   /**
    * @api {post} /api/account/refresh Refresh

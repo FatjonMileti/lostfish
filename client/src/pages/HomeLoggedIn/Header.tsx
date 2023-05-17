@@ -9,6 +9,7 @@ import { Logo } from '../../components/Logo';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalState } from '../../globalState';
 import request from '../../utils/axios';
+import { Typography } from '../../components/Typography';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -67,11 +68,18 @@ export const Header = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='right-part'>
-        {/*<Link onClick={() => navigate('/login')}>Login</Link>*/}
+        <div className='trust-score'>
+          <Typography variant='body6' className='trust-score-title'>
+            Trust score
+          </Typography>
+          <Typography variant='body5' className='trust-score-percentage'>
+            60%
+          </Typography>
+        </div>
 
-        <Button variant='secondary' onClick={logOut}>
-          Log out
-        </Button>
+        <NavLink to='/my-account'>
+          <div className='avatar'></div>
+        </NavLink>
       </div>
     </div>
   );
@@ -108,7 +116,29 @@ export const Header = styled(({ className }: HeaderProps) => {
     .right-part {
       display: flex;
       align-items: center;
-      column-gap: 40px;
+      column-gap: 8px;
+
+      .avatar {
+        height: 45px;
+        width: 45px;
+        border-radius: 50%;
+        background-color: #c0daff;
+      }
+
+      .trust-score {
+        .trust-score-title {
+          font-size: 10px;
+          line-height: 12px;
+          font-weight: 500;
+          color: #646464;
+        }
+
+        .trust-score-percentage {
+          line-height: 14px;
+          font-weight: 700;
+          color: #e5155a;
+        }
+      }
     }
   }
 `;

@@ -16,7 +16,7 @@ import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
-import { SetPassword } from './pages/CreateAccount/SetPassword';
+import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
 import { Maps } from './pages/Maps/Maps';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/Properties';
@@ -27,6 +27,8 @@ import { About } from './pages/About/About';
 import { Mission } from './pages/Mission/Mission';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
 import request from './utils/axios';
+import { ResetPassword } from './pages/ResetPassword/ResetPassword';
+import { MyAccount } from './pages/MyAccount/MyAccount';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -106,15 +108,17 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
-            <Route path='/activate-account/:token' element={<SetPassword />} />
+            <Route path='/activate-account/:token' element={<VerifyAccount />} />
             <Route path='/properties' element={<Properties />} />
             <Route path='/properties/:id' element={<Maps />} />
             <Route path='/matches' element={<Matches />} />
             <Route path='/about' element={<About />} />
             <Route path='/mission' element={<Mission />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/reset-password/:token' element={<ResetPassword />} />
             <Route path='/components' element={<PreviewComponents />} />
             <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
+            <Route path='my-account' element={!!user.auth ? <MyAccount /> : <Login />} />
             <Route path='*' element={<NotFound />} />
 
             <Route
