@@ -63,7 +63,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   };
 
   const joinRoom = async (roomObj?: IRoom | null) => {
-    if (userDetails?.username && roomObj) {
+    if (userDetails && roomObj) {
       await handleReadMessages(roomObj);
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);

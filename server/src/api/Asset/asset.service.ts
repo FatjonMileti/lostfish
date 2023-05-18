@@ -85,19 +85,31 @@ const makeOffer = async (body: IOffer): Promise<any> => {
 
 const getById = async (id: string): Promise<any> => {
   const asset: AssetDocument | null = await AssetModel.findOne({ _id: id });
-  // const formData = new FormData();
-  // formData.append('party_id', '2034');
-  // formData.append('party', '1');
-  // formData.append('bidder_terms', '1');
-  // formData.append('conditions', '[]');
-  // const test = await axios.put('/asset/registration/2687', formData);
-
-  // return test;
 
   if (!asset) {
     throw createError(400, 'The item does not exist');
   }
+
   return asset;
+
+  /*const data: any = {
+    id: 2541,
+    asset_address: asset.asset_address,
+    status_string: 'Completed',
+    transaction_type_string: 'Sale',
+    master_asset_type_string: asset.master_asset_type_string,
+    asset_type_string: asset.asset_type_string
+  };
+
+  try {
+    const response = await axios.patch('/asset/patch/2541', data);
+    console.log(response.data, 'jjdjdjdj');
+    return response.data;
+  } catch (error: any) {
+    console.log(error);
+    return error.request;
+  }
+  */
 };
 
 const deleteAsset = async (id: string) => {

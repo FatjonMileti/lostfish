@@ -173,3 +173,6 @@ const schema = new Schema<AssetDocument>({
 schema.plugin(mongoosePaginate);
 
 export default model<AssetDocument, PaginateModel<AssetDocument>>('asset', schema);
+
+//making offer is not duable
+//

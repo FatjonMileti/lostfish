@@ -69,7 +69,7 @@ export class AssetController {
     const id = req.params.id;
 
     const asset = await assetService.getById(id);
-    return res.json(asset);
+    return res.send(asset);
   };
 
   /**
