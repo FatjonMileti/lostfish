@@ -18,26 +18,8 @@ const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 
-const passport = require('passport');
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-
 const app: Application = express();
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: 'YOUR_GOOGLE_CLIENT_ID',
-      clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
-      callbackURL: 'http://localhost:your-api-port/auth/google/callback'
-    },
-    (accessToken, refreshToken, profile, done) => {
-      // Handle the authenticated user profile
-      // You can store the user's information in your database or session as needed
-      console.log(profile);
-      done(null, profile);
-    }
-  )
-);
 app.use(compression());
 if (process.env.NODE_ENV !== 'test') dbConnect(process.env.DB_CONNECTION_STRING);
 if (process.env.BEHIND_PROXY) {
