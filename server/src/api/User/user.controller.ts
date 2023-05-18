@@ -157,8 +157,9 @@ export class UserController {
    * @apiParam token user token
    */
   private getInvitation = async (req: express.Request, res: express.Response) => {
-    const token = req.params.token;
-    const user: any = await userService.findOne({ confirmation_token: token });
+    // tslint:disable-next-line:variable-name
+    const confirmation_token = req.body.token;
+    const user: any = await userService.findOne({ confirmation_token });
 
     // await new UserLog({
     //   user: res.locals.user_id,
@@ -171,8 +172,13 @@ export class UserController {
       return res.status(404).json({ message: 'user_not_found' });
     }
 
-    res.json({
-      first_name: user.first_name
+    const { token, refresh } = this.accountService.generateTokens(user);
+    return res.json({
+      token_type: 'bearer',
+      access_token: token,
+      expires_in: process.env.JWT_EXPIRE_SECONDS,
+      refresh_token: refresh,
+      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
     });
   };
 

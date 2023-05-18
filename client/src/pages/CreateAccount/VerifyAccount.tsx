@@ -22,6 +22,7 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
       setLoading(true);
       try {
         const response = await axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`);
+        await verifyRegistration(response);
       } catch (err: AxiosError | any) {
         if (err?.response?.data?.message === 'user_not_found') {
           return navigate('/404');
@@ -29,28 +30,14 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
         throw err;
       }
 
-      try {
-        await verifyRegistration();
-      } catch (err) {
-        throw err;
-      }
-
-      setLoading(false);
-
       navigate('/');
     })();
   }, [params]);
 
-  const verifyRegistration = async () => {
-    const token = params.token;
-
+  const verifyRegistration = async (response: any) => {
     setLoading(true);
 
     try {
-      const response = await axios.put(`${config.apiUrl}/api/user/invitation`, {
-        token
-      });
-
       const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
       setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
     } catch (err: AxiosError | any) {
