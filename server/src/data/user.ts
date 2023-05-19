@@ -9,13 +9,13 @@ const schema = new Schema<UserDocument>({
     type: String,
     enum: [Role.Admin, Role.User],
     default: Role.User
-    // required: true,
   },
   email: { type: String, index: true, required: true },
   phone: String,
   first_name: String,
   last_name: String,
   is_disabled: { type: Boolean, default: true },
+  is_google_verified: { type: Boolean, default: false },
   confirmation_token: String,
   last_login: Date,
   address: {

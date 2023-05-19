@@ -1,3 +1,5 @@
+import * as process from 'process';
+
 require('dotenv').config();
 
 const compression = require('compression');
@@ -66,6 +68,7 @@ app.use(
     limits: { fileSize: 10 * 1024 * 1024 }
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

@@ -14,12 +14,11 @@ import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
 import { IconButton } from '../../components/IconButton';
-
 import config from '../../config';
 import { Backdrop } from '../../components/Backdrop';
 import { Header } from './Header';
-
 import loginIllustration from './loginIllustration.png';
+import { LoginWithGoogle } from './components/LoginWithGoogle';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -76,8 +75,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
 
       setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
-
-      console.log(response.data);
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
@@ -94,6 +91,19 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       throw err;
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loginWithGoogle = async (response: { code: string }) => {
+    try {
+      const { data } = await axios.post(`${config.apiUrl}/api/account/login-google`, { code: response.code });
+
+      const userDetails = JSON.parse(window.atob(data.access_token.split('.')[1]));
+
+      setUser((user: any) => ({ ...user, auth: data, userDetails }));
+    } catch (err) {
+      console.log(err);
+      //handle error
     }
   };
 
@@ -126,9 +136,8 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
             <Button variant='secondary'>
               <Icon icon='twitter' />
             </Button>
-            <Button variant='secondary'>
-              <Icon icon='google' />
-            </Button>
+
+            <LoginWithGoogle onSuccess={loginWithGoogle} />
           </div>
 
           <div className='or-line'>

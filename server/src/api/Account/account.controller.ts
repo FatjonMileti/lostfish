@@ -1,8 +1,6 @@
-import express, { Router } from 'express';
-
+import express, { Application, Request, Response, Router } from 'express';
 const router: Router = Router();
-
-import { UserDocument } from '../../data/interfaces/user.interface';
+import { Role, UserDocument } from '../../data/interfaces/user.interface';
 import UserModel from '../../data/user';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import authorize from '../../middleware/authorize';
@@ -11,11 +9,18 @@ import bcrypt from 'bcrypt';
 import { loginLimiter } from '../../middleware/rateLimiter';
 import validator from '../../middleware/validator';
 import * as joi from 'joi';
-
 import jwt from 'jsonwebtoken';
 import UsedRefreshToken from '../../data/usedRefreshToken';
 import RevokedToken from '../../data/revokedToken';
 import accountService from './account.service';
+import userService from '../User/user.service';
+
+const { OAuth2Client } = require('google-auth-library');
+
+const clientId = `${process.env.GOOGLE_CLIENT_ID}`;
+const clientSecret = `${process.env.GOOGLE_CLIENT_SECRET}`;
+const redirectUri = `${process.env.GOOGLE_CLIENT_REDIRECT_URI}`;
+const client = new OAuth2Client(clientId, clientSecret, redirectUri);
 
 export class AccountController {
   public router = router;
@@ -47,6 +52,7 @@ export class AccountController {
       this.refresh
     );
     this.router.post('/logout', authorize(), this.logout);
+    this.router.post('/login-google', this.loginGoogle);
   }
 
   /**
@@ -90,7 +96,7 @@ export class AccountController {
 
     await new LoginLog({
       user: user._id,
-      info: user.username,
+      info: user.first_name,
       action: LoginLogAction.Login
     }).save();
 
@@ -101,6 +107,80 @@ export class AccountController {
       refresh_token: refresh,
       refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
     });
+  };
+
+  /**
+   * @api {post} /api/account/login-google Login Google
+   * @apiDescription Login user with google
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/login-google
+   *
+   * @apiBody {string} code
+   *
+   * @apiPermission anonymous
+   * @apiSuccess {String} token_type
+   * @apiSuccess {String} access_token
+   * @apiSuccess {String} expires_in
+   * @apiSuccess {String} refresh_token
+   */
+  private loginGoogle = async (req: Request, res: Response) => {
+    const { code } = req.body;
+    try {
+      const { tokens } = await client.getToken(code);
+      const idToken = tokens.id_token;
+
+      // Verify and decode the ID token
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: clientId
+      });
+
+      const payload = ticket.getPayload();
+
+      if (!payload) {
+        return res.status(404).send({ message: 'user_not_found' });
+      }
+
+      let user = await userService.findOne({
+        email: payload.email,
+        is_google_verified: true,
+        is_disabled: false
+      });
+
+      if (!user) {
+        user = await new UserModel({
+          email: payload.email,
+          first_name: payload.given_name,
+          last_name: payload.family_name,
+          is_google_verified: true,
+          is_disabled: false,
+          hash: null,
+          role: Role.User
+        }).save();
+
+        if (!user) {
+          return res.status(400).send({ message: 'user_can_not_created' });
+        }
+      }
+
+      const { token, refresh } = this.accountService.generateTokens(user);
+
+      await new LoginLog({
+        user: user._id,
+        info: user.first_name,
+        action: LoginLogAction.Login
+      }).save();
+
+      return res.json({
+        token_type: 'bearer',
+        access_token: token,
+        expires_in: process.env.JWT_EXPIRE_SECONDS,
+        refresh_token: refresh,
+        refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+      });
+    } catch (error: any) {
+      return res.send({ message: 'failed_login_with_google', error });
+    }
   };
 
   /**
@@ -154,7 +234,7 @@ export class AccountController {
 
     await new LoginLog({
       user: user._id,
-      info: user.username,
+      info: user.first_name,
       action: LoginLogAction.Refresh
     }).save();
 
