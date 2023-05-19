@@ -28,3 +28,9 @@ declare interface IGridState {
   search?: string;
   filters?: { [key: string]: any };
 }
+
+declare global {
+  interface Window {
+    FB: any;
+  }
+}

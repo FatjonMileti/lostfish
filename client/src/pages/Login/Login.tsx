@@ -19,6 +19,7 @@ import { Backdrop } from '../../components/Backdrop';
 import { Header } from './Header';
 import loginIllustration from './loginIllustration.png';
 import { LoginWithGoogle } from './components/LoginWithGoogle';
+import { LoginWithFacebook } from './components/LoginWithFacebook';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -107,6 +108,16 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     }
   };
 
+  const handleFacebookLoginSuccess = (accessToken: string) => {
+    // Handle successful login
+    console.log('Access token:', accessToken);
+  };
+
+  const handleFacebookLoginFailure = (error: string) => {
+    // Handle login failure
+    console.error('Facebook login failed:', error);
+  };
+
   return (
     <div className={`login-page ${className}`}>
       <Header />
@@ -130,9 +141,13 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
             <Button variant='secondary'>
               <Icon icon='apple' />
             </Button>
-            <Button variant='secondary'>
-              <Icon icon='facebook' />
-            </Button>
+
+            <LoginWithFacebook
+              appId='943662833755843'
+              onLoginSuccess={handleFacebookLoginSuccess}
+              onLoginFailure={handleFacebookLoginFailure}
+              scope='email'
+            />
             <Button variant='secondary'>
               <Icon icon='twitter' />
             </Button>
