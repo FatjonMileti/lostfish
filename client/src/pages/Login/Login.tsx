@@ -108,9 +108,11 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     }
   };
 
-  const handleFacebookLoginSuccess = (accessToken: string) => {
-    // Handle successful login
-    console.log('Access token:', accessToken);
+  const handleFacebookLoginSuccess = async (accessToken: string) => {
+    const { data } = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
+    const userDetails = JSON.parse(window.atob(data.access_token.split('.')[1]));
+
+    setUser((user: any) => ({ ...user, auth: data, userDetails }));
   };
 
   const handleFacebookLoginFailure = (error: string) => {

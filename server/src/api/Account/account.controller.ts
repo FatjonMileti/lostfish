@@ -14,7 +14,7 @@ import UsedRefreshToken from '../../data/usedRefreshToken';
 import RevokedToken from '../../data/revokedToken';
 import accountService from './account.service';
 import userService from '../User/user.service';
-
+import axios from 'axios';
 const { OAuth2Client } = require('google-auth-library');
 
 const clientId = `${process.env.GOOGLE_CLIENT_ID}`;
@@ -53,6 +53,7 @@ export class AccountController {
     );
     this.router.post('/logout', authorize(), this.logout);
     this.router.post('/login-google', this.loginGoogle);
+    this.router.post('/login-facebook', this.loginFacebook);
   }
 
   /**
@@ -180,6 +181,73 @@ export class AccountController {
       });
     } catch (error: any) {
       return res.send({ message: 'failed_login_with_google', error });
+    }
+  };
+
+  /**
+   * @api {post} /api/account/login-google Login Facebook
+   * @apiDescription Login user with facebook
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/login-facebook
+   *
+   * @apiBody {string} token
+   *
+   * @apiPermission anonymous
+   * @apiSuccess {String} token_type
+   * @apiSuccess {String} access_token
+   * @apiSuccess {String} expires_in
+   * @apiSuccess {String} refresh_token
+   */
+  private loginFacebook = async (req: Request, res: Response) => {
+    const fbToken = req.body.token;
+
+    const url = `https://graph.facebook.com/me?fields=id,name,email&access_token=${fbToken}`;
+
+    try {
+      const response = await axios.get(url);
+      const userDetails: any = response.data;
+
+      let user = await userService.findOne({
+        email: userDetails.email,
+        is_facebook_verified: true,
+        is_disabled: false
+      });
+
+      if (!user) {
+        const name = userDetails.name.split(' ');
+        user = await new UserModel({
+          email: userDetails.email,
+          first_name: name[0],
+          last_name: name[1],
+          is_facebook_verified: true,
+          is_disabled: false,
+          facebook_user_id: userDetails.id,
+          hash: null,
+          role: Role.User
+        }).save();
+
+        if (!user) {
+          return res.status(400).send({ message: 'user_can_not_created' });
+        }
+      }
+
+      const { token, refresh } = this.accountService.generateTokens(user);
+
+      await new LoginLog({
+        user: user._id,
+        info: user.first_name,
+        action: LoginLogAction.Login
+      }).save();
+
+      return res.json({
+        token_type: 'bearer',
+        access_token: token,
+        expires_in: process.env.JWT_EXPIRE_SECONDS,
+        refresh_token: refresh,
+        refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+      });
+    } catch (error: any) {
+      res.status(400).send({ message: 'failed_to_fetch_user', error });
     }
   };
 

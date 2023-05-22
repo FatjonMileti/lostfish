@@ -16,7 +16,9 @@ const schema = new Schema<UserDocument>({
   last_name: String,
   is_disabled: { type: Boolean, default: true },
   is_google_verified: { type: Boolean, default: false },
+  is_facebook_verified: { type: Boolean, default: false },
   confirmation_token: String,
+  facebook_user_id: String,
   last_login: Date,
   address: {
     name: String,

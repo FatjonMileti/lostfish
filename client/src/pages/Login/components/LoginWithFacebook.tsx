@@ -41,7 +41,6 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
 
     const initFacebookSDK = () => {
       (window as any).FB?.getLoginStatus(function (response: any) {
-        console.log({ response });
         if (response.status === 'connected') {
           onLoginSuccess(response.authResponse.accessToken);
         }

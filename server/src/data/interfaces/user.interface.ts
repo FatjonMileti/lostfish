@@ -11,6 +11,8 @@ export interface UserDocument extends Document {
   last_name: string;
   is_disabled: boolean;
   is_google_verified: boolean;
+  is_facebook_verified: boolean;
+  facebook_user_id?: string;
   address?: {
     name: string;
     street: string;
