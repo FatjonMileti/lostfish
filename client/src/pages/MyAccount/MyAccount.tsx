@@ -15,11 +15,15 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const navigate = useNavigate();
 
   const logOut = async () => {
-    await request(user.auth.access_token).post('/api/account/logout', {
-      refresh_token: user.auth.refresh_token
-    });
-    setUser((user: any) => ({ ...user, auth: null }));
-    navigate('/');
+    try {
+      await request(user.auth.access_token).post('/api/account/logout', {
+        refresh_token: user.auth.refresh_token
+      });
+    } catch (err) {
+    } finally {
+      setUser((user: any) => ({ ...user, auth: null }));
+      navigate('/');
+    }
   };
 
   return (
