@@ -1,11 +1,11 @@
 import { Schema, model, ObjectId, Document, Model } from 'mongoose';
 import moment from 'moment';
 
-
 export enum LoginLogAction {
   Login = 'login',
   Refresh = 'refresh',
   Logout = 'logout',
+  Login_Google = 'login_google'
 }
 
 export interface ILoginLog extends Document {
@@ -33,9 +33,7 @@ const loginLogSchema = new Schema<ILoginLog>({
   expiresAt: {
     type: Date,
     default: () => {
-      return moment()
-        .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day')
-        .toDate();
+      return moment().add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day').toDate();
     }
   }
 });
@@ -46,7 +44,7 @@ export enum LogAction {
   Create = 'create',
   Read = 'read',
   Update = 'update',
-  Delete = 'delete',
+  Delete = 'delete'
 }
 
 export interface ILog extends Document {
@@ -58,9 +56,7 @@ export interface ILog extends Document {
   expiresAt: Date;
 }
 
-const generateModel: (collection: string) => Model<ILog> = (
-  collection: string
-) => {
+const generateModel: (collection: string) => Model<ILog> = (collection: string) => {
   const schema = new Schema<ILog>({
     user: {
       type: Schema.Types.ObjectId,
@@ -70,12 +66,7 @@ const generateModel: (collection: string) => Model<ILog> = (
     },
     action: {
       type: String,
-      enum: [
-        LogAction.Create,
-        LogAction.Read,
-        LogAction.Update,
-        LogAction.Delete
-      ],
+      enum: [LogAction.Create, LogAction.Read, LogAction.Update, LogAction.Delete],
       required: true
     },
     ref: { type: Schema.Types.ObjectId, ref: collection, index: true },
@@ -84,9 +75,7 @@ const generateModel: (collection: string) => Model<ILog> = (
     expiresAt: {
       type: Date,
       default: () => {
-        return moment()
-          .add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day')
-          .toDate();
+        return moment().add(parseInt(process.env.LOG_EXPIRATION_DAYS!, 10), 'day').toDate();
       }
     }
   });

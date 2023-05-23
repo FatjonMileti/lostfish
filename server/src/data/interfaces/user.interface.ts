@@ -1,23 +1,36 @@
-import { Document, ObjectId } from "mongoose";
+import { Document, ObjectId } from 'mongoose';
 
 export interface UserDocument extends Document {
-  _id: ObjectId | string;
-  username: string;
   hash: string;
   role: {
     type: Role;
     default: Role.User;
   };
   email: string;
-  phone: string;
   first_name: string;
   last_name: string;
   is_disabled: boolean;
-  confirmation_token: string;
-  address: {
+  google: {
+    username: string;
+    google_user_id: string;
+    is_google_verified: boolean;
+  };
+  facebook: {
+    username: string;
+    facebook_user_id: string;
+    is_facebook_verified: boolean;
+  };
+  twitter: {
+    username: string;
+    twitter_user_id: string;
+    is_twitter_verified: boolean;
+  };
+  address?: {
     name: string;
     street: string;
   };
+  phone?: string;
+  confirmation_token?: string;
   last_login: Date;
   edited_at?: Date;
   edited_by?: ObjectId | string;
@@ -26,7 +39,7 @@ export interface UserDocument extends Document {
 }
 
 export enum Role {
-  Admin = "Admin",
-  Guest = "Guest",
-  User = "User",
+  Admin = 'Admin',
+  Guest = 'Guest',
+  User = 'User'
 }

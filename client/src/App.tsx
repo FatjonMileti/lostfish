@@ -29,6 +29,7 @@ import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
 import request from './utils/axios';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
+import { RedirectUriPage } from './pages/Login/components/Redirect';
 
 const GeneralSnackbar = () => {
   const UIContext = useUI();
@@ -106,6 +107,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/login' element={<Login />} />
+            <Route path='/google/redirect' element={<RedirectUriPage />} />
+            <Route path='/twitter/redirect' element={<RedirectUriPage />} />
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
             <Route path='/activate-account/:token' element={<VerifyAccount />} />

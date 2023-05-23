@@ -1,10 +1,7 @@
 import { UserDocument } from '../../data/interfaces/user.interface';
 import jwt from 'jsonwebtoken';
 
-const generateTokens = (
-  user: UserDocument
-): { token: string; refresh: string } => {
-
+const generateTokens = (user: UserDocument): { token: string; refresh: string } => {
   const token = jwt.sign(
     {
       iss: 'lost.fish',
@@ -12,7 +9,7 @@ const generateTokens = (
       sub: user._id.toString(),
       fname: user.first_name,
       user_id: user._id.toString(),
-      username: user.username,
+      username: user.first_name,
       role: user.role
     },
     <jwt.Secret>process.env.JWT_SECRET,

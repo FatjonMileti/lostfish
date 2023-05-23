@@ -1,3 +1,5 @@
+import * as process from 'process';
+
 require('dotenv').config();
 
 const compression = require('compression');
@@ -17,7 +19,6 @@ const session = require('express-session');
 const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
-
 const app: Application = express();
 
 app.use(compression());
@@ -66,6 +67,7 @@ app.use(
     limits: { fileSize: 10 * 1024 * 1024 }
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
