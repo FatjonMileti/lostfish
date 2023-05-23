@@ -19,7 +19,6 @@ const session = require('express-session');
 const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
-
 const app: Application = express();
 
 app.use(compression());

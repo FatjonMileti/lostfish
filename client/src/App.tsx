@@ -108,6 +108,7 @@ function App() {
           <Routes>
             <Route path='/login' element={<Login />} />
             <Route path='/google/redirect' element={<RedirectUriPage />} />
+            <Route path='/twitter/redirect' element={<RedirectUriPage />} />
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
             <Route path='/activate-account/:token' element={<VerifyAccount />} />

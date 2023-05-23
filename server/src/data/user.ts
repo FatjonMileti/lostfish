@@ -10,15 +10,39 @@ const schema = new Schema<UserDocument>({
     enum: [Role.Admin, Role.User],
     default: Role.User
   },
-  email: { type: String, index: true, required: true },
+  email: {
+    type: String,
+    index: true,
+    validate: {
+      validator(this: UserDocument, value: string): boolean {
+        return (
+          (this?.twitter?.username && (value === null || value === undefined)) ||
+          (value !== null && value !== undefined)
+        );
+      },
+      message: 'Email is required when twitter username is not present.'
+    }
+  },
   phone: String,
   first_name: String,
   last_name: String,
   is_disabled: { type: Boolean, default: true },
-  is_google_verified: { type: Boolean, default: false },
-  is_facebook_verified: { type: Boolean, default: false },
+  google: {
+    username: String,
+    google_user_id: String,
+    is_google_verified: { type: Boolean, default: false }
+  },
+  facebook: {
+    username: String,
+    facebook_user_id: String,
+    is_facebook_verified: { type: Boolean, default: false }
+  },
+  twitter: {
+    username: String,
+    twitter_user_id: String,
+    is_twitter_verified: { type: Boolean, default: false }
+  },
   confirmation_token: String,
-  facebook_user_id: String,
   last_login: Date,
   address: {
     name: String,

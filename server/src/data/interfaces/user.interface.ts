@@ -10,9 +10,21 @@ export interface UserDocument extends Document {
   first_name: string;
   last_name: string;
   is_disabled: boolean;
-  is_google_verified: boolean;
-  is_facebook_verified: boolean;
-  facebook_user_id?: string;
+  google: {
+    username: string;
+    google_user_id: string;
+    is_google_verified: boolean;
+  };
+  facebook: {
+    username: string;
+    facebook_user_id: string;
+    is_facebook_verified: boolean;
+  };
+  twitter: {
+    username: string;
+    twitter_user_id: string;
+    is_twitter_verified: boolean;
+  };
   address?: {
     name: string;
     street: string;

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios, { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { registerStore, useGlobalState } from '../../globalState';
 
@@ -20,12 +20,12 @@ import { Header } from './Header';
 import loginIllustration from './loginIllustration.png';
 import { LoginWithGoogle } from './components/LoginWithGoogle';
 import { LoginWithFacebook } from './components/LoginWithFacebook';
-
+import { LoginWithTwitter } from './components/LoginWithTwitter';
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
-
+import axiosWithToken from '../../utils/axios';
 registerStore(
   'user',
   {
@@ -44,11 +44,23 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
+  const params = new URLSearchParams(useLocation().search);
+  const validated = params.get('validated');
+  const access_token = params.get('access_token');
+
+  React.useEffect(() => {
+    if (validated && access_token) {
+      loginWithTwitter({ validated: Boolean(validated), access_token });
+    }
+  }, [validated, access_token]);
+
   const [showPassword, setShowPassword] = React.useState(false);
 
   const {
     user: [user, setUser]
   } = useGlobalState();
+
+  const location = useLocation();
 
   const [loading, setLoading] = React.useState(false);
 
@@ -108,6 +120,20 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     }
   };
 
+  const loginWithTwitter = async (response: { access_token: string; validated: boolean }) => {
+    try {
+      if (response.validated) {
+        const userDetails = JSON.parse(window.atob(response.access_token.split('.')[1]));
+        const getAuthData = await axiosWithToken(response.access_token).get('/api/account/get-access-tokens');
+        console.log({ getAuthData });
+        setUser((user: any) => ({ ...user, auth: getAuthData.data, userDetails }));
+      }
+    } catch (err) {
+      console.log(err);
+      //handle error
+    }
+  };
+
   const handleFacebookLoginSuccess = async (accessToken: string) => {
     const { data } = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
     const userDetails = JSON.parse(window.atob(data.access_token.split('.')[1]));
@@ -150,9 +176,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
               onLoginFailure={handleFacebookLoginFailure}
               scope='email'
             />
-            <Button variant='secondary'>
-              <Icon icon='twitter' />
-            </Button>
+            <LoginWithTwitter onSuccess={loginWithTwitter} />
 
             <LoginWithGoogle onSuccess={loginWithGoogle} />
           </div>

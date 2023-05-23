@@ -6,17 +6,17 @@ import config from '../../../config';
 export const LoginWithGoogle = (props: any) => {
   const { onSuccess } = props;
 
-  const handleCodemessage = (event: any) => {
+  const handleCodeMessage = (event: any) => {
     if (event?.data?.code === undefined) return;
     const { code } = event.data;
     onSuccess({ code });
-    window.removeEventListener('message', handleCodemessage);
+    window.removeEventListener('message', handleCodeMessage);
   };
 
   const handleLoginClick = () => {
     const authUrl = `${config.googleAuthFullUrl}`;
     const popupWindow = window.open(authUrl, '_blank');
-    window.addEventListener('message', handleCodemessage);
+    window.addEventListener('message', handleCodeMessage);
     if (popupWindow) {
       popupWindow.focus();
     }
