@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
+import { Backdrop } from '../../components/Backdrop';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id', flex: 1 },
@@ -45,23 +46,25 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     user: [{ auth }]
   } = useGlobalState();
 
-  const { list, isLoading, setList } = useReactQueryHook({ url: 'asset', name: 'properties' });
+  const properties = useReactQueryHook({ url: 'asset', name: 'properties' });
 
-  if (isLoading) {
-    return <p>Loader...</p>;
-  }
+  // if (properties.isLoading) {
+  //   return <p>Loader...</p>;
+  // }
 
   return (
     <div className={`properties-page ${className}`}>
       <Header />
       <div>
-        {list.rows.length > 0 ? (
+        <Backdrop open={properties.isLoading || properties.isFetching}></Backdrop>
+
+        {properties.list.rows.length > 0 ? (
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
-              rows={list.rows}
+              rows={properties.list.rows}
               columns={columns}
-              pageSize={list.pageSize}
-              rowsPerPageOptions={list.rowsPerPageOptions}
+              pageSize={properties.list.pageSize}
+              rowsPerPageOptions={properties.list.rowsPerPageOptions}
             />
           </div>
         ) : (
