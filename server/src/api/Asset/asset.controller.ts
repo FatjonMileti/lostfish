@@ -9,6 +9,30 @@ import * as joi from 'joi';
 
 const router: Router = Router();
 
+const schema = joi.object({
+  name: joi.string().required(),
+  description: joi.string(),
+  asset_address: joi.object({
+    latitude: joi.number().min(-90).max(90).required(),
+    longitude: joi.number().min(-180).max(180).required(),
+    street_number: joi.string(),
+    route: joi.string(),
+    neighbourhood: joi.string().allow(''),
+    postal_town: joi.string().allow(''),
+    postal_code: joi.string().required(),
+    administrative_area_level_1: joi.string().allow(''),
+    country_code: joi.string().required(),
+    text: joi.string()
+  }),
+  status_string: joi.string().required(),
+  transaction_type_string: joi.string().required(),
+  master_asset_type_string: joi.string().required(),
+  asset_type_string: joi.string().required(),
+  currency_code: joi.string(),
+  reserved: joi.boolean(),
+  master_branch_name: joi.string()
+});
+
 export class AssetController {
   public path = '/';
   public router = router;
@@ -20,19 +44,7 @@ export class AssetController {
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
-    this.router.post(
-      this.path,
-      authorize([Role.Admin]),
-      validator(
-        joi
-          .object({
-            name: joi.string().required(),
-            description: joi.string().required()
-          })
-          .unknown()
-      ),
-      this.createAsset
-    );
+    this.router.post(this.path, authorize([Role.Admin]), validator(schema), this.createAsset);
     this.router.patch('/:id/offer', authorize(), this.makeOffer);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
@@ -90,8 +102,10 @@ export class AssetController {
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
-    const response = await assetService.createAsset();
-    res.send({ ...response });
+
+    return res.send({ ...asset });
+    // const response = await assetService.createAsset();
+    // res.send({ ...response });
   };
 
   /**

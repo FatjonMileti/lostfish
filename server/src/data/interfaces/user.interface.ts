@@ -1,6 +1,21 @@
 import { Document, ObjectId } from 'mongoose';
 
-export interface UserDocument extends Document {
+export enum ContactType {
+  Client = 'Client',
+  Solicitor = 'Solicitor',
+  Agent = 'Agent',
+  Unknown = 'Unknown'
+}
+
+interface ContactUser extends Document {
+  contact_id: string;
+  legal_name: string;
+  company: string;
+  contact_type: ContactType;
+  address: string;
+}
+
+export interface UserDocument extends ContactUser {
   hash: string;
   role: {
     type: Role;
@@ -25,11 +40,7 @@ export interface UserDocument extends Document {
     twitter_user_id: string;
     is_twitter_verified: boolean;
   };
-  address?: {
-    name: string;
-    street: string;
-  };
-  phone?: string;
+  phone: string;
   confirmation_token?: string;
   last_login: Date;
   edited_at?: Date;

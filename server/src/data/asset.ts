@@ -32,6 +32,7 @@ const Contact = {
 };
 
 const schema = new Schema<AssetDocument>({
+  asset_id: Number,
   name: { type: String, required: true },
   description: { type: String, required: true },
   asset_address: {

@@ -44,10 +44,7 @@ const schema = new Schema<UserDocument>({
   },
   confirmation_token: String,
   last_login: Date,
-  address: {
-    name: String,
-    street: String
-  },
+  address: String,
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

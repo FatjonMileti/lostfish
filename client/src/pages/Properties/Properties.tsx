@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
+import { CreateProperty } from './components/CreateProperty';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id', flex: 1 },
@@ -55,6 +56,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     <div className={`properties-page ${className}`}>
       <Header />
       <div>
+        <CreateProperty />
         {list.rows.length > 0 ? (
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
