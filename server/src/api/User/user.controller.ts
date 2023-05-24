@@ -158,7 +158,7 @@ export class UserController {
    */
   private getInvitation = async (req: express.Request, res: express.Response) => {
     // tslint:disable-next-line:variable-name
-    const confirmation_token = req.body.token;
+    const confirmation_token = req.params.token;
     const user: any = await userService.findOne({ confirmation_token });
 
     // await new UserLog({
