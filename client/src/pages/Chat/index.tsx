@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import socket from '../../context/socket';
+import React, { useState, useEffect, useContext } from 'react';
 import { Chat } from './Chat';
 import { useQuery } from '@tanstack/react-query';
 import Box from '@mui/material/Box';
@@ -12,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Compose } from './components/Compose';
 import { useGlobalState } from '../../globalState';
+import SocketContext from '../../context/SocketContext';
 
 type Username = string | undefined | null;
 type Room = any | null;
@@ -26,7 +26,11 @@ export const ChatPage = () => {
     user: [user]
   } = useGlobalState();
 
+  const { socket } = useContext(SocketContext);
+
   const { userDetails, auth } = user;
+
+  console.log({ userDetails });
 
   useEffect(() => {
     setUsername(userDetails?.username);
@@ -34,13 +38,16 @@ export const ChatPage = () => {
 
   // @ts-ignore
   useEffect(() => {
-    socket.on('receive_room_id', async (data: any) => {
-      setRoom(data);
-      socket.emit('join_room', data._id);
-      await getMessagesForRoom(data._id);
-    });
-
-    // return () => socket.disconnect()
+    if (socket) {
+      socket.on('receive_room_id', async (data: any) => {
+        setRoom(data);
+        socket.emit('join_room', data._id);
+        await getMessagesForRoom(data._id);
+      });
+      return () => {
+        socket.off('receive_room_id');
+      };
+    }
   }, [socket]);
 
   const handleChatAfterCreation = async () => {
@@ -70,7 +77,7 @@ export const ChatPage = () => {
     if (username && roomObj) {
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
-      return socket.emit('join_room', roomObj._id);
+      if (socket) return socket.emit('join_room', roomObj._id);
     }
   };
 

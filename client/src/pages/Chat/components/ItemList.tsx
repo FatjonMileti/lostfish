@@ -40,8 +40,6 @@ function stringAvatar(name: string) {
 export const ItemList = (props: { rows: any[]; joinRoom: (roomId?: string) => void }) => {
   const { rows, joinRoom } = props;
 
-  console.log({ rows });
-
   let {
     user: [user]
   } = useGlobalState();
