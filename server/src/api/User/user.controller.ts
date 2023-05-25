@@ -173,6 +173,9 @@ export class UserController {
       return res.status(404).json({ message: 'user_not_found' });
     }
 
+    user.is_disabled = false;
+    await user.save();
+
     const { token, refresh } = this.accountService.generateTokens(user);
     return res.json({
       token_type: 'bearer',

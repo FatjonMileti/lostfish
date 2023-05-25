@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import Grid from '@mui/material/Grid';
@@ -33,7 +34,50 @@ const schema = yup.object().shape({
   master_branch_name: yup.string()
 });
 
+const assetRentSchema = yup.object().shape({
+  rental_amount: yup.number(),
+  rental_frequency: yup.string(),
+  deposit_amount: yup.number(),
+  interest_by: yup.date(),
+  available_from: yup.date(),
+  postal_town: yup.string()
+});
+
+const assetSaleSchema = yup.object().shape({
+  asking_price: yup.number().required(),
+  minimum_offer: yup.number(),
+  offer_increment_amount: yup.number(),
+  date_go_live: yup.date(),
+  date_offer_deadline: yup.date(),
+  date_exchanged: yup.string(),
+  date_completion: yup.date(),
+  contract_deposit_percent: yup.number(),
+  booking_deposit_amount: yup.number(),
+  special_conditions: yup.string(),
+  show_all_offers: yup.boolean(),
+  show_highest_offer: yup.boolean(),
+  enable_downward_bidding: yup.boolean(),
+  downward_bidding_allowed_percentage: yup.number(),
+  asset_fee: yup.object().shape({
+    fee_calculation: yup.string(),
+    simple_commission_percent: yup.number(),
+    minimum_commission_amount: yup.number(),
+    fixed_fee_amount: yup.number(),
+    conditional_bands: yup.array().of(
+      yup.object().shape({
+        starting: yup.number(),
+        ending: yup.number(),
+        total_commission: yup.number()
+      })
+    )
+  })
+});
+
+const stepSchemas = [schema, assetRentSchema, assetSaleSchema];
+
 export const CreateProperty = () => {
+  const [step, setStep] = useState(0);
+
   const {
     user: [{ auth }]
   } = useGlobalState();
@@ -43,9 +87,10 @@ export const CreateProperty = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    clearErrors
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(stepSchemas[step]),
     defaultValues: {
       name: '',
       description: '',
@@ -68,8 +113,14 @@ export const CreateProperty = () => {
     }
   });
   const onSubmit = async (data: any) => {
-    const response = await axios(auth.access_token).post('/api/asset', data);
-    console.log({ response: response.data });
+    if (step === stepSchemas.length - 1) {
+      const response = await axios(auth.access_token).post('/api/asset', data);
+      console.log({ response: response.data });
+    } else {
+      setStep((currentStep) => currentStep + 1);
+      // Reset the form errors
+      clearErrors();
+    }
   };
 
   return (
@@ -226,7 +277,7 @@ export const CreateProperty = () => {
         {/* Repeat for the rest of your fields, replacing the relevant names and labels */}
         <Grid item xs={12}>
           <Button type='submit' variant='contained' color='primary'>
-            Submit
+            {step === stepSchemas.length - 1 ? 'Submit' : 'Next step'}
           </Button>
         </Grid>
       </Grid>

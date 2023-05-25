@@ -30,7 +30,7 @@ import request from './utils/axios';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
-
+import { ChatPage } from './pages/Chat';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -112,6 +112,7 @@ function App() {
             <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
             <Route path='/create-account' element={<CreateAccount />} />
             <Route path='/activate-account/:token' element={<VerifyAccount />} />
+            <Route path={'/messages'} element={<ChatPage />} />
             <Route path='/properties' element={<Properties />} />
             <Route path='/properties/:id' element={<Maps />} />
             <Route path='/matches' element={<Matches />} />
