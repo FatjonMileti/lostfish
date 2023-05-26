@@ -36,9 +36,6 @@ export const Carousel = styled(({ children, className, indexStore }: CarouselPro
           <motion.div
             className='slide-item'
             key={i}
-            style={{
-              x: `${100 * (i - index)}%`
-            }}
             animate={{ x: `${-100 * index}%` }}
             transition={{ ease: 'easeOut', duration: 0.5 }}>
             {child}

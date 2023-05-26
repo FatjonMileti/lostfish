@@ -1,0 +1,67 @@
+import React, { HTMLAttributes } from 'react';
+import { styled } from '@mui/system';
+import { Modal } from '../../components/Modal';
+import { Button } from '../../components/Button';
+import { IconButton } from '../../components/IconButton';
+import { Icon } from '../../components/Icon';
+import { Typography } from '../../components/Typography';
+
+import { Carousel } from './Carousel';
+
+const images = [
+  'https://picsum.photos/900/600?random=1',
+  'https://picsum.photos/900/600?random=2',
+  'https://picsum.photos/900/600?random=3',
+  'https://picsum.photos/900/600?random=4',
+  'https://picsum.photos/900/600?random=1',
+  'https://picsum.photos/900/600?random=2',
+  'https://picsum.photos/900/600?random=3',
+  'https://picsum.photos/900/600?random=4'
+
+  // add more images as needed
+];
+
+export const ImageGallery = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const [modalVisibility, setModalVisibility] = React.useState<boolean>(false);
+  const indexStore = React.useState(0);
+
+  return (
+    <div className={className}>
+      <Modal
+        className='gallery-modal'
+        open={modalVisibility}
+        onBackdropClick={() => setModalVisibility(false)}>
+        <div className='header'>
+          <Typography variant='body2'>Image Gallery</Typography>
+          <IconButton size='large' noBackground onClick={() => setModalVisibility(false)}>
+            <Icon icon='close' size={12} />
+          </IconButton>
+        </div>
+        <Carousel indexStore={indexStore} images={images}></Carousel>
+      </Modal>
+      <Button onClick={() => setModalVisibility(true)}>Open Gallery</Button>
+    </div>
+  );
+})`
+  .gallery-modal {
+    width: 100vw;
+    height: 100vh;
+
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+
+    .modal-container {
+      display: grid;
+      grid-template-rows: min-content auto;
+      padding: 0;
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+      }
+    }
+  }
+`;

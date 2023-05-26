@@ -3,9 +3,7 @@ import React from 'react';
 import { Typography } from '../../components/Typography';
 import { Link } from '../../components/Link';
 import { Icon } from '../../components/Icon';
-import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
-import { TextField } from '../../components/TextField';
 
 import LogoPlusTextWhite from '../../assets/images/LogoPlusTextWhite.svg';
 
