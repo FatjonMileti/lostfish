@@ -125,19 +125,20 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       max-width: 1440px;
       max-height: 602px;
 
+      :before {
+        content: '';
+        position: absolute;
+        background: linear-gradient(90deg, transparent 90%, white 100%),
+          linear-gradient(270deg, transparent 90%, white 100%);
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
       .slide-item {
         flex-shrink: 0;
         width: 65%;
-
         aspect-ratio: 3 / 2;
-
-        &.next-item {
-          mask: linear-gradient(270deg, rgba(255, 255, 255, 0) 75%, #ffffff 100%);
-        }
-
-        &.previous-item {
-          mask: linear-gradient(90deg, rgba(255, 255, 255, 0) 75%, #ffffff 100%);
-        }
       }
     }
   }
