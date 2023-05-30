@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import userService from './user.service';
-import { ContactType, UserDocument } from '../../data/interfaces/user.interface';
+import { ContactType, UserDocument } from './user.interface';
 import { validate, ValidationError } from 'class-validator';
 import { LogAction, LoginLog, LoginLogAction, UserLog } from '../../data/logs';
 import { Role } from '../../enums';

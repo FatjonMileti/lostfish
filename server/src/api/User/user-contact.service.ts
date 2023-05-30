@@ -1,5 +1,5 @@
 import request from '../../request';
-import { UserDocument } from '../../data/interfaces/user.interface';
+import { UserDocument } from './user.interface';
 
 const create = async (contact: UserDocument) => {
   const postData = {

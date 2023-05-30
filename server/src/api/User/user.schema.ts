@@ -1,7 +1,7 @@
 import { model, PaginateModel, Schema } from 'mongoose';
-import { Role } from '../enums';
+import { Role } from '../../enums';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { UserDocument } from './interfaces/user.interface';
+import { UserDocument } from './user.interface';
 
 const schema = new Schema<UserDocument>({
   hash: String,

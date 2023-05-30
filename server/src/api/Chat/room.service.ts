@@ -1,6 +1,6 @@
-import RoomModel from '../../data/room';
-import ChatModel from '../../data/message';
-import { RoomDocument } from '../../data/interfaces/room.interface';
+import RoomModel from './schemas/room.schema';
+import ChatModel from './schemas/message.schema';
+import { RoomDocument } from './room.interface';
 import { getPipelineBySort } from './pipelines/RoomAggregation';
 import { Types } from 'mongoose';
 

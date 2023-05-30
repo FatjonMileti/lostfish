@@ -1,9 +1,42 @@
+export enum PersonTitle {
+  MR = 'Mr',
+  MRS = 'Mrs',
+  MS = 'Ms',
+  MX = 'Mx'
+}
+
 export enum ContactType {
   Client = 'Client',
   Solicitor = 'Solicitor',
   Agent = 'Agent',
   Unknown = 'Unknown'
 }
+
+export enum PreferencesEnum {
+  NEW_HOME = 'New Home',
+  RETIREMENT_HOME = 'Retirement Home',
+  SHARED_OWNERSHIP = 'Shared Ownership',
+  AUCTION = 'Auction'
+}
+
+export enum FeaturesEnum {
+  ParksNearby = 'Parks nearby',
+  PublicTransportNearby = 'Public transport nearby',
+  ShoppingCentersNearby = 'Shopping centers nearby'
+}
+
+export const SPECIFIC_PROPERTY_FEATURES: string[] = [
+  'Parking Spot',
+  'Garden',
+  'Terrace',
+  'Fully furnished',
+  'Partially furnished',
+  'Unfurnished',
+  'Double glazing',
+  'Allows smoking',
+  'Allow pets',
+  'Close to public transport'
+];
 
 export enum CountryCode {
   'IRL' = 'IRL',
@@ -55,7 +88,17 @@ export enum OfferStatus {
   Pending = 'Pending'
 }
 
-export enum StatusString {
+export enum StatusRent {
+  Draft = 'Draft',
+  ForLet = 'For Let',
+  LetAgreed = 'Let Agreed',
+  Let = 'Let',
+  Completed = 'Completed',
+  Archived = 'Archived',
+  PreDraft = 'Pre Draft'
+}
+
+export enum StatusSale {
   Draft = 'Draft',
   Live = 'Live',
   SaleAgreed = 'Sale Agreed',
@@ -81,25 +124,25 @@ export enum MasterAssetTypeSring {
 }
 
 export enum AssetTypeString {
-  'Unknown' = 'Unknown',
-  'Apartment' = 'Apartment',
-  'StudioApartment' = 'Studio Apartment',
-  'DetachedHouse' = 'Detached House',
-  'SemiDetachedHouse' = 'Semi Detached House',
-  'MidTerraceHouse' = 'Mid Terrace House',
-  'EndTerraceHouse' = 'End of Terrace House',
-  'DuplexApartment' = 'Duplex Apartment',
-  'Mixed' = 'Mixed',
-  'Land' = 'Land',
-  'Industrial' = 'Industrial',
-  'Retail' = 'Retail',
-  'Office' = 'Office',
-  'PublicHouse' = 'Public House',
-  'Hotel' = 'Hotel',
-  'MixedUse' = 'Mixed use',
-  'Commercial Land' = 'Commercial Land',
-  'MultiFamily' = 'Multi Family',
-  'MedicalFacility' = 'Medical Facility'
+  Unknown = 'Unknown',
+  Apartment = 'Apartment',
+  StudioApartment = 'Studio Apartment',
+  DetachedHouse = 'Detached House',
+  SemiDetachedHouse = 'Semi Detached House',
+  MidTerraceHouse = 'Mid Terrace House',
+  EndTerraceHouse = 'End of Terrace House',
+  DuplexApartment = 'Duplex Apartment',
+  Mixed = 'Mixed',
+  Land = 'Land',
+  Industrial = 'Industrial',
+  Retail = 'Retail',
+  Office = 'Office',
+  PublicHouse = 'Public House',
+  Hotel = 'Hotel',
+  MixedUse = 'Mixed use',
+  CommercialLand = 'Commercial Land',
+  MultiFamily = 'Multi Family',
+  MedicalFacility = 'Medical Facility'
 }
 
 export enum CurrencyCode {
@@ -170,7 +213,7 @@ export interface AssetDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
-  status_string: StatusString;
+  status_string: StatusSale | StatusRent;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   asset_type_string: AssetTypeString;

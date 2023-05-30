@@ -1,22 +1,31 @@
 import { Request, Response, Router } from 'express';
 import assetService from './asset.service';
-import { AssetDocument, IOffer, OfferStatus } from '../../data/interfaces/asset.interface';
-import { validate, ValidationError } from 'class-validator';
+import { AssetDocument, IOffer, OfferStatus } from './asset.interface';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import { Role } from '../../enums';
 import * as joi from 'joi';
+import createError from 'http-errors';
+import fs from 'fs';
+import util from 'util';
+import sendInvitationTemplate from '../../utils/templates/sendInvitationTemplate';
+import MailService from '../../utils/email';
+import AssetInvitation, { InvitationDocument } from './schemas/asset-invitation.schema';
+import { Types } from 'mongoose';
+import sendApplication from '../../utils/templates/sendApplicationTemplate';
+import AssetApplicationSchema, { ApplicationDocument } from './schemas/asset-application.schema';
+import userService from '../User/user.service';
 
 const router: Router = Router();
 
 const schema = joi.object({
   name: joi.string().required(),
-  description: joi.string(),
+  description: joi.string().allow(''),
   asset_address: joi.object({
     latitude: joi.number().min(-90).max(90).required(),
     longitude: joi.number().min(-180).max(180).required(),
-    street_number: joi.string(),
-    route: joi.string(),
+    street_number: joi.string().allow(''),
+    route: joi.string().allow(''),
     neighbourhood: joi.string().allow(''),
     postal_town: joi.string().allow(''),
     postal_code: joi.string().required(),
@@ -30,7 +39,32 @@ const schema = joi.object({
   asset_type_string: joi.string().required(),
   currency_code: joi.string(),
   reserved: joi.boolean(),
-  master_branch_name: joi.string()
+  master_branch_name: joi.string(),
+  asset_rent: joi.object({
+    rental_amount: joi.number().allow(''),
+    rental_frequency: joi.string().allow(''),
+    deposit_amount: joi.number().allow(''),
+    interest_by: joi.date().allow(''),
+    available_from: joi.date().allow('')
+  }),
+  floor_size: joi.number().required(),
+  floor_size_unit: joi.string().required(),
+  asset_attribute: joi.array().items(
+    joi.object({
+      name: joi.string().required(),
+      type: joi.string().required(),
+      value: joi.number().required()
+    })
+  ),
+  specific_property_features: joi.array().items(
+    joi.object({
+      name: joi.string().required(),
+      value: joi.boolean()
+    })
+  ),
+  property_images: joi.array(),
+  preferences: joi.string().allow(''),
+  property_features: joi.string().allow('')
 });
 
 export class AssetController {
@@ -43,9 +77,12 @@ export class AssetController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
-    this.router.get('/:id', authorize([Role.Admin]), this.getById);
+    this.router.get('/:id/images', this.getImages);
+    this.router.get('/:id', this.getById);
     this.router.post(this.path, authorize([Role.Admin]), validator(schema), this.createAsset);
     this.router.patch('/:id/offer', authorize(), this.makeOffer);
+    this.router.post('/:id/send-invitation', authorize(), this.sendInvitation);
+    this.router.post('/:id/send-application', authorize(), this.sendApplication);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
@@ -81,7 +118,29 @@ export class AssetController {
     const id = req.params.id;
 
     const asset = await assetService.getById(id);
+
+    asset.property_images = asset.property_images.map(
+      (image: any) => `${req.protocol}://${req.get('host')}/url-to-file/${image.filename}`
+    );
     return res.send(asset);
+  };
+
+  private getImages = async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    const asset = await assetService.getById(id);
+    const readDir = util.promisify(fs.readdir);
+
+    try {
+      const imageUrls = asset.property_images.map(
+        (image: any) => `${req.protocol}://${req.get('host')}/url-to-file/${image.filename}`
+      );
+
+      res.json(imageUrls);
+    } catch (error) {
+      console.error('Error reading directory:', error);
+      res.status(500).send('Server error');
+    }
   };
 
   /**
@@ -97,15 +156,13 @@ export class AssetController {
    * @apiUse bearer
    */
   public createAsset = async (req: Request, res: Response) => {
-    const asset: AssetDocument = req.body as AssetDocument;
-    const errors: ValidationError[] = await validate(asset);
-    if (errors.length > 0) {
-      return res.status(400).json({ errors });
+    const asset: AssetDocument = req.body as any;
+    try {
+      const response = await assetService.createAsset(asset);
+      res.send({ ...response });
+    } catch (error: any) {
+      throw createError(400, { message: 'failed_to_save', error });
     }
-
-    return res.send({ ...asset });
-    // const response = await assetService.createAsset();
-    // res.send({ ...response });
   };
 
   /**
@@ -132,6 +189,103 @@ export class AssetController {
     const response = await assetService.makeOffer(offer);
 
     return res.send(response);
+  };
+
+  /**
+   * @api {patch} /api/asset/:id/send-invitation Patch
+   * @apiDescription Send invitation
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/send-invitation
+   *
+   * @apiBody {string} first_name
+   * @apiBody {string} last_name
+   * @apiBody {string} email
+   * @apiBody {string} phone
+   * @apiBody {string} invite_reason
+   * @apiBody {string} invite_type
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  public sendInvitation = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const invitationDocument = req.body as InvitationDocument;
+    const asset = await assetService.getById(id);
+
+    const invitationTemplate = sendInvitationTemplate({
+      link: `${process.env.FRONTEND_URL}/properties/${asset._id}/view`,
+      assetName: asset.name,
+      clientName: invitationDocument.first_name
+    });
+
+    // @ts-ignore
+    invitationDocument.created_by = new Types.ObjectId(res.locals.user_id);
+    invitationDocument.asset = asset._id;
+
+    const newInvitation: InvitationDocument = await AssetInvitation.create({ ...invitationDocument });
+
+    const mailService = MailService.getInstance();
+    // @ts-ignore
+    await mailService.sendMail({
+      to: req.body.email,
+      subject: 'Invitation to the property',
+      html: invitationTemplate.html
+    });
+
+    res.send(newInvitation);
+  };
+
+  /**
+   * @api {patch} /api/asset/:id/send-application Patch
+   * @apiDescription Send application
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/send-application
+   *
+   * @apiBody {boolean} have_pets
+   * @apiBody {string} adult_applicants
+   * @apiBody {string} [participants]
+   * @apiBody {string} approve_type
+   * @apiBody {string} moving_date
+   * @apiBody {object} approve_type
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  public sendApplication = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const applicationDocument = req.body as ApplicationDocument;
+    const asset = await assetService.getById(id);
+
+    const invitationTemplate = sendApplication({
+      link: `${process.env.FRONTEND_URL}/properties/${asset._id}`,
+      assetName: asset.name,
+      clientName: res.locals.username ?? ''
+    });
+
+    // @ts-ignore
+    applicationDocument.created_by = new Types.ObjectId(res.locals.user_id);
+    applicationDocument.asset = asset._id;
+    applicationDocument.agreed_terms = req.body.agreed_terms === 'Yes';
+    // @ts-ignore
+    applicationDocument.applicant = new Types.ObjectId(res.locals.user_id);
+    const newApplication: ApplicationDocument = await AssetApplicationSchema.create({
+      ...applicationDocument
+    });
+
+    const mailService = MailService.getInstance();
+
+    const loggedUser = await userService.getById(res.locals.user_id as string);
+    if (!loggedUser) {
+      throw createError(404, { message: 'user_not_found' });
+    }
+    // @ts-ignore
+    await mailService.sendMail({
+      to: loggedUser.email,
+      subject: 'Your rent application has been received: ' + asset.name,
+      html: invitationTemplate.html
+    });
+
+    res.send(newApplication);
   };
 
   /**

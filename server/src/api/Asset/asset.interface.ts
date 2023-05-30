@@ -156,6 +156,13 @@ export enum TabName {
   'Payments'
 }
 
+export enum PreferencesEnum {
+  NEW_HOME = 'New Home',
+  RETIREMENT_HOME = 'Retirement Home',
+  SHARED_OWNERSHIP = 'Shared Ownership',
+  AUCTION = 'Auction'
+}
+
 export interface AssetDocument extends Document {
   asset_id: number;
   name: string;
@@ -183,7 +190,7 @@ export interface AssetDocument extends Document {
   walkthrough_url: string;
   videos: [{ name: string; url: string }];
   asset_attribute: [AssetAtribute];
-  asset_sale: {
+  asset_sale?: {
     asking_price: number;
     minimum_offer: number;
     offer_increment_amount: number;
@@ -200,7 +207,7 @@ export interface AssetDocument extends Document {
     enable_downward_bidding: boolean;
     downward_bidding_allowed_percentage: number;
   };
-  asset_rent: {
+  asset_rent?: {
     rental_amount: number;
     rental_frequency: RentalFrequency;
     deposit_amount: number;
@@ -219,9 +226,9 @@ export interface AssetDocument extends Document {
     completion_date: Date;
   };
   client_id: number;
-  client: ContactDocument;
+  client?: ContactDocument;
   solicitor_id: number;
-  solicitor: ContactDocument;
+  solicitor?: ContactDocument;
   statistics: any;
   permission: {
     administrator_names: [string];
@@ -236,7 +243,11 @@ export interface AssetDocument extends Document {
     ];
   };
   offers: IOffer[];
+  specific_property_features: [object];
+  property_images: [object];
   settings: any;
+  preferences: string;
+  property_features: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

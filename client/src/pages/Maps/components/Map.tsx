@@ -28,6 +28,12 @@ export const Map = React.memo((props: any) => {
     setMap(null);
   }, []);
 
+  const handleDragEnd = (data: any) => {
+    console.log({ data });
+    const latitude = data.latLng.lat();
+    const longitude = data.latLng.lng();
+  };
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
@@ -36,7 +42,7 @@ export const Map = React.memo((props: any) => {
       onLoad={onLoad}
       onUnmount={onUnmount}>
       {/* Child components, such as markers, info windows, etc. */}
-      <Marker position={address} title='Description' />
+      <Marker position={address} title='Description' draggable={true} onDragEnd={handleDragEnd} />
     </GoogleMap>
   ) : (
     <></>

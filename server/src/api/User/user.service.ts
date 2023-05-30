@@ -1,5 +1,5 @@
-import UserModel from '../../data/user';
-import { UserDocument } from '../../data/interfaces/user.interface';
+import UserModel from './user.schema';
+import { UserDocument } from './user.interface';
 import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
@@ -18,7 +18,6 @@ const getAll = async (query: any, pagingOptions: any) => {
     ]
   });
 };
-
 
 const getById = async (id: string): Promise<UserDocument | undefined> => {
   const user: UserDocument | null = await UserModel.findOne({ _id: id }, null, {
@@ -54,15 +53,8 @@ const create = async (user: UserDocument): Promise<UserDocument> => {
   return mapToUser(savedUser);
 };
 
-const updateUser = async (
-  id: string,
-  user: UserDocument
-): Promise<UserDocument | undefined> => {
-  const userDocument = await UserModel.findByIdAndUpdate(
-    id,
-    { ...user },
-    { new: true }
-  );
+const updateUser = async (id: string, user: UserDocument): Promise<UserDocument | undefined> => {
+  const userDocument = await UserModel.findByIdAndUpdate(id, { ...user }, { new: true });
 
   return userDocument ? mapToUser(userDocument) : undefined;
 };

@@ -1,6 +1,6 @@
 import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { ChatDocument } from './interfaces/chat.interface';
+import { ChatDocument } from '../chat.interface';
 
 const schema = new Schema<ChatDocument>({
   room_id: { type: Schema.Types.ObjectId, ref: 'room' },

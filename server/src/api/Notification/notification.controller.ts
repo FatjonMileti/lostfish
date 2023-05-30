@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
 import paging from '../../middleware/paging';
 import authorize from '../../middleware/authorize';
-import Notification from '../../data/notification';
-import { NotificationType } from '../../data/interfaces/notification.interface';
+import Notification from './notification.schema';
+import { NotificationType } from './notification.interface';
 import { Types } from 'mongoose';
 const router: Router = Router();
 

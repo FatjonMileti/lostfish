@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
 import { CreateProperty } from './components/CreateProperty';
 import { Backdrop } from '../../components/Backdrop';
+import Grid from '@mui/material/Grid';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id', flex: 1 },
@@ -25,8 +26,8 @@ const columns: GridColDef[] = [
     valueGetter: (params: GridValueGetterParams) => `${params.row.asset_address.country_code || ''}`
   },
   {
-    field: 'created_at',
-    headerName: 'Created date',
+    field: 'status_string',
+    headerName: 'Status',
     flex: 1
   },
   {
@@ -43,9 +44,7 @@ const columns: GridColDef[] = [
 ];
 
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+  const [isOnCreate, setIsOnCreate] = React.useState(false);
 
   const { list, isLoading, setList } = useReactQueryHook({ url: 'asset', name: 'properties' });
 
@@ -56,9 +55,16 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   return (
     <div className={`properties-page ${className}`}>
       <Header />
-      <div>
-        <CreateProperty />
-        {list.rows.length > 0 ? (
+      <Grid>
+        <Button
+          size='small'
+          className='add-property-button'
+          startIcon={!isOnCreate ? <Icon icon='plus' size={16} /> : <Icon icon='close' size={16} />}
+          onClick={() => setIsOnCreate(!isOnCreate)}>
+          {!isOnCreate ? 'Add Property' : ''}
+        </Button>
+        {isOnCreate && <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />}
+        {list.rows.length > 0 && !isOnCreate ? (
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={list.rows}
@@ -69,13 +75,13 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           </div>
         ) : (
           <div className='no-properties'>
-            <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
-            <Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>
-              Add Property
-            </Button>
+            {/*<Typography variant='body2'>You currently have no properties in your portfolio</Typography>*/}
+            {/*<Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>*/}
+            {/*  Add Property*/}
+            {/*</Button>*/}
           </div>
         )}
-      </div>
+      </Grid>
 
       <Footer />
     </div>

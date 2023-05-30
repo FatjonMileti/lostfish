@@ -36,7 +36,7 @@ export const NearestPlaces = (props: INearestPaces) => {
   return (
     <Box>
       <List dense={false}>
-        {locations.map((location: any) => {
+        {locations.slice(0, 3).map((location: any) => {
           return (
             <ListItem key={location.name}>
               <ListItemText primary={location.name} />

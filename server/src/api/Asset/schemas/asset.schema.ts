@@ -14,7 +14,7 @@ import {
   TabName,
   TransactionTypeString,
   IOffer
-} from './interfaces/asset.interface';
+} from '../asset.interface';
 
 const Contact = {
   firstname: { type: String, required: true },
@@ -31,10 +31,28 @@ const Contact = {
   address: { type: String, default: null }
 };
 
+const AssetSale = {
+  asking_price: { type: Number },
+  minimum_offer: { type: Number, default: 0 },
+  offer_increment_amount: { type: Number, default: 1000 },
+  date_go_live: Date,
+  date_offer_deadline: Date,
+  date_exchanged: Date,
+  date_completion: Date,
+  offers_extension: { type: Number, default: 1 },
+  contract_deposit_percent: Number,
+  booking_deposit_amount: Number,
+  special_conditions: String,
+  show_all_offers: { type: Boolean, default: true },
+  show_highest_offer: { type: Boolean, default: true },
+  enable_downward_bidding: { type: Boolean, default: true },
+  downward_bidding_allowed_percentage: { type: Number, default: 5 }
+};
+
 const schema = new Schema<AssetDocument>({
   asset_id: Number,
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   asset_address: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
@@ -77,7 +95,7 @@ const schema = new Schema<AssetDocument>({
   currency_code: {
     type: String,
     enum: Object.values(CurrencyCode),
-    default: null
+    default: CurrencyCode.GBP
   },
   reserved: { type: Boolean, default: null },
   master_branch_name: String,
@@ -96,23 +114,7 @@ const schema = new Schema<AssetDocument>({
       _id: false
     }
   ],
-  asset_sale: {
-    asking_price: { type: Number, required: true },
-    minimum_offer: { type: Number, required: true, default: 0 },
-    offer_increment_amount: { type: Number, default: 1000 },
-    date_go_live: Date,
-    date_offer_deadline: Date,
-    date_exchanged: Date,
-    date_completion: Date,
-    offers_extension: { type: Number, default: 1 },
-    contract_deposit_percent: Number,
-    booking_deposit_amount: Number,
-    special_conditions: String,
-    show_all_offers: { type: Boolean, default: true },
-    show_highest_offer: { type: Boolean, default: true },
-    enable_downward_bidding: { type: Boolean, default: true },
-    downward_bidding_allowed_percentage: { type: Number, default: 5 }
-  },
+  asset_sale: { type: AssetSale, default: null },
   asset_rent: {
     rental_amount: Number,
     rental_frequency: {
@@ -137,11 +139,13 @@ const schema = new Schema<AssetDocument>({
     completion_date: Date
   },
   client_id: { type: Number, default: null },
-  client: Contact,
+  client: { type: Contact, default: null },
   solicitor_id: { type: Number, default: null },
-  solicitor: Contact,
+  solicitor: { type: Contact, default: null },
   statistics: { type: Object, default: {} },
   offers: [{ type: Object }],
+  specific_property_features: [{ type: Object }],
+  property_images: [{ type: Object }],
   permission: {
     administrator_names: [String],
     display_administrator_names: [String],
@@ -165,6 +169,8 @@ const schema = new Schema<AssetDocument>({
     ]
   },
   settings: { type: Object, default: {} },
+  preferences: String,
+  property_features: [{ name: String, value: String }],
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

@@ -1,11 +1,12 @@
 import axios from '../../request';
-import AssetModel from '../../data/asset';
-import { AssetDocument, IOffer } from '../../data/interfaces/asset.interface';
+import AssetModel from './schemas/asset.schema';
+import { AssetDocument, IOffer } from './asset.interface';
 import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
   const response = await axios.get('/asset/get');
 
+  /*
   const dataToUpdate = response.data.items.map((data: any) => {
     return {
       updateOne: {
@@ -19,20 +20,30 @@ const getAll = async (query: any, pagingOptions: any) => {
   });
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
 
-  return await AssetModel.paginate({ ...query, ...pagingOptions });
+   */
+
+  return await AssetModel.paginate({ ...query, ...pagingOptions }, { sort: { created_at: -1 } });
 };
 
-const createAsset = async (data: AssetDocument) => {
+const createAsset = async (data: AssetDocument): Promise<AssetDocument> => {
   try {
-    const response = await axios.post('/asset/post', data);
-    if (response.status === 201) {
-      data.asset_id = response.data.id;
-      // @ts-ignore
-      return await new AssetModel.create({ ...data });
-    }
-  } catch (error: any) {
-    return error;
+    const asset: AssetDocument = new AssetModel({ ...data });
+    await asset.save();
+    return asset.toObject();
+  } catch (err: any) {
+    console.log(err);
+    return err;
   }
+  // try {
+  //   const response = await axios.post('/asset/post', data);
+  //   if (response.status === 201) {
+  //     data.asset_id = response.data.id;
+  //     // @ts-ignore
+  //     return await new AssetModel.create({ ...data });
+  //   }
+  // } catch (error: any) {
+  //   return error;
+  // }
 };
 
 const makeOffer = async (body: IOffer): Promise<any> => {

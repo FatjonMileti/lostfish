@@ -1,6 +1,6 @@
 import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { RoomDocument } from './interfaces/room.interface';
+import { RoomDocument } from '../room.interface';
 
 const schema = new Schema<RoomDocument>({
   author: { type: Schema.Types.ObjectId, ref: 'user' },

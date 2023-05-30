@@ -1,37 +1,38 @@
 import * as process from 'process';
-
 require('dotenv').config();
-
 const compression = require('compression');
 import createError, { HttpError } from 'http-errors';
-
 const helmet = require('helmet');
 import express, { Request, Response, Application, NextFunction } from 'express';
-
+import multer from 'multer';
 require('express-async-errors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const cors = require('cors');
-const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
+import config from './config';
+const upload = multer({ dest: 'uploads/asset-images' });
 const app: Application = express();
 
 app.use(compression());
-if (process.env.NODE_ENV !== 'test') dbConnect(process.env.DB_CONNECTION_STRING);
-if (process.env.BEHIND_PROXY) {
+
+if (config.node_env !== 'test') dbConnect(process.env.DB_CONNECTION_STRING);
+
+if (config.behind_proxy) {
   console.log(chalk.bold.red('app set to trust proxy'));
   app.set('trust proxy', 1);
 }
 
 const mailService = MailService.getInstance();
-if (process.env.NODE_ENV === 'development') {
+
+if (config.node_env === 'development') {
   mailService.createLocalConnection();
-} else if (process.env.NODE_ENV === 'production') {
+} else if (config.node_env === 'production') {
   mailService.createConnection();
 }
 
@@ -62,16 +63,12 @@ app.use(
   )
 );
 
-app.use(
-  fileUpload({
-    limits: { fileSize: 10 * 1024 * 1024 }
-  })
-);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/url-to-file', express.static(path.join(__dirname, '..', 'uploads/asset-images')));
+
 app.use(
   session({
     resave: true,
@@ -86,8 +83,8 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60,
       sameSite: 'lax',
-      httpOnly: true
-      // secure: true
+      httpOnly: true,
+      secure: true
     },
     name: 'fsdlm'
   })
@@ -96,6 +93,11 @@ app.use(
 app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 app.use('/', require('./routes/index'));
 app.use('/api', require('./api/index'));
+
+app.post('/upload', upload.array('images'), (req, res) => {
+  console.log(req.files); // Here you will see the uploaded files
+  res.status(200).send(req.files);
+});
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
