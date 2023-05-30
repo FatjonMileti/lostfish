@@ -32,7 +32,7 @@ export const Modal = styled(
     };
 
     return (
-      <dialog className={className} ref={dialogRef} onClose={onClose} onClick={handleClick}>
+      <dialog className={`modal ${className}`} ref={dialogRef} onClose={onClose} onClick={handleClick}>
         <div className='modal-container'>{children}</div>
       </dialog>
     );
@@ -45,6 +45,8 @@ export const Modal = styled(
 
     .modal-container {
       padding: 24px;
+      box-sizing: border-box;
+      height: 100%;
     }
   }
 `;

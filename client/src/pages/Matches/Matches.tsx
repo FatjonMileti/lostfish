@@ -2,12 +2,15 @@ import { styled } from '@mui/system';
 import { Header } from '../HomeLoggedIn/Header';
 import React, { HTMLAttributes } from 'react';
 import { Footer } from '../Home/Footer';
+import { ImageGallery } from './ImageGalery';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`matches-page ${className}`}>
       <Header />
-      <div />
+      <div className='page-body'>
+        <ImageGallery />
+      </div>
       <Footer />
     </div>
   );
@@ -18,5 +21,9 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
 
     display: grid;
     grid-template-rows: min-content auto min-content;
+
+    .page-body {
+      padding: 36px;
+    }
   }
 `;

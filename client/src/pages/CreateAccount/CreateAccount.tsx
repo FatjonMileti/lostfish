@@ -295,7 +295,6 @@ export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDiv
       justify-content: space-between;
       .button {
         padding-inline: 28px;
-        border-width: 2px;
       }
     }
 

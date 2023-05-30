@@ -44,6 +44,7 @@ export const Typography = styled(
 
   &.body3 {
     font-size: 24px;
+    line-height: 32px;
     font-family: 'Roobert', serif;
   }
 
@@ -69,7 +70,6 @@ export const Typography = styled(
     font-size: 16px;
     line-height: 20px;
     font-weight: 600;
-    text-transform: uppercase;
     color: #184d6d;
     font-family: 'Roobert', serif;
   }

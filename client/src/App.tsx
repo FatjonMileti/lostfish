@@ -126,7 +126,7 @@ function App() {
             <Route path='/reset-password/:token' element={<ResetPassword />} />
             <Route path='/components' element={<PreviewComponents />} />
             <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-            <Route path='my-account' element={!!user.auth ? <MyAccount /> : <Login />} />
+            <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
             <Route path='*' element={<NotFound />} />
 
             <Route

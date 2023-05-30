@@ -1,36 +1,19 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
-
-import { useNavigate } from 'react-router-dom';
-import { useGlobalState } from '../../globalState';
-import request from '../../utils/axios';
 import { Typography } from '../../components/Typography';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
-
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
-
-  const logOut = async () => {
-    await request(user.auth.access_token).post('/api/account/logout', {
-      refresh_token: user.auth.refresh_token
-    });
-    setUser((user: any) => ({ ...user, auth: null, userDetails: null }));
-    navigate('/');
-  };
-
   return (
     <div className={`header ${className}`}>
-      <div className='left-part'>
+      <div className='left-part' onClick={() => navigate('/')}>
         <Logo />
       </div>
 
@@ -96,6 +79,7 @@ export const Header = styled(({ className }: HeaderProps) => {
     .left-part {
       display: flex;
       column-gap: 24px;
+      cursor: pointer;
     }
 
     .middle-part {
