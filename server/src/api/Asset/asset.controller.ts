@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Request, response, Response, Router } from 'express';
 import assetService from './asset.service';
 import { AssetDocument, IOffer, OfferStatus } from './asset.interface';
 import authorize from '../../middleware/authorize';
@@ -13,11 +13,12 @@ import MailService from '../../utils/email';
 import AssetInvitation, { InvitationDocument } from './schemas/asset-invitation.schema';
 import { Types } from 'mongoose';
 import sendApplication from '../../utils/templates/sendApplicationTemplate';
-import AssetApplicationSchema, { ApplicationDocument } from './schemas/asset-application.schema';
+import AssetApplicationSchema, { ApplicationDocument, ApproveType } from './schemas/asset-application.schema';
 import userService from '../User/user.service';
+import generalTemplate from '../../utils/templates/generalTemplate';
 
 const router: Router = Router();
-
+const mailService = MailService.getInstance();
 const schema = joi.object({
   name: joi.string().required(),
   description: joi.string().allow(''),
@@ -78,11 +79,15 @@ export class AssetController {
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
     this.router.get('/:id/images', this.getImages);
+    this.router.get('/:id/get-applications', authorize(), this.getApplications);
+    this.router.get('/:id/application', authorize(), this.getApplication);
     this.router.get('/:id', this.getById);
     this.router.post(this.path, authorize([Role.Admin]), validator(schema), this.createAsset);
     this.router.patch('/:id/offer', authorize(), this.makeOffer);
+    this.router.patch('/:id/approve', authorize(), this.approveApplication);
     this.router.post('/:id/send-invitation', authorize(), this.sendInvitation);
     this.router.post('/:id/send-application', authorize(), this.sendApplication);
+
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
@@ -101,6 +106,57 @@ export class AssetController {
       return res.send(offers);
     } catch (error: any) {
       return res.send(error?.response?.data);
+    }
+  };
+
+  /**
+   * @api {get} /api/asset/:id/applications Get asset
+   * @apiDescription Get all applications for an asset
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/applications
+   *
+   * @apiPermission admin
+   */
+  private getApplications = async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    // tslint:disable-next-line:no-shadowed-variable
+    const response = await AssetApplicationSchema.paginate(
+      { asset: { $eq: id } },
+      {
+        ...res.locals.paging_options,
+        populate: [
+          {
+            path: 'applicant',
+            select: ['first_name', 'last_name']
+          },
+          { path: 'asset' }
+        ]
+      }
+    );
+
+    res.send(response);
+  };
+
+  /**
+   * @api {get} /api/asset/:id/application Get asset
+   * @apiDescription Get application for an asset
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/application
+   *
+   * @apiPermission admin
+   */
+  private getApplication = async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    try {
+      // tslint:disable-next-line:no-shadowed-variable
+      const response = await AssetApplicationSchema.findOne({ asset: id, applicant: res.locals.user_id });
+
+      res.send(response);
+    } catch (error: any) {
+      console.log(error);
+      res.status(400).send({ error });
     }
   };
 
@@ -158,6 +214,7 @@ export class AssetController {
   public createAsset = async (req: Request, res: Response) => {
     const asset: AssetDocument = req.body as any;
     try {
+      // tslint:disable-next-line:no-shadowed-variable
       const response = await assetService.createAsset(asset);
       res.send({ ...response });
     } catch (error: any) {
@@ -186,9 +243,60 @@ export class AssetController {
     offer.created_at = new Date();
     offer.status = OfferStatus.Pending;
     offer.asset_id = id;
+    // tslint:disable-next-line:no-shadowed-variable
     const response = await assetService.makeOffer(offer);
 
     return res.send(response);
+  };
+
+  /**
+   * @api {patch} /api/asset/:id/approve Patch
+   * @apiDescription Approve or pre-approve an application
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/approve
+   *
+   * @apiBody {boolean} approve_status
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  public approveApplication = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const preApproveStatus = req.body.pre_approve_status;
+    const approveStatus = req.body.approve_status;
+    const application = await AssetApplicationSchema.findOne({ _id: id });
+    if (!application) {
+      throw createError(404, { message: 'application_not_found' });
+    }
+    if (req.body.hasOwnProperty('pre_approve_status')) {
+      application.pre_approve_status = Boolean(preApproveStatus);
+      application.approve_type = ApproveType.APPROVE;
+    }
+    if (req.body.hasOwnProperty('approve_status')) {
+      application.approve_status = Boolean(approveStatus);
+    }
+
+    await application.save();
+    const asset = await assetService.getById(application.asset.toString());
+    const emailTemplate = generalTemplate({
+      link: `${process.env.FRONTEND_URL}/properties/${asset._id}`,
+      assetName: asset.name,
+      clientName: res.locals.username ?? '',
+      body_1: `You have been added as a party member for: ${asset.name}`,
+      body_2: `more details...`
+    });
+
+    const user = await userService.getById(res.locals.user_id as string);
+    if (!user) {
+      throw createError(401, { message: 'unauthorized_user' });
+    }
+
+    // @ts-ignore
+    mailService.sendMail({
+      to: user.email,
+      subject: 'Invitation to the property',
+      html: emailTemplate.html
+    });
+    res.send(application);
   };
 
   /**
@@ -224,7 +332,6 @@ export class AssetController {
 
     const newInvitation: InvitationDocument = await AssetInvitation.create({ ...invitationDocument });
 
-    const mailService = MailService.getInstance();
     // @ts-ignore
     await mailService.sendMail({
       to: req.body.email,
@@ -271,8 +378,6 @@ export class AssetController {
     const newApplication: ApplicationDocument = await AssetApplicationSchema.create({
       ...applicationDocument
     });
-
-    const mailService = MailService.getInstance();
 
     const loggedUser = await userService.getById(res.locals.user_id as string);
     if (!loggedUser) {

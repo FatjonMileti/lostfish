@@ -4,7 +4,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
 import React from 'react';
 import axios from 'axios';
-import config from '../../../config';
+import config from '../../../../../config';
 interface INearestPaces {
   location: {
     lat: number;

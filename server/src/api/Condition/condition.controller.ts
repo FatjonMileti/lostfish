@@ -43,7 +43,11 @@ export class ConditionController {
 
        */
 
-      const responseData = await ConditionSchema.paginate({ required: true, is_system: true });
+      const responseData = await ConditionSchema.paginate({
+        required: true,
+        is_system: true,
+        type_string: 'File Upload'
+      });
       return res.send(responseData);
     } catch (error: any) {
       return res.status(400).send({ message: 'failed_to_fetch_data', error });

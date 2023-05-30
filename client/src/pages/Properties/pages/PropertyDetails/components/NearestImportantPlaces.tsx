@@ -4,7 +4,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
 import React from 'react';
 import axios from 'axios';
-import config from '../../../config';
+import config from '../../../../../config';
 interface INearestPaces {
   location: {
     lat: number;
@@ -12,19 +12,19 @@ interface INearestPaces {
   };
 }
 
-export const NearestPlaces = (props: INearestPaces) => {
+export const NearestImportantPlaces = (props: INearestPaces) => {
   const { location } = props;
 
   const [locations, setLocations] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    getNearestLocations();
+    getNearestSchools();
   }, []);
 
-  const getNearestLocations = async () => {
+  const getNearestSchools = async () => {
     try {
       const { data } = await axios.get(
-        `${config.apiUrl}/api/map/station?latitude=${location.lat}&longitude=${location.lng}`
+        `${config.apiUrl}/api/map/places?latitude=${location.lat}&longitude=${location.lng}`
       );
 
       if (data.status === 'OK') setLocations(data.results);
