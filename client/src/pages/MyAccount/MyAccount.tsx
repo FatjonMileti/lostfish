@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 
 import { Dashbaord } from './Dashbaord';
 import { ProfileDetails } from './ProfileDetails';
+import { AccountSettings } from './AccountSettings';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
@@ -91,6 +92,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
           <Routes>
             <Route path='/' element={<Dashbaord />} />
             <Route path='/profile-details' element={<ProfileDetails />} />
+            <Route path='/account-settings' element={<AccountSettings />} />
           </Routes>
         </div>
       </div>
