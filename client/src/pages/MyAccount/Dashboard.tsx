@@ -2,14 +2,14 @@ import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
-import cloud from './cloud.png';
-import tenant1 from './tentant1.png';
-import tenant2 from './tenant2.png';
-import property from './property.png';
-import verified from './verified.svg';
+import cloud from './images/cloud.png';
+import tenant1 from './images/tentant1.png';
+import tenant2 from './images/tenant2.png';
+import property from './images/property.png';
+import verified from './images/verified.svg';
 import { Link } from '../../components/Link';
 
-export const Dashbaord = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`dashboard ${className}`}>
       <div className='transaction-agreement'>

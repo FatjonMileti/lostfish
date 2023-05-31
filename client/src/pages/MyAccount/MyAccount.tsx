@@ -8,9 +8,10 @@ import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { motion } from 'framer-motion';
 
-import { Dashbaord } from './Dashbaord';
+import { Dashboard } from './Dashboard';
 import { ProfileDetails } from './ProfileDetails';
 import { AccountSettings } from './AccountSettings';
+import { StarredMatches } from './StarredMatches';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
@@ -90,9 +91,10 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
         <div className='line'></div>
         <div>
           <Routes>
-            <Route path='/' element={<Dashbaord />} />
+            <Route path='/' element={<Dashboard />} />
             <Route path='/profile-details' element={<ProfileDetails />} />
             <Route path='/account-settings' element={<AccountSettings />} />
+            <Route path='/starred-matches' element={<StarredMatches />} />
           </Routes>
         </div>
       </div>

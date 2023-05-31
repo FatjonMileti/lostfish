@@ -6,11 +6,11 @@ import { TextField } from '../../components/TextField';
 import { Textarea } from '../../components/Textarea';
 import { motion } from 'framer-motion';
 
-import avatar1 from './avatar1.svg';
-import avatar2 from './avatar2.svg';
-import avatar3 from './avatar3.svg';
-import avatar4 from './avatar4.svg';
-import avatar5 from './avatar5.svg';
+import avatar1 from './images/avatar1.svg';
+import avatar2 from './images/avatar2.svg';
+import avatar3 from './images/avatar3.svg';
+import avatar4 from './images/avatar4.svg';
+import avatar5 from './images/avatar5.svg';
 import { Icon } from '../../components/Icon';
 
 const avatars = [
