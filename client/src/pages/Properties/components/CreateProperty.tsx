@@ -5,12 +5,11 @@ import { Grid, Box, Paper } from '@mui/material';
 import { TextField } from '../../../components/TextField';
 import { Button } from '../../../components/Button';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../../utils/axios';
 import { useGlobalState } from '../../../globalState';
 import { CreatePropertyMap } from './CreatePropertyMap';
-
+import { debounce } from 'lodash';
 import {
   AssetTypeString,
   FeaturesEnum,
@@ -122,9 +121,24 @@ const assetSaleSchema = yup.object().shape({
 
 const stepSchemas = [firstFormSchema, schema, assetAttributeSchema, assetRentSchema];
 
+const DOCUMENT_TYPES: any[] = [
+  {
+    type: 'Employer reference',
+    value: ''
+  },
+  {
+    type: 'Landlord reference',
+    value: ''
+  },
+  {
+    type: 'Proof of ID',
+    value: ''
+  }
+];
+
 export const CreateProperty = (props: any) => {
   const { closeCreateScreen } = props;
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(0);
   const [radios, setRadius] = useState<number>(0);
   const [mapDetails, setMapDetails] = useState<any>(null);
   const [attributes, setAttributes] = useState<any[]>([]);
@@ -195,6 +209,7 @@ export const CreateProperty = (props: any) => {
   };
 
   const onSubmit = async (data: any) => {
+    console.log({ data });
     if (step === stepSchemas.length - 1) {
       data.asset_attribute = data.asset_attribute.map((item: any) => ({
         name: item.name,
@@ -210,7 +225,12 @@ export const CreateProperty = (props: any) => {
     }
   };
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const debounceRequestInput = React.useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e),
+  //   []
+  // );
+
+  const handleSearch = debounce(async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const response = await axios(auth.access_token).get(
         '/api/map/address/' + e.target.value + '/radius/' + 1000
@@ -221,7 +241,7 @@ export const CreateProperty = (props: any) => {
     } catch (error: any) {
       throw new Error('Error on fetchind address');
     }
-  };
+  }, 500);
 
   const transactionStatus = watch('transaction_type_string');
   const assetAddress = watch('asset_address');
@@ -464,7 +484,7 @@ export const CreateProperty = (props: any) => {
                 </Grid>
               </Grid>
               <Grid container spacing={3}>
-                <UploadImages handleImagesUpload={handleImagesUpload} />
+                <UploadImages handleImagesUpload={handleImagesUpload} multiple={true} />
               </Grid>
             </>
           )}
@@ -518,30 +538,14 @@ export const CreateProperty = (props: any) => {
                   variant='outlined'
                 />
               </Grid>
-              <Grid item xs={4} mt={2}>
-                <FormControl fullWidth variant='outlined'>
-                  <InputLabel>Status</InputLabel>
-                  <Controller
-                    name='status_string'
-                    control={control}
-                    defaultValue='Draft'
-                    render={({ field }) => (
-                      <Select {...field}>
-                        {Object.entries(StatusRent).map(([key, value]) => (
-                          <MenuItem key={key} value={value}>
-                            {value}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
-                  />
-                </FormControl>
-              </Grid>
             </Grid>
           )}
           <Grid container spacing={3} mt={3}>
             <Grid item xs={12}>
-              <Button type='submit' variant='contained' color='primary'>
+              {step > 0 ? (
+                <Button onClick={() => setStep((prevStep: number) => prevStep - 1)}>Go back</Button>
+              ) : null}
+              <Button type='submit' variant='contained' color='primary' style={{ marginLeft: '10px' }}>
                 {step === stepSchemas.length - 1 ? 'Submit' : 'Next step'}
               </Button>
             </Grid>

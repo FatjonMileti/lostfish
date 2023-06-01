@@ -1,6 +1,6 @@
-import { Request, response, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import assetService from './asset.service';
-import { AssetDocument, IOffer, OfferStatus } from './asset.interface';
+import { AssetDocument, IOffer, OfferStatus, RentStatusString } from './asset.interface';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import { Role } from '../../enums';
@@ -16,57 +16,9 @@ import sendApplication from '../../utils/templates/sendApplicationTemplate';
 import AssetApplicationSchema, { ApplicationDocument, ApproveType } from './schemas/asset-application.schema';
 import userService from '../User/user.service';
 import generalTemplate from '../../utils/templates/generalTemplate';
-
+import { createAssetSchemaValidation } from './asset.validation';
 const router: Router = Router();
 const mailService = MailService.getInstance();
-const schema = joi.object({
-  name: joi.string().required(),
-  description: joi.string().allow(''),
-  asset_address: joi.object({
-    latitude: joi.number().min(-90).max(90).required(),
-    longitude: joi.number().min(-180).max(180).required(),
-    street_number: joi.string().allow(''),
-    route: joi.string().allow(''),
-    neighbourhood: joi.string().allow(''),
-    postal_town: joi.string().allow(''),
-    postal_code: joi.string().required(),
-    administrative_area_level_1: joi.string().allow(''),
-    country_code: joi.string().required(),
-    text: joi.string()
-  }),
-  status_string: joi.string().required(),
-  transaction_type_string: joi.string().required(),
-  master_asset_type_string: joi.string().required(),
-  asset_type_string: joi.string().required(),
-  currency_code: joi.string(),
-  reserved: joi.boolean(),
-  master_branch_name: joi.string(),
-  asset_rent: joi.object({
-    rental_amount: joi.number().allow(''),
-    rental_frequency: joi.string().allow(''),
-    deposit_amount: joi.number().allow(''),
-    interest_by: joi.date().allow(''),
-    available_from: joi.date().allow('')
-  }),
-  floor_size: joi.number().required(),
-  floor_size_unit: joi.string().required(),
-  asset_attribute: joi.array().items(
-    joi.object({
-      name: joi.string().required(),
-      type: joi.string().required(),
-      value: joi.number().required()
-    })
-  ),
-  specific_property_features: joi.array().items(
-    joi.object({
-      name: joi.string().required(),
-      value: joi.boolean()
-    })
-  ),
-  property_images: joi.array(),
-  preferences: joi.string().allow(''),
-  property_features: joi.string().allow('')
-});
 
 export class AssetController {
   public path = '/';
@@ -78,16 +30,24 @@ export class AssetController {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAll);
+    this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getApplications);
     this.router.get('/:id/application', authorize(), this.getApplication);
     this.router.get('/:id', this.getById);
-    this.router.post(this.path, authorize([Role.Admin]), validator(schema), this.createAsset);
-    this.router.patch('/:id/offer', authorize(), this.makeOffer);
-    this.router.patch('/:id/approve', authorize(), this.approveApplication);
+    this.router.post(
+      this.path,
+      authorize([Role.Admin]),
+      validator(createAssetSchemaValidation),
+      this.createAsset
+    );
     this.router.post('/:id/send-invitation', authorize(), this.sendInvitation);
     this.router.post('/:id/send-application', authorize(), this.sendApplication);
+    this.router.patch('/:id/offer', authorize(), this.makeOffer);
+    this.router.patch('/:id/approve', authorize(), this.approveApplication);
 
+    this.router.patch('/:id/update-application', authorize(), this.updateApplication);
+    this.router.patch('/:id', authorize(), this.updateAsset);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
   }
 
@@ -102,6 +62,16 @@ export class AssetController {
   private getAll = async (req: Request, res: Response) => {
     try {
       const offers = await assetService.getAll({}, res.locals.paging_options);
+
+      return res.send(offers);
+    } catch (error: any) {
+      return res.send(error?.response?.data);
+    }
+  };
+
+  private syncAll = async (req: Request, res: Response) => {
+    try {
+      const offers = await assetService.syncAll({}, res.locals.paging_options);
 
       return res.send(offers);
     } catch (error: any) {
@@ -151,7 +121,10 @@ export class AssetController {
 
     try {
       // tslint:disable-next-line:no-shadowed-variable
-      const response = await AssetApplicationSchema.findOne({ asset: id, applicant: res.locals.user_id });
+      const response = await AssetApplicationSchema.findOne({
+        asset: id,
+        applicant: res.locals.user_id
+      }).populate('asset', ['asset_rent']);
 
       res.send(response);
     } catch (error: any) {
@@ -223,6 +196,34 @@ export class AssetController {
   };
 
   /**
+   * @api {post} /api/asset/:id Patch
+   * @apiDescription Update existing asset
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id
+   *
+   * @apiBody {string} status_string
+   * @apiBody {string} transaction_type_string
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  public updateAsset = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const asset = await assetService.getById(id);
+    if (req.body.hasOwnProperty('status_string')) {
+      asset.status_string = req.body.status_string;
+    }
+
+    if (req.body.hasOwnProperty('transaction_type_string')) {
+      asset.transaction_type_string = req.body.transaction_type_string;
+    }
+    await asset.save();
+
+    await assetService.updateAsset(asset);
+    res.send(asset);
+  };
+
+  /**
    * @api {patch} /api/asset/:id/offer Patch
    * @apiDescription Make an offer
    * @apiGroup Asset
@@ -249,6 +250,21 @@ export class AssetController {
     return res.send(response);
   };
 
+  public updateApplication = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const application = await AssetApplicationSchema.findOne({ applicant: res.locals.user_id, asset: id });
+    if (!application) {
+      throw createError(404, { message: 'application_not_found' });
+    }
+    if (req.body.hasOwnProperty('documents')) {
+      application.documents = req.body.documents;
+    }
+
+    await application.save();
+    res.send(application);
+  };
+
   /**
    * @api {patch} /api/asset/:id/approve Patch
    * @apiDescription Approve or pre-approve an application
@@ -267,28 +283,55 @@ export class AssetController {
     if (!application) {
       throw createError(404, { message: 'application_not_found' });
     }
+    const asset = await assetService.getById(application.asset.toString());
+    let preApproveContent: string = '';
+    let approveContent: string = '';
     if (req.body.hasOwnProperty('pre_approve_status')) {
       application.pre_approve_status = Boolean(preApproveStatus);
       application.approve_type = ApproveType.APPROVE;
+      preApproveContent = `You have been added as a party member for: ${asset.name}`;
+      approveContent = '..';
     }
-    if (req.body.hasOwnProperty('approve_status')) {
-      application.approve_status = Boolean(approveStatus);
-    }
-
-    await application.save();
-    const asset = await assetService.getById(application.asset.toString());
-    const emailTemplate = generalTemplate({
-      link: `${process.env.FRONTEND_URL}/properties/${asset._id}`,
-      assetName: asset.name,
-      clientName: res.locals.username ?? '',
-      body_1: `You have been added as a party member for: ${asset.name}`,
-      body_2: `more details...`
-    });
 
     const user = await userService.getById(res.locals.user_id as string);
     if (!user) {
       throw createError(401, { message: 'unauthorized_user' });
     }
+
+    if (req.body.hasOwnProperty('approve_status')) {
+      application.approve_status = Boolean(approveStatus);
+      preApproveContent = `Your request to rent: ${asset.name} has been approved`;
+      approveContent = '..';
+
+      asset.status_string = RentStatusString.LetAgreed;
+      if (!asset.buyers) {
+        asset.buyers = [];
+      }
+      asset.buyers.push({
+        client: {
+          id: user?.user_id,
+          first_name: user.first_name,
+          surname: user.last_name,
+          email: user.email,
+          phone: user.phone
+        }
+      });
+      await asset.save();
+    }
+
+    if (req.body.hasOwnProperty('documents')) {
+      application.documents = req.body.documents;
+    }
+
+    await application.save();
+
+    const emailTemplate = generalTemplate({
+      link: `${process.env.FRONTEND_URL}/properties/${asset._id}`,
+      assetName: asset.name,
+      clientName: res.locals.username ?? '',
+      body_1: preApproveContent,
+      body_2: approveContent
+    });
 
     // @ts-ignore
     mailService.sendMail({

@@ -4,9 +4,9 @@ import { AssetDocument, IOffer } from './asset.interface';
 import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
+  /*
   const response = await axios.get('/asset/get');
 
-  /*
   const dataToUpdate = response.data.items.map((data: any) => {
     return {
       updateOne: {
@@ -19,31 +19,51 @@ const getAll = async (query: any, pagingOptions: any) => {
     };
   });
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
+*/
 
-   */
+  return await AssetModel.paginate(
+    { ...query, ...pagingOptions },
+    {
+      sort: { created_at: -1 }
+    }
+  );
+};
 
-  return await AssetModel.paginate({ ...query, ...pagingOptions }, { sort: { created_at: -1 } });
+const syncAll = async (query: any, pagingOptions: any) => {
+  const response = await axios.get('/asset/get');
+
+  return response.data.items;
 };
 
 const createAsset = async (data: AssetDocument): Promise<AssetDocument> => {
   try {
+    const response = await axios.post('/asset/post', data);
+
+    data.asset_id = response.data.id;
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
     return asset.toObject();
-  } catch (err: any) {
-    console.log(err);
-    return err;
+  } catch (error: any) {
+    return error;
   }
-  // try {
-  //   const response = await axios.post('/asset/post', data);
-  //   if (response.status === 201) {
-  //     data.asset_id = response.data.id;
-  //     // @ts-ignore
-  //     return await new AssetModel.create({ ...data });
-  //   }
-  // } catch (error: any) {
-  //   return error;
-  // }
+};
+
+const updateAsset = async (data: AssetDocument): Promise<AssetDocument> => {
+  try {
+    const response = await axios.post('/asset/patch/' + data.asset_id, {
+      id: data.asset_id,
+      // asset_address: data.asset_address,
+      status_string: data.status_string
+      // transaction_type_string: data.transaction_type_string,
+      // master_asset_type_string: data.master_asset_type_string,
+      // asset_type_string: data.asset_type_string
+    });
+    console.log(response.status, response.data);
+    return data;
+  } catch (error: any) {
+    console.log(error);
+    return error;
+  }
 };
 
 const makeOffer = async (body: IOffer): Promise<any> => {
@@ -87,4 +107,4 @@ const deleteAsset = async (id: string) => {
   return AssetModel.findByIdAndDelete(id);
 };
 
-export default { getAll, getById, createAsset, deleteAsset, makeOffer };
+export default { getAll, getById, createAsset, deleteAsset, makeOffer, syncAll, updateAsset };

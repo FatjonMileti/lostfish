@@ -67,6 +67,16 @@ export enum StatusString {
   PreDraft = 'Pre Draft'
 }
 
+export enum RentStatusString {
+  Draft = 'Draft',
+  Let = 'Let',
+  LetAgreed = 'Let Agreed',
+  ForLet = 'For Let',
+  Completed = 'Completed',
+  Archived = 'Archived',
+  PreDraft = 'Pre Draft'
+}
+
 export enum TransactionTypeString {
   Sale = 'Sale',
   Auction = 'Auction',
@@ -179,7 +189,8 @@ export interface AssetDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
-  status_string: StatusString;
+  asset_files: [any];
+  status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   asset_type_string: AssetTypeString;
@@ -243,6 +254,7 @@ export interface AssetDocument extends Document {
     ];
   };
   offers: IOffer[];
+  buyers: [object];
   specific_property_features: [object];
   property_images: [object];
   settings: any;

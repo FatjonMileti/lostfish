@@ -17,7 +17,7 @@ import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
-import { PrivateProperty } from './pages/Properties/pages/PropertyDetails/PrivateProperty';
+import { PrivateProperty } from './pages/Properties/pages/PrivateProperty';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
@@ -31,7 +31,7 @@ import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
 import { ChatPage } from './pages/Chat';
-import { PublicProperty } from './pages/Properties/pages/PropertyDetails/PublicProperty';
+import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 const GeneralSnackbar = () => {
   const UIContext = useUI();

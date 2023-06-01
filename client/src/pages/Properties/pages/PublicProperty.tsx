@@ -1,18 +1,16 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import { Typography } from '../../../../components/Typography';
-import { Button } from '../../../../components/Button';
+import { Typography } from '../../../components/Typography';
+import { Button } from '../../../components/Button';
 import { Grid, Paper } from '@mui/material';
-import { Map } from './components/Map';
-import { NearestPlaces } from './components/NearestPlaces';
-import { NearestSchools } from './components/NearestSchools';
-import { NearestImportantPlaces } from './components/NearestImportantPlaces';
-import { useGlobalState } from '../../../../globalState';
-import axios from '../../../../utils/axios';
+import { Map } from './PropertyDetails/components/Map';
+import { NearestPlaces } from './PropertyDetails/components/NearestPlaces';
+import { NearestSchools } from './PropertyDetails/components/NearestSchools';
+import { NearestImportantPlaces } from './PropertyDetails/components/NearestImportantPlaces';
+import { useGlobalState } from '../../../globalState';
+import axios from '../../../utils/axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-
-import { Header } from '../../../HomeLoggedIn/Header';
+import { Header } from '../../HomeLoggedIn/Header';
 
 export const PublicProperty = () => {
   const [property, setProperty] = React.useState<any>(null);

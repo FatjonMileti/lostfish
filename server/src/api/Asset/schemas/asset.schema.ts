@@ -13,7 +13,8 @@ import {
   StatusString,
   TabName,
   TransactionTypeString,
-  IOffer
+  IOffer,
+  RentStatusString
 } from '../asset.interface';
 
 const Contact = {
@@ -71,7 +72,7 @@ const schema = new Schema<AssetDocument>({
   },
   status_string: {
     type: String,
-    enum: Object.values(StatusString),
+    enum: [...Object.values(StatusString), ...Object.values(RentStatusString)],
     default: StatusString.Draft
   },
   transaction_type_string: {
@@ -97,11 +98,13 @@ const schema = new Schema<AssetDocument>({
     enum: Object.values(CurrencyCode),
     default: CurrencyCode.GBP
   },
+  buyers: [Object],
   reserved: { type: Boolean, default: null },
   master_branch_name: String,
   extra_branch_names: [String],
   walkthrough_url: { type: String, default: null },
   videos: [{ name: String, url: String }],
+  asset_files: [Object],
   asset_attribute: [
     {
       name: String,
@@ -170,7 +173,7 @@ const schema = new Schema<AssetDocument>({
   },
   settings: { type: Object, default: {} },
   preferences: String,
-  property_features: [{ name: String, value: String }],
+  property_features: [Object],
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

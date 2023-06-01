@@ -4,6 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { UserDocument } from './user.interface';
 
 const schema = new Schema<UserDocument>({
+  user_id: Number,
   hash: String,
   role: {
     type: String,

@@ -3,9 +3,12 @@ import axios from '../../../utils/axios';
 import Grid from '@mui/material/Grid';
 import { useGlobalState } from '../../../globalState';
 interface MyComponentProps {
-  handleImagesUpload: (images: any[]) => void;
+  handleImagesUpload: (images: any[], item?: any) => void;
+  url?: string;
+  multiple?: boolean;
+  type?: any;
 }
-export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload }) => {
+export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload, url, multiple, type }) => {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -35,7 +38,7 @@ export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload }) => {
     });
 
     try {
-      const response = await axios(auth.access_token).post('/upload', formData, {
+      const response = await axios(auth.access_token).post(url ? url : '/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -44,10 +47,11 @@ export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload }) => {
       setSelectedFiles([]);
       handleImagesUpload(
         response.data.map((item: any) => ({
-          originalName: item.originalName,
+          originalName: item.originalname,
           filename: item.filename,
           path: item.path
-        }))
+        })),
+        type
       );
     } catch (error) {
       console.error('Error uploading files:', error);
@@ -62,8 +66,8 @@ export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload }) => {
   return (
     <>
       <Grid item style={{ marginTop: '4rem' }} md={12}>
-        <input type='file' onChange={handleImageUpload} multiple accept='image/*' />
-        <button onClick={uploadImages}>Upload Images</button>
+        <input type='file' onChange={handleImageUpload} multiple={!!multiple} accept='image/*' />
+        {selectedFiles.length > 0 && <button onClick={uploadImages}>Confirm</button>}
         <div style={{ display: 'flex' }}></div>
       </Grid>
       {selectedImages.map((src, index) => (

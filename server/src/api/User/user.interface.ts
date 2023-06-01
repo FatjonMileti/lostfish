@@ -16,6 +16,7 @@ interface ContactUser extends Document {
 }
 
 export interface UserDocument extends ContactUser {
+  user_id: number;
   hash: string;
   role: {
     type: Role;

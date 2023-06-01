@@ -17,6 +17,7 @@ const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
 const upload = multer({ dest: 'uploads/asset-images' });
+const uploadDocs = multer({ dest: 'uploads/user-docs' });
 const app: Application = express();
 
 app.use(compression());
@@ -68,6 +69,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/url-to-file', express.static(path.join(__dirname, '..', 'uploads/asset-images')));
+app.use('/url-to-user-docs', express.static(path.join(__dirname, '..', 'uploads/user-docs')));
 
 app.use(
   session({
@@ -94,8 +96,10 @@ app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 app.use('/', require('./routes/index'));
 app.use('/api', require('./api/index'));
 
+app.post('/upload-docs', uploadDocs.array('images'), (req, res) => {
+  res.status(200).send(req.files);
+});
 app.post('/upload', upload.array('images'), (req, res) => {
-  console.log(req.files); // Here you will see the uploaded files
   res.status(200).send(req.files);
 });
 
