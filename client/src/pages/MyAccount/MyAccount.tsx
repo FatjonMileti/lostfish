@@ -12,6 +12,7 @@ import { Dashboard } from './Dashboard';
 import { ProfileDetails } from './ProfileDetails';
 import { AccountSettings } from './AccountSettings';
 import { StarredMatches } from './StarredMatches';
+import { NotificationSettings } from './NotificationSettings';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
@@ -60,7 +61,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
               { icon: 'user', text: 'Profile details', link: '/profile-details' },
               { icon: 'settings', text: 'Account settings', link: '/account-settings' },
               { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
-              { icon: 'megaphone', text: 'Notification settings', link: '/notificationSettings' },
+              { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
               { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
               { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
               { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
@@ -95,6 +96,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
             <Route path='/profile-details' element={<ProfileDetails />} />
             <Route path='/account-settings' element={<AccountSettings />} />
             <Route path='/starred-matches' element={<StarredMatches />} />
+            <Route path='/notification-settings' element={<NotificationSettings />} />
           </Routes>
         </div>
       </div>
