@@ -1,6 +1,4 @@
 import { useProperty } from '../../PropertyContext';
-import { useGlobalState } from '../../../../../globalState';
-import { useParams } from 'react-router-dom';
 import React from 'react';
 import { Grid } from '@mui/material';
 import { Typography } from '../../../../../components/Typography';

@@ -18,6 +18,7 @@ const schema = new Schema<ApplicationDocument>({
   pre_approve_status: { type: Boolean, default: false },
   agreed_terms: { type: Boolean, default: false },
   move_in_date: Date,
+  application_status: { type: String, default: 'In Proccess' },
   created_at: { type: Date, required: true, default: () => new Date() },
   created_by: { type: Types.ObjectId, ref: 'user' }
 });
@@ -37,6 +38,7 @@ export interface ApplicationDocument extends Document {
   pre_approve_status: boolean;
   approve_status: boolean;
   agreed_terms: boolean;
+  application_status: string;
   created_at: Date;
   created_by: Schema.Types.ObjectId;
 }

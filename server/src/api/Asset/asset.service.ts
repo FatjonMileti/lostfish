@@ -50,15 +50,16 @@ const createAsset = async (data: AssetDocument): Promise<AssetDocument> => {
 
 const updateAsset = async (data: AssetDocument): Promise<AssetDocument> => {
   try {
+    const { asset_id, ...rest } = data;
     const response = await axios.post('/asset/patch/' + data.asset_id, {
-      id: data.asset_id,
-      // asset_address: data.asset_address,
-      status_string: data.status_string
-      // transaction_type_string: data.transaction_type_string,
-      // master_asset_type_string: data.master_asset_type_string,
-      // asset_type_string: data.asset_type_string
+      name: data.name,
+      asset_address: data.asset_address,
+      status_string: data.status_string,
+      transaction_type_string: data.transaction_type_string,
+      master_asset_type_string: data.master_asset_type_string,
+      asset_type_string: data.asset_type_string
     });
-    console.log(response.status, response.data);
+
     return data;
   } catch (error: any) {
     console.log(error);

@@ -261,6 +261,13 @@ export class AssetController {
       application.documents = req.body.documents;
     }
 
+    if (req.body.hasOwnProperty('payment') && req.body.payment) {
+      application.application_status = 'Completed';
+      const asset = await assetService.getById(application.asset.toString());
+      asset.status_string = 'Let';
+      await asset.save();
+    }
+
     await application.save();
     res.send(application);
   };
@@ -307,15 +314,18 @@ export class AssetController {
       if (!asset.buyers) {
         asset.buyers = [];
       }
-      asset.buyers.push({
-        client: {
-          id: user?.user_id,
-          first_name: user.first_name,
-          surname: user.last_name,
-          email: user.email,
-          phone: user.phone
-        }
-      });
+      const applicant = await userService.getById(application.applicant.toString());
+      if (applicant) {
+        asset.buyers.push({
+          client: {
+            id: applicant?.user_id,
+            first_name: applicant.first_name,
+            surname: applicant.last_name,
+            email: applicant.email,
+            phone: applicant.phone
+          }
+        });
+      }
       await asset.save();
     }
 

@@ -176,11 +176,18 @@ export const PreApprovalApplication = () => {
       );
     }
 
+    const areImagesApproved: boolean = application.documents.every((doc: any) => doc.approved);
+
     if (application && !application.pre_approve_status) {
       return <Typography variant='body3'>Waiting for approval</Typography>;
     }
 
-    if (application && application.pre_approve_status && application.approve_type === 'Pre Approval') {
+    if (
+      application &&
+      application.pre_approve_status &&
+      application.approve_type === 'Approval' &&
+      application.documents.length === 0
+    ) {
       return afterPreApprove;
     }
 
@@ -188,7 +195,11 @@ export const PreApprovalApplication = () => {
       return <Typography variant='body3'>Waiting for approval of your documents</Typography>;
     }
 
-    if (application && application.approve_status) {
+    if (application.application_status === 'Completed') {
+      return <Typography variant='body3'>Rented</Typography>;
+    }
+
+    if (application && application.approve_status && areImagesApproved) {
       return (
         <Grid>
           <Typography variant='body3'>Your application to rent this property has been approved.</Typography>;
@@ -196,15 +207,27 @@ export const PreApprovalApplication = () => {
             Please pay the rental deposit - Amount £ {application?.asset?.asset_rent?.deposit_amount}
           </Typography>
           <br />
-          <input type='radio' /> Manual payment
+          <input type='radio' checked /> Manual payment
           <br />
           <br />
-          <Button>Confirm</Button>
+          <Button onClick={() => handlePaymant()}>Confirm</Button>
         </Grid>
       );
     }
 
     return null;
+  };
+
+  const handlePaymant = async () => {
+    try {
+      const { data } = await axios(auth.access_token).patch(`/api/asset/${params.id}/update-application`, {
+        payment: application?.asset?.asset_rent?.deposit_amount
+      });
+      alert('Success');
+      setApplication(data);
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return renderApplicationLifeCycle();

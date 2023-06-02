@@ -157,7 +157,9 @@ export const PropertyApplications = () => {
 
             <br />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button onClick={() => approveDocument(true)}>Approve</Button>
+              <Button onClick={() => approveDocument(true)} disabled={!!selectedDocument?.approved}>
+                {selectedDocument?.approved ? 'Approved' : 'Approve'}
+              </Button>
               <Button onClick={() => approveDocument(false)}>Reject</Button>
             </div>
           </Grid>

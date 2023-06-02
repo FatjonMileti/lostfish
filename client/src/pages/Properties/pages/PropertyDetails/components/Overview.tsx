@@ -85,7 +85,7 @@ export const Overview = () => {
         <Card>
           <CardHeader title='Invite applicant' />
           <CardContent>
-            {property.status_string === 'Live' ? (
+            {['Live', 'For Let'].includes(property.status_string) ? (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
                   <Grid item xs={6} md={6}>
@@ -166,7 +166,26 @@ export const Overview = () => {
       </Grid>
       <Grid item md={4}>
         <CardHeader title='Successful Applicant' />
-        <CardContent></CardContent>
+        <CardContent>
+          {property.buyers?.map((buyer: any) => {
+            return (
+              <Grid container>
+                <Grid item md={6}>
+                  Name
+                </Grid>
+                <Grid item md={6}>
+                  <b>{buyer.client.first_name}</b>
+                </Grid>
+                <Grid item md={6}>
+                  Surname
+                </Grid>
+                <Grid item md={6}>
+                  <b>{buyer.client.surname}</b>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </CardContent>
       </Grid>
     </Grid>
   );

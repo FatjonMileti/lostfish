@@ -170,9 +170,9 @@ export const CreateProperty = (props: any) => {
         street_number: '',
         route: '',
         neighbourhood: '',
-        postal_town: '',
-        postal_code: '123456',
-        administrative_area_level_1: '',
+        postal_town: 'Oxford',
+        postal_code: 'OX1 1HS',
+        administrative_area_level_1: 'England',
         country_code: 'GBR',
         text: ''
       },
