@@ -1,9 +1,9 @@
-import ChatModel from '../../data/message';
-import { ChatDocument } from '../../data/interfaces/chat.interface';
+import ChatModel from './schemas/message.schema';
+import { ChatDocument } from './chat.interface';
 import createError from 'http-errors';
-import RoomModel from '../../data/room';
+import RoomModel from './schemas/room.schema';
 import notificationSender from '../../utils/notification-sender';
-import { NotificationType } from '../../data/interfaces/notification.interface';
+import { NotificationType } from '../Notification/notification.interface';
 import socketApi from '../../utils/socket.io';
 import roomService from './room.service';
 import { Types } from 'mongoose';

@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import userService from './user.service';
-import { UserDocument } from '../../data/interfaces/user.interface';
+import { ContactType, UserDocument } from './user.interface';
 import { validate, ValidationError } from 'class-validator';
 import { LogAction, LoginLog, LoginLogAction, UserLog } from '../../data/logs';
 import { Role } from '../../enums';
@@ -15,6 +15,7 @@ import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
 import MailService from '../../utils/email';
 import accountService from '../Account/account.service';
+import userContactService from './user-contact.service';
 
 const router: Router = Router();
 
@@ -250,28 +251,37 @@ export class UserController {
       return res.status(400).json({ errors });
     }
 
-    // const password: string = generatePassword();
-    // user.hash = <string>await hashPassword(password);
-
     const password = req.body.password;
     user.hash = <string>await hashPassword(password);
 
     user.confirmation_token = randomUUID();
+    user.contact_type = ContactType.Solicitor;
+    user.address = 'empty for now';
+    try {
+      /*
+      const contactUser = await userContactService.create(user);
+      if (contactUser) {
+        user.contact_id = contactUser.id;
+      }*/
 
-    const createdUser: UserDocument = await userService.create(user);
+      const createdUser: UserDocument = await userService.create(user);
 
-    const emailTemplate = verifyEmailTamplate(
-      `${process.env.FRONTEND_URL}/activate-account/${user.confirmation_token}`
-    );
-    const mailService = MailService.getInstance();
-    // @ts-ignore
-    await mailService.sendMail({
-      to: user.email,
-      subject: 'Test email',
-      html: emailTemplate.html
-    });
+      const emailTemplate = verifyEmailTamplate(
+        `${process.env.FRONTEND_URL}/activate-account/${user.confirmation_token}`
+      );
+      const mailService = MailService.getInstance();
+      // @ts-ignore
+      await mailService.sendMail({
+        to: user.email,
+        subject: 'Test email',
+        html: emailTemplate.html
+      });
 
-    return res.json({ ...createdUser, hash: undefined });
+      return res.json({ ...createdUser, hash: undefined });
+    } catch (error: any) {
+      console.log(error);
+      res.send(error);
+    }
   };
 
   /**

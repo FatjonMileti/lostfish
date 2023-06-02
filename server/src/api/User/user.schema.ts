@@ -1,9 +1,10 @@
 import { model, PaginateModel, Schema } from 'mongoose';
-import { Role } from '../enums';
+import { Role } from '../../enums';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { UserDocument } from './interfaces/user.interface';
+import { UserDocument } from './user.interface';
 
 const schema = new Schema<UserDocument>({
+  user_id: Number,
   hash: String,
   role: {
     type: String,
@@ -44,10 +45,7 @@ const schema = new Schema<UserDocument>({
   },
   confirmation_token: String,
   last_login: Date,
-  address: {
-    name: String,
-    street: String
-  },
+  address: String,
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

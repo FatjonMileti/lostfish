@@ -1,18 +1,14 @@
 import axios from 'axios';
+import config from './config';
 
-export const config = {
-  api: 'https://demoapi.offr.io/v1',
-  key: '563ce61fba5ae3fdcafd076bf3004f44'
-  
-};
 const axiosInstance = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Token ${config.key}`
+    Authorization: `Token ${config.offr_io_token}`
   }
 });
-axiosInstance.defaults.baseURL = config.api;
+axiosInstance.defaults.baseURL = config.offr_io_api;
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -1,7 +1,7 @@
 import express, { Application, Request, Response, Router } from 'express';
 const router: Router = Router();
-import { Role, UserDocument } from '../../data/interfaces/user.interface';
-import UserModel from '../../data/user';
+import { Role, UserDocument } from '../User/user.interface';
+import UserModel from '../User/user.schema';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import authorize from '../../middleware/authorize';
 import createError from 'http-errors';

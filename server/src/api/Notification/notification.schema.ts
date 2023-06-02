@@ -1,6 +1,6 @@
 import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { NotificationDocument } from './interfaces/notification.interface';
+import { NotificationDocument } from './notification.interface';
 
 const schema = new Schema<NotificationDocument>(
   {

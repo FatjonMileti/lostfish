@@ -17,7 +17,7 @@ import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
-import { Maps } from './pages/Maps/Maps';
+import { PrivateProperty } from './pages/Properties/pages/PrivateProperty';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/Properties';
 import { Matches } from './pages/Matches/Matches';
@@ -31,6 +31,8 @@ import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
 import { ChatPage } from './pages/Chat';
+import { PublicProperty } from './pages/Properties/pages/PublicProperty';
+import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -114,7 +116,9 @@ function App() {
             <Route path='/activate-account/:token' element={<VerifyAccount />} />
             <Route path={'/messages'} element={<ChatPage />} />
             <Route path='/properties' element={<Properties />} />
-            <Route path='/properties/:id' element={<Maps />} />
+            <Route path='/properties/:id' element={<PrivateProperty />} />
+            <Route path='/properties/:id/view' element={<PublicProperty />} />
+            <Route path='/properties/:id/applications' element={<PropertyApplications />} />
             <Route path='/matches' element={<Matches />} />
             <Route path='/about' element={<About />} />
             <Route path='/mission' element={<Mission />} />

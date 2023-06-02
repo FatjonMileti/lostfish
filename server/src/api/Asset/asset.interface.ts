@@ -67,6 +67,16 @@ export enum StatusString {
   PreDraft = 'Pre Draft'
 }
 
+export enum RentStatusString {
+  Draft = 'Draft',
+  Let = 'Let',
+  LetAgreed = 'Let Agreed',
+  ForLet = 'For Let',
+  Completed = 'Completed',
+  Archived = 'Archived',
+  PreDraft = 'Pre Draft'
+}
+
 export enum TransactionTypeString {
   Sale = 'Sale',
   Auction = 'Auction',
@@ -156,8 +166,15 @@ export enum TabName {
   'Payments'
 }
 
+export enum PreferencesEnum {
+  NEW_HOME = 'New Home',
+  RETIREMENT_HOME = 'Retirement Home',
+  SHARED_OWNERSHIP = 'Shared Ownership',
+  AUCTION = 'Auction'
+}
+
 export interface AssetDocument extends Document {
-  _id: ObjectId | string;
+  asset_id: number;
   name: string;
   description: string;
   asset_address: {
@@ -172,7 +189,8 @@ export interface AssetDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
-  status_string: StatusString;
+  asset_files: [any];
+  status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   asset_type_string: AssetTypeString;
@@ -183,7 +201,7 @@ export interface AssetDocument extends Document {
   walkthrough_url: string;
   videos: [{ name: string; url: string }];
   asset_attribute: [AssetAtribute];
-  asset_sale: {
+  asset_sale?: {
     asking_price: number;
     minimum_offer: number;
     offer_increment_amount: number;
@@ -200,7 +218,7 @@ export interface AssetDocument extends Document {
     enable_downward_bidding: boolean;
     downward_bidding_allowed_percentage: number;
   };
-  asset_rent: {
+  asset_rent?: {
     rental_amount: number;
     rental_frequency: RentalFrequency;
     deposit_amount: number;
@@ -219,9 +237,9 @@ export interface AssetDocument extends Document {
     completion_date: Date;
   };
   client_id: number;
-  client: ContactDocument;
+  client?: ContactDocument;
   solicitor_id: number;
-  solicitor: ContactDocument;
+  solicitor?: ContactDocument;
   statistics: any;
   permission: {
     administrator_names: [string];
@@ -236,7 +254,12 @@ export interface AssetDocument extends Document {
     ];
   };
   offers: IOffer[];
+  buyers: [object];
+  specific_property_features: [object];
+  property_images: [object];
   settings: any;
+  preferences: string;
+  property_features: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

@@ -87,6 +87,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
       const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
 
+      navigate(location?.state?.url ? location.state.url : '/');
       setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;

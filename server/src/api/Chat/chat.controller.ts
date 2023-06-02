@@ -1,13 +1,13 @@
 import express, { Router } from 'express';
 import chatService from './chat.service';
 import roomService from './room.service';
-import { ChatDocument } from '../../data/interfaces/chat.interface';
+import { ChatDocument } from './chat.interface';
 import { Role } from '../../enums';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
-import MessageModel from '../../data/message';
-import Notification from '../../data/notification';
+import MessageModel from './schemas/message.schema';
+import Notification from '../Notification/notification.schema';
 const router: Router = Router();
 
 export class ChatController {

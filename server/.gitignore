@@ -6,7 +6,7 @@
 # Node artifact files
 node_modules/
 docs/
-
+uploads/
 # Compiled Java class files
 *.class
 
