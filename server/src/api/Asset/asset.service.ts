@@ -1,9 +1,10 @@
-import axios from '../../utils';
-import AssetModel from '../../data/asset';
-import { AssetDocument, IOffer } from '../../data/interfaces/asset.interface';
+import axios from '../../request';
+import AssetModel from './schemas/asset.schema';
+import { AssetDocument, IOffer } from './asset.interface';
 import createError from 'http-errors';
 
 const getAll = async (query: any, pagingOptions: any) => {
+  /*
   const response = await axios.get('/asset/get');
 
   const dataToUpdate = response.data.items.map((data: any) => {
@@ -18,59 +19,50 @@ const getAll = async (query: any, pagingOptions: any) => {
     };
   });
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
+*/
 
-  return await AssetModel.paginate({ ...query, ...pagingOptions });
+  return await AssetModel.paginate(
+    { ...query, ...pagingOptions },
+    {
+      sort: { created_at: -1 }
+    }
+  );
 };
 
-const createAsset = async () => {
-  const data = {
-    name: 'Test Asset from api 5',
-    description: 'string',
-    asset_address: {
-      latitude: -90,
-      longitude: -180,
-      street_number: 'string',
-      route: 'string',
-      neighbourhood: 'string',
-      postal_town: 'string',
-      postal_code: '1025',
-      administrative_area_level_1: 'string',
-      country_code: 'IRL',
-      text: 'string'
-    },
-    status_string: 'Draft',
-    transaction_type_string: 'Sale',
-    master_asset_type_string: 'Unknown',
-    asset_type_string: 'Unknown',
-    currency_code: 'EUR',
-    reserved: true,
-    asset_sale: {
-      asking_price: 0,
-      minimum_offer: 0,
-      offer_increment_amount: 1000,
-      date_go_live: new Date(),
-      date_offer_deadline: new Date(),
-      date_exchanged: new Date(),
-      date_completion: new Date(),
-      offers_extension: 1,
-      contract_deposit_percent: 0,
-      booking_deposit_amount: 0,
-      special_conditions: 'string',
-      show_all_offers: true,
-      show_highest_offer: true,
-      enable_downward_bidding: true,
-      downward_bidding_allowed_percentage: 5,
-      asset_fee: {}
-    }
-  };
+const syncAll = async (query: any, pagingOptions: any) => {
+  const response = await axios.get('/asset/get');
 
+  return response.data.items;
+};
+
+const createAsset = async (data: AssetDocument): Promise<AssetDocument> => {
   try {
-    const request = await axios.post('/asset/post', data);
-    if (request.status === 201) {
-      // @ts-ignore
-      return await new AssetModel.create({ ...data });
-    }
+    const response = await axios.post('/asset/post', data);
+
+    data.asset_id = response.data.id;
+    const asset: AssetDocument = new AssetModel({ ...data });
+    await asset.save();
+    return asset.toObject();
   } catch (error: any) {
+    return error;
+  }
+};
+
+const updateAsset = async (data: AssetDocument): Promise<AssetDocument> => {
+  try {
+    const { asset_id, ...rest } = data;
+    const response = await axios.post('/asset/patch/' + data.asset_id, {
+      name: data.name,
+      asset_address: data.asset_address,
+      status_string: data.status_string,
+      transaction_type_string: data.transaction_type_string,
+      master_asset_type_string: data.master_asset_type_string,
+      asset_type_string: data.asset_type_string
+    });
+
+    return data;
+  } catch (error: any) {
+    console.log(error);
     return error;
   }
 };
@@ -116,4 +108,4 @@ const deleteAsset = async (id: string) => {
   return AssetModel.findByIdAndDelete(id);
 };
 
-export default { getAll, getById, createAsset, deleteAsset, makeOffer };
+export default { getAll, getById, createAsset, deleteAsset, makeOffer, syncAll, updateAsset };

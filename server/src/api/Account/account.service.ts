@@ -1,4 +1,4 @@
-import { UserDocument } from '../../data/interfaces/user.interface';
+import { UserDocument } from '../User/user.interface';
 import jwt from 'jsonwebtoken';
 
 const generateTokens = (user: UserDocument): { token: string; refresh: string } => {

@@ -29,7 +29,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
       });
     } catch (err) {
     } finally {
-      setUser((user: any) => ({ ...user, auth: null }));
+      setUser((user: any) => ({ ...user, auth: null, userDetails: null }));
       navigate('/');
     }
   };

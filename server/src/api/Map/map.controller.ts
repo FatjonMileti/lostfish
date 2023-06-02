@@ -1,6 +1,7 @@
-import express, { Router } from "express";
-import axios from "axios";
-import config from "../../config";
+import express, { response, Router } from 'express';
+import axios from 'axios';
+import config from '../../config';
+import createError from 'http-errors';
 const router: Router = Router();
 
 export class MapController {
@@ -11,9 +12,10 @@ export class MapController {
   }
 
   private initializeRoutes() {
-    this.router.get("/station", this.getNearestStations);
-    this.router.get("/school", this.getNearestSchools);
-    this.router.get("/places", this.getNearestImportantPlaces);
+    this.router.get('/station', this.getNearestStations);
+    this.router.get('/school', this.getNearestSchools);
+    this.router.get('/places', this.getNearestImportantPlaces);
+    this.router.get('/address/:address/radius/:radius', this.findPlaceWithAddress);
   }
 
   /**
@@ -26,10 +28,7 @@ export class MapController {
    * @apiQuery {string} longitude longitude
    *
    */
-  private getNearestStations = async (
-    req: express.Request,
-    res: express.Response
-  ) => {
+  private getNearestStations = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
     try {
@@ -53,10 +52,7 @@ export class MapController {
    * @apiQuery {string} longitude longitude
    *
    */
-  private getNearestSchools = async (
-    req: express.Request,
-    res: express.Response
-  ) => {
+  private getNearestSchools = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
     try {
@@ -80,10 +76,7 @@ export class MapController {
    * @apiQuery {string} longitude longitude
    *
    */
-  private getNearestImportantPlaces = async (
-    req: express.Request,
-    res: express.Response
-  ) => {
+  private getNearestImportantPlaces = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
     try {
@@ -92,6 +85,62 @@ export class MapController {
       );
 
       return res.json({ ...data });
+    } catch (error: any) {
+      return res.status(400).send(error?.request?.data);
+    }
+  };
+
+  private async getCoordinates(address: string) {
+    try {
+      const { data } = await axios.get(`${config.map_geocode_url}`, {
+        params: {
+          address,
+          key: config.google_key
+        }
+      });
+
+      if (data.status === 'OK') {
+        /*
+        const { lat, lng } = data.results[0].geometry.location;
+        return { latitude: lat, longitude: lng };
+
+         */
+        return data.results[0];
+      } else {
+        throw createError(400, 'Geocoding API request failed');
+      }
+    } catch (error: any) {
+      console.error('Error:', error.message);
+      return false;
+    }
+  }
+
+  private findPlaceWithAddress = async (req: express.Request, res: express.Response) => {
+    const address = req.params.address;
+    const radius = req.params.radius;
+    const coordinates = await this.getCoordinates(address);
+    if (!coordinates) {
+      throw createError(404, 'Coordinates not found');
+    }
+
+    try {
+      /*
+     const { data } = await axios.get(`${config.map_nearby_url}`, {
+       params: {
+         location: `${coordinates.latitude},${coordinates.longitude}`,
+         radius,
+         key: config.google_key
+       }
+     });
+     if (data.status === 'OK') {
+       const places = data.results;
+       res.json({ ...places });
+     } else {
+       throw createError(400, 'Places API request failed');
+     }
+
+    */
+      res.send(coordinates);
     } catch (error: any) {
       return res.status(400).send(error?.request?.data);
     }

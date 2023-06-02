@@ -3,7 +3,7 @@ require('dotenv/config');
 const chalk = require('chalk');
 const dbConnect = require('./src/data');
 dbConnect(process.env.DB_CONNECTION_STRING, false);
-import User from './src/data/user';
+import User from './src/api/User/user.schema';
 
 const bcrypt = require('bcrypt');
 const inquirer = require('inquirer');
@@ -69,7 +69,6 @@ const validate = (schema: Schema) => (answers: any) => {
       last_name: response.last_name,
       created_at: new Date()
     }).save();
-    
   } catch (err) {
     console.error(err);
     console.log(chalk.red('could not save user'));

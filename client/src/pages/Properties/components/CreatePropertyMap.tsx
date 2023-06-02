@@ -7,8 +7,11 @@ const containerStyle = {
   height: '300px'
 };
 
-export const Map = React.memo((props: any) => {
-  const { address } = props;
+export const CreatePropertyMap = React.memo((props: any) => {
+  const {
+    mapDetails: { geometry },
+    setValue
+  } = props;
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyCQxF8nCU-lhv4Wn6THabdieN_m1EAk9tQ'
@@ -18,7 +21,7 @@ export const Map = React.memo((props: any) => {
 
   const onLoad = React.useCallback(function callback(map: any) {
     // @ts-ignore
-    const bounds = new window.google.maps.LatLngBounds(address);
+    const bounds = new window.google.maps.LatLngBounds(geometry.location);
     map.fitBounds(bounds);
 
     setMap(map);
@@ -28,15 +31,22 @@ export const Map = React.memo((props: any) => {
     setMap(null);
   }, []);
 
+  const handleDragEnd = (data: any) => {
+    const latitude = data.latLng.lat();
+    const longitude = data.latLng.lng();
+    setValue('asset_address.latitude', latitude);
+    setValue('asset_address.longitude', longitude);
+  };
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={address}
-      zoom={8}
+      center={geometry.location}
+      zoom={15}
       onLoad={onLoad}
       onUnmount={onUnmount}>
       {/* Child components, such as markers, info windows, etc. */}
-      <Marker position={address} title='Description' />
+      <Marker position={geometry.location} title='Description' draggable={true} onDragEnd={handleDragEnd} />
     </GoogleMap>
   ) : (
     <></>

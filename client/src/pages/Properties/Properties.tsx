@@ -12,7 +12,10 @@ import IconButton from '@mui/material/IconButton';
 import { Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
+import { CreateProperty } from './components/CreateProperty';
 import { Backdrop } from '../../components/Backdrop';
+import { Grid, Paper, Box } from '@mui/material';
+import axios from '../../utils/axios';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Id', flex: 1 },
@@ -24,8 +27,8 @@ const columns: GridColDef[] = [
     valueGetter: (params: GridValueGetterParams) => `${params.row.asset_address.country_code || ''}`
   },
   {
-    field: 'created_at',
-    headerName: 'Created date',
+    field: 'status_string',
+    headerName: 'Status',
     flex: 1
   },
   {
@@ -40,41 +43,81 @@ const columns: GridColDef[] = [
     )
   }
 ];
-
+const state: IGridState = {
+  loading: true,
+  rows: [],
+  totalRows: 0,
+  rowsPerPageOptions: [10, 20, 50],
+  pageSize: 10,
+  page: 1,
+  rowCount: 0,
+  sort: 'created_At',
+  asc: false,
+  selectedIds: [],
+  search: ''
+};
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const [list, setList] = React.useState<IGridState>({
+    ...state
+  });
+  const [isOnCreate, setIsOnCreate] = React.useState(false);
+
   const {
     user: [{ auth }]
   } = useGlobalState();
 
-  const properties = useReactQueryHook({ url: 'asset', name: 'properties' });
+  React.useEffect(() => {
+    getAssets();
+  }, []);
 
-  // if (properties.isLoading) {
-  //   return <p>Loader...</p>;
-  // }
+  const getAssets = async () => {
+    const { data } = await axios(auth.access_token).get('/api/asset');
+    setList((prevList: any) => ({
+      ...prevList,
+      // @ts-ignore
+      rows: data.docs.map(({ _id, ...rest }) => ({ id: _id, ...rest })),
+      totalRows: data.totalDocs,
+      loading: false
+    }));
+  };
 
   return (
     <div className={`properties-page ${className}`}>
       <Header />
-      <div>
-        <Backdrop open={properties.isLoading || properties.isFetching}></Backdrop>
-
-        {properties.list.rows.length > 0 ? (
-          <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={properties.list.rows}
-              columns={columns}
-              pageSize={properties.list.pageSize}
-              rowsPerPageOptions={properties.list.rowsPerPageOptions}
-            />
-          </div>
-        ) : (
-          <div className='no-properties'>
-            <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
-            <Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>
-              Add Property
-            </Button>
-          </div>
-        )}
+      <Backdrop open={list.loading}></Backdrop>
+      <div className='container'>
+        <Paper>
+          <Box sx={{ width: '90%', margin: '5rem', padding: '12px', marginTop: '2rem' }}>
+            <Grid>
+              <Button
+                style={{ marginBottom: '2rem' }}
+                size='small'
+                className='add-property-button'
+                startIcon={!isOnCreate ? <Icon icon='plus' size={16} /> : <Icon icon='close' size={16} />}
+                onClick={() => setIsOnCreate(!isOnCreate)}>
+                {!isOnCreate ? 'Add Property' : ''}
+              </Button>
+              {isOnCreate && <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />}
+              {list.rows.length > 0 && !isOnCreate ? (
+                <div style={{ height: 400, width: '100%' }}>
+                  <DataGrid
+                    rows={list.rows}
+                    columns={columns}
+                    pageSize={list.pageSize}
+                    rowsPerPageOptions={list.rowsPerPageOptions}
+                  />
+                </div>
+              ) : (
+                <div className='no-properties'>
+                  {/*<Typography variant='body2'>You currently have no properties in your portfolio</Typography>*/}
+                  {/*<Button size='large' className='add-property-button' startIcon={<Icon icon='plus' size={16} />}>*/}
+                  {/*  Add Property*/}
+                  {/*</Button>*/}
+                </div>
+              )}
+            </Grid>
+          </Box>
+        </Paper>
       </div>
 
       <Footer />
