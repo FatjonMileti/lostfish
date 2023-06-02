@@ -15,6 +15,7 @@ import { StarredMatches } from './StarredMatches';
 import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
+import { HelpAndSupport } from './HelpAndSupport';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
@@ -101,6 +102,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
             <Route path='/notification-settings' element={<NotificationSettings />} />
             <Route path='/transaction-agreement' element={<TransactionAgreement />} />
             <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
+            <Route path='/help-and-support' element={<HelpAndSupport />} />
           </Routes>
         </div>
       </div>
