@@ -158,7 +158,6 @@ export class AssetController {
     const id = req.params.id;
 
     const asset = await assetService.getById(id);
-    const readDir = util.promisify(fs.readdir);
 
     try {
       const imageUrls = asset.property_images.map(
@@ -167,7 +166,6 @@ export class AssetController {
 
       res.json(imageUrls);
     } catch (error) {
-      console.error('Error reading directory:', error);
       res.status(500).send('Server error');
     }
   };
