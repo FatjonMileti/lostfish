@@ -13,6 +13,7 @@ import { ProfileDetails } from './ProfileDetails';
 import { AccountSettings } from './AccountSettings';
 import { StarredMatches } from './StarredMatches';
 import { NotificationSettings } from './NotificationSettings';
+import { TransactionAgreement } from './TransactionAgreement';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
@@ -97,6 +98,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
             <Route path='/account-settings' element={<AccountSettings />} />
             <Route path='/starred-matches' element={<StarredMatches />} />
             <Route path='/notification-settings' element={<NotificationSettings />} />
+            <Route path='/transaction-agreement' element={<TransactionAgreement />} />
           </Routes>
         </div>
       </div>

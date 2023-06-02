@@ -2,7 +2,7 @@ import React, { JSXElementConstructor, ReactElement } from 'react';
 import { styled } from '@mui/system';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'text' | 'contained' | 'outlined' | 'primary' | 'secondary';
+  variant?: 'text' | 'outlined' | 'primary' | 'secondary';
   startIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   endIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   size?: 'small' | 'medium' | 'large';
@@ -59,14 +59,6 @@ export const Button = styled(
   height: min-content;
   width: max-content;
 
-  &.variant-contained {
-    color: white;
-    background-color: #184d6d;
-    &:hover {
-      background-color: #0d2a38;
-    }
-  }
-
   &.variant-outlined {
     border: 2px solid #184d6d;
     &:hover {
@@ -84,6 +76,14 @@ export const Button = styled(
 
     &.active {
       background-color: #0d2a38;
+    }
+
+    &.disabled {
+      background-color: #a7a7a7;
+      cursor: not-allowed;
+      &:hover {
+        background-color: #a7a7a7;
+      }
     }
 
     &.inverted {
@@ -111,6 +111,12 @@ export const Button = styled(
     &.active {
       color: #0d2a38;
       background-color: white;
+    }
+
+    &.disabled {
+      color: #a7a7a7;
+      cursor: not-allowed;
+      border: 2px solid #a7a7a7;
     }
 
     &.inverted {
@@ -147,13 +153,5 @@ export const Button = styled(
   &.size-large {
     padding: 20px 32px;
     font-size: 18px;
-  }
-
-  &.disabled {
-    background-color: #a7a7a7;
-    cursor: not-allowed;
-    &:hover {
-      background-color: #a7a7a7;
-    }
   }
 `;

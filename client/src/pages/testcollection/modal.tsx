@@ -248,7 +248,6 @@ export default (props: { isOpen: boolean; item?: any | null; close: (reloadList:
             onClick={save}
             disabled={loading}
             loading={loading}
-            variant='contained'
             sx={{ alignSelf: 'flex-end', mt: '8px', minWidth: '80px' }}>
             {state.id ? 'Modifica' : 'Adauga'}
           </LoadingButton>

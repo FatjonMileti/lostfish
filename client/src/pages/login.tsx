@@ -157,7 +157,6 @@ const Login = () => {
                 <Button
                   disabled={UIContext.state.isLoading}
                   onClick={handleLogin}
-                  variant='contained'
                   color='primary'
                   fullWidth={true}>
                   Login

@@ -100,7 +100,6 @@ export const ChatPage = () => {
               sx={{ marginBottom: '3rem', width: '70%', marginLeft: '1rem' }}
             />
             <Button
-              variant='contained'
               size='small'
               sx={{ marginLeft: '1rem', marginTop: '3px' }}
               onClick={() => {

@@ -116,12 +116,7 @@ export const ForgotPassword = styled(({ className }: React.HTMLAttributes<HTMLDi
               />
             </div>
 
-            <Button
-              className='login-button'
-              variant='contained'
-              type='submit'
-              disabled={!isValid}
-              size='large'>
+            <Button className='login-button' type='submit' disabled={!isValid} size='large'>
               Send reset instructions
             </Button>
           </form>

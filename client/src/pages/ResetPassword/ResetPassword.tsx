@@ -114,12 +114,7 @@ export const ResetPassword = styled(({ className }: HTMLAttributes<HTMLDivElemen
               />
             </div>
 
-            <Button
-              className='login-button'
-              variant='contained'
-              type='submit'
-              disabled={!isValid}
-              size='large'>
+            <Button className='login-button' type='submit' disabled={!isValid} size='large'>
               Reset
             </Button>
           </form>

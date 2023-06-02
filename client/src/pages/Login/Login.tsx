@@ -216,12 +216,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
                 helperText={errors.password?.message?.toString()}
               />
 
-              <Button
-                className='login-button'
-                variant='contained'
-                type='submit'
-                disabled={!isValid}
-                size='large'>
+              <Button className='login-button' type='submit' disabled={!isValid} size='large'>
                 Sign in
               </Button>
 
