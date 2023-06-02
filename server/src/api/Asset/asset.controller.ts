@@ -158,7 +158,6 @@ export class AssetController {
     const id = req.params.id;
 
     const asset = await assetService.getById(id);
-    const readDir = util.promisify(fs.readdir);
 
     try {
       const imageUrls = asset.property_images.map(
