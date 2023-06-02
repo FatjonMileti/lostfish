@@ -545,7 +545,7 @@ export const CreateProperty = (props: any) => {
               {step > 0 ? (
                 <Button onClick={() => setStep((prevStep: number) => prevStep - 1)}>Go back</Button>
               ) : null}
-              <Button type='submit' variant='contained' color='primary' style={{ marginLeft: '10px' }}>
+              <Button type='submit' variant='primary' color='primary' style={{ marginLeft: '10px' }}>
                 {step === stepSchemas.length - 1 ? 'Submit' : 'Next step'}
               </Button>
             </Grid>
