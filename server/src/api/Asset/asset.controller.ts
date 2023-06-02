@@ -167,7 +167,6 @@ export class AssetController {
 
       res.json(imageUrls);
     } catch (error) {
-      console.error('Error reading directory:', error);
       res.status(500).send('Server error');
     }
   };
