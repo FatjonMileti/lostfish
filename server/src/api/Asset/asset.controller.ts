@@ -62,7 +62,7 @@ export class AssetController {
   private getAll = async (req: Request, res: Response) => {
     try {
       const offers = await assetService.getAll(
-        { created_bu: { $eq: res.locals.user_id } },
+        { created_by: { $eq: res.locals.user_id } },
         res.locals.paging_options
       );
 
