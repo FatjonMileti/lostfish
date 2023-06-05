@@ -49,7 +49,7 @@ export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
   return (
     <div className={`starred-matches ${className}`}>
-      <Tabs value={activeTab} onChange={(i: any) => setActiveTab(i)}>
+      <Tabs value={activeTab} onChange={(i: any) => setActiveTab(i)} variant='secondary'>
         <Tab label='Tenants' />
         <Tab label='Properties' />
       </Tabs>

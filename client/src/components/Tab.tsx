@@ -5,20 +5,29 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   children: ReactElement | ReactElement[];
   value?: any;
   onChange?: Function;
+  variant?: 'primary' | 'secondary';
 }
 
 export const Tabs = styled(
-  ({ className, children, value, onChange = (i: any) => {}, ...otherProps }: TabsProps) => {
+  ({
+    className,
+    children,
+    value,
+    onChange = (i: any) => {},
+    variant = 'primary',
+    ...otherProps
+  }: TabsProps) => {
     return (
       <div
-        className={`tabs ${className}`}
+        className={`tabs ${className} ${variant ? `variant-${variant}` : ''}`}
         {...otherProps}
         style={{ gridTemplateColumns: `repeat(${React.Children.count(children)}, minmax(0, 1fr))` }}>
         {React.Children.map(children, (child: ReactElement, childIndex: number) => {
           if ((child.type as React.ComponentType).displayName === Tab.displayName) {
             return React.cloneElement(child, {
               active: childIndex === value,
-              setActive: () => onChange(childIndex)
+              setActive: () => onChange(childIndex),
+              variant
             });
           }
           return null;
@@ -32,25 +41,38 @@ export const Tabs = styled(
   column-gap: 4px;
   padding: 4px;
   box-sizing: border-box;
-  border: 1px solid #e7e7e7;
   width: fit-content;
+
+  &.variant-primary {
+    border: 1px solid #0d2a38;
+  }
+
+  &.variant-secondary {
+    border: 1px solid #e7e7e7;
+  }
 `;
 
 export interface TabProps extends React.HTMLAttributes<HTMLElement> {
   label?: string;
   active?: boolean;
   setActive?: MouseEventHandler;
+  variant?: 'primary' | 'secondary';
 }
 
-export const Tab = styled(({ className, children, label, active, setActive, ...otherProps }: TabProps) => {
-  return (
-    <div className={`tab ${className} ${active ? 'active' : ''}`} {...otherProps} onClick={setActive}>
-      <Typography className='label' variant='body4'>
-        {label || null}
-      </Typography>
-    </div>
-  );
-})`
+export const Tab = styled(
+  ({ className, children, label, active, setActive, variant = 'primary', ...otherProps }: TabProps) => {
+    return (
+      <div
+        className={`tab ${className} ${active ? 'active' : ''} ${variant ? `variant-${variant}` : ''}`}
+        {...otherProps}
+        onClick={setActive}>
+        <Typography className='label' variant='body4'>
+          {label || null}
+        </Typography>
+      </div>
+    );
+  }
+)`
   &.tab {
     user-select: none;
     cursor: pointer;
@@ -63,10 +85,28 @@ export const Tab = styled(({ className, children, label, active, setActive, ...o
     .label {
       font-weight: 400;
     }
+
     &.active {
-      background-color: #c0daff;
       .label {
         font-weight: 600;
+      }
+    }
+
+    &.variant-primary {
+      &.active {
+        background-color: #0d2a38;
+        .label {
+          color: white;
+        }
+      }
+    }
+
+    &.variant-secondary {
+      &.active {
+        background-color: #c0daff;
+        .label {
+          font-weight: 600;
+        }
       }
     }
   }
