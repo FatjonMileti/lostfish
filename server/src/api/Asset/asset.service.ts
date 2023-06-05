@@ -37,9 +37,9 @@ const syncAll = async (query: any, pagingOptions: any) => {
 
 const createAsset = async (data: AssetDocument): Promise<AssetDocument> => {
   try {
-    const response = await axios.post('/asset/post', data);
-
-    data.asset_id = response.data.id;
+    // const response = await axios.post('/asset/post', data);
+    //
+    // data.asset_id = response.data.id;
 
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
