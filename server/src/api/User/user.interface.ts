@@ -42,6 +42,8 @@ export interface UserDocument extends ContactUser {
     is_twitter_verified: boolean;
   };
   phone: string;
+  description: string;
+  avatar: string;
   confirmation_token?: string;
   last_login: Date;
   edited_at?: Date;
