@@ -57,14 +57,33 @@ export class AssetController {
    * @apiGroup Asset
    * @apiSampleRequest /api/asset
    *
-   * @apiPermission admin
+   * @apiQuery {string} [status] status
+   * @apiPermission authorize
+   * @apiUse bearer
    */
   private getAll = async (req: Request, res: Response) => {
+    const { status } = req.query;
+    const query: {
+      created_by: any;
+      status_string?: any;
+    } = {
+      created_by: res.locals.user_id
+    };
+
+    if (status) {
+      let filteredStatus: string[] = [];
+      if (status === 'published') {
+        filteredStatus = ['Let', 'Live', 'For Let', 'For Sale', 'Let Agreed', 'Sale Agreed'];
+      }
+      if (status === 'draft') {
+        filteredStatus = ['Draft'];
+      }
+
+      query.status_string = { $in: filteredStatus };
+    }
+
     try {
-      const offers = await assetService.getAll(
-        { created_by: { $eq: res.locals.user_id } },
-        res.locals.paging_options
-      );
+      const offers = await assetService.getAll(query, res.locals.paging_options);
 
       return res.send(offers);
     } catch (error: any) {
