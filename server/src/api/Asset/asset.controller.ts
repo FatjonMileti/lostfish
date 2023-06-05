@@ -185,6 +185,7 @@ export class AssetController {
   public createAsset = async (req: Request, res: Response) => {
     const asset: AssetDocument = req.body as any;
     try {
+      asset.created_by = res.locals.user_id;
       // tslint:disable-next-line:no-shadowed-variable
       const response = await assetService.createAsset(asset);
       res.send({ ...response });
