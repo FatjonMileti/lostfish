@@ -29,7 +29,7 @@ export class AssetController {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, this.getAll);
+    this.router.get(this.path, authorize(), this.getAll);
     this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getApplications);
@@ -61,6 +61,7 @@ export class AssetController {
    */
   private getAll = async (req: Request, res: Response) => {
     try {
+      console.log(res.locals);
       const offers = await assetService.getAll(
         { created_by: { $eq: res.locals.user_id } },
         res.locals.paging_options

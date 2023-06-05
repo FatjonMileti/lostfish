@@ -21,6 +21,8 @@ const getAll = async (query: any, pagingOptions: any) => {
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
 */
 
+  console.log({ query });
+
   return await AssetModel.paginate(
     { ...query, ...pagingOptions },
     {
