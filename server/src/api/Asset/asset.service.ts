@@ -3,7 +3,7 @@ import AssetModel from './schemas/asset.schema';
 import { AssetDocument, IOffer } from './asset.interface';
 import createError from 'http-errors';
 
-const getAll = async (query: any, pagingOptions: any) => {
+const getAll = async (query: any, res: any) => {
   /*
   const response = await axios.get('/asset/get');
 
@@ -21,14 +21,19 @@ const getAll = async (query: any, pagingOptions: any) => {
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
 */
 
-  console.log({ query });
-
-  return await AssetModel.paginate(
-    { ...query, ...pagingOptions },
-    {
-      sort: { created_at: -1 }
-    }
-  );
+  return await AssetModel.paginate(query, {
+    ...res.locals.paging_options,
+    populate: [
+      {
+        path: 'created_by',
+        select: ['email', 'username', 'firstName', 'last_name']
+      },
+      {
+        path: 'edited_by',
+        select: ['email', 'username', 'firstName', 'last_name']
+      }
+    ]
+  });
 };
 
 const syncAll = async (query: any, pagingOptions: any) => {

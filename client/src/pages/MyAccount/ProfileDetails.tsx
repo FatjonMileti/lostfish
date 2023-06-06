@@ -12,6 +12,12 @@ import avatar3 from './images/avatar3.svg';
 import avatar4 from './images/avatar4.svg';
 import avatar5 from './images/avatar5.svg';
 import { Icon } from '../../components/Icon';
+import { useGlobalState } from '../../globalState';
+import axios from '../../utils/axios';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useUser } from './AccountProvider';
 
 const avatars = [
   {
@@ -36,21 +42,114 @@ const avatars = [
   }
 ];
 
+const userSchema = yup.object().shape({
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  email: yup.string().required('Email is required'),
+  phone: yup.string().nullable(),
+  description: yup.string().nullable()
+});
+
+interface FormData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  description: string;
+  avatar: string;
+}
+
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [selectedAvatar, setSelectedAvatar] = React.useState(0);
 
+  const { user } = useUser();
+
+  const {
+    user: [{ auth, userDetails }]
+  } = useGlobalState();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue
+  } = useForm<FormData>({
+    resolver: yupResolver(userSchema),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      description: '',
+      avatar: avatars[selectedAvatar].image
+    }
+  });
+
+  const handleSelectedAvatar = (index: number) => {
+    setSelectedAvatar(index);
+    setValue('avatar', avatars[index].image);
+  };
+
+  React.useEffect(() => {
+    getUser();
+  }, [user]);
+
+  const getUser = () => {
+    if (user) {
+      const { first_name, last_name, email, phone, description, avatar } = user;
+
+      setValue('first_name', first_name);
+      setValue('last_name', last_name);
+      setValue('email', email);
+      setValue('phone', phone);
+      setValue('description', description);
+      if (avatar) {
+        const findIndex = avatars.findIndex((av: any) => av.image === avatar);
+        if (findIndex !== -1) {
+          setSelectedAvatar(findIndex);
+        }
+      }
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    const response = await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
+    if (response.status === 200) {
+      alert('Updated with success!');
+    }
+  };
+
+  if (!user) {
+    return <div>Loader...</div>;
+  }
+
   return (
-    <div className={`profile-details ${className}`}>
+    <form onSubmit={handleSubmit(onSubmit)} className={`profile-details ${className}`}>
       <div className='left-part'>
         <div className='section'>
           <Typography className='section-title' variant='body4'>
             Contact information
           </Typography>
           <div className='contact-information'>
-            <TextField label='First Name' required />
-            <TextField label='Last Name' required />
-            <TextField label='Email' required />
-            <TextField label='Phone' />
+            <TextField
+              label='First Name'
+              {...register('first_name')}
+              error={!!errors?.first_name}
+              helperText={errors?.first_name?.message}
+            />
+            <TextField
+              label='Last Name'
+              {...register('last_name')}
+              error={!!errors?.last_name}
+              helperText={errors?.last_name?.message}
+            />
+            <TextField
+              label='Email'
+              {...register('email')}
+              error={!!errors?.email}
+              helperText={errors?.email?.message}
+            />
+            <TextField label='Phone' {...register('phone')} />
           </div>
         </div>
 
@@ -62,7 +161,8 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             <Textarea
               rows={6}
               label='Describe yourself (your matches will see this)'
-              defaultValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. '></Textarea>
+              {...register('description')}
+              defaultValue=''></Textarea>
           </div>
         </div>
 
@@ -76,7 +176,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 <motion.div
                   // whileTap={{ scale: 0.9 }}
                   // whileHover={{ scale: 1.5 }}
-                  onClick={() => setSelectedAvatar(avatarIndex)}
+                  onClick={() => handleSelectedAvatar(avatarIndex)}
                   key={avatarIndex}
                   className={`avatar ${avatarIndex === selectedAvatar ? 'active' : ''}`}
                   style={{ backgroundColor }}>
@@ -89,9 +189,9 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         </div>
       </div>
       <div className='right-part'>
-        <Button disabled>Save changes</Button>
+        <Button type='submit'>Save changes</Button>
       </div>
-    </div>
+    </form>
   );
 })`
   &.profile-details {

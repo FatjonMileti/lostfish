@@ -44,16 +44,15 @@ const columns: GridColDef[] = [
     )
   }
 ];
-
 const state: IGridState = {
   loading: true,
   rows: [],
   totalRows: 0,
-  rowsPerPageOptions: [1, 2, 3],
-  pageSize: 1,
+  rowsPerPageOptions: [10, 20, 50],
+  pageSize: 10,
   page: 1,
   rowCount: 0,
-  sort: 'created_At',
+  sort: 'created_at',
   asc: false,
   selectedIds: [],
   search: ''
@@ -77,13 +76,19 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   }, [tabIndex]);
 
   const getAssets = async () => {
-    const { data } = await axios(auth.access_token).get(`/api/asset`, {
-      params: {
-        status: ['published', 'draft'][tabIndex]
-        // page: 0,
-        // pageSize: 1
-      }
-    });
+    const { search, asc, sort, pageSize, page } = list;
+
+    let query: string = `?page=${page}`;
+    if (pageSize) {
+      query += `&pageSize=${pageSize}`;
+    }
+    if (sort) {
+      query += `&sort=${sort}&asc=${asc.toString()}`;
+    }
+    if (search) {
+      query += `&status=${search}`;
+    }
+    const { data } = await axios(auth.access_token).get(`/api/asset${query}`);
     setList((prevList: any) => ({
       ...prevList,
       // @ts-ignore
