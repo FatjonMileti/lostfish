@@ -4,10 +4,7 @@ import { AssetDocument, IOffer, OfferStatus, RentStatusString } from './asset.in
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import { Role } from '../../enums';
-import * as joi from 'joi';
 import createError from 'http-errors';
-import fs from 'fs';
-import util from 'util';
 import sendInvitationTemplate from '../../utils/templates/sendInvitationTemplate';
 import MailService from '../../utils/email';
 import AssetInvitation, { InvitationDocument } from './schemas/asset-invitation.schema';
@@ -30,7 +27,7 @@ export class AssetController {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, authorize(), this.getAll);
+    this.router.get(this.path, authorize(), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getApplications);
@@ -86,11 +83,11 @@ export class AssetController {
     }
 
     try {
-      const offers = await assetService.getAll({}, res.locals.paging_options);
+      const response = await assetService.getAll(query, res);
 
-      return res.send(offers);
+      return res.send(response);
     } catch (error: any) {
-      return res.send(error?.response?.data);
+      return res.status(400).send(error?.response?.data);
     }
   };
 

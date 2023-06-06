@@ -8,7 +8,7 @@ export default (defaultOptions: object = {}) =>
     let options: object = {
       pagination: false,
       lean: true,
-      sort: { created_at: -1 },
+      sort: { createdAt: -1 },
       ...defaultOptions
     };
     if (page && pageSize) {

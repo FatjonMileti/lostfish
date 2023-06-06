@@ -51,7 +51,7 @@ const state: IGridState = {
   pageSize: 10,
   page: 1,
   rowCount: 0,
-  sort: 'created_At',
+  sort: 'created_at',
   asc: false,
   selectedIds: [],
   search: ''
@@ -71,7 +71,19 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   }, []);
 
   const getAssets = async () => {
-    const { data } = await axios(auth.access_token).get('/api/asset');
+    const { search, asc, sort, pageSize, page } = list;
+
+    let query: string = `?page=${page}`;
+    if (pageSize) {
+      query += `&pageSize=${pageSize}`;
+    }
+    if (sort) {
+      query += `&sort=${sort}&asc=${asc.toString()}`;
+    }
+    if (search) {
+      query += `&status=${search}`;
+    }
+    const { data } = await axios(auth.access_token).get(`/api/asset${query}`);
     setList((prevList: any) => ({
       ...prevList,
       // @ts-ignore
