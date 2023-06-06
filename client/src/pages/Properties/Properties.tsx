@@ -149,7 +149,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   status={p.status_string}
                   viewDetails={() => viewDetails(p.id)}
                   image={
-                    p.property_images[0]
+                    p?.property_images?.[0]
                       ? `${process.env.REACT_APP_BACK_END_URL}/url-to-file/${p.property_images[0]?.filename}`
                       : undefined
                   }
