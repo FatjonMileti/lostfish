@@ -374,6 +374,15 @@ export class UserController {
     if (userBody.avatar) {
       user.avatar = userBody.avatar;
     }
+
+    if (userBody.notification) {
+      user.notification = userBody.notification;
+    }
+
+    if (userBody.documents) {
+      user.documents = userBody.documents;
+    }
+
     try {
       await user.save();
 
