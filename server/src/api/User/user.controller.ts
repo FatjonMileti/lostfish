@@ -33,7 +33,8 @@ export class UserController {
     this.router.get('/:id', authorize([Role.Admin]), this.getById);
     this.router.post('/', this.create);
 
-    this.router.put('/:id', authorize([Role.Admin]), this.update);
+    // this.router.put('/:id', authorize([Role.Admin]), this.update);
+    this.router.patch('/:id', authorize(), this.updateUser);
     this.router.delete('/:id', authorize([Role.Admin]), this.delete);
 
     this.router.post('/forgot-password', this.sendResetPasswordInstructions);
@@ -314,6 +315,69 @@ export class UserController {
     try {
       const updatedUser: UserDocument | undefined = await userService.updateUser(id, user);
       res.json(updatedUser);
+    } catch (error) {
+      res.status(404).json({ message: 'User not found' });
+    }
+  };
+
+  /**
+   * @api {put} /api/user/:id Put
+   * @apiDescription Edit user
+   * @apiGroup User
+   * @apiSampleRequest /api/user/:id
+   *
+   * @apiBody {string=admin} role
+   * @apiBody {string} email
+   * @apiBody {string} [phone]
+   * @apiBody {string} firstName
+   * @apiBody {string} lastName
+   *
+   * @apiBody {boolean} [isDisabled=false]
+   * @apiParam id
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private updateUser = async (req: express.Request, res: express.Response) => {
+    const id = req.params.id;
+    const userBody = req.body as UserDocument;
+
+    if (id.toString() !== res.locals?.user_id?.toString()) {
+      throw createError(401, { message: 'not_authorized' });
+    }
+
+    const user = await userService.findOne({ _id: res.locals.user_id });
+
+    if (!user) {
+      throw createError(404, { message: 'user_not_found' });
+    }
+
+    if (userBody.first_name) {
+      user.first_name = userBody.first_name;
+    }
+
+    if (userBody.last_name) {
+      user.last_name = userBody.last_name;
+    }
+
+    if (userBody.email) {
+      user.email = userBody.email;
+    }
+
+    if (userBody.phone) {
+      user.phone = userBody.phone;
+    }
+
+    if (userBody.description) {
+      user.description = userBody.description;
+    }
+
+    if (userBody.avatar) {
+      user.avatar = userBody.avatar;
+    }
+    try {
+      await user.save();
+
+      res.json(user);
     } catch (error) {
       res.status(404).json({ message: 'User not found' });
     }

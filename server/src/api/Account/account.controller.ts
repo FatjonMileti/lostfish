@@ -38,6 +38,7 @@ const clientTwitter = new Client(authClient);
 export class AccountController {
   public router = router;
   private accountService = accountService;
+  private userService = userService;
 
   constructor() {
     this.initializeRoutes();
@@ -70,7 +71,26 @@ export class AccountController {
     this.router.get('/create-twitter-url', this.generateTwitterUrl);
     this.router.get('/login-twitter-callback', this.loginWithTwitter);
     this.router.get('/get-access-tokens', authorize(), this.getAccessToken);
+    this.router.get('/me', authorize(), this.getMyProfile);
   }
+
+  /**
+   * @api {get} /api/account/me Get my profile
+   * @apiDescription Get my profile
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/me
+   *
+   *
+   * @apiPermission bearer token
+   */
+  private getMyProfile = async (req: express.Request, res: express.Response) => {
+    const user = await this.userService.findOne({ _id: res.locals.user_id });
+    if (!user) {
+      throw createError(404, { message: 'not_found' });
+    }
+
+    res.send(user);
+  };
 
   /**
    * @api {get} /api/account/get-access-tokens Get Tokens

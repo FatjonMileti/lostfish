@@ -43,6 +43,8 @@ const schema = new Schema<UserDocument>({
     twitter_user_id: String,
     is_twitter_verified: { type: Boolean, default: false }
   },
+  description: String,
+  avatar: String,
   confirmation_token: String,
   last_login: Date,
   address: String,
