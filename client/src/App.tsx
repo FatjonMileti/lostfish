@@ -33,6 +33,7 @@ import { RedirectUriPage } from './pages/Login/components/Redirect';
 import { ChatPage } from './pages/Chat';
 import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
+import { NewProperty } from './pages/Properties/NewProperty';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;

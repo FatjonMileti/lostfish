@@ -153,5 +153,6 @@ export const Button = styled(
   &.size-large {
     padding: 20px 32px;
     font-size: 18px;
+    height: 64px;
   }
 `;
