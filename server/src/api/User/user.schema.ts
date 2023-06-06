@@ -43,6 +43,13 @@ const schema = new Schema<UserDocument>({
     twitter_user_id: String,
     is_twitter_verified: { type: Boolean, default: false }
   },
+  notification: {
+    email_me_when_i_get_a_match: { type: Boolean, default: false },
+    text_when_i_get_a_match: { type: Boolean, default: false },
+    email_when_someone_accept_my_match: { type: Boolean, default: false },
+    text_when_someone_accept_my_match: { type: Boolean, default: false }
+  },
+  documents: [Object],
   description: String,
   avatar: String,
   confirmation_token: String,

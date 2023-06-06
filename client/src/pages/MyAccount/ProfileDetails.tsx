@@ -17,6 +17,7 @@ import axios from '../../utils/axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useUser } from './AccountProvider';
 
 const avatars = [
   {
@@ -61,6 +62,8 @@ interface FormData {
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [selectedAvatar, setSelectedAvatar] = React.useState(0);
 
+  const { user } = useUser();
+
   const {
     user: [{ auth, userDetails }]
   } = useGlobalState();
@@ -89,12 +92,11 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
   React.useEffect(() => {
     getUser();
-  }, []);
+  }, [user]);
 
-  const getUser = async () => {
-    const response = await axios(auth.access_token).get('/api/account/me');
-    if (response.status === 200) {
-      const { first_name, last_name, email, phone, description, avatar } = response.data;
+  const getUser = () => {
+    if (user) {
+      const { first_name, last_name, email, phone, description, avatar } = user;
 
       setValue('first_name', first_name);
       setValue('last_name', last_name);
@@ -116,6 +118,10 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       alert('Updated with success!');
     }
   };
+
+  if (!user) {
+    return <div>Loader...</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={`profile-details ${className}`}>

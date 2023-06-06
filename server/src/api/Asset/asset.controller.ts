@@ -17,6 +17,7 @@ import AssetApplicationSchema, { ApplicationDocument, ApproveType } from './sche
 import userService from '../User/user.service';
 import generalTemplate from '../../utils/templates/generalTemplate';
 import { createAssetSchemaValidation } from './asset.validation';
+import paging from '../../middleware/paging';
 const router: Router = Router();
 const mailService = MailService.getInstance();
 
@@ -60,9 +61,11 @@ export class AssetController {
    * @apiQuery {string} [status] status
    * @apiPermission authorize
    * @apiUse bearer
+   * @apiUse paging
    */
   private getAll = async (req: Request, res: Response) => {
     const { status } = req.query;
+
     const query: {
       created_by: any;
       status_string?: any;
@@ -79,11 +82,11 @@ export class AssetController {
         filteredStatus = ['Draft'];
       }
 
-      query.status_string = { $in: filteredStatus };
+      if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
     }
 
     try {
-      const offers = await assetService.getAll(query, res.locals.paging_options);
+      const offers = await assetService.getAll({}, res.locals.paging_options);
 
       return res.send(offers);
     } catch (error: any) {

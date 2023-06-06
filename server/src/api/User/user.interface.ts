@@ -44,6 +44,13 @@ export interface UserDocument extends ContactUser {
   phone: string;
   description: string;
   avatar: string;
+  notification: {
+    email_me_when_i_get_a_match: boolean;
+    text_when_i_get_a_match: boolean;
+    email_when_someone_accept_my_match: boolean;
+    text_when_someone_accept_my_match: boolean;
+  };
+  documents: any[];
   confirmation_token?: string;
   last_login: Date;
   edited_at?: Date;
