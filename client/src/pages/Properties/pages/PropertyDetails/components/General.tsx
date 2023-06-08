@@ -4,7 +4,6 @@ import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import { Typography } from '../../../../../components/Typography';
 import { Map } from './Map';
 import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../../../../utils/axios';
 import { useGlobalState } from '../../../../../globalState';
 import { useParams } from 'react-router-dom';
@@ -125,10 +124,10 @@ export const General = () => {
       </Grid>
 
       <Grid container mt={3}>
-        {property.property_images.map((item: string, index: number) => {
+        {property.property_images.map((item: any, index: number) => {
           return (
             <Grid item md={4}>
-              <img src={item} height='200px' width='250px' />
+              <img src={item.filename} height='200px' width='250px' />
             </Grid>
           );
         })}

@@ -54,7 +54,12 @@ export const Overview = () => {
       <Grid item md={4}>
         <Card>
           <CardHeader title={property.name} />
-          <CardMedia component='img' height='300' image={property.property_images[0]} alt='Test image' />
+          <CardMedia
+            component='img'
+            height='300'
+            image={property.property_images[0].filename}
+            alt='Test image'
+          />
           <CardContent>
             <Grid container spacing={3}>
               <Grid item md={6}>
