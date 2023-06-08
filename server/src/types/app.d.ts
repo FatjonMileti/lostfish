@@ -13,6 +13,9 @@ declare module 'express' {
       paging_options?: object;
     };
   }
+  interface Request {
+    ability?: any;
+  }
 }
 
 declare module 'express-session' {

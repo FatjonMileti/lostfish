@@ -45,7 +45,7 @@ export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDiv
     const { firstName, lastName, email, password } = data;
 
     try {
-      await axios.post(`${config.apiUrl}/api/user`, {
+      await axios.post(`${config.apiUrl}/api/account/register`, {
         first_name: firstName,
         last_name: lastName,
         email,

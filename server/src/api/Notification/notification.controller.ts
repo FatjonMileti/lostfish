@@ -14,9 +14,9 @@ export class NotificationController {
   }
 
   private initializeRoutes() {
-    this.router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/unread', authorize(), this.getUnread);
-    this.router.get('/', authorize(), this.readMessage);
+    this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
+    this.router.get('/unread', this.getUnread);
+    this.router.get('/', this.readMessage);
   }
 
   /**

@@ -18,10 +18,7 @@ interface ContactUser extends Document {
 export interface UserDocument extends ContactUser {
   user_id: number;
   hash: string;
-  role: {
-    type: Role;
-    default: Role.User;
-  };
+  role: Role;
   email: string;
   first_name: string;
   last_name: string;
@@ -61,6 +58,7 @@ export interface UserDocument extends ContactUser {
 
 export enum Role {
   Admin = 'Admin',
-  Guest = 'Guest',
-  User = 'User'
+  Agent = 'Agent',
+  Client = 'Client',
+  Solicitor = 'Solicitor'
 }

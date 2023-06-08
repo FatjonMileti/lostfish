@@ -18,11 +18,11 @@ export class ChatController {
   }
 
   private initializeRoutes() {
-    this.router.get('/', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/:id', authorize([Role.Admin]), paging({ sort: { created_at: -1 } }), this.getById);
-    this.router.post('/', authorize([Role.Admin]), this.create);
-    this.router.put('/read', authorize([Role.Admin]), this.readMessages);
-    this.router.delete('/:id', authorize([Role.Admin]), this.delete);
+    this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
+    this.router.get('/:id', paging({ sort: { created_at: -1 } }), this.getById);
+    this.router.post('/', this.create);
+    this.router.put('/read', this.readMessages);
+    this.router.delete('/:id', this.delete);
   }
 
   /**

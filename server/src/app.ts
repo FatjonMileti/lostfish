@@ -16,8 +16,11 @@ const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
+import authorize from './middleware/authorize';
+import { AccountController } from './api/Account/account.controller';
 const upload = multer({ dest: 'uploads/asset-images' });
 const uploadDocs = multer({ dest: 'uploads/user-docs' });
+
 const app: Application = express();
 
 app.use(compression());
@@ -94,7 +97,10 @@ app.use(
 
 app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 app.use('/', require('./routes/index'));
-app.use('/api', require('./api/index'));
+
+const accountController = new AccountController();
+app.use('/api/account', accountController.router);
+app.use('/api', authorize(), require('./api/index'));
 
 app.post('/upload-docs', uploadDocs.array('images'), (req, res) => {
   res.status(200).send(req.files);

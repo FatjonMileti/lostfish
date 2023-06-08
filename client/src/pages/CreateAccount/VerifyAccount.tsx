@@ -21,7 +21,7 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
     (async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${config.apiUrl}/api/user/invitation/${params.token}`);
+        const response = await axios.get(`${config.apiUrl}/api/account/invitation/${params.token}`);
         await verifyRegistration(response);
       } catch (err: AxiosError | any) {
         if (err?.response?.data?.message === 'user_not_found') {

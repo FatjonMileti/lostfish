@@ -69,7 +69,7 @@ const sendApplicationForAsset = async (req: Request, res: Response) => {
     ...applicationDocument
   });
 
-  const loggedUser = await userService.getById(res.locals.user_id as string);
+  const loggedUser = await userService.findOne({ _id: res.locals.user_id as string });
   if (!loggedUser) {
     throw createError(404, { message: 'user_not_found' });
   }
@@ -123,7 +123,7 @@ const approveAssetApplication = async (req: Request, res: Response) => {
     approveContent = '..';
   }
 
-  const user = await userService.getById(res.locals.user_id as string);
+  const user = await userService.findOne({ _id: res.locals.user_id as string });
   if (!user) {
     throw createError(401, { message: 'unauthorized_user' });
   }
@@ -137,7 +137,7 @@ const approveAssetApplication = async (req: Request, res: Response) => {
     if (!asset.buyers) {
       asset.buyers = [];
     }
-    const applicant = await userService.getById(application.applicant.toString());
+    const applicant = await userService.findOne({ _id: application.applicant.toString() });
     if (applicant) {
       asset.buyers.push({
         client: {

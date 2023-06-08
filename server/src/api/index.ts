@@ -1,14 +1,15 @@
-import { Router } from 'express';
-
-const router: Router = Router();
+import { NextFunction, Request, Response, Router } from 'express';
 import { UserController } from './User/user.controller';
-import { AccountController } from './Account/account.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
 import { MapController } from './Map/map.controller';
 import { NotificationController } from './Notification/notification.controller';
 import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
+import defineAbilitiesFor from '../casl/casl';
+import { Role } from './User/user.interface';
+
+const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -36,15 +37,18 @@ import { ConditionController } from './Condition/condition.controller';
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
+// router.use(async (req: Request, res: Response, next: NextFunction) => {
+//   req.ability = defineAbilitiesFor(Role.Admin);
+//   next();
+// });
+
 const offerController = new AssetController();
 const userController = new UserController();
-const accountController = new AccountController();
 const chatController = new ChatController();
 const mapController = new MapController();
 const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
-router.use('/account', accountController.router);
 router.use('/user', userController.router);
 router.use('/asset', offerController.router);
 router.use('/chat', chatController.router);

@@ -6,8 +6,11 @@ import { Role } from '../../enums';
 import assetApplicationService from './services/asset-application.service';
 import { createAssetSchemaValidation } from './asset.validation';
 import paging from '../../middleware/paging';
-const router: Router = Router();
 import validateId from '../../middleware/object-id.validator';
+import ability from '../../middleware/ability.middleware';
+import { CASLAction } from '../../casl/casl.interface';
+
+const router: Router = Router();
 
 export class AssetController {
   public path = '/';
@@ -19,19 +22,24 @@ export class AssetController {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, authorize(), paging({ sort: { created_at: -1 } }), this.findAll);
+    this.router.get(
+      this.path,
+      paging({ sort: { created_at: -1 } }),
+      ability(CASLAction.Read, 'Asset'),
+      this.findAll
+    );
     this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', validateId, this.getImages);
-    this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
-    this.router.get('/:id/application', validateId, authorize(), this.getOneAssetApplication);
-    this.router.post('/:id/send-application', validateId, authorize(), this.sendApplication);
-    this.router.patch('/:id/approve-application', validateId, authorize(), this.approveApplication);
-    this.router.patch('/:id/update-application', validateId, authorize(), this.updateApplication);
+    this.router.get('/:id/get-applications', this.getAssetApplications);
+    this.router.get('/:id/application', validateId, this.getOneAssetApplication);
+    this.router.post('/:id/send-application', validateId, this.sendApplication);
+    this.router.patch('/:id/approve-application', validateId, this.approveApplication);
+    this.router.patch('/:id/update-application', validateId, this.updateApplication);
     this.router.get('/:id', validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
     this.router.post('/:id/send-invitation', validateId, authorize(), this.sendInvitation);
-    this.router.patch('/:id', validateId, authorize(), this.updateAsset);
-    this.router.delete('/:id', validateId, authorize([Role.Admin]), this.delete);
+    this.router.patch('/:id', validateId, this.updateAsset);
+    this.router.delete('/:id', validateId, this.delete);
   }
 
   /**
