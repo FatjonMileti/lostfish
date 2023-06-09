@@ -10,7 +10,7 @@ import userService from '../../User/user.service';
 import sendApplicationTemplate from '../../../utils/templates/sendApplicationTemplate';
 import { RentStatusString } from '../asset.interface';
 import generalTemplate from '../../../utils/templates/generalTemplate';
-import offrIoService from '../../../services/offr-io.service';
+import offrIoService from '../../../external-services/offr-io.service';
 import { getCurrentStatusForPost } from '../helpers';
 import MailService from '../../../utils/email';
 import httpStatus from 'http-status';

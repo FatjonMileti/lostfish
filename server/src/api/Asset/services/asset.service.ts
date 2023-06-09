@@ -5,7 +5,7 @@ import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
-import offrIoService from '../../../services/offr-io.service';
+import offrIoService from '../../../external-services/offr-io.service';
 
 import { Types } from 'mongoose';
 import { getCurrentStatusForGet, getCurrentStatusForPost } from '../helpers';
