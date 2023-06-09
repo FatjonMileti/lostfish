@@ -1,4 +1,4 @@
-import axios from '../../../request';
+import axios from '../../../offr-io.request';
 import AssetModel from '../schemas/asset.schema';
 import { AssetDocument, IOffer } from '../asset.interface';
 import createError from 'http-errors';

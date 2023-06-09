@@ -1,14 +1,10 @@
-import express, { Router } from 'express';
-import axios from '../../request';
-import config from '../../config';
-import createError from 'http-errors';
-import AttributeSchema from './attribute.schema';
-import { AttributeDocument } from './attribute.interface';
+import { Router } from 'express';
+import attributeService from './services/attribute.service';
 const router: Router = Router();
 
 export class AttributeController {
   public router = router;
-
+  public attributeService = attributeService;
   constructor() {
     this.initializeRoutes();
   }
@@ -25,16 +21,7 @@ export class AttributeController {
    * @apiSampleRequest /api/attribute
    *
    */
-  private findAll = async (req: express.Request, res: express.Response) => {
-    try {
-      // const response = await axios.get('/attribute/get');
-      const data = await AttributeSchema.paginate({});
-      return res.send(data);
-    } catch (error: any) {
-      return res.status(400).send({ message: 'failed_to_fetch_data', error });
-    }
-  };
-
+  private findAll = this.attributeService.findAll;
   /**
    * @api {post} /api/attribute Post
    * @apiDescription Add a new attribute
@@ -58,19 +45,5 @@ export class AttributeController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createAttribute = async (req: express.Request, res: express.Response) => {
-    const data = req.body as AttributeDocument;
-    try {
-      const response = await axios.post('/attribute/post', data);
-      if (response.status === 201) {
-        data.attribute_id = response.data.id;
-        await AttributeSchema.create(data);
-        return res.send(response.data);
-      }
-
-      return res.status(response.status).send(response.data);
-    } catch (error: any) {
-      return res.status(400).send({ message: 'failed_to_store_in_offr_io', error });
-    }
-  };
+  private createAttribute = this.attributeService.createAttribute;
 }

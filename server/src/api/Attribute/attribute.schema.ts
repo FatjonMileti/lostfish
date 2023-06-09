@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { AttributeDocument, IType } from './attribute.interface';
 
 const schema = new Schema<AttributeDocument>({
-  attribute_id: Number,
+  attribute_id: { type: Number, required: true },
   name: { type: String, required: true },
   label: { type: String, required: true },
   description: { type: String, required: true },

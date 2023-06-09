@@ -30,20 +30,17 @@ type CheckBoxName =
   | 'text_when_someone_accept_my_match';
 
 export const NotificationSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const { user } = useUser();
+  const { user, getOne } = useUser();
 
   const {
     user: [{ auth, userDetails }]
   } = useGlobalState();
 
   const {
-    register,
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
-    getValues,
-    watch
+    setValue
   } = useForm<FormData>({
     resolver: yupResolver(userNotificationSchema),
     defaultValues: {
@@ -82,6 +79,7 @@ export const NotificationSettings = styled(({ className }: HTMLAttributes<HTMLDi
       notification: data
     });
     if (response.status === 200) {
+      getOne();
       alert('Updated with success!');
     }
   };
@@ -106,12 +104,6 @@ export const NotificationSettings = styled(({ className }: HTMLAttributes<HTMLDi
             </Typography>
             <Typography variant='body4'>You will receive an email whenever you got a new match.</Typography>
           </div>
-          {/*<Switch*/}
-          {/*  size='small'*/}
-          {/*  {...register('email_me_when_i_get_a_match')}*/}
-          {/*  defaultChecked={values.email_me_when_i_get_a_match}*/}
-          {/*  onChange={handleOnChange}*/}
-          {/*/>*/}
           <Controller
             name='email_me_when_i_get_a_match'
             control={control}

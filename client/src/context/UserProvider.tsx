@@ -5,8 +5,9 @@ import axios from '../utils/axios';
 import NotFoundPage from '../pages/404';
 import { UserDocument } from '../pages/MyAccount/user.interface';
 import { buildAbilityFor } from '../utils/ability.util';
-import { AbilityContext } from '../context/AbilityContext';
+import { AbilityContext } from './AbilityContext';
 import { AppAbilityType, AppAbility } from '../utils/ability.util';
+import { unpackRules } from '@casl/ability/extra';
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };
 };
@@ -87,14 +88,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
   } = useGlobalState();
 
   useEffect(() => {
-    getOne();
-  }, [params.id]);
+    if (user.auth) getOne();
+  }, [user.auth]);
 
   const getOne = useCallback(async () => {
     try {
       const response = await axios(user.auth.access_token).get('/api/account/me');
-      const ability = buildAbilityFor(user.userDetails!.role, user.userDetails!.rules);
-      console.log({ ability }, 'test');
+      const ability = buildAbilityFor(user.userDetails!.role, unpackRules(user.userDetails!.rules));
+
       setUser((user: any) => ({ ...user, ability }));
       dispatch({
         type: SET_ACCOUNT,
@@ -106,7 +107,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       setError(error);
     }
-  }, [params.id]);
+  }, [user.auth]);
 
   return (
     <AbilityContext.Provider value={state.ability}>

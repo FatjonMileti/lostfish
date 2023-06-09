@@ -9,11 +9,10 @@ function defineAbilitiesFor(role: string): PureAbility<[CASLAction, AppSubjects]
 
   if (role === Role.Admin) {
     can(CASLAction.Manage, 'all');
-    can(CASLAction.Update, 'User');
   } else if (role === Role.Client) {
-    can(CASLAction.Read, 'Asset');
+    can(CASLAction.Manage, 'all');
   } else if (role === Role.Agent) {
-    can(CASLAction.Manage, 'Asset');
+    can(CASLAction.Manage, 'all');
   }
 
   return build();

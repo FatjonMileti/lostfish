@@ -102,10 +102,10 @@ const accountController = new AccountController();
 app.use('/api/account', accountController.router);
 app.use('/api', authorize(), require('./api/index'));
 
-app.post('/upload-docs', uploadDocs.array('images'), (req, res) => {
+app.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
-app.post('/upload', upload.array('images'), (req, res) => {
+app.post('/upload', authorize(), upload.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
 

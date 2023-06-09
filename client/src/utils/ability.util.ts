@@ -34,7 +34,6 @@ export function buildAbilityFor(
   role: string,
   caslRules: SubjectRawRule<any, any, any>[] = []
 ): AppAbilityType {
-  console.log({ testdfrgtr: defineRulesFor(role) });
   return new AppAbility([...caslRules, ...defineRulesFor(role)], {
     // @ts-ignore
     detectSubjectType: (object) => object!.type

@@ -46,6 +46,7 @@ export const Carousel = styled(({ children, className, indexStore }: CarouselPro
       <div className='dots-wrapper'>
         {childrenArray.map((child: any, i: number) => (
           <motion.div
+            key={i}
             animate={{ width: i === index ? '32px' : '12px' }}
             className={`dot ${i === index ? 'active' : ''}`}
             onClick={() => setIndex(i)}
