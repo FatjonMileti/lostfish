@@ -6,44 +6,19 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
-import { DataGrid, GridColDef, GridValueGetterParams, GridRenderCellParams } from '@mui/x-data-grid';
+import { GridColDef, GridValueGetterParams, GridRenderCellParams } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import { Visibility } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
 import { CreateProperty } from './components/CreateProperty';
 import { Backdrop } from '../../components/Backdrop';
-import { Grid, Paper, Box } from '@mui/material';
 import axios from '../../utils/axios';
 import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'Id', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1 },
-  {
-    field: 'asset_address.country_code',
-    headerName: 'Country',
-    flex: 1,
-    valueGetter: (params: GridValueGetterParams) => `${params.row.asset_address.country_code || ''}`
-  },
-  {
-    field: 'status_string',
-    headerName: 'Status',
-    flex: 1
-  },
-  {
-    field: 'Open',
-    flex: 1,
-    renderCell: (params: GridRenderCellParams) => (
-      <Link to={'/properties/' + params.row.id}>
-        <IconButton aria-label='edit'>
-          <Visibility />
-        </IconButton>
-      </Link>
-    )
-  }
-];
+import { NewProperty } from './NewProperty';
+
 const state: IGridState = {
   loading: true,
   rows: [],
@@ -55,17 +30,20 @@ const state: IGridState = {
   sort: 'created_at',
   asc: false,
   selectedIds: [],
-  search: ''
+  search: 'published'
 };
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [tabIndex, setTabIndex] = React.useState(0);
-
   const [list, setList] = React.useState<IGridState>({
     ...state
   });
   const [isOnCreate, setIsOnCreate] = React.useState(false);
 
+  const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
+
   const navigate = useNavigate();
+
+  const tabIndex = ['published', 'draft'].indexOf(list.search || '');
+  const setTabIndex = (i: number) => setList((list) => ({ ...list, search: ['published', 'draft'][i] }));
 
   const {
     user: [{ auth }]
@@ -106,16 +84,17 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     <div className={`properties-page ${className}`}>
       <Header />
       <Backdrop open={list.loading}></Backdrop>
+      <NewProperty showStore={[showNewPropertyModal, setShowNewPropertyModal]} />
 
       <div className='container'>
-        {!list.loading && list.rows.length === 0 && (
+        {!list.loading && list.totalRows === 0 && (
           <div className='no-properties'>
             <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
             <Button
               size='large'
               className='add-property-button'
               startIcon={<Icon icon='plus' size={16} />}
-              onClick={() => navigate('/properties/new-property')}>
+              onClick={() => setShowNewPropertyModal(true)}>
               Add Property
             </Button>
           </div>
@@ -131,7 +110,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 size='large'
                 className='add-property-button'
                 startIcon={<Icon icon='plus' size={16} />}
-                onClick={() => navigate('/properties/new-property')}>
+                onClick={() => setShowNewPropertyModal(true)}>
                 Add Property
               </Button>
             </div>
@@ -158,27 +137,9 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             </div>
           </>
         )}
-
-        {/* <Grid> */}
-        {/*   <Button */}
-        {/*     style={{ marginBottom: '2rem' }} */}
-        {/*     size='small' */}
-        {/*     className='add-property-button' */}
-        {/*     startIcon={!isOnCreate ? <Icon icon='plus' size={16} /> : <Icon icon='close' size={16} />} */}
-        {/*     onClick={() => setIsOnCreate(!isOnCreate)}> */}
-        {/*     {!isOnCreate ? 'Add Property' : ''} */}
-        {/*   </Button> */}
-        {/*   {isOnCreate && <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />} */}
-        {/*    */}
-        {/*   {list.rows.length > 0 && !isOnCreate ? ( */}
-        {/*   */}
-        {/*   ) : ( */}
-        {/*     */}
-        {/*   )} */}
-        {/* </Grid> */}
       </div>
 
-      <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />
+      {/* <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} /> */}
 
       <Footer />
     </div>
