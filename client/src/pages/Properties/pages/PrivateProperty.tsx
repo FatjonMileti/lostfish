@@ -1,29 +1,16 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import { Typography } from '../../../components/Typography';
-import { Button } from '../../../components/Button';
-import { Grid, Paper } from '@mui/material';
-import { Map } from './PropertyDetails/components/Map';
-import { NearestPlaces } from './PropertyDetails/components/NearestPlaces';
-import { NearestSchools } from './PropertyDetails/components/NearestSchools';
-import { NearestImportantPlaces } from './PropertyDetails/components/NearestImportantPlaces';
+import { Paper } from '@mui/material';
 import { useGlobalState } from '../../../globalState';
-import axios from '../../../utils/axios';
-import { useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { TextField } from '../../../components/TextField';
-import { MasterAssetTypeSring, PersonTitle } from '../property.interface';
-import { FormControlledSelect } from '../components/FormControlledSelect';
-import { PreApprovalApplication } from './PropertyDetails/components/PreApprovalApplication';
 import { Header } from '../../HomeLoggedIn/Header';
-import { Backdrop } from '../../../components/Backdrop';
 import { AssetTabs } from './PropertyDetails/components/Tabs';
 import { Overview } from './PropertyDetails/components/Overview';
 import { PropertyProvider } from './PropertyContext';
 import { General } from './PropertyDetails/components/General';
 import { PropertyApplications } from './PropertyApplications';
 import { ClientPage } from './PropertyDetails/components/ClientPage';
+import Can from '../../../components/Can';
+import { CASLAction } from '../../../utils/ability.util';
 const tabList = [
   'Overview',
   'General',
@@ -85,7 +72,7 @@ export const PrivateProperty = () => {
               {userDetails && userDetails.role === 'Admin' && (
                 <AssetTabs tabs={tabList} tabPanels={tabPanels} setCurrentTab={setCurrentTab} />
               )}
-              {userDetails && userDetails.role === 'User' && <ClientPage />}
+              {userDetails && userDetails.role === 'Client' && <ClientPage />}
             </Box>
           </Paper>
         </div>

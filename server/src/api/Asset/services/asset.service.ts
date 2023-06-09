@@ -1,4 +1,3 @@
-import axios from '../../../offr-io.request';
 import AssetModel from '../schemas/asset.schema';
 import { AssetDocument, IOffer } from '../asset.interface';
 import createError from 'http-errors';
@@ -6,7 +5,12 @@ import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
+import offrIoService from '../../../services/offr-io.service';
+
 import { Types } from 'mongoose';
+import { getCurrentStatusForGet, getCurrentStatusForPost } from '../helpers';
+import MailService from '../../../utils/email';
+const mailService = MailService.getInstance();
 
 const findAll = async (req: Request, res: Response) => {
   const { status } = req.query;
@@ -52,8 +56,8 @@ const findAll = async (req: Request, res: Response) => {
 };
 
 const syncAll = async (req: Request, res: Response) => {
-  const response = await axios.get('/asset/get');
-  const dataToUpdate = response.data.items.map((data: any) => {
+  const response = await offrIoService.getAssets();
+  const dataToUpdate = response.map((data: any) => {
     return {
       updateOne: {
         filter: { name: data.name },
@@ -65,17 +69,15 @@ const syncAll = async (req: Request, res: Response) => {
     };
   });
   await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
-  res.status(httpStatus.OK).send(response.data.items);
+  res.status(httpStatus.OK).send(response);
 };
 
 const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
   try {
-    /*
-    const response = await axios.post('/asset/post', data);
-    data.asset_id = response.data.id;
-     */
+    const response = await offrIoService.createAsset(data);
+    data.asset_id = response.id;
 
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
@@ -90,21 +92,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     const id = req.params.id;
     const asset = await findById(id);
 
-    const getCurrentStatus = (status: string) => {
-      const statuses: any = {
-        'For Let': 'Live',
-        'Let Agreed': 'Sale Agreed',
-        Let: 'Exchanged',
-        Archived: 'Archived',
-        Completed: 'Completed',
-        Draft: 'Draft',
-        'Pre Draft': 'Pre Draft'
-      };
-      return statuses[status];
-    };
-
     if (req.body.hasOwnProperty('status_string')) {
-      asset.status_string = getCurrentStatus(req.body.status_string);
+      asset.status_string = getCurrentStatusForPost(req.body.status_string);
     }
 
     if (req.body.hasOwnProperty('transaction_type_string')) {
@@ -113,14 +102,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     await asset.save();
 
-    await axios.patch('/asset/patch/' + asset.asset_id, {
-      name: asset.name,
-      asset_address: asset.asset_address,
-      status_string: asset.status_string,
-      transaction_type_string: asset.transaction_type_string,
-      master_asset_type_string: asset.master_asset_type_string,
-      asset_type_string: asset.asset_type_string
-    });
+    await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
@@ -153,6 +135,9 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
       ...rest
     };
   });
+
+  asset.status_string = getCurrentStatusForGet(asset.status_string);
+
   res.status(httpStatus.OK).send(asset);
 };
 

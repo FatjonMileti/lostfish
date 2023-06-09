@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Router } from 'express';
 import { UserController } from './User/user.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
@@ -6,8 +6,8 @@ import { MapController } from './Map/map.controller';
 import { NotificationController } from './Notification/notification.controller';
 import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
-import defineAbilitiesFor from '../casl/casl';
-import { Role } from './User/user.interface';
+import { AccountController } from './Account/account.controller';
+import authorize from '../middleware/authorize';
 
 const router: Router = Router();
 /**
@@ -37,10 +37,7 @@ const router: Router = Router();
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
-// router.use(async (req: Request, res: Response, next: NextFunction) => {
-//   req.ability = defineAbilitiesFor(Role.Admin);
-//   next();
-// });
+const accountController = new AccountController();
 
 const offerController = new AssetController();
 const userController = new UserController();
@@ -49,12 +46,13 @@ const mapController = new MapController();
 const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
-router.use('/user', userController.router);
-router.use('/asset', offerController.router);
-router.use('/chat', chatController.router);
+router.use('/account', accountController.router);
+router.use('/user', authorize(), userController.router);
+router.use('/asset', authorize(), offerController.router);
+router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
-router.use('/attribute', attributeController.router);
-router.use('/condition', conditionController.router);
-router.use('/notification', notificationController.router);
+router.use('/attribute', authorize(), attributeController.router);
+router.use('/condition', authorize(), conditionController.router);
+router.use('/notification', authorize(), notificationController.router);
 
 module.exports = router;

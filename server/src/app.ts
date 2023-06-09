@@ -98,9 +98,7 @@ app.use(
 app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 app.use('/', require('./routes/index'));
 
-const accountController = new AccountController();
-app.use('/api/account', accountController.router);
-app.use('/api', authorize(), require('./api/index'));
+app.use('/api', require('./api/index'));
 
 app.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
   res.status(200).send(req.files);

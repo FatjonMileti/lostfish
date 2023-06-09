@@ -40,7 +40,7 @@ export const PropertyApplications = () => {
 
   const preApprove = async (id: string) => {
     try {
-      await axios(auth.access_token).patch(`/api/asset/${id}/approve`, {
+      await axios(auth.access_token).patch(`/api/asset/${id}/approve-application`, {
         pre_approve_status: true
       });
       getApplications();
@@ -51,7 +51,7 @@ export const PropertyApplications = () => {
 
   const approveAll = async (item: any) => {
     try {
-      await axios(auth.access_token).patch(`/api/asset/${item._id}/approve`, {
+      await axios(auth.access_token).patch(`/api/asset/${item._id}/approve-application`, {
         approve_status: true,
         documents: item.documents
       });
