@@ -3,6 +3,8 @@
   "version": "5.0.0",
   "private": true,
   "dependencies": {
+    "@casl/ability": "^6.5.0",
+    "@casl/react": "^3.1.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.5.0",
     "@hookform/resolvers": "^3.1.0",

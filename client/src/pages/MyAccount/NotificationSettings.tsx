@@ -2,7 +2,7 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Switch } from '../../components/Switch';
-import { useUser } from './AccountProvider';
+import { useUser } from '../../context/UserProvider';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

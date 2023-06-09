@@ -49,6 +49,7 @@ export interface UserDocument extends ContactUser {
   };
   documents: any[];
   confirmation_token?: string;
+  rules?: any;
   last_login: Date;
   edited_at?: Date;
   edited_by?: ObjectId | string;

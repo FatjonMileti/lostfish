@@ -9,6 +9,8 @@ import UserModel from '../User/user.schema';
 import bcrypt from 'bcrypt';
 import UsedRefreshToken from '../../data/usedRefreshToken';
 import RevokedToken from '../../data/revokedToken';
+import { packRules } from '@casl/ability/extra';
+import defineAbilitiesFor from '../../casl/casl';
 
 const login = async (req: express.Request, res: express.Response) => {
   const model = res.locals.model! as { email: string; password: string };
@@ -41,12 +43,15 @@ const login = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Login
   }).save();
 
+  const rules = defineAbilitiesFor(user.role).rules;
+
   return res.json({
     token_type: 'bearer',
     access_token: token,
     expires_in: process.env.JWT_EXPIRE_SECONDS,
     refresh_token: refresh,
-    refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+    refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS,
+    rules
   });
 };
 
