@@ -15,13 +15,18 @@ export const Modal = styled(
         if (open) {
           if (!dialogRef.current.open) {
             dialogRef.current.showModal();
+            document.body.style.overflow = 'hidden';
           }
         } else {
           if (dialogRef.current.open) {
             dialogRef.current.close();
+            document.body.style.overflow = 'unset';
           }
         }
       }
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
     }, [open]);
 
     const handleClick = (event: React.MouseEvent<HTMLDialogElement, MouseEvent>): void => {
