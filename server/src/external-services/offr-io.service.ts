@@ -25,13 +25,25 @@ const getAssets = async (): Promise<any[]> => {
 };
 
 const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
-  return await offrIoRequest.patch('/asset/patch/' + assetId, {
+  console.log({ assetId });
+  return await offrIoRequest.patch('/asset/patch/' + 2716, {
     name: body.name,
     asset_address: body.asset_address,
     status_string: body.status_string,
     transaction_type_string: body.transaction_type_string,
     master_asset_type_string: body.master_asset_type_string,
     asset_type_string: body.asset_type_string
+    // client_id: 861,
+    // client: {
+    //   firstname: 'Refail',
+    //   surname: 'Gjeli',
+    //   legal_name: 'Mr',
+    //   email: 'refail.gjeli@fullscreendigital.ro',
+    //   phone: '0693189373',
+    //   company: 'Test',
+    //   contact_type: 'Client',
+    //   address: 'Tirane, Albania'
+    // }
   });
 };
 

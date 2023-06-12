@@ -15,6 +15,9 @@ import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
 import offrIoService from '../../external-services/offr-io.service';
+
+const mailService = MailService.getInstance();
+
 const getAll = async (req: Request, res: Response) => {
   const { search } = req.query;
 
@@ -166,7 +169,7 @@ const updateUser = async (req: Request, res: Response) => {
   try {
     await user.save();
 
-    res.json(user);
+    res.status(httpStatus.OK).json(user);
   } catch (error) {
     res.status(404).json({ message: 'User not found' });
   }
@@ -213,11 +216,11 @@ const createUser = async (req: Request, res: Response) => {
       ...user
     });
 
-    const savedUser = await userDocument.save();
+    const savedUser: UserDocument = await userDocument.save();
     const emailTemplate = verifyEmailTamplate(
       `${process.env.FRONTEND_URL}/activate-account/${user.confirmation_token}`
     );
-    const mailService = MailService.getInstance();
+
     // @ts-ignore
     await mailService.sendMail({
       to: user.email,
@@ -225,7 +228,7 @@ const createUser = async (req: Request, res: Response) => {
       html: emailTemplate.html
     });
 
-    return res.json({ ...mapToUser(savedUser), hash: undefined });
+    return res.status(httpStatus.CREATED).json({ ...mapToUser(savedUser), hash: undefined });
   } catch (error: any) {
     res.send(error);
   }
@@ -262,7 +265,7 @@ const resetUserPassword = async (req: Request, res: Response) => {
     action: LoginLogAction.Login
   }).save();
 
-  return res.json({
+  return res.status(httpStatus.OK).json({
     token_type: 'bearer',
     access_token: accessToken,
     expires_in: process.env.JWT_EXPIRE_SECONDS,
@@ -290,7 +293,6 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
       userName: user.first_name + user.last_name
     });
 
-    const mailService = MailService.getInstance();
     // @ts-ignore
     await mailService.sendMail({
       to: user.email,
@@ -298,7 +300,7 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
       html: emailTemplate.html
     });
 
-    res.status(201).send('ok');
+    res.status(httpStatus.CREATED).send('ok');
   } catch (err) {
     throw err;
   }

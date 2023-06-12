@@ -24,22 +24,23 @@ export class AssetController {
   private initializeRoutes() {
     this.router.get(
       this.path,
+      authorize(),
       paging({ sort: { created_at: -1 } }),
       ability(CASLAction.Read, 'Asset'),
       this.findAll
     );
     this.router.get('/sync', this.syncAll);
-    this.router.get('/:id/images', validateId, this.getImages);
-    this.router.get('/:id/get-applications', this.getAssetApplications);
-    this.router.get('/:id/application', validateId, this.getOneAssetApplication);
-    this.router.post('/:id/send-application', validateId, this.sendApplication);
-    this.router.patch('/:id/approve-application', validateId, this.approveApplication);
-    this.router.patch('/:id/update-application', validateId, this.updateApplication);
-    this.router.get('/:id', validateId, this.getById);
+    this.router.get('/:id/images', authorize(), validateId, this.getImages);
+    this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
+    this.router.get('/:id/application', authorize(), validateId, this.getOneAssetApplication);
+    this.router.post('/:id/send-application', authorize(), validateId, this.sendApplication);
+    this.router.patch('/:id/approve-application', authorize(), validateId, this.approveApplication);
+    this.router.patch('/:id/update-application', authorize(), validateId, this.updateApplication);
+    this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
-    this.router.post('/:id/send-invitation', validateId, authorize(), this.sendInvitation);
-    this.router.patch('/:id', validateId, this.updateAsset);
-    this.router.delete('/:id', validateId, this.delete);
+    this.router.post('/:id/send-invitation', authorize(), validateId, authorize(), this.sendInvitation);
+    this.router.patch('/:id', authorize(), validateId, this.updateAsset);
+    this.router.delete('/:id', authorize(), validateId, this.delete);
   }
 
   /**

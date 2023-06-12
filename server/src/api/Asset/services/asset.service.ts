@@ -109,6 +109,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
+    console.log(error);
     throw createError(400, { message: error?.message });
   }
 };

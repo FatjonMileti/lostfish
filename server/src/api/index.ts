@@ -48,7 +48,7 @@ const attributeController = new AttributeController();
 const conditionController = new ConditionController();
 router.use('/account', accountController.router);
 router.use('/user', authorize(), userController.router);
-router.use('/asset', authorize(), offerController.router);
+router.use('/asset', offerController.router);
 router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/attribute', authorize(), attributeController.router);
