@@ -1,5 +1,23 @@
 import offrIoRequest from '../offr-io.request';
 import { AssetDocument } from '../api/Asset/asset.interface';
+import config from '../config';
+import { AxiosResponse } from 'axios';
+import { UserDocument } from '../api/User/user.interface';
+
+const createContact = async (contact: UserDocument) => {
+  const postData = {
+    firstname: contact.first_name,
+    surname: contact.last_name,
+    legal_name: `${contact.first_name} ${contact.last_name}`,
+    email: contact.email,
+    phone: '0693189373',
+    company: contact.company,
+    contact_type: contact.contact_type,
+    address: contact.address
+  };
+  const response = await offrIoRequest.post('/contact/post', postData);
+  return response.data;
+};
 
 const getAssets = async (): Promise<any[]> => {
   const response = await offrIoRequest.get('/asset/get');
@@ -22,8 +40,50 @@ const createAsset = async (asset: AssetDocument) => {
   return response.data;
 };
 
+const addAssetDocument = async (images: any[], assetId: number) => {
+  enum AssetDocumentType {
+    Image = 'Image',
+    Document = 'Document'
+  }
+
+  if (images.length > 0) {
+    const imagesToPost = images.map((image: any) => {
+      return {
+        id: image.filename,
+        asset_id: assetId,
+        url: `${config.api_url}/url-to-file/${image.filename}`,
+        filename: image.originalname,
+        caption: '',
+        type: AssetDocumentType.Image,
+        subtype: image.originalname.split('.')[1]
+      };
+    });
+
+    const postData = (data: any): Promise<AxiosResponse> => {
+      return offrIoRequest.post('/asset_file/post', data);
+    };
+    const promisesArray: Promise<AxiosResponse>[] = imagesToPost.map((data: any) => postData(data));
+
+    return Promise.all(promisesArray)
+      .then((responses: AxiosResponse[]) => {
+        // Handle the responses here
+        console.log(responses);
+      })
+      .catch((error: any) => {
+        // Handle any errors that occurred during the requests
+        console.error(error);
+      })
+      .finally(() => {
+        return true;
+      });
+  }
+  return { message: 'no_images_to_add' };
+};
+
 export default {
   getAssets,
   createAsset,
-  updateAssetByAssetId
+  updateAssetByAssetId,
+  addAssetDocument,
+  createContact
 };

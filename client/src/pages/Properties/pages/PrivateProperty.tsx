@@ -69,10 +69,12 @@ export const PrivateProperty = () => {
         <div className='container'>
           <Paper>
             <Box sx={{ width: '90%', marginLeft: '10rem', padding: '12px', marginTop: '2rem' }}>
-              {userDetails && userDetails.role === 'Admin' && (
+              <Can do={CASLAction.Manage} on='Client'>
+                <ClientPage />
+              </Can>
+              <Can do={CASLAction.Manage} on='Agent'>
                 <AssetTabs tabs={tabList} tabPanels={tabPanels} setCurrentTab={setCurrentTab} />
-              )}
-              {userDetails && userDetails.role === 'Client' && <ClientPage />}
+              </Can>
             </Box>
           </Paper>
         </div>

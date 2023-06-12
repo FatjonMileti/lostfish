@@ -8,7 +8,7 @@ export enum CASLAction {
   Delete = 'delete'
 }
 
-export type AppSubjects = 'User' | 'Asset' | 'Chat' | 'all' | 'Menu';
+export type AppSubjects = 'User' | 'Asset' | 'Chat' | 'all' | 'Menu' | 'Client' | 'Agent';
 
 export enum Role {
   Admin = 'Admin',
@@ -25,6 +25,11 @@ export default function defineRulesFor(role: string) {
 
   if (role === Role.Admin) {
     can(CASLAction.Manage, 'Menu');
+    can(CASLAction.Manage, 'Agent');
+  } else if (role === Role.Client) {
+    can(CASLAction.Manage, 'Client');
+  } else if (role === Role.Agent) {
+    can(CASLAction.Manage, 'Agent');
   }
 
   return rules;

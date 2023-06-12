@@ -14,6 +14,7 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
+import offrIoService from '../../external-services/offr-io.service';
 const getAll = async (req: Request, res: Response) => {
   const { search } = req.query;
 
@@ -200,14 +201,13 @@ const createUser = async (req: Request, res: Response) => {
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = randomUUID();
-  user.contact_type = ContactType.Solicitor;
+  user.contact_type = ContactType.Client;
   user.address = 'empty for now';
   try {
-    /*
-    const contactUser = await userContactService.create(user);
+    const contactUser = await offrIoService.createContact(user);
     if (contactUser) {
       user.contact_id = contactUser.id;
-    }*/
+    }
 
     const userDocument = new UserModel({
       ...user

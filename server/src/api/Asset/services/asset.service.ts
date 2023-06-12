@@ -81,6 +81,9 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
 
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
+    if (asset.property_images.length > 0) {
+      offrIoService.addAssetDocument(asset.property_images, asset.asset_id).then((r) => console.log(r));
+    }
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });
