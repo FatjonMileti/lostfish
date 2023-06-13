@@ -21,11 +21,14 @@ import loginIllustration from './loginIllustration.png';
 import { LoginWithGoogle } from './components/LoginWithGoogle';
 import { LoginWithFacebook } from './components/LoginWithFacebook';
 import { LoginWithTwitter } from './components/LoginWithTwitter';
+import axiosWithToken from '../../utils/axios';
+import { useCookies } from 'react-cookie';
+
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
-import axiosWithToken from '../../utils/axios';
+
 registerStore(
   'user',
   {
@@ -48,6 +51,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   const params = new URLSearchParams(useLocation().search);
   const validated = params.get('validated');
   const access_token = params.get('access_token');
+
+  const [cookies, setCookie] = useCookies(['username', 'acceptCookies']);
+
+  console.log(cookies);
 
   React.useEffect(() => {
     if (validated && access_token) {
@@ -91,6 +98,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
       navigate(location?.state?.url ? location.state.url : '/');
       setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
+
+      if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
+        setCookie('username', userDetails.username, { httpOnly: true });
+      }
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
