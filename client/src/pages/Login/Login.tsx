@@ -98,7 +98,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
 
       if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
-        setCookie('username', userDetails.username, { httpOnly: true });
+        setCookie('username', userDetails.username);
       }
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
