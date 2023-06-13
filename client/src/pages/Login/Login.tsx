@@ -54,8 +54,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
   const [cookies, setCookie] = useCookies(['username', 'acceptCookies']);
 
-  console.log(cookies);
-
   React.useEffect(() => {
     if (validated && access_token) {
       loginWithTwitter({ validated: Boolean(validated), access_token });
