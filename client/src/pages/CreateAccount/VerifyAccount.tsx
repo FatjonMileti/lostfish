@@ -6,6 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import config from '../../config';
 import { useGlobalState } from '../../globalState';
 import { Backdrop } from '../../components/Backdrop';
+import { buildAbilityFor } from '../../utils/ability.util';
+import { unpackRules } from '@casl/ability/extra';
 
 export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
@@ -39,7 +41,9 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
 
     try {
       const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
-      setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
+
+      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
