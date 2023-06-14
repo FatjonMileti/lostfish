@@ -1,13 +1,15 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import { styled } from '@mui/system';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'text' | 'outlined' | 'primary' | 'secondary';
   startIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   endIcon?: ReactElement<any, string | JSXElementConstructor<any>>;
   size?: 'small' | 'medium' | 'large';
   inverted?: boolean;
   active?: boolean;
+  children?: React.ReactNode;
 }
 
 export const Button = styled(
@@ -25,7 +27,7 @@ export const Button = styled(
     ...rest
   }: ButtonProps) => {
     return (
-      <button
+      <motion.button
         type={type}
         disabled={disabled}
         className={`button ${className} variant-${variant} size-${size} ${inverted ? 'inverted' : ''} ${
@@ -35,11 +37,11 @@ export const Button = styled(
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
         {endIcon && React.cloneElement(endIcon, { className: 'end-icon' })}
-      </button>
+      </motion.button>
     );
   }
 )`
-  font-family: Roobert;
+  font-family: Roobert, serif;
   font-weight: 600;
   font-size: 16px;
 

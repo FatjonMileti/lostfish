@@ -11,48 +11,15 @@ import { Switch } from '../../components/Switch';
 import { Link } from '../../components/Link';
 import avatar from '../MyAccount/images/avatar1.svg';
 import { Radio } from '../../components/Radio';
-import { NewPropertyStateType } from './NewProperty';
+import { PropertyService } from './NewProperty';
 
 export interface NewPropertyStep1props extends HTMLProps<HTMLDivElement> {
   closeModal: () => void;
   saveAsDraft: () => void;
-  setCurrentStep: (i: number) => void;
-  lookingFor: number;
-
-  areaOfInterest: NewPropertyStateType['areaOfInterest'];
-  setAreaOfInterest: (areaOfInterest: NewPropertyStateType['areaOfInterest']) => void;
-
-  radius: NewPropertyStateType['radius'];
-  setRadius: (radius: NewPropertyStateType['radius']) => void;
-
-  propertyType: null | string;
-  setPropertyType: (i: string) => void;
-  setPropertyPreferences: (i: string) => void;
-  propertyPreferences: null | string;
-  propertyFeatures: NewPropertyStateType['propertyFeatures'];
-  setPropertyFeatures: (i: NewPropertyStateType['propertyFeatures']) => void;
+  newPropertyService: PropertyService;
 }
 export const NewPropertyStep1 = styled(
-  ({
-    className,
-    closeModal,
-    saveAsDraft,
-    setCurrentStep,
-    lookingFor,
-
-    areaOfInterest,
-    setAreaOfInterest,
-
-    radius,
-    setRadius,
-
-    propertyType,
-    setPropertyType,
-    setPropertyPreferences,
-    propertyPreferences,
-    propertyFeatures,
-    setPropertyFeatures
-  }: NewPropertyStep1props) => {
+  ({ className, closeModal, saveAsDraft, newPropertyService }: NewPropertyStep1props) => {
     return (
       <div className={`new-property-step-1 ${className}`}>
         <div className='header'>
@@ -82,9 +49,13 @@ export const NewPropertyStep1 = styled(
               </div>
               <div className='what-im-looking-for'>
                 <Typography className='choice' variant='body4'>
-                  {['I’m looking for a tenant', 'I’m looking for a buyer'][lookingFor]}
+                  {
+                    ['I’m looking for a tenant', 'I’m looking for a buyer'][
+                      newPropertyService.state.lookingFor
+                    ]
+                  }
                 </Typography>
-                <Link onClick={() => setCurrentStep(0)}>Change</Link>
+                <Link onClick={() => newPropertyService.setCurrentStep(0)}>Change</Link>
               </div>
             </div>
 
@@ -106,23 +77,23 @@ export const NewPropertyStep1 = styled(
               {[
                 {
                   name: 'Add the location of your property',
-                  checked: !!areaOfInterest
+                  checked: !!newPropertyService.state.areaOfInterest
                 },
                 {
                   name: 'Add the radius close to nearest city',
-                  checked: !!radius
+                  checked: !!newPropertyService.state.radius
                 },
                 {
                   name: 'Add your property type',
-                  checked: !!propertyType
+                  checked: !!newPropertyService.state.propertyType
                 },
                 {
                   name: ' Include or exclude property preferences',
-                  checked: !!propertyPreferences
+                  checked: !!newPropertyService.state.propertyPreferences
                 },
                 {
                   name: 'Add property features',
-                  checked: Object.values(propertyFeatures).includes(true)
+                  checked: Object.values(newPropertyService.state.propertyFeatures).includes(true)
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -155,10 +126,13 @@ export const NewPropertyStep1 = styled(
                   }
                   placeholder='E.g. Bristol or BA1 2LR'
                   label='Area of interest'
-                  value={areaOfInterest}
-                  onChange={({ target: { value } }) => setAreaOfInterest(value)}
+                  value={newPropertyService.state.areaOfInterest}
+                  onChange={({ target: { value } }) => newPropertyService.setAreaOfInterest(value)}
                 />
-                <Select label='Radius' value={radius} onChange={({ target: { value } }) => setRadius(value)}>
+                <Select
+                  label='Radius'
+                  value={newPropertyService.state.radius}
+                  onChange={({ target: { value } }) => newPropertyService.setRadius(value)}>
                   <option></option>
                   <option value='1'>1</option>
                   <option value='2'>2</option>
@@ -177,8 +151,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='1'
-                      checked={propertyType === '1'}
-                      onChange={() => setPropertyType('1')}
+                      checked={newPropertyService.state.propertyType === '1'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Detached</label>
                   </div>
@@ -189,8 +163,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='2'
-                      checked={propertyType === '2'}
-                      onChange={() => setPropertyType('2')}
+                      checked={newPropertyService.state.propertyType === '2'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Semi- Detached</label>
                   </div>
@@ -201,8 +175,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='3'
-                      checked={propertyType === '3'}
-                      onChange={() => setPropertyType('3')}
+                      checked={newPropertyService.state.propertyType === '3'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Terraced</label>
                   </div>
@@ -213,8 +187,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='4'
-                      checked={propertyType === '4'}
-                      onChange={() => setPropertyType('4')}
+                      checked={newPropertyService.state.propertyType === '4'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Flats</label>
                   </div>
@@ -225,8 +199,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='5'
-                      checked={propertyType === '5'}
-                      onChange={(e) => setPropertyType(e.target.value)}
+                      checked={newPropertyService.state.propertyType === '5'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Bungalows</label>
                   </div>
@@ -237,8 +211,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='6'
-                      checked={propertyType === '6'}
-                      onChange={(e) => setPropertyType(e.target.value)}
+                      checked={newPropertyService.state.propertyType === '6'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Park homes</label>
                   </div>
@@ -249,8 +223,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='7'
-                      checked={propertyType === '7'}
-                      onChange={(e) => setPropertyType(e.target.value)}
+                      checked={newPropertyService.state.propertyType === '7'}
+                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
                     />
                     <label htmlFor={id}>Farms/Land</label>
                   </div>
@@ -268,8 +242,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='1'
-                      checked={propertyPreferences === '1'}
-                      onChange={() => setPropertyPreferences('1')}
+                      checked={newPropertyService.state.propertyPreferences === '1'}
+                      onChange={() => newPropertyService.setPropertyPreferences('1')}
                     />
                     <label htmlFor={id}>Detached</label>
                   </div>
@@ -280,8 +254,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='2'
-                      checked={propertyPreferences === '2'}
-                      onChange={() => setPropertyPreferences('2')}
+                      checked={newPropertyService.state.propertyPreferences === '2'}
+                      onChange={() => newPropertyService.setPropertyPreferences('2')}
                     />
                     <label htmlFor={id}>Semi- Detached</label>
                   </div>
@@ -292,8 +266,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='3'
-                      checked={propertyPreferences === '3'}
-                      onChange={() => setPropertyPreferences('3')}
+                      checked={newPropertyService.state.propertyPreferences === '3'}
+                      onChange={() => newPropertyService.setPropertyPreferences('3')}
                     />
                     <label htmlFor={id}>Terraced</label>
                   </div>
@@ -304,8 +278,8 @@ export const NewPropertyStep1 = styled(
                     <Radio
                       id={id}
                       value='4'
-                      checked={propertyPreferences === '4'}
-                      onChange={() => setPropertyPreferences('4')}
+                      checked={newPropertyService.state.propertyPreferences === '4'}
+                      onChange={() => newPropertyService.setPropertyPreferences('4')}
                     />
                     <label htmlFor={id}>Flats</label>
                   </div>
@@ -325,12 +299,12 @@ export const NewPropertyStep1 = styled(
                       id={id}
                       size='small'
                       onChange={() =>
-                        setPropertyFeatures({
-                          ...propertyFeatures,
-                          parksNearBy: !propertyFeatures.parksNearBy
+                        newPropertyService.setPropertyFeatures({
+                          ...newPropertyService.state.propertyFeatures,
+                          parksNearBy: !newPropertyService.state.propertyFeatures.parksNearBy
                         })
                       }
-                      checked={propertyFeatures.parksNearBy}
+                      checked={newPropertyService.state.propertyFeatures.parksNearBy}
                     />
                     <label htmlFor={id}>Parks nearby</label>
                   </div>
@@ -342,12 +316,13 @@ export const NewPropertyStep1 = styled(
                       id={id}
                       size='small'
                       onChange={() =>
-                        setPropertyFeatures({
-                          ...propertyFeatures,
-                          publicTransportNearby: !propertyFeatures.publicTransportNearby
+                        newPropertyService.setPropertyFeatures({
+                          ...newPropertyService.state.propertyFeatures,
+                          publicTransportNearby:
+                            !newPropertyService.state.propertyFeatures.publicTransportNearby
                         })
                       }
-                      checked={propertyFeatures.publicTransportNearby}
+                      checked={newPropertyService.state.propertyFeatures.publicTransportNearby}
                     />
                     <label htmlFor={id}>Public transport nearby</label>
                   </div>
@@ -359,12 +334,13 @@ export const NewPropertyStep1 = styled(
                       id={id}
                       size='small'
                       onChange={() =>
-                        setPropertyFeatures({
-                          ...propertyFeatures,
-                          shoppingCentersNearby: !propertyFeatures.shoppingCentersNearby
+                        newPropertyService.setPropertyFeatures({
+                          ...newPropertyService.state.propertyFeatures,
+                          shoppingCentersNearby:
+                            !newPropertyService.state.propertyFeatures.shoppingCentersNearby
                         })
                       }
-                      checked={propertyFeatures.shoppingCentersNearby}
+                      checked={newPropertyService.state.propertyFeatures.shoppingCentersNearby}
                     />
                     <label htmlFor={id}>Shopping centers nearby</label>
                   </div>
@@ -375,7 +351,10 @@ export const NewPropertyStep1 = styled(
         </div>
 
         <div className='footer'>
-          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />}>
+          <Button
+            size='large'
+            endIcon={<Icon icon='arrow-right-1' size={12} />}
+            onClick={() => newPropertyService.setCurrentStep(2)}>
             Next
           </Button>
         </div>
@@ -392,7 +371,7 @@ export const NewPropertyStep1 = styled(
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px;
+      padding: 20px 36px;
 
       .right-side {
         display: flex;
@@ -565,6 +544,7 @@ export const NewPropertyStep1 = styled(
             .section-content {
               display: grid;
               grid-template-columns: 1fr 1fr 1fr 1fr;
+              column-gap: 16px;
 
               .switch-wrapper {
                 display: flex;

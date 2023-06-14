@@ -3,50 +3,52 @@ import React, { DialogHTMLAttributes } from 'react';
 
 export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
-  onBackdropClick?: Function;
+  onBackdropClick?: () => void;
 }
 
 export const Modal = styled(
-  ({ children, open, onClose = (f: any) => f, className, onBackdropClick = () => {} }: ModalProps) => {
-    const dialogRef = React.useRef<HTMLDialogElement>(null);
-
+  ({ children, open, onClose = () => {}, className, onBackdropClick = () => {} }: ModalProps) => {
     React.useEffect(() => {
-      if (!!dialogRef.current) {
-        if (open) {
-          if (!dialogRef.current.open) {
-            dialogRef.current.showModal();
-            document.body.style.overflow = 'hidden';
-          }
-        } else {
-          if (dialogRef.current.open) {
-            dialogRef.current.close();
-            document.body.style.overflow = 'unset';
-          }
-        }
+      if (open) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
       }
       return () => {
         document.body.style.overflow = 'unset';
       };
     }, [open]);
 
-    const handleClick = (event: React.MouseEvent<HTMLDialogElement, MouseEvent>): void => {
-      const target = event.target as HTMLDialogElement;
-      if (target.tagName === 'DIALOG') {
-        onBackdropClick();
-      }
-    };
-
     return (
-      <dialog className={`modal ${className}`} ref={dialogRef} onClose={onClose} onClick={handleClick}>
-        <div className='modal-container'>{children}</div>
-      </dialog>
+      <div
+        onClick={onBackdropClick}
+        style={{
+          display: open ? 'initial' : 'none',
+          position: 'fixed',
+          inset: 0,
+          zIndex: '99',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        }}>
+        <div className={`modal ${className}`} onClick={(e) => e.stopPropagation()}>
+          <div className='modal-container'>{children}</div>
+        </div>
+      </div>
     );
   }
 )`
-  & {
+  &.modal {
     padding: 0;
     border-radius: 16px;
     border: none;
+    background: white;
+    position: absolute;
+    box-sizing: border-box;
+    min-width: 200px;
+    min-height: 100px;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     .modal-container {
       padding: 24px;

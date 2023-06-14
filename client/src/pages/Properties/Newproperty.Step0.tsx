@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLProps, MouseEventHandler } from 'react';
+import React, { HTMLProps } from 'react';
 import { Typography } from '../../components/Typography';
 import avatar from '../MyAccount/images/avatar1.svg';
 import { motion } from 'framer-motion';
@@ -7,84 +7,86 @@ import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
+import { Radio } from '../../components/Radio';
+import { PropertyService } from './NewProperty';
 
 export interface NewPropertyStep0 extends HTMLProps<HTMLDivElement> {
-  lookingFor: number;
-  setLookingFor: (index: number) => void;
-  next: () => void;
   closeModal: () => void;
+  propertyService: PropertyService;
 }
 
-export const NewPropertyStep0 = styled(
-  ({ lookingFor, setLookingFor = (i: number) => {}, next, closeModal, className }: NewPropertyStep0) => {
-    return (
-      <div className={`new-property-step-0 ${className}`}>
-        <div className='header'>
-          <Logo />
-          <IconButton size='large' noBackground onClick={closeModal}>
-            <Icon icon='close' size={12} />
-          </IconButton>
-        </div>
-
-        <div className='content'>
-          <div className='content-form'>
-            <div className='avatar-box'>
-              <img alt='avatar' src={avatar} className='avatar' />
-              <Typography variant='body4'>I own a place</Typography>
-            </div>
-            <Typography variant='body2' className='field-title'>
-              What type of transaction do you seek?
-            </Typography>
-
-            <div className='looking-for-container'>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 1 }}
-                className={`looking-for-choice for-tenant ${lookingFor === 0 ? 'active' : ''}`}
-                onClick={() => setLookingFor(0)}>
-                <div className='indicators'>
-                  <IconButton size='large'>
-                    <Icon icon='key' size={26} />
-                  </IconButton>
-                  <div className='check-dot'></div>
-                </div>
-
-                <Typography variant='body4' className='title'>
-                  I’m looking for a tenant
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  Select this option if you are looking to rent a house or an apartment.
-                </Typography>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 1 }}
-                className={`looking-for-choice for-buyer ${lookingFor === 1 ? 'active' : ''}`}
-                onClick={() => setLookingFor(1)}>
-                <div className='indicators'>
-                  <IconButton size='large' noBackground>
-                    <Icon icon='credit-card' />
-                  </IconButton>
-                  <div className='check-dot'></div>
-                </div>
-
-                <Typography variant='body4' className='title'>
-                  I’m looking for a buyer
-                </Typography>
-
-                <Typography variant='body4' className='description'>
-                  Select this option if you are looking to buy a house or an apartment.
-                </Typography>
-              </motion.div>
-            </div>
-          </div>
-
-          <Button onClick={next}>Refine my search</Button>
-        </div>
+export const NewPropertyStep0 = styled(({ propertyService, closeModal, className }: NewPropertyStep0) => {
+  return (
+    <div className={`new-property-step-0 ${className}`}>
+      <div className='header'>
+        <Logo />
+        <IconButton size='large' noBackground onClick={closeModal}>
+          <Icon icon='close' size={12} />
+        </IconButton>
       </div>
-    );
-  }
-)`
+
+      <div className='content'>
+        <div className='content-form'>
+          <div className='avatar-box'>
+            <img alt='avatar' src={avatar} className='avatar' />
+            <Typography variant='body4'>I own a place</Typography>
+          </div>
+          <Typography variant='body2' className='field-title'>
+            What type of transaction do you seek?
+          </Typography>
+
+          <div className='looking-for-container'>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 1 }}
+              className={`looking-for-choice for-tenant ${
+                propertyService.state.lookingFor === 0 ? 'active' : ''
+              }`}
+              onClick={() => propertyService.setLookingFor(0)}>
+              <div className='indicators'>
+                <IconButton size='large'>
+                  <Icon icon='key' size={26} />
+                </IconButton>
+                <Radio checked={propertyService.state.lookingFor === 0} />
+              </div>
+
+              <Typography variant='body4' className='title'>
+                I’m looking for a tenant
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Select this option if you are looking to rent a house or an apartment.
+              </Typography>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 1 }}
+              className={`looking-for-choice for-buyer ${
+                propertyService.state.lookingFor === 1 ? 'active' : ''
+              }`}
+              onClick={() => propertyService.setLookingFor(1)}>
+              <div className='indicators'>
+                <IconButton size='large' noBackground>
+                  <Icon icon='credit-card' />
+                </IconButton>
+                <Radio checked={propertyService.state.lookingFor === 1} />
+              </div>
+
+              <Typography variant='body4' className='title'>
+                I’m looking for a buyer
+              </Typography>
+
+              <Typography variant='body4' className='description'>
+                Select this option if you are looking to buy a house or an apartment.
+              </Typography>
+            </motion.div>
+          </div>
+        </div>
+
+        <Button onClick={() => propertyService.setCurrentStep(1)}>Refine my search</Button>
+      </div>
+    </div>
+  );
+})`
   &.new-property-step-0 {
     height: 100%;
     display: grid;
@@ -94,7 +96,7 @@ export const NewPropertyStep0 = styled(
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px;
+      padding: 20px 36px;
     }
 
     .content {
@@ -151,32 +153,11 @@ export const NewPropertyStep0 = styled(
               background-color: #184d6d;
               color: white;
             }
-
-            .check-dot {
-              :before {
-                content: '';
-                background-color: #184d6d;
-                width: 18px;
-                height: 18px;
-                z-index: 1;
-                position: absolute;
-                border-radius: 50%;
-                left: 2px;
-                top: 2px;
-              }
-            }
           }
 
           .indicators {
             display: flex;
             justify-content: space-between;
-            .check-dot {
-              width: 22px;
-              height: 22px;
-              border: 2px solid #184d6d;
-              border-radius: 50%;
-              position: relative;
-            }
           }
 
           .icon-button {
