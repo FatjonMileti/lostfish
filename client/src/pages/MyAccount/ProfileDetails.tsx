@@ -17,7 +17,9 @@ import axios from '../../utils/axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useUser } from './AccountProvider';
+import { useUser } from '../../context/UserProvider';
+import Can from '../../components/Can';
+import { CASLAction } from '../../utils/ability.util';
 
 const avatars = [
   {
@@ -189,7 +191,9 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         </div>
       </div>
       <div className='right-part'>
-        <Button type='submit'>Save changes</Button>
+        <Can do={CASLAction.Update} on='User'>
+          <Button type='submit'>Save changes</Button>
+        </Can>
       </div>
     </form>
   );

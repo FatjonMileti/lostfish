@@ -1,12 +1,10 @@
-import express, { Router } from 'express';
-import axios from '../../request';
-import ConditionSchema from './condition.schema';
-import { ConditionDocument } from './condition.interface';
+import { Router } from 'express';
+import conditionService from './services/condition.service';
 const router: Router = Router();
 
 export class ConditionController {
   public router = router;
-
+  public conditionService = conditionService;
   constructor() {
     this.initializeRoutes();
   }
@@ -23,36 +21,7 @@ export class ConditionController {
    * @apiSampleRequest /api/condition
    *
    */
-  private findAll = async (req: express.Request, res: express.Response) => {
-    try {
-      /*
-      const response = await axios.get('/condition/get');
-
-      const dataToUpdate = response.data.items.map((data: any) => {
-        return {
-          updateOne: {
-            filter: { condition_id: data.id },
-            update: {
-              ...data
-            },
-            upsert: true
-          }
-        };
-      });
-      await ConditionSchema.bulkWrite(dataToUpdate, { ordered: false });
-
-       */
-
-      const responseData = await ConditionSchema.paginate({
-        required: true,
-        is_system: true,
-        type_string: 'File Upload'
-      });
-      return res.send(responseData);
-    } catch (error: any) {
-      return res.status(400).send({ message: 'failed_to_fetch_data', error });
-    }
-  };
+  private findAll = this.conditionService.findAll;
 
   /**
    * @api {post} /api/condition Post
@@ -71,19 +40,5 @@ export class ConditionController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createCondition = async (req: express.Request, res: express.Response) => {
-    const data = req.body as ConditionDocument;
-    try {
-      const response = await axios.post('/condition/post', data);
-      if (response.status === 201) {
-        data.condition_id = response.data.id;
-        await ConditionSchema.create(data);
-        return res.send(response.data);
-      }
-
-      return res.status(response.status).send(response.data);
-    } catch (error: any) {
-      return res.status(400).send({ message: 'failed_to_store_in_offr_io', error });
-    }
-  };
+  private createCondition = this.conditionService.createCondition;
 }

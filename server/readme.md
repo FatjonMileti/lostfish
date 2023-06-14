@@ -50,9 +50,24 @@ copy `.env.example` to `.env`
 
 Run mongodb
 
-Run with **nodemon**: `npm run dev`
+Run with **nodemon**: `npm run start`
 
 Add a default user `npm run cli`
+
+## Offr Io integration
+
+Since now we are getting some data from offr io api we need to sync them to have it locally on order to be able to 
+make a basic renting flow.
+
+To do that we need to run this commands:
+
+Build app: `npm run build`
+
+Run sync script: `node dist/src/workers/sync-offrio-data.worker.js`
+
+PS. To do this you will need a token from Offr.io to be able to access their api.
+
+This is the variable needed to be set in .env file: `OFFR_IO_TOKEN`
 
 ## Docs
 

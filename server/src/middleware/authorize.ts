@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { Role } from '../enums';
-import createError, { HttpError } from 'http-errors';
+import createError from 'http-errors';
 import jwt from 'jsonwebtoken';
-import RevokedToken, { IRevokedToken } from '../data/revokedToken';
+import RevokedToken from '../data/revokedToken';
 
 export const verifyToken = async (token: string): Promise<jwt.JwtPayload | false> => {
   return await new Promise((resolve) => {
@@ -24,7 +23,7 @@ export const verifyToken = async (token: string): Promise<jwt.JwtPayload | false
   });
 };
 
-export default (roles?: Role[]) => {
+export default () => {
   return async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     let token: string | undefined = req.headers.authorization;
     if (!token || !token.startsWith('Bearer '))
@@ -39,15 +38,11 @@ export default (roles?: Role[]) => {
     const revoked = await RevokedToken.findOne({ token });
     if (revoked) throw createError(401, 'token was revoked');
 
-    // if (roles && roles.length > 0 && roles.indexOf(<Role>payload.role) === -1) {
-    //   throw createError(401, 'not allowed');
-    // }
-
     res.locals.token = token;
     res.locals.claims = payload;
     res.locals.user_id = res.locals.claims.sub;
     res.locals.username = payload.username;
-    res.locals.role = <Role>payload.role;
+    res.locals.role = payload.role;
     return next();
   };
 };

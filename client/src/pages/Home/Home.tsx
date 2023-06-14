@@ -18,7 +18,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   return (
     <div className={`home-page ${className} slide${indexSlide}`}>
       {[lookingFor, cantFindTenants, tiredOf].map((img, i: number) => (
-        <AnimatePresence>
+        <AnimatePresence key={i}>
           {indexSlide === i && (
             <motion.img
               initial={{ opacity: 0 }}

@@ -7,7 +7,7 @@ import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
 import axios from '../../utils/axios';
 import config from '../../config';
-import { useUser } from './AccountProvider';
+import { useUser } from '../../context/UserProvider';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);

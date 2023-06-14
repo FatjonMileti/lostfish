@@ -1,10 +1,13 @@
 import React, { ReactNode, useState, useCallback, useContext, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGlobalState } from '../../globalState';
-import axios from '../../utils/axios';
-import NotFoundPage from '../404';
-import { UserDocument } from './user.interface';
-
+import { useGlobalState } from '../globalState';
+import axios from '../utils/axios';
+import NotFoundPage from '../pages/404';
+import { UserDocument } from '../pages/MyAccount/user.interface';
+import { buildAbilityFor } from '../utils/ability.util';
+import { AbilityContext } from './AbilityContext';
+import { AppAbilityType, AppAbility } from '../utils/ability.util';
+import { unpackRules } from '@casl/ability/extra';
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };
 };
@@ -16,20 +19,24 @@ type PropertyActionTypes = {
   [INITIALIZE]: {
     isInitialized: boolean;
     user: any;
+    ability: AppAbilityType;
   };
   [SET_ACCOUNT]: {
     user: UserDocument;
+    ability: AppAbilityType;
   };
 };
 
 export type PropertyState = {
   isInitialized: boolean;
   user: UserDocument | null;
+  ability: AppAbilityType;
 };
 
 const initialState: PropertyState = {
   isInitialized: false,
-  user: null
+  user: null,
+  ability: new AppAbility()
 };
 
 const JWTReducer = (
@@ -40,13 +47,15 @@ const JWTReducer = (
     case INITIALIZE:
       return {
         isInitialized: true,
-        user: action.payload.user
+        user: action.payload.user,
+        ability: action.payload.ability
       };
     case SET_ACCOUNT:
       return {
         ...state,
         isInitialized: true,
-        user: action.payload.user
+        user: action.payload.user,
+        ability: action.payload.ability
       };
 
     default:
@@ -75,30 +84,36 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const params = useParams<{ id: string }>();
 
   const {
-    user: [{ auth }]
+    user: [user, setUser]
   } = useGlobalState();
 
   useEffect(() => {
-    getOne();
-  }, [params.id]);
+    if (user.auth) getOne();
+  }, [user.auth]);
 
   const getOne = useCallback(async () => {
     try {
-      const response = await axios(auth.access_token).get('/api/account/me');
+      const response = await axios(user.auth.access_token).get('/api/account/me');
+      const ability = buildAbilityFor(user.userDetails!.role, unpackRules(user.userDetails!.rules));
+
+      setUser((user: any) => ({ ...user, ability }));
       dispatch({
         type: SET_ACCOUNT,
         payload: {
-          user: response.data
+          user: response.data,
+          ability
         }
       });
     } catch (error: any) {
       setError(error);
     }
-  }, [params.id]);
+  }, [user.auth]);
 
   return (
-    <UserContext.Provider value={{ ...state, getOne }}>
-      {error ? <NotFoundPage /> : children}
-    </UserContext.Provider>
+    <AbilityContext.Provider value={state.ability}>
+      <UserContext.Provider value={{ ...state, getOne }}>
+        {error ? <NotFoundPage /> : children}
+      </UserContext.Provider>
+    </AbilityContext.Provider>
   );
 }

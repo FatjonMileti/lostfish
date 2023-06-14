@@ -25,6 +25,7 @@ app.set('port', port);
 const server: Server = createServer(app);
 
 import socketApi from '../utils/socket.io';
+
 const io = socketApi.io;
 io.attach(server, {
   cors: {

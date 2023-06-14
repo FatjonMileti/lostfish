@@ -1,12 +1,10 @@
-import express, { response, Router } from 'express';
-import axios from 'axios';
-import config from '../../config';
+import express, { Router } from 'express';
 import createError from 'http-errors';
 const router: Router = Router();
-
+import googleMapService from '../../external-services/google-map.service';
 export class MapController {
   public router = router;
-
+  public googleMapService = googleMapService;
   constructor() {
     this.initializeRoutes();
   }
@@ -32,9 +30,7 @@ export class MapController {
     const queryData: any = req.query;
 
     try {
-      const { data } = await axios.get(
-        `${config.map_nearby_url}?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=train_station&key=${config.google_key}`
-      );
+      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'train_station');
 
       return res.json({ ...data });
     } catch (error: any) {
@@ -56,9 +52,7 @@ export class MapController {
     const queryData: any = req.query;
 
     try {
-      const { data } = await axios.get(
-        `${config.map_nearby_url}?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=school&key=${config.google_key}`
-      );
+      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'school');
 
       return res.json({ ...data });
     } catch (error: any) {
@@ -80,9 +74,7 @@ export class MapController {
     const queryData: any = req.query;
 
     try {
-      const { data } = await axios.get(
-        `${config.map_nearby_url}?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=history&key=${config.google_key}`
-      );
+      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'history');
 
       return res.json({ ...data });
     } catch (error: any) {
@@ -90,56 +82,16 @@ export class MapController {
     }
   };
 
-  private async getCoordinates(address: string) {
-    try {
-      const { data } = await axios.get(`${config.map_geocode_url}`, {
-        params: {
-          address,
-          key: config.google_key
-        }
-      });
-
-      if (data.status === 'OK') {
-        /*
-        const { lat, lng } = data.results[0].geometry.location;
-        return { latitude: lat, longitude: lng };
-
-         */
-        return data.results[0];
-      } else {
-        throw createError(400, 'Geocoding API request failed');
-      }
-    } catch (error: any) {
-      console.error('Error:', error.message);
-      return false;
-    }
-  }
-
   private findPlaceWithAddress = async (req: express.Request, res: express.Response) => {
     const address = req.params.address;
+    /* TODO How we will use radius ?*/
     const radius = req.params.radius;
-    const coordinates = await this.getCoordinates(address);
+    const coordinates = await this.googleMapService.getCoordinates(address);
     if (!coordinates) {
       throw createError(404, 'Coordinates not found');
     }
 
     try {
-      /*
-     const { data } = await axios.get(`${config.map_nearby_url}`, {
-       params: {
-         location: `${coordinates.latitude},${coordinates.longitude}`,
-         radius,
-         key: config.google_key
-       }
-     });
-     if (data.status === 'OK') {
-       const places = data.results;
-       res.json({ ...places });
-     } else {
-       throw createError(400, 'Places API request failed');
-     }
-
-    */
       res.send(coordinates);
     } catch (error: any) {
       return res.status(400).send(error?.request?.data);

@@ -1,14 +1,15 @@
 import { Router } from 'express';
-
-const router: Router = Router();
 import { UserController } from './User/user.controller';
-import { AccountController } from './Account/account.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
 import { MapController } from './Map/map.controller';
 import { NotificationController } from './Notification/notification.controller';
 import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
+import { AccountController } from './Account/account.controller';
+import authorize from '../middleware/authorize';
+
+const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
  * Does not require a token
@@ -36,21 +37,22 @@ import { ConditionController } from './Condition/condition.controller';
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
+const accountController = new AccountController();
+
 const offerController = new AssetController();
 const userController = new UserController();
-const accountController = new AccountController();
 const chatController = new ChatController();
 const mapController = new MapController();
 const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
 router.use('/account', accountController.router);
-router.use('/user', userController.router);
+router.use('/user', authorize(), userController.router);
 router.use('/asset', offerController.router);
-router.use('/chat', chatController.router);
+router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
-router.use('/attribute', attributeController.router);
-router.use('/condition', conditionController.router);
-router.use('/notification', notificationController.router);
+router.use('/attribute', authorize(), attributeController.router);
+router.use('/condition', authorize(), conditionController.router);
+router.use('/notification', authorize(), notificationController.router);
 
 module.exports = router;

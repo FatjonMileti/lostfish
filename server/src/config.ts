@@ -8,10 +8,11 @@ export default {
   google_key: process.env.GOOGLE_MAP_KEY,
   node_env: process.env.NODE_ENV,
   connection_string: process.env.DB_CONNECTION_STRING,
-  offr_io_token: process.env.TOKEN,
+  offr_io_token: process.env.OFFR_IO_TOKEN,
   front_end_url: process.env.FRONTEND_URL,
   behind_proxy: process.env.BEHIND_PROXY,
   offr_io_api: 'https://demoapi.offr.io/v1',
+  pm2InstanceNum: process.env.NODE_APP_INSTANCE ?? '0',
   web: {
     client_id: '816422965461-nk8j13vj4slj382u6q8dpttj8scpk6uo.apps.googleusercontent.com',
     project_id: 'calm-buttress-276608',

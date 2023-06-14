@@ -1,4 +1,4 @@
-import request from '../../request';
+import request from '../../offr-io.request';
 import { UserDocument } from './user.interface';
 
 const create = async (contact: UserDocument) => {

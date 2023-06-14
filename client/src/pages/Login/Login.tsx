@@ -5,9 +5,9 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios, { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { buildAbilityFor } from '../../utils/ability.util';
 import { registerStore, useGlobalState } from '../../globalState';
-
+import { unpackRules } from '@casl/ability/extra';
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
@@ -31,7 +31,8 @@ registerStore(
   {
     rememberMe: false,
     auth: null,
-    userDetails: null
+    userDetails: null,
+    ability: null
   },
   { persist: true }
 );
@@ -86,9 +87,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       });
 
       const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
-
+      userDetails.rules = response.data.rules;
+      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
       navigate(location?.state?.url ? location.state.url : '/');
-      setUser((user: any) => ({ ...user, auth: response.data, userDetails }));
+      setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
@@ -126,7 +128,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       if (response.validated) {
         const userDetails = JSON.parse(window.atob(response.access_token.split('.')[1]));
         const getAuthData = await axiosWithToken(response.access_token).get('/api/account/get-access-tokens');
-        console.log({ getAuthData });
         setUser((user: any) => ({ ...user, auth: getAuthData.data, userDetails }));
       }
     } catch (err) {

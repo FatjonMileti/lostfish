@@ -1,15 +1,13 @@
 import { model, PaginateModel, Schema } from 'mongoose';
-import { Role } from '../../enums';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import { UserDocument } from './user.interface';
+import { UserDocument, Role } from './user.interface';
 
 const schema = new Schema<UserDocument>({
   user_id: Number,
   hash: String,
   role: {
     type: String,
-    enum: [Role.Admin, Role.User],
-    default: Role.User
+    default: Role.Client
   },
   email: {
     type: String,

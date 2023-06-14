@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "@casl/ability": "^6.5.0",
     "@socket.io/redis-adapter": "^8.1.0",
     "@typegoose/typegoose": "^11.0.0",
     "@types/passport": "^1.0.12",
