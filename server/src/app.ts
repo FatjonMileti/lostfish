@@ -17,7 +17,6 @@ const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
 import authorize from './middleware/authorize';
-import { AccountController } from './api/Account/account.controller';
 const upload = multer({ dest: 'uploads/asset-images' });
 const uploadDocs = multer({ dest: 'uploads/user-docs' });
 
@@ -36,7 +35,7 @@ const mailService = MailService.getInstance();
 
 if (config.node_env === 'development') {
   mailService.createLocalConnection();
-} else if (config.node_env === 'production') {
+} else if (config.node_env === 'stage') {
   mailService.createConnection();
 }
 
@@ -71,6 +70,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/url-to-file', express.static(path.join(__dirname, '..', 'uploads/asset-images')));
 app.use('/url-to-user-docs', express.static(path.join(__dirname, '..', 'uploads/user-docs')));
 
@@ -103,6 +103,7 @@ app.use('/api', require('./api/index'));
 app.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
+
 app.post('/upload', authorize(), upload.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });

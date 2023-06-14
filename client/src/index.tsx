@@ -6,17 +6,8 @@ import './assets/css/Index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme';
-const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
-// {
-//   defaultOptions: {
-//     queries: {
-//       refetchOnWindowFocus: true,
-//           refetchOnReconnect: true,
-//           retry: true,
-//           staleTime: twentyFourHoursInMs
-//     }
-//   }
-// }
+import { CookiesProvider } from 'react-cookie';
+
 const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -25,7 +16,9 @@ root.render(
   <GlobalStateProvider>
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
       </QueryClientProvider>
     </ThemeProvider>
   </GlobalStateProvider>

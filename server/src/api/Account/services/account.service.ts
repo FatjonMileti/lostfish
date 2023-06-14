@@ -1,16 +1,16 @@
-import { UserDocument } from '../User/user.interface';
+import { UserDocument } from '../../User/user.interface';
 import jwt from 'jsonwebtoken';
 import express from 'express';
-import userService from '../User/user.service';
+import userService from '../../User/user.service';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
-import { LoginLog, LoginLogAction } from '../../data/logs';
-import UserModel from '../User/user.schema';
+import { LoginLog, LoginLogAction } from '../../../data/logs';
+import UserModel from '../../User/user.schema';
 import bcrypt from 'bcrypt';
-import UsedRefreshToken from '../../data/usedRefreshToken';
-import RevokedToken from '../../data/revokedToken';
+import UsedRefreshToken from '../../../data/usedRefreshToken';
+import RevokedToken from '../../../data/revokedToken';
 import { packRules } from '@casl/ability/extra';
-import defineAbilitiesFor from '../../casl/casl';
+import defineAbilitiesFor from '../../../casl/casl';
 
 const login = async (req: express.Request, res: express.Response) => {
   const model = res.locals.model! as { email: string; password: string };
