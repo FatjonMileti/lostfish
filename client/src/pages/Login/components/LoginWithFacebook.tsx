@@ -65,7 +65,7 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
   };
 
   return (
-    <Button variant='secondary' onClick={handleFacebookLogin}>
+    <Button variant='secondary' onClick={() => handleFacebookLogin()}>
       <Icon icon='facebook' />
     </Button>
   );
