@@ -13,13 +13,15 @@ export default {
   behind_proxy: process.env.BEHIND_PROXY,
   offr_io_api: 'https://demoapi.offr.io/v1',
   pm2InstanceNum: process.env.NODE_APP_INSTANCE ?? '0',
+  email_user_account: process.env.EMAIL_USER,
+  email_user_password: process.env.EMAIL_PASS,
   web: {
-    client_id: '816422965461-nk8j13vj4slj382u6q8dpttj8scpk6uo.apps.googleusercontent.com',
-    project_id: 'calm-buttress-276608',
+    client_id: '351618006281-cbuvkkhm5legionos66hh45r94tsuoo0.apps.googleusercontent.com',
+    project_id: 'testiffproject',
     auth_uri: 'https://accounts.google.com/o/oauth2/auth',
     token_uri: 'https://oauth2.googleapis.com/token',
     auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-    client_secret: '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',
+    client_secret: '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',
     redirect_uris: ['http://localhost:4000/google/redirect'],
     javascript_origins: ['http://localhost:4000']
   }

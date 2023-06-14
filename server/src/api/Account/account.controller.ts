@@ -4,9 +4,9 @@ import authorize from '../../middleware/authorize';
 import { loginLimiter } from '../../middleware/rateLimiter';
 import validator from '../../middleware/validator';
 import * as joi from 'joi';
-import accountService from './account.service';
+import accountService from './services/account.service';
 import userService from '../User/user.service';
-import socialLoginService from './social-login.service';
+import socialLoginService from './services/social-login.service';
 
 export class AccountController {
   public router = router;

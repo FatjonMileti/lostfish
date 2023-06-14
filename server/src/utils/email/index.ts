@@ -1,5 +1,6 @@
 // @ts-ignore
 import nodemailer from 'nodemailer';
+import config from '../../config';
 
 interface MailInterface {
   from?: string;
@@ -15,8 +16,7 @@ export default class MailService {
   private static instance: MailService;
   private transporter: nodemailer.Transporter;
 
-  private constructor() {
-  }
+  private constructor() {}
 
   //INSTANCE CREATE FOR MAIL
   static getInstance() {
@@ -49,11 +49,10 @@ export default class MailService {
   async createConnection() {
     try {
       this.transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
+        service: 'gmail',
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
+          user: config.email_user_account,
+          pass: config.email_user_password
         }
       });
     } catch (err: any) {
@@ -77,12 +76,11 @@ export default class MailService {
         console.log(`Mail sent successfully!!`);
         console.log(`[MailResponse]=${info.response} [MessageID]=${info.messageId}`);
         if (process.env.NODE_ENV === 'development') {
-          console.log(`Nodemailer ethereal URL: ${nodemailer.getTestMessageUrl(
-            info
-          )}`);
+          console.log(`Nodemailer ethereal URL: ${nodemailer.getTestMessageUrl(info)}`);
         }
         return info;
-      }).catch((error: any) => {
+      })
+      .catch((error: any) => {
         console.log(error, 'error on sending email');
       });
   }

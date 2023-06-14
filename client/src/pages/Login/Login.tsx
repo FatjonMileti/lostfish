@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { registerStore, useGlobalState } from '../../globalState';
@@ -23,6 +23,7 @@ import { LoginWithFacebook } from './components/LoginWithFacebook';
 import { LoginWithTwitter } from './components/LoginWithTwitter';
 import axiosWithToken from '../../utils/axios';
 import { useCookies } from 'react-cookie';
+import { decodeJWT } from './login.helper';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -80,6 +81,15 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     setUser((user: any) => ({ ...user, rememberMe }));
   };
 
+  const buildUserAbility = (userDetails: any, response: AxiosResponse) => {
+    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
+    setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
+
+    if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
+      setCookie('username', userDetails.username);
+    }
+  };
+
   const onSubmit = async (data: any) => {
     setLoading(true);
 
@@ -91,15 +101,12 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
         password
       });
 
-      const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
+      const userDetails = decodeJWT(response.data.access_token);
       userDetails.rules = response.data.rules;
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-      navigate(location?.state?.url ? location.state.url : '/');
-      setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
 
-      if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
-        setCookie('username', userDetails.username);
-      }
+      await buildUserAbility(userDetails, response);
+
+      navigate(location?.state?.url ? location.state.url : '/');
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
@@ -121,11 +128,12 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
   const loginWithGoogle = async (response: { code: string }) => {
     try {
-      const { data } = await axios.post(`${config.apiUrl}/api/account/login-google`, { code: response.code });
-
-      const userDetails = JSON.parse(window.atob(data.access_token.split('.')[1]));
-
-      setUser((user: any) => ({ ...user, auth: data, userDetails }));
+      const loginGoogleRes = await axios.post(`${config.apiUrl}/api/account/login-google`, {
+        code: response.code
+      });
+      const userDetails = decodeJWT(loginGoogleRes.data.access_token);
+      userDetails.rules = loginGoogleRes.data.rules;
+      await buildUserAbility(userDetails, loginGoogleRes);
     } catch (err) {
       console.log(err);
       //handle error
@@ -146,10 +154,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   };
 
   const handleFacebookLoginSuccess = async (accessToken: string) => {
-    const { data } = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
-    const userDetails = JSON.parse(window.atob(data.access_token.split('.')[1]));
-
-    setUser((user: any) => ({ ...user, auth: data, userDetails }));
+    const response = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
+    const userDetails = decodeJWT(response.data.access_token);
+    userDetails.rules = response.data.rules;
+    await buildUserAbility(userDetails, response);
   };
 
   const handleFacebookLoginFailure = (error: string) => {
@@ -182,7 +190,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
             </Button>
 
             <LoginWithFacebook
-              appId='943662833755843'
+              appId={config.facebook.facebook_id}
               onLoginSuccess={handleFacebookLoginSuccess}
               onLoginFailure={handleFacebookLoginFailure}
               scope='email'
