@@ -211,18 +211,6 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='6'
-                      checked={newPropertyService.state.propertyType === '6'}
-                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
-                    />
-                    <label htmlFor={id}>Park homes</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='radio-wrapper'>
-                    <Radio
-                      id={id}
                       value='7'
                       checked={newPropertyService.state.propertyType === '7'}
                       onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
