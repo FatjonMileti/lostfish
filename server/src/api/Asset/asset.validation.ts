@@ -19,9 +19,6 @@ export const createAssetSchemaValidation = joi.object({
   transaction_type_string: joi.string().required(),
   master_asset_type_string: joi.string().required(),
   asset_type_string: joi.string().required(),
-  currency_code: joi.string(),
-  reserved: joi.boolean(),
-  master_branch_name: joi.string(),
   asset_rent: joi.object({
     rental_amount: joi.number().allow(''),
     rental_frequency: joi.string().allow(''),
@@ -31,20 +28,12 @@ export const createAssetSchemaValidation = joi.object({
   }),
   floor_size: joi.number().required(),
   floor_size_unit: joi.string().required(),
-  asset_attribute: joi.array().items(
-    joi.object({
-      name: joi.string().required(),
-      type: joi.string().required(),
-      value: joi.number().required()
-    })
-  ),
-  specific_property_features: joi.array().items(
-    joi.object({
-      name: joi.string().required(),
-      value: joi.boolean()
-    })
-  ),
-  property_images: joi.array(),
-  preferences: joi.string().allow(''),
-  property_features: joi.string().allow('')
+  room_details: joi.object({
+    number_of_bathrooms: joi.number().required(),
+    number_of_bedrooms: joi.number().required()
+  }),
+  property_features: joi.array().items(joi.string()),
+  property_preference: joi.string(),
+  specific_property_features: joi.array().items(joi.string()),
+  property_images: joi.array()
 });

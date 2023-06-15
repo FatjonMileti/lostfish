@@ -8,7 +8,7 @@ import sendInvitationTemplate from '../../../utils/templates/sendInvitationTempl
 import offrIoService from '../../../external-services/offr-io.service';
 
 import { Types } from 'mongoose';
-import { getCurrentStatusForGet, getCurrentStatusForPost } from '../helpers';
+import { getCurrentStatusForGet, getCurrentStatusForPost, validateToSendToOffrIo } from '../helpers';
 import MailService from '../../../utils/email';
 const mailService = MailService.getInstance();
 
@@ -76,14 +76,16 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
   try {
-    const response = await offrIoService.createAsset(data);
-    data.asset_id = response.id;
+    if (validateToSendToOffrIo(data)) {
+      const response = await offrIoService.createAsset(data);
+      data.asset_id = response.id;
+    }
 
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
-    if (asset.property_images.length > 0) {
-      offrIoService.addAssetDocument(asset.property_images, asset.asset_id).then((r) => console.log(r));
-    }
+    // if (asset.property_images.length > 0) {
+    //   offrIoService.addAssetDocument(asset.property_images, asset.asset_id).then((r) => console.log(r));
+    // }
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });

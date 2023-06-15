@@ -105,18 +105,14 @@ const schema = new Schema<AssetDocument>({
   walkthrough_url: { type: String, default: null },
   videos: [{ name: String, url: String }],
   asset_files: [Object],
-  asset_attribute: [
-    {
-      name: String,
-      type: {
-        type: String,
-        enum: Object.values(AssetAtribute),
-        default: null
-      },
-      value: String,
-      _id: false
-    }
-  ],
+  asset_attribute: [Object],
+  room_details: {
+    number_of_bathrooms: String,
+    number_of_bedrooms: String
+  },
+  property_features: [String],
+  specific_property_features: [String],
+  property_preference: String,
   asset_sale: { type: AssetSale, default: null },
   asset_rent: {
     rental_amount: Number,
@@ -147,7 +143,7 @@ const schema = new Schema<AssetDocument>({
   solicitor: { type: Contact, default: null },
   statistics: { type: Object, default: {} },
   offers: [{ type: Object }],
-  specific_property_features: [{ type: Object }],
+
   property_images: [{ type: Object }],
   permission: {
     administrator_names: [String],
@@ -173,7 +169,6 @@ const schema = new Schema<AssetDocument>({
   },
   settings: { type: Object, default: {} },
   preferences: String,
-  property_features: [Object],
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

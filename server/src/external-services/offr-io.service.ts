@@ -25,7 +25,6 @@ const getAssets = async (): Promise<any[]> => {
 };
 
 const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
-  console.log({ assetId });
   return await offrIoRequest.patch('/asset/patch/' + 2716, {
     name: body.name,
     asset_address: body.asset_address,
@@ -47,8 +46,17 @@ const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
   });
 };
 
+const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
+  asset.asset_attribute = [
+    { name: 'Number of bedrooms', type: 'Number', value: asset.room_details.number_of_bedrooms },
+    { name: 'Number of bathrooms', type: 'Number', value: asset.room_details.number_of_bathrooms }
+  ];
+  return asset;
+};
+
 const createAsset = async (asset: AssetDocument) => {
-  const response = await offrIoRequest.post('/asset/post', asset);
+  const data = mapAssetBeforePost(asset);
+  const response = await offrIoRequest.post('/asset/post', data);
   return response.data;
 };
 

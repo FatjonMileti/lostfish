@@ -200,7 +200,13 @@ export interface AssetDocument extends Document {
   extra_branch_names: [string];
   walkthrough_url: string;
   videos: [{ name: string; url: string }];
-  asset_attribute: [AssetAtribute];
+  asset_attribute: any[];
+  room_details: {
+    number_of_bathrooms: string;
+    number_of_bedrooms: string;
+  };
+  property_features: string[];
+  property_preference: string;
   asset_sale?: {
     asking_price: number;
     minimum_offer: number;
@@ -255,11 +261,10 @@ export interface AssetDocument extends Document {
   };
   offers: IOffer[];
   buyers: [object];
-  specific_property_features: [object];
+  specific_property_features: string[];
   property_images: [object];
   settings: any;
   preferences: string;
-  property_features: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

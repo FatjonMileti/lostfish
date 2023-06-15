@@ -145,6 +145,88 @@ export class AssetController {
    *
    * @apiBody {string} name
    * @apiBody {string} descrption
+   * @apiBody {object} asset_address
+   * @apiBody {number} asset_address.latitude
+   * @apiBody {number} asset_address.longitude
+   * @apiBody {string} asset_address.street_number
+   * @apiBody {string} asset_address.route
+   * @apiBody {string} asset_address.neighbourhood
+   * @apiBody {string} asset_address.postal_town
+   * @apiBody {string} asset_address.postal_code
+   * @apiBody {string} asset_address.administrative_area_level_1
+   * @apiBody {string} asset_address.country_code
+   * @apiBody {string} asset_address.text
+   * @apiBody {string} status_string
+   * @apiBody {string} transaction_type_string
+   * @apiBody {string} master_asset_type_string
+   * @apiBody {string} asset_type_string
+   * @apiBody {string} currency_code
+   * @apiBody {object} asset_rent
+   * @apiBody {string} asset_rent.rental_amount
+   * @apiBody {string} asset_rent.rental_frequency
+   * @apiBody {string} asset_rent.deposit_amount
+   * @apiBody {Date} asset_rent.interest_by
+   * @apiBody {Date} asset_rent.available_from
+   * @apiBody {number} floor_size
+   * @apiBody {string} floor_size_unit
+   * @apiBody {Object} property_preferences
+   * @apiBody {boolean} property_preferences.new_home
+   * @apiBody {boolean} property_preferences.retirement_home
+   * @apiBody {boolean} property_preferences.shared_ownership
+   * @apiBody {boolean} property_preferences.auction
+   * @apiBody {Object} room_details
+   * @apiBody {string} room_details.number_of_bathrooms
+   * @apiBody {string} room_details.number_of_bedrooms
+   * @apiBody {Object[]} specific_property_features
+   * @apiBody {string} specific_property_features.name
+   * @apiBody {boolean} specific_property_features.value
+   *
+   * @apiBody {Object[]} property_images
+   * @apiBody {string} property_images.originalName
+   * @apiBody {string} property_images.filename
+   * @apiBody {string} property_images.path
+   * @apiBody {string} preferences
+   * @apiBody {Object} property_features
+   * @apiBody {boolean} property_features.parks_nearby
+   * @apiBody {boolean} property_features.public_transport_nearby
+   * @apiBody {boolean} property_features.shopping_centers_nearby
+   * @apiExample {json} Example request body:
+   *    {
+   *     "name": "",
+   *     "descrption": "",
+   *     "asset_address": {
+   *         "latitude": 0,
+   *         "longitude": 0,
+   *         "street_number": "",
+   *         "route": "",
+   *         "neighbourhood": "",
+   *         "postal_town": "",
+   *         "postal_code": "",
+   *         "administrative_area_level_1": "",
+   *         "country_code": "GBR",
+   *         "text": ""
+   *     },
+   *     "status_string": "Draft",
+   *     "transaction_type_string": "Rent",
+   *     "master_asset_type_string": "",
+   *     "asset_type_string": "",
+   *     "asset_rent": {
+   *         "rental_amount": "1200",
+   *         "rental_frequency": "Month",
+   *         "deposit_amount": "200",
+   *         "interest_by": "6/15/2023",
+   *         "available_from": "6/15/2023"
+   *     },
+   *     "floor_size": 0,
+   *     "floor_size_unit": "",
+   *     "property_preference": "New Home",
+   *     "room_details": {
+   *         "number_of_bathrooms": 1,
+   *         "number_of_bedrooms": 1
+   *     },
+   *     "property_features": ["Parks Nearby],
+   *     "specific_property_features": ["Garden","Terrace"],
+   * }
    *
    * @apiPermission admin
    * @apiUse bearer
