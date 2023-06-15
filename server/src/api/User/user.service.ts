@@ -8,7 +8,7 @@ import moment from 'moment';
 import httpStatus from 'http-status';
 import { hashPassword } from './user.helpers';
 import { LoginLog, LoginLogAction } from '../../data/logs';
-import accountService from '../Account/account.service';
+import accountService from '../Account/services/account.service';
 import { validate, ValidationError } from 'class-validator';
 import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';

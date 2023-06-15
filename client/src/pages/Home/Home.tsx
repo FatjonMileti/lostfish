@@ -10,6 +10,7 @@ import tiredOf from './tiredOf.png';
 
 import { Carousel } from './Carousel';
 import { AnimatePresence, motion } from 'framer-motion';
+// import { CookieConsent } from '../../components/CookieConsent';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const indexStore = React.useState(0);
@@ -62,6 +63,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             </Typography>
           </div>
         </Carousel>
+        {/*<CookieConsent />*/}
       </div>
     </div>
   );

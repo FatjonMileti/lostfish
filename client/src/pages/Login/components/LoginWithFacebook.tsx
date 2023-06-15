@@ -47,12 +47,13 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
       });
     };
 
-    loadFacebookSDK();
-    initFacebookSDK();
+    // loadFacebookSDK();
+    // initFacebookSDK();
   }, [appId, onLoginSuccess]);
 
   const handleFacebookLogin = () => {
-    (window as any).FB.login(
+    return;
+    /* (window as any).FB.login(
       function (response: any) {
         if (response.authResponse) {
           onLoginSuccess(response.authResponse.accessToken);
@@ -61,11 +62,11 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
         }
       },
       { scope }
-    );
+    ); */
   };
 
   return (
-    <Button variant='secondary' onClick={handleFacebookLogin}>
+    <Button variant='secondary' onClick={() => handleFacebookLogin()}>
       <Icon icon='facebook' />
     </Button>
   );

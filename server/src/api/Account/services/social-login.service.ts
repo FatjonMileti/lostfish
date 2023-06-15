@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
-import UserModel from '../User/user.schema';
-import { Role } from '../User/user.interface';
-import { LoginLog, LoginLogAction } from '../../data/logs';
-import userService from '../User/user.service';
+import UserModel from '../../User/user.schema';
+import { Role } from '../../User/user.interface';
+import { LoginLog, LoginLogAction } from '../../../data/logs';
+import userService from '../../User/user.service';
 import accountService from './account.service';
 import axios from 'axios';
 import { Client, auth } from 'twitter-api-sdk';
+import { packRules } from '@casl/ability/extra';
+import defineAbilitiesFor from '../../../casl/casl';
+import httpStatus from 'http-status';
 const { OAuth2Client } = require('google-auth-library');
 
 // Google
@@ -77,15 +80,20 @@ const loginGoogle = async (req: Request, res: Response) => {
       action: LoginLogAction.Login
     }).save();
 
+    const rules = packRules(defineAbilitiesFor(user.role).rules);
+
     return res.json({
       token_type: 'bearer',
       access_token: token,
       expires_in: process.env.JWT_EXPIRE_SECONDS,
       refresh_token: refresh,
-      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS,
+      rules
     });
   } catch (error: any) {
-    return res.send({ message: 'failed_login_with_google', error });
+    return res
+      .status(error.code || httpStatus.BAD_REQUEST)
+      .send({ message: 'failed_login_with_google', error });
   }
 };
 
@@ -133,12 +141,15 @@ const loginFacebook = async (req: Request, res: Response) => {
       action: LoginLogAction.Login
     }).save();
 
+    const rules = packRules(defineAbilitiesFor(user.role).rules);
+
     return res.json({
       token_type: 'bearer',
       access_token: token,
       expires_in: process.env.JWT_EXPIRE_SECONDS,
       refresh_token: refresh,
-      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+      refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS,
+      rules
     });
   } catch (error: any) {
     res.status(400).send({ message: 'failed_to_fetch_user', error });
