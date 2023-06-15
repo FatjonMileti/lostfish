@@ -196,7 +196,7 @@ export interface AssetDocument extends Document {
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   asset_type_string: AssetTypeString;
-  property_type: AssetTypeString;
+  property_type: string;
   currency_code: CurrencyCode;
   reserved: boolean;
   master_branch_name: string;
@@ -267,7 +267,9 @@ export interface AssetDocument extends Document {
   offers: IOffer[];
   buyers: [object];
   specific_property_features: string[];
-  property_images: [object];
+  property_images: object[];
+  credit_score_requirements: string;
+  contact_details: string[];
   settings: any;
   preferences: string;
   edited_at?: Date;

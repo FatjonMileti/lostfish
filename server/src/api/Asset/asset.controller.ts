@@ -2,7 +2,6 @@ import { Router } from 'express';
 import assetService from './services/asset.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
-import { Role } from '../../enums';
 import assetApplicationService from './services/asset-application.service';
 import { createAssetSchemaValidation } from './asset.validation';
 import paging from '../../middleware/paging';
@@ -173,7 +172,8 @@ export class AssetController {
    * @apiBody {Object[]} specific_property_features
    * @apiBody {string} specific_property_features.name
    * @apiBody {boolean} specific_property_features.value
-   *
+   * @apiBody {string} credit_score_requirements
+   * @apiBody {string[]} contact_details
    * @apiBody {Object[]} property_images
    * @apiBody {string} property_images.originalName
    * @apiBody {string} property_images.filename

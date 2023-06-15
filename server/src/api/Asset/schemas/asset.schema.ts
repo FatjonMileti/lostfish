@@ -93,8 +93,7 @@ const schema = new Schema<AssetDocument>({
   },
   property_type: {
     type: String,
-    required: true,
-    enum: Object.values(AssetTypeString)
+    required: true
   },
   currency_code: {
     type: String,
@@ -117,6 +116,8 @@ const schema = new Schema<AssetDocument>({
   },
   property_features: [String],
   specific_property_features: [String],
+  credit_score_requirements: String,
+  contact_details: [String],
   property_preference: String,
   asset_sale: { type: AssetSale, default: null },
   asset_rent: {

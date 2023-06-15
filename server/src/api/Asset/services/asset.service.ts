@@ -107,6 +107,7 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
     // }
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
+    console.log(error);
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });
   }
 };

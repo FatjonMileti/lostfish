@@ -3,6 +3,7 @@ import * as joi from 'joi';
 export const createAssetSchemaValidation = joi.object({
   name: joi.string(),
   area_of_interest: joi.string(),
+  radius: joi.string(),
   description: joi.string().allow(''),
   asset_address: joi.object({
     latitude: joi.number().min(-90).max(90).required(),
@@ -26,5 +27,7 @@ export const createAssetSchemaValidation = joi.object({
   property_features: joi.array().items(joi.string()),
   property_preference: joi.string(),
   specific_property_features: joi.array().items(joi.string()),
-  property_images: joi.array()
+  property_images: joi.array(),
+  credit_score_requirements: joi.string(),
+  contact_details: joi.array().items(joi.string())
 });

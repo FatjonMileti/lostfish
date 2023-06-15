@@ -61,7 +61,7 @@ const getAddress = async (lat: number, lng: number) => {
         postal_town: postalTown,
         postal_code: postalCode,
         administrative_area_level_1: administrativeAreaLevelOne,
-        country_code: countryCode,
+        country_code: countryCode === 'GB' ? 'GBR' : countryCode,
         text: formatedAddress
       };
     } else {
