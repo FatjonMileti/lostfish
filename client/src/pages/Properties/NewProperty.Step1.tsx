@@ -134,9 +134,10 @@ export const NewPropertyStep1 = styled(
                   value={newPropertyService.state.radius}
                   onChange={({ target: { value } }) => newPropertyService.setRadius(value)}>
                   <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='3'>3</option>
+                  <option value='1'>1 mi</option>
+                  <option value='5'>5 mi</option>
+                  <option value='10'>10 mi</option>
+                  <option value='50'>50 mi</option>
                 </Select>
               </div>
             </div>
@@ -210,18 +211,6 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='6'
-                      checked={newPropertyService.state.propertyType === '6'}
-                      onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
-                    />
-                    <label htmlFor={id}>Park homes</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='radio-wrapper'>
-                    <Radio
-                      id={id}
                       value='7'
                       checked={newPropertyService.state.propertyType === '7'}
                       onChange={(e) => newPropertyService.setPropertyType(e.target.value)}
@@ -241,11 +230,11 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='1'
-                      checked={newPropertyService.state.propertyPreferences === '1'}
-                      onChange={() => newPropertyService.setPropertyPreferences('1')}
+                      value='New home'
+                      checked={newPropertyService.state.propertyPreferences === 'New home'}
+                      onChange={(e) => newPropertyService.setPropertyPreferences(e.target.value)}
                     />
-                    <label htmlFor={id}>Detached</label>
+                    <label htmlFor={id}>New home</label>
                   </div>
                 ))(React.useId())}
 
@@ -253,11 +242,11 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='2'
-                      checked={newPropertyService.state.propertyPreferences === '2'}
-                      onChange={() => newPropertyService.setPropertyPreferences('2')}
+                      value='Retirement home'
+                      checked={newPropertyService.state.propertyPreferences === 'Retirement home'}
+                      onChange={(e) => newPropertyService.setPropertyPreferences(e.target.value)}
                     />
-                    <label htmlFor={id}>Semi- Detached</label>
+                    <label htmlFor={id}>Retirement home</label>
                   </div>
                 ))(React.useId())}
 
@@ -265,11 +254,11 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='3'
-                      checked={newPropertyService.state.propertyPreferences === '3'}
-                      onChange={() => newPropertyService.setPropertyPreferences('3')}
+                      value='Shared ownership'
+                      checked={newPropertyService.state.propertyPreferences === 'Shared ownership'}
+                      onChange={(e) => newPropertyService.setPropertyPreferences(e.target.value)}
                     />
-                    <label htmlFor={id}>Terraced</label>
+                    <label htmlFor={id}>Shared ownership</label>
                   </div>
                 ))(React.useId())}
 
@@ -277,11 +266,11 @@ export const NewPropertyStep1 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='4'
-                      checked={newPropertyService.state.propertyPreferences === '4'}
-                      onChange={() => newPropertyService.setPropertyPreferences('4')}
+                      value='Auction'
+                      checked={newPropertyService.state.propertyPreferences === 'Auction'}
+                      onChange={(e) => newPropertyService.setPropertyPreferences(e.target.value)}
                     />
-                    <label htmlFor={id}>Flats</label>
+                    <label htmlFor={id}>Auction</label>
                   </div>
                 ))(React.useId())}
               </div>

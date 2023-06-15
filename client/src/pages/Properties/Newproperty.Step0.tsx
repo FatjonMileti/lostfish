@@ -63,7 +63,8 @@ export const NewPropertyStep0 = styled(({ propertyService, closeModal, className
               className={`looking-for-choice for-buyer ${
                 propertyService.state.lookingFor === 1 ? 'active' : ''
               }`}
-              onClick={() => propertyService.setLookingFor(1)}>
+              // onClick={() => propertyService.setLookingFor(1)}
+            >
               <div className='indicators'>
                 <IconButton size='large' noBackground>
                   <Icon icon='credit-card' />
