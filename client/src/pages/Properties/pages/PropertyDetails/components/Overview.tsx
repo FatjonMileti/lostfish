@@ -57,7 +57,7 @@ export const Overview = () => {
           <CardMedia
             component='img'
             height='300'
-            image={property.property_images[0].filename}
+            image={property.property_images?.[0]?.filename}
             alt='Test image'
           />
           <CardContent>
