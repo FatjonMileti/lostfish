@@ -52,7 +52,8 @@ const AssetSale = {
 
 const schema = new Schema<AssetDocument>({
   asset_id: Number,
-  name: { type: String, required: true },
+  name: { type: String },
+  area_of_interest: String,
   description: { type: String },
   asset_address: {
     latitude: { type: Number, required: true },

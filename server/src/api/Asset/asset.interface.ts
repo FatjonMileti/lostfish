@@ -176,6 +176,7 @@ export enum PreferencesEnum {
 export interface AssetDocument extends Document {
   asset_id: number;
   name: string;
+  area_of_interest: string;
   description: string;
   asset_address: {
     latitude: number;

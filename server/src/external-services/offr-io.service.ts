@@ -55,9 +55,10 @@ const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
 };
 
 const createAsset = async (asset: AssetDocument) => {
-  const data = mapAssetBeforePost(asset);
-  const response = await offrIoRequest.post('/asset/post', data);
-  return response.data;
+  // const data = mapAssetBeforePost(asset);
+  // const response = await offrIoRequest.post('/asset/post', data);
+  // return response.data;
+  return { id: 123 };
 };
 
 const addAssetDocument = async (images: any[], assetId: number) => {

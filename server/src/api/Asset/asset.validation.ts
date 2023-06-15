@@ -1,7 +1,8 @@
 import * as joi from 'joi';
 
 export const createAssetSchemaValidation = joi.object({
-  name: joi.string().required(),
+  name: joi.string(),
+  area_of_interest: joi.string(),
   description: joi.string().allow(''),
   asset_address: joi.object({
     latitude: joi.number().min(-90).max(90).required(),

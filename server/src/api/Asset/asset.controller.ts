@@ -193,7 +193,7 @@ export class AssetController {
    * @apiExample {json} Example request body:
    *    {
    *     "name": "",
-   *     "descrption": "",
+   *     "area_of_interest": "",
    *     "asset_address": {
    *         "latitude": 0,
    *         "longitude": 0,
