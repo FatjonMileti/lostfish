@@ -3,7 +3,7 @@ import assetService from './services/asset.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import assetApplicationService from './services/asset-application.service';
-import { createAssetSchemaValidation } from './asset.validation';
+import { createAssetSchemaValidation, createAssetSchemaValidationDraft } from './asset.validation';
 import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
@@ -37,6 +37,12 @@ export class AssetController {
     this.router.patch('/:id/update-application', authorize(), validateId, this.updateApplication);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
+    this.router.post(
+      '/draft',
+      authorize(),
+      validator(createAssetSchemaValidationDraft),
+      this.createAssetDraft
+    );
     this.router.post('/:id/send-invitation', authorize(), validateId, authorize(), this.sendInvitation);
     this.router.patch('/:id', authorize(), validateId, this.updateAsset);
     this.router.delete('/:id', authorize(), validateId, this.delete);
@@ -216,6 +222,87 @@ export class AssetController {
    * @apiUse bearer
    */
   private createAsset = this.assetService.createAsset;
+
+  /**
+   * @api {post} /api/asset Post as draft
+   * @apiDescription Add a new asset as draft
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/draft
+   *
+   * @apiBody {string} name
+   * @apiBody {string} area_of_interest
+   * @apiBody {string} radius
+   * @apiBody {object} asset_address
+   * @apiBody {number} asset_address.latitude
+   * @apiBody {number} asset_address.longitude
+   * @apiBody {string} status_string
+   * @apiBody {string} transaction_type_string
+   * @apiBody {string} master_asset_type_string
+   * @apiBody {string} property_type
+   * @apiBody {string} currency_code
+   * @apiBody {object} asset_rent
+   * @apiBody {string} asset_rent.rental_amount
+   * @apiBody {string} asset_rent.rental_frequency
+   * @apiBody {string} asset_rent.deposit_amount
+   * @apiBody {Date} asset_rent.interest_by
+   * @apiBody {Date} asset_rent.available_from
+   * @apiBody {number} floor_size
+   * @apiBody {string} floor_size_unit
+   * @apiBody {Object} property_preferences
+   * @apiBody {boolean} property_preferences.new_home
+   * @apiBody {boolean} property_preferences.retirement_home
+   * @apiBody {boolean} property_preferences.shared_ownership
+   * @apiBody {boolean} property_preferences.auction
+   * @apiBody {Object} room_details
+   * @apiBody {string} room_details.number_of_bathrooms
+   * @apiBody {string} room_details.number_of_bedrooms
+   * @apiBody {Object[]} specific_property_features
+   * @apiBody {string} specific_property_features.name
+   * @apiBody {boolean} specific_property_features.value
+   * @apiBody {string} credit_score_requirements
+   * @apiBody {string[]} contact_details
+   * @apiBody {Object[]} property_images
+   * @apiBody {string} property_images.originalName
+   * @apiBody {string} property_images.filename
+   * @apiBody {string} property_images.path
+   * @apiBody {string} preferences
+   * @apiBody {Object} property_features
+   * @apiBody {boolean} property_features.parks_nearby
+   * @apiBody {boolean} property_features.public_transport_nearby
+   * @apiBody {boolean} property_features.shopping_centers_nearby
+   * @apiExample {json} Example request body:
+   *    {
+   *     "name": "",
+   *     "area_of_interest": "",
+   *     "radius": "0",
+   *     "asset_address": {
+   *         "latitude": 0,
+   *         "longitude": 0
+   *     },
+   *     "status_string": "Draft",
+   *     "transaction_type_string": "Rent",
+   *     "property_type": "",
+   *     "asset_rent": {
+   *         "rental_amount": "1200",
+   *         "rental_frequency": "Month",
+   *         "deposit_amount": "200",
+   *         "interest_by": "6/15/2023",
+   *         "available_from": "6/15/2023"
+   *     },
+   *     "floor_size": 0,
+   *     "property_preference": "New Home",
+   *     "room_details": {
+   *         "number_of_bathrooms": 1,
+   *         "number_of_bedrooms": 1
+   *     },
+   *     "property_features": ["Parks Nearby"],
+   *     "specific_property_features": ["Garden","Terrace"]
+   * }
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private createAssetDraft = this.assetService.createAsset;
 
   /**
    * @api {patch} /api/asset/:id Patch one asset

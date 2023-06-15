@@ -31,3 +31,35 @@ export const createAssetSchemaValidation = joi.object({
   credit_score_requirements: joi.string(),
   contact_details: joi.array().items(joi.string())
 });
+
+export const createAssetSchemaValidationDraft = joi.object({
+  name: joi.string().allow(''),
+  area_of_interest: joi.string().allow(''),
+  radius: joi.string().allow(''),
+  description: joi.string().allow(''),
+  asset_address: joi.object({
+    latitude: joi.number().min(-90).max(90).allow(''),
+    longitude: joi.number().min(-180).max(180).allow('')
+  }),
+  status_string: joi.string().allow(''),
+  transaction_type_string: joi.string().allow(''),
+  property_type: joi.string().allow(''),
+  asset_rent: joi.object({
+    rental_amount: joi.number().allow(''),
+    rental_frequency: joi.string().allow(''),
+    deposit_amount: joi.number().allow(''),
+    interest_by: joi.date().allow(''),
+    available_from: joi.date().allow('')
+  }),
+  floor_size: joi.number(),
+  room_details: joi.object({
+    number_of_bathrooms: joi.number(),
+    number_of_bedrooms: joi.number()
+  }),
+  property_features: joi.array().items(joi.string()),
+  property_preference: joi.string().allow(''),
+  specific_property_features: joi.array().items(joi.string()),
+  property_images: joi.array(),
+  credit_score_requirements: joi.string().allow(''),
+  contact_details: joi.array().items(joi.string())
+});
