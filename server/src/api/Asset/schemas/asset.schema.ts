@@ -55,6 +55,7 @@ const schema = new Schema<AssetDocument>({
   name: { type: String },
   area_of_interest: String,
   description: { type: String },
+  radius: String,
   asset_address: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
@@ -89,6 +90,12 @@ const schema = new Schema<AssetDocument>({
     default: null
   },
   asset_type_string: {
+    type: String,
+    required: true,
+    enum: Object.values(AssetTypeString),
+    default: null
+  },
+  property_type: {
     type: String,
     required: true,
     enum: Object.values(AssetTypeString),

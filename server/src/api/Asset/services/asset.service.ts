@@ -76,7 +76,6 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
   try {
-    console.log({ test: validateToSendToOffrIo(data) });
     if (validateToSendToOffrIo(data)) {
       const response = await offrIoService.createAsset(data);
       data.asset_id = response.id;

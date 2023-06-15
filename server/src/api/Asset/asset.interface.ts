@@ -177,6 +177,7 @@ export interface AssetDocument extends Document {
   asset_id: number;
   name: string;
   area_of_interest: string;
+  radius: string;
   description: string;
   asset_address: {
     latitude: number;
@@ -195,6 +196,7 @@ export interface AssetDocument extends Document {
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   asset_type_string: AssetTypeString;
+  property_type: AssetTypeString;
   currency_code: CurrencyCode;
   reserved: boolean;
   master_branch_name: string;

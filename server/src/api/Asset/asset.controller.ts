@@ -144,7 +144,8 @@ export class AssetController {
    * @apiSampleRequest /api/asset
    *
    * @apiBody {string} name
-   * @apiBody {string} descrption
+   * @apiBody {string} area_of_interest
+   * @apiBody {string} radius
    * @apiBody {object} asset_address
    * @apiBody {number} asset_address.latitude
    * @apiBody {number} asset_address.longitude
@@ -159,7 +160,7 @@ export class AssetController {
    * @apiBody {string} status_string
    * @apiBody {string} transaction_type_string
    * @apiBody {string} master_asset_type_string
-   * @apiBody {string} asset_type_string
+   * @apiBody {string} property_type
    * @apiBody {string} currency_code
    * @apiBody {object} asset_rent
    * @apiBody {string} asset_rent.rental_amount
@@ -194,6 +195,7 @@ export class AssetController {
    *    {
    *     "name": "",
    *     "area_of_interest": "",
+   *     "radius": "0",
    *     "asset_address": {
    *         "latitude": 0,
    *         "longitude": 0,
@@ -208,8 +210,7 @@ export class AssetController {
    *     },
    *     "status_string": "Draft",
    *     "transaction_type_string": "Rent",
-   *     "master_asset_type_string": "",
-   *     "asset_type_string": "",
+   *     "property_type": "",
    *     "asset_rent": {
    *         "rental_amount": "1200",
    *         "rental_frequency": "Month",
@@ -224,8 +225,8 @@ export class AssetController {
    *         "number_of_bathrooms": 1,
    *         "number_of_bedrooms": 1
    *     },
-   *     "property_features": ["Parks Nearby],
-   *     "specific_property_features": ["Garden","Terrace"],
+   *     "property_features": ["Parks Nearby"],
+   *     "specific_property_features": ["Garden","Terrace"]
    * }
    *
    * @apiPermission admin

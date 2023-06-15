@@ -1,5 +1,5 @@
 import offrIoRequest from '../offr-io.request';
-import { AssetDocument } from '../api/Asset/asset.interface';
+import { AssetDocument, MasterAssetTypeSring } from '../api/Asset/asset.interface';
 import config from '../config';
 import { AxiosResponse } from 'axios';
 import { UserDocument } from '../api/User/user.interface';
@@ -51,6 +51,8 @@ const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
     { name: 'Number of bedrooms', type: 'Number', value: asset.room_details.number_of_bedrooms },
     { name: 'Number of bathrooms', type: 'Number', value: asset.room_details.number_of_bathrooms }
   ];
+  asset.master_asset_type_string = MasterAssetTypeSring.Residential;
+  asset.asset_type_string = asset.property_type;
   return asset;
 };
 
