@@ -3,6 +3,7 @@ import { AssetDocument, MasterAssetTypeSring } from '../api/Asset/asset.interfac
 import config from '../config';
 import { AxiosResponse } from 'axios';
 import { UserDocument } from '../api/User/user.interface';
+import { getCurrentPropertyTypeForPost } from '../api/Asset/helpers';
 
 const createContact = async (contact: UserDocument) => {
   const postData = {
@@ -25,13 +26,16 @@ const getAssets = async (): Promise<any[]> => {
 };
 
 const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
-  return await offrIoRequest.patch('/asset/patch/' + 2716, {
-    name: body.name,
-    asset_address: body.asset_address,
-    status_string: body.status_string,
-    transaction_type_string: body.transaction_type_string,
-    master_asset_type_string: body.master_asset_type_string,
-    asset_type_string: body.asset_type_string
+  const data = mapAssetBeforePost(body);
+
+  return await offrIoRequest.patch('/asset/patch/' + assetId, {
+    name: data.name,
+    asset_address: data.asset_address,
+    status_string: data.status_string,
+    transaction_type_string: data.transaction_type_string,
+    master_asset_type_string: data.master_asset_type_string,
+    asset_type_string: data.asset_type_string,
+    asset_attribute: data.asset_attribute
     // client_id: 861,
     // client: {
     //   firstname: 'Refail',
@@ -48,19 +52,20 @@ const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
 
 const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
   asset.asset_attribute = [
-    { name: 'Number of bedrooms', type: 'Number', value: asset.room_details.number_of_bedrooms },
-    { name: 'Number of bathrooms', type: 'Number', value: asset.room_details.number_of_bathrooms }
+    { name: 'number_of_bedrooms', type: 'Number', value: asset.room_details.number_of_bedrooms },
+    { name: 'number_of_bathrooms', type: 'Number', value: asset.room_details.number_of_bathrooms },
+    { name: 'floor_size', type: 'Number', value: asset.floor_size },
+    { name: 'floor_size_unit', type: 'Select', value: asset.floor_size_unit }
   ];
   asset.master_asset_type_string = MasterAssetTypeSring.Residential;
-  asset.asset_type_string = asset.property_type;
+  asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
   return asset;
 };
 
 const createAsset = async (asset: AssetDocument) => {
-  // const data = mapAssetBeforePost(asset);
-  // const response = await offrIoRequest.post('/asset/post', data);
-  // return response.data;
-  return { id: 123 };
+  const data = mapAssetBeforePost(asset);
+  const response = await offrIoRequest.post('/asset/post', data);
+  return response.data;
 };
 
 const addAssetDocument = async (images: any[], assetId: number) => {

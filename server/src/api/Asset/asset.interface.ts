@@ -208,6 +208,8 @@ export interface AssetDocument extends Document {
     number_of_bathrooms: string;
     number_of_bedrooms: string;
   };
+  floor_size: number;
+  floor_size_unit: string;
   property_features: string[];
   property_preference: string;
   asset_sale?: {

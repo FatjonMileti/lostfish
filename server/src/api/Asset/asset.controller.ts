@@ -219,7 +219,6 @@ export class AssetController {
    *         "available_from": "6/15/2023"
    *     },
    *     "floor_size": 0,
-   *     "floor_size_unit": "",
    *     "property_preference": "New Home",
    *     "room_details": {
    *         "number_of_bathrooms": 1,

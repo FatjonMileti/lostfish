@@ -147,6 +147,7 @@ const approveAssetApplication = async (req: Request, res: Response) => {
     approveContent = 'more content...';
 
     asset.status_string = getCurrentStatusForPost(RentStatusString.LetAgreed);
+
     await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
     if (!asset.buyers) {
       asset.buyers = [];

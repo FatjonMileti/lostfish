@@ -85,27 +85,24 @@ const schema = new Schema<AssetDocument>({
   },
   master_asset_type_string: {
     type: String,
-    required: true,
-    enum: Object.values(MasterAssetTypeSring),
-    default: null
+    enum: Object.values(MasterAssetTypeSring)
   },
   asset_type_string: {
     type: String,
-    required: true,
-    enum: Object.values(AssetTypeString),
-    default: null
+    enum: Object.values(AssetTypeString)
   },
   property_type: {
     type: String,
     required: true,
-    enum: Object.values(AssetTypeString),
-    default: null
+    enum: Object.values(AssetTypeString)
   },
   currency_code: {
     type: String,
     enum: Object.values(CurrencyCode),
     default: CurrencyCode.GBP
   },
+  floor_size: Number,
+  floor_size_unit: String,
   buyers: [Object],
   reserved: { type: Boolean, default: null },
   master_branch_name: String,

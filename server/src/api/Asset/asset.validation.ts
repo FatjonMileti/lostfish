@@ -27,7 +27,6 @@ export const createAssetSchemaValidation = joi.object({
     available_from: joi.date().allow('')
   }),
   floor_size: joi.number().required(),
-  floor_size_unit: joi.string().required(),
   room_details: joi.object({
     number_of_bathrooms: joi.number().required(),
     number_of_bedrooms: joi.number().required()

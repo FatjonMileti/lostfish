@@ -8,7 +8,13 @@ import sendInvitationTemplate from '../../../utils/templates/sendInvitationTempl
 import offrIoService from '../../../external-services/offr-io.service';
 
 import { Types } from 'mongoose';
-import { getCurrentStatusForGet, getCurrentStatusForPost, validateToSendToOffrIo } from '../helpers';
+import {
+  getCurrentPropertyTypeForGet,
+  getCurrentPropertyTypeForPost,
+  getCurrentStatusForGet,
+  getCurrentStatusForPost,
+  validateToSendToOffrIo
+} from '../helpers';
 import MailService from '../../../utils/email';
 const mailService = MailService.getInstance();
 
@@ -57,28 +63,30 @@ const findAll = async (req: Request, res: Response) => {
 
 const syncAll = async (req: Request, res: Response) => {
   const response = await offrIoService.getAssets();
-  const dataToUpdate = response.map((data: any) => {
-    return {
-      updateOne: {
-        filter: { name: data.name },
-        update: {
-          ...data
-        },
-        upsert: true
-      }
-    };
-  });
-  await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
+  // const dataToUpdate = response.map((data: any) => {
+  //   return {
+  //     updateOne: {
+  //       filter: { name: data.name },
+  //       update: {
+  //         ...data
+  //       },
+  //       upsert: true
+  //     }
+  //   };
+  // });
+  // await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
   res.status(httpStatus.OK).send(response);
 };
 
 const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
+  data.floor_size_unit = 'Meter Squared';
   try {
     if (validateToSendToOffrIo(data)) {
       const response = await offrIoService.createAsset(data);
       data.asset_id = response.id;
+      data.asset_attribute = response.asset_attribute;
     }
 
     const asset: AssetDocument = new AssetModel({ ...data });
@@ -105,13 +113,18 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.transaction_type_string = req.body.transaction_type_string;
     }
 
-    await asset.save();
+    if (req.body.hasOwnProperty('property_type')) {
+      asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
+    }
 
-    await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
+    const response = await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
+    if (response.status === 200) {
+      asset.asset_attribute = response.data.asset_attribute;
+    }
+    await asset.save();
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
-    console.log(error);
     throw createError(400, { message: error?.message });
   }
 };
