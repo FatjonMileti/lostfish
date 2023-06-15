@@ -6,6 +6,8 @@ import { NewPropertyStep0 } from './Newproperty.Step0';
 import { NewPropertyStep1 } from './NewProperty.Step1';
 import { NewPropertyStep2 } from './NewProperty.Step2';
 import { NewPropertyStep3 } from './NewProperty.Step3';
+import axios from '../../utils/axios';
+import { useGlobalState } from '../../globalState';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -44,6 +46,7 @@ export interface NewPropertyStateType {
 
   rentingPrice: string | undefined;
   promotionalPrice: string | undefined;
+  paymentFrequency: string | undefined;
   monthsPayedInAdvance: string | undefined;
   creditScoreRequirements: string | undefined;
   contractDetails: {
@@ -66,6 +69,10 @@ export interface PropertyService extends SettersType<NewPropertyStateType> {
 
 export const NewProperty = styled(({ className, showStore }: NewPropertyProps) => {
   const [modalVisibility, setModalVisibility] = showStore;
+
+  const {
+    user: [{ auth }]
+  } = useGlobalState();
 
   const [state, setState] = React.useState<NewPropertyStateType>({
     currentStep: 0,
@@ -99,6 +106,7 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
 
     rentingPrice: undefined,
     promotionalPrice: undefined,
+    paymentFrequency: undefined,
     monthsPayedInAdvance: undefined,
     creditScoreRequirements: undefined,
     contractDetails: {
@@ -132,7 +140,21 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
     setMonthsPayedInAdvance: setItemState('monthsPayedInAdvance'),
     setCreditScoreRequirements: setItemState('creditScoreRequirements'),
     setContractDetails: setItemState('contractDetails'),
+    setPaymentFrequency: setItemState('paymentFrequency'),
     setItemState
+  };
+
+  const saveProperty = async () => {
+    try {
+      const data = {
+        transaction_type_string: ['Rent', 'Sale'][state.lookingFor],
+        name: state.areaOfInterest
+      };
+
+      const response = await axios(auth.access_token).post('/api/asset', data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -149,7 +171,8 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
         <NewPropertyStep1
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            setModalVisibility(false);
+            saveProperty();
+            // setModalVisibility(false);
           }}
           newPropertyService={newPropertyService}
         />

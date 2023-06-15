@@ -10,8 +10,6 @@ import { Switch } from '../../components/Switch';
 import { Link } from '../../components/Link';
 import avatar from '../MyAccount/images/avatar1.svg';
 import { PropertyService } from './NewProperty';
-import { Upload } from '../../components/Upload';
-import { Checkbox } from '../../components/Checkbox';
 import { Radio } from '../../components/Radio';
 import { Select } from '../../components/Select/Select';
 
@@ -119,12 +117,26 @@ export const NewPropertyStep3 = styled(
                   required
                   value={propertyService.state.rentingPrice}
                   onChange={({ target: { value } }) => propertyService.setRentingPrice(value)}
+                  startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
                 />
                 <TextField
                   label='Promotional price (optional)'
                   value={propertyService.state.promotionalPrice}
                   onChange={({ target: { value } }) => propertyService.setPromotionalPrice(value)}
+                  startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
                 />
+                <Select
+                  label='Payment Frequency'
+                  value={propertyService.state.paymentFrequency}
+                  onChange={({ target: { value } }) => propertyService.setPaymentFrequency(value)}>
+                  <option></option>
+                  <option value='Day'>Day</option>
+                  <option value='Week'>Week</option>
+                  <option value='2week'>2week</option>
+                  <option value='4week'>4week</option>
+                  <option value='Month'>Month</option>
+                  <option value='Year'></option>
+                </Select>
               </div>
             </div>
 
@@ -155,8 +167,8 @@ export const NewPropertyStep3 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='3'
-                      checked={propertyService.state.creditScoreRequirements === '3'}
+                      value='Excellent'
+                      checked={propertyService.state.creditScoreRequirements === 'Excellent'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
                     <label htmlFor={id}>Parking spot</label>
@@ -167,8 +179,8 @@ export const NewPropertyStep3 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='2'
-                      checked={propertyService.state.creditScoreRequirements === '2'}
+                      value='Good'
+                      checked={propertyService.state.creditScoreRequirements === 'Good'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
                     <label htmlFor={id}>Parking spot</label>
@@ -179,8 +191,8 @@ export const NewPropertyStep3 = styled(
                   <div className='radio-wrapper'>
                     <Radio
                       id={id}
-                      value='1'
-                      checked={propertyService.state.creditScoreRequirements === '1'}
+                      value='Fair'
+                      checked={propertyService.state.creditScoreRequirements === 'Fair'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
                     <label htmlFor={id}>Parking spot</label>
@@ -208,7 +220,7 @@ export const NewPropertyStep3 = styled(
                       }
                       checked={propertyService.state.contractDetails.guarantor}
                     />
-                    <label htmlFor={id}>Parks nearby</label>
+                    <label htmlFor={id}>Guarantor</label>
                   </div>
                 ))(React.useId())}
 
@@ -225,7 +237,7 @@ export const NewPropertyStep3 = styled(
                       }
                       checked={propertyService.state.contractDetails.reviewedProperty}
                     />
-                    <label htmlFor={id}>Parks nearby</label>
+                    <label htmlFor={id}>Reviewed property</label>
                   </div>
                 ))(React.useId())}
 
@@ -242,7 +254,7 @@ export const NewPropertyStep3 = styled(
                       }
                       checked={propertyService.state.contractDetails.energyCertificate}
                     />
-                    <label htmlFor={id}>Parks nearby</label>
+                    <label htmlFor={id}>Energy certificate</label>
                   </div>
                 ))(React.useId())}
               </div>
