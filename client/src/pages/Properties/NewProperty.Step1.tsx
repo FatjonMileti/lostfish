@@ -135,10 +135,9 @@ export const NewPropertyStep1 = styled(
                   onChange={({ target: { value } }) => newPropertyService.setRadius(value)}>
                   <option></option>
                   <option value='1'>1 mi</option>
-                  <option value='2'>2 mi</option>
-                  <option value='3'>3 mi</option>
                   <option value='5'>5 mi</option>
                   <option value='10'>10 mi</option>
+                  <option value='50'>50 mi</option>
                 </Select>
               </div>
             </div>
