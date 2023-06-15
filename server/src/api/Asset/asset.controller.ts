@@ -224,7 +224,7 @@ export class AssetController {
   private createAsset = this.assetService.createAsset;
 
   /**
-   * @api {post} /api/asset Post as draft
+   * @api {post} /api/asset/draft Post as draft
    * @apiDescription Add a new asset as draft
    * @apiGroup Asset
    * @apiSampleRequest /api/asset/draft
