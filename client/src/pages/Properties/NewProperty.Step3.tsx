@@ -59,7 +59,7 @@ export const NewPropertyStep3 = styled(
 
             <div className='step-details'>
               <Typography className='step-name' variant='body4'>
-                Property details
+                Pricing details
               </Typography>
 
               <Typography variant='body5'>
@@ -171,7 +171,7 @@ export const NewPropertyStep3 = styled(
                       checked={propertyService.state.creditScoreRequirements === 'Excellent'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
-                    <label htmlFor={id}>Parking spot</label>
+                    <label htmlFor={id}>Excellent</label>
                   </div>
                 ))(React.useId())}
 
@@ -183,7 +183,7 @@ export const NewPropertyStep3 = styled(
                       checked={propertyService.state.creditScoreRequirements === 'Good'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
-                    <label htmlFor={id}>Parking spot</label>
+                    <label htmlFor={id}>Good</label>
                   </div>
                 ))(React.useId())}
 
@@ -195,7 +195,7 @@ export const NewPropertyStep3 = styled(
                       checked={propertyService.state.creditScoreRequirements === 'Fair'}
                       onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
                     />
-                    <label htmlFor={id}>Parking spot</label>
+                    <label htmlFor={id}>Fair</label>
                   </div>
                 ))(React.useId())}
               </div>
