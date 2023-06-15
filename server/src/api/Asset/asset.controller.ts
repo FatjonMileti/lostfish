@@ -149,14 +149,6 @@ export class AssetController {
    * @apiBody {object} asset_address
    * @apiBody {number} asset_address.latitude
    * @apiBody {number} asset_address.longitude
-   * @apiBody {string} asset_address.street_number
-   * @apiBody {string} asset_address.route
-   * @apiBody {string} asset_address.neighbourhood
-   * @apiBody {string} asset_address.postal_town
-   * @apiBody {string} asset_address.postal_code
-   * @apiBody {string} asset_address.administrative_area_level_1
-   * @apiBody {string} asset_address.country_code
-   * @apiBody {string} asset_address.text
    * @apiBody {string} status_string
    * @apiBody {string} transaction_type_string
    * @apiBody {string} master_asset_type_string
@@ -198,15 +190,7 @@ export class AssetController {
    *     "radius": "0",
    *     "asset_address": {
    *         "latitude": 0,
-   *         "longitude": 0,
-   *         "street_number": "",
-   *         "route": "",
-   *         "neighbourhood": "",
-   *         "postal_town": "",
-   *         "postal_code": "",
-   *         "administrative_area_level_1": "",
-   *         "country_code": "GBR",
-   *         "text": ""
+   *         "longitude": 0
    *     },
    *     "status_string": "Draft",
    *     "transaction_type_string": "Rent",

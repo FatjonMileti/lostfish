@@ -82,6 +82,16 @@ export class MapController {
     }
   };
 
+  /**
+   * @api {get} /api/map/address/:address/radius/:radius Get address
+   * @apiDescription Get Address
+   * @apiGroup Map
+   * @apiSampleRequest /api/map/address/:address/radius/:radius
+   *
+   * @apiQuery {string} latitude latitude
+   * @apiQuery {string} longitude longitude
+   *
+   */
   private findPlaceWithAddress = async (req: express.Request, res: express.Response) => {
     const address = req.params.address;
     /* TODO How we will use radius ?*/

@@ -6,15 +6,7 @@ export const createAssetSchemaValidation = joi.object({
   description: joi.string().allow(''),
   asset_address: joi.object({
     latitude: joi.number().min(-90).max(90).required(),
-    longitude: joi.number().min(-180).max(180).required(),
-    street_number: joi.string().allow(''),
-    route: joi.string().allow(''),
-    neighbourhood: joi.string().allow(''),
-    postal_town: joi.string().allow(''),
-    postal_code: joi.string().required(),
-    administrative_area_level_1: joi.string().allow(''),
-    country_code: joi.string().required(),
-    text: joi.string()
+    longitude: joi.number().min(-180).max(180).required()
   }),
   status_string: joi.string().required(),
   transaction_type_string: joi.string().required(),

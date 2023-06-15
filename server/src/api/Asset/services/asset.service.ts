@@ -16,6 +16,7 @@ import {
   validateToSendToOffrIo
 } from '../helpers';
 import MailService from '../../../utils/email';
+import googleMapService from '../../../external-services/google-map.service';
 const mailService = MailService.getInstance();
 
 const findAll = async (req: Request, res: Response) => {
@@ -82,6 +83,16 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
+
+  const assetAddress = await googleMapService.getAddress(
+    data.asset_address.latitude,
+    data.asset_address.longitude
+  );
+
+  if (assetAddress) {
+    data.asset_address = assetAddress;
+  }
+
   try {
     if (validateToSendToOffrIo(data)) {
       const response = await offrIoService.createAsset(data);
