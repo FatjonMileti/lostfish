@@ -62,5 +62,7 @@ export const validateToSendToOffrIo = (asset: AssetDocument): boolean => {
   ) {
     isValid = true;
   }
-  return isValid;
+  /*TODO Uncomment this for validating correctly property to send in offr.io*/
+  // return isValid;
+  return false;
 };

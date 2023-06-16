@@ -57,8 +57,8 @@ const schema = new Schema<AssetDocument>({
   description: { type: String },
   radius: String,
   asset_address: {
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
+    latitude: { type: Number },
+    longitude: { type: Number },
     street_number: String,
     route: String,
     neighbourhood: String,
@@ -68,9 +68,9 @@ const schema = new Schema<AssetDocument>({
     country_code: {
       type: String,
       enum: Object.values(CountryCode),
-      default: null
+      default: CountryCode.GBR
     },
-    text: { type: String, required: true }
+    text: { type: String }
   },
   status_string: {
     type: String,
@@ -81,7 +81,7 @@ const schema = new Schema<AssetDocument>({
     type: String,
     required: true,
     enum: Object.values(TransactionTypeString),
-    default: null
+    default: TransactionTypeString.Rent
   },
   master_asset_type_string: {
     type: String,
@@ -92,8 +92,7 @@ const schema = new Schema<AssetDocument>({
     enum: Object.values(AssetTypeString)
   },
   property_type: {
-    type: String,
-    required: true
+    type: String
   },
   currency_code: {
     type: String,
@@ -122,12 +121,7 @@ const schema = new Schema<AssetDocument>({
   asset_sale: { type: AssetSale, default: null },
   asset_rent: {
     rental_amount: Number,
-    rental_frequency: {
-      type: String,
-      enum: Object.values(RentalFrequency),
-      default: RentalFrequency.Month,
-      _id: false
-    },
+    rental_frequency: String,
     deposit_amount: { type: Number, default: null },
     interest_by: Date,
     available_from: Date

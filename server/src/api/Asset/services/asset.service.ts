@@ -1,5 +1,5 @@
 import AssetModel from '../schemas/asset.schema';
-import { AssetDocument, IOffer } from '../asset.interface';
+import { AssetDocument, CurrencyCode, IOffer, MasterAssetTypeSring } from '../asset.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
@@ -9,7 +9,6 @@ import offrIoService from '../../../external-services/offr-io.service';
 
 import { Types } from 'mongoose';
 import {
-  getCurrentPropertyTypeForGet,
   getCurrentPropertyTypeForPost,
   getCurrentStatusForGet,
   getCurrentStatusForPost,
@@ -17,6 +16,7 @@ import {
 } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
+
 const mailService = MailService.getInstance();
 
 const findAll = async (req: Request, res: Response) => {
@@ -83,14 +83,17 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body as any;
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
+  data.currency_code = CurrencyCode.GBP;
+  data.master_asset_type_string = MasterAssetTypeSring.Residential;
+  if (data.asset_address.longitude && data.asset_address.longitude) {
+    const assetAddress = await googleMapService.getAddress(
+      data.asset_address.latitude,
+      data.asset_address.longitude
+    );
 
-  const assetAddress = await googleMapService.getAddress(
-    data.asset_address.latitude,
-    data.asset_address.longitude
-  );
-
-  if (assetAddress) {
-    data.asset_address = assetAddress;
+    if (assetAddress) {
+      data.asset_address = assetAddress;
+    }
   }
 
   try {
@@ -107,7 +110,6 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
     // }
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
-    console.log(error);
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });
   }
 };
