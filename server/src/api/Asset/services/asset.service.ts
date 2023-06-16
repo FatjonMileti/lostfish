@@ -85,13 +85,15 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
   data.master_asset_type_string = MasterAssetTypeSring.Residential;
-  const assetAddress = await googleMapService.getAddress(
-    data.asset_address.latitude,
-    data.asset_address.longitude
-  );
+  if (data.asset_address.longitude && data.asset_address.longitude) {
+    const assetAddress = await googleMapService.getAddress(
+      data.asset_address.latitude,
+      data.asset_address.longitude
+    );
 
-  if (assetAddress) {
-    data.asset_address = assetAddress;
+    if (assetAddress) {
+      data.asset_address = assetAddress;
+    }
   }
 
   try {

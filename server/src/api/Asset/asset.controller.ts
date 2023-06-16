@@ -10,6 +10,76 @@ import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 
 /**
+ * @apiDefine CreateAssetExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "name": "",
+ *     "area_of_interest": "",
+ *     "radius": "0",
+ *     "asset_address": {
+ *         "latitude": 0,
+ *         "longitude": 0
+ *     },
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "property_type": "Detached",
+ *     "asset_rent": {
+ *         "rental_amount": "1200",
+ *         "rental_frequency": "Month",
+ *         "deposit_amount": "200",
+ *         "interest_by": "6/15/2023",
+ *         "available_from": "6/15/2023"
+ *     },
+ *     "floor_size": 0,
+ *     "property_preference": "New Home",
+ *     "room_details": {
+ *         "number_of_bathrooms": 1,
+ *         "number_of_bedrooms": 1
+ *     },
+ *     "property_features": ["Parks Nearby"],
+ *     "specific_property_features": ["Garden","Terrace"],
+ *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
+ *     "credit_score_requirements": "Good",
+ *     "contact_details": ["Guarantor"]
+ * }
+ */
+
+/**
+ * @apiDefine CreateAssetDraftExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "name": "",
+ *     "area_of_interest": "",
+ *     "radius": "0",
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "asset_address": {
+ *         "latitude": "",
+ *         "longitude": ""
+ *     },
+ *     "property_type": "",
+ *     "asset_rent": {
+ *         "rental_amount": "",
+ *         "rental_frequency": "",
+ *         "deposit_amount": "",
+ *         "interest_by": "",
+ *         "available_from": ""
+ *     },
+ *     "floor_size": 0,
+ *     "property_preference": "",
+ *     "room_details": {
+ *         "number_of_bathrooms": 1,
+ *         "number_of_bedrooms": 1
+ *     },
+ *     "property_features": [""],
+ *     "specific_property_features": [],
+ *     "property_images": [],
+ *     "credit_score_requirements": "",
+ *     "contact_details": []
+ * }
+ */
+
+/**
  * @apiDefine CreateAsset
  * @apiBody {string} name
  * @apiBody {string} area_of_interest
@@ -42,37 +112,6 @@ import { CASLAction } from '../../casl/casl.interface';
  * @apiBody {string[]} property_features
  * @apiBody {string} credit_score_requirements
  * @apiBody {string[]} contact_details
- * @apiExample {json} Example request body:
- *    {
- *     "name": "",
- *     "area_of_interest": "",
- *     "radius": "0",
- *     "asset_address": {
- *         "latitude": 0,
- *         "longitude": 0
- *     },
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "property_type": "Detached",
- *     "asset_rent": {
- *         "rental_amount": "1200",
- *         "rental_frequency": "Month",
- *         "deposit_amount": "200",
- *         "interest_by": "6/15/2023",
- *         "available_from": "6/15/2023"
- *     },
- *     "floor_size": 0,
- *     "property_preference": "New Home",
- *     "room_details": {
- *         "number_of_bathrooms": 1,
- *         "number_of_bedrooms": 1
- *     },
- *     "property_features": ["Parks Nearby"],
- *     "specific_property_features": ["Garden","Terrace"],
- *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
- *     "credit_score_requirements": "Good",
- *     "contact_details": ["Guarantor"]
- * }
  *
  */
 
@@ -216,7 +255,7 @@ export class AssetController {
    * @apiSampleRequest /api/asset
    *
    * @apiUse CreateAsset
-   *
+   * @apiUse CreateAssetExample
    * @apiPermission admin
    * @apiUse bearer
    */
@@ -229,7 +268,7 @@ export class AssetController {
    * @apiSampleRequest /api/asset/draft
    *
    * @apiUse CreateAsset
-   *
+   * @apiUse CreateAssetDraftExample
    * @apiPermission admin
    * @apiUse bearer
    */

@@ -56,7 +56,7 @@ export const createAssetSchemaValidationDraft = joi.object({
     number_of_bathrooms: joi.number(),
     number_of_bedrooms: joi.number()
   }),
-  property_features: joi.array().items(joi.string()),
+  property_features: joi.array().items(joi.string().allow('')),
   property_preference: joi.string().allow(''),
   specific_property_features: joi.array().items(joi.string()),
   property_images: joi.array(),
