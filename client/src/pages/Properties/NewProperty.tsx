@@ -15,13 +15,13 @@ export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface NewPropertyStateType {
   currentStep: number;
-  lookingFor: number;
+  lookingFor: string;
 
   areaOfInterest: string | undefined;
-  propertyType: null | string;
-  propertyPreferences: null | string;
+  propertyType: string;
+  propertyPreferences: string;
   propertyFeatures: {
-    parksNearBy: boolean;
+    parksNearby: boolean;
     publicTransportNearby: boolean;
     shoppingCentersNearby: boolean;
   };
@@ -47,7 +47,7 @@ export interface NewPropertyStateType {
   rentingPrice: string | undefined;
   promotionalPrice: string | undefined;
   paymentFrequency: string | undefined;
-  monthsPayedInAdvance: string | undefined;
+  depositAmount: string | undefined;
   creditScoreRequirements: string | undefined;
   contractDetails: {
     guarantor: boolean;
@@ -76,13 +76,13 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
 
   const [state, setState] = React.useState<NewPropertyStateType>({
     currentStep: 0,
-    lookingFor: 0,
-    areaOfInterest: undefined,
+    lookingFor: 'Rent',
+    areaOfInterest: 'London, UK',
     radius: undefined,
-    propertyType: null,
-    propertyPreferences: null,
+    propertyType: '',
+    propertyPreferences: '',
     propertyFeatures: {
-      parksNearBy: false,
+      parksNearby: false,
       publicTransportNearby: false,
       shoppingCentersNearby: false
     },
@@ -107,7 +107,7 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
     rentingPrice: undefined,
     promotionalPrice: undefined,
     paymentFrequency: undefined,
-    monthsPayedInAdvance: undefined,
+    depositAmount: undefined,
     creditScoreRequirements: undefined,
     contractDetails: {
       guarantor: false,
@@ -137,7 +137,7 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
     setRentingPrice: setItemState('rentingPrice'),
     setPropertyImages: setItemState('propertyImages'),
     setPromotionalPrice: setItemState('promotionalPrice'),
-    setMonthsPayedInAdvance: setItemState('monthsPayedInAdvance'),
+    setDepositAmount: setItemState('depositAmount'),
     setCreditScoreRequirements: setItemState('creditScoreRequirements'),
     setContractDetails: setItemState('contractDetails'),
     setPaymentFrequency: setItemState('paymentFrequency'),
@@ -147,11 +147,63 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   const saveProperty = async () => {
     try {
       const data = {
-        transaction_type_string: ['Rent', 'Sale'][state.lookingFor],
-        name: state.areaOfInterest
+        //step 0
+        transaction_type_string: state.lookingFor,
+        // name: "",
+
+        //step 1
+        area_of_interest: state.areaOfInterest,
+        radius: state.radius,
+        property_type: state.propertyType,
+        property_preference: state.propertyPreferences, //'New Home',
+        property_features: [
+          state.propertyFeatures.parksNearby ? ['Parks Nearby'] : [],
+          state.propertyFeatures.publicTransportNearby ? ['Public transport nearby'] : [],
+          state.propertyFeatures.shoppingCentersNearby ? ['Shopping centers nearby'] : []
+        ].flat(),
+        asset_address: {
+          latitude: 51.5072178,
+          longitude: -0.1275862
+          //   street_number: "",
+          //   route: "",
+          //   neighbourhood: "",
+          //   postal_town: "",
+          //   postal_code: "",
+          //   administrative_area_level_1: "",
+          //   country_code: "GBR",
+          //   text: ""
+        },
+
+        //step 2
+        floor_size: 0,
+        room_details: {
+          number_of_bathrooms: 1,
+          number_of_bedrooms: 1
+        },
+        specific_property_features: ['Garden', 'Terrace'],
+        property_images: [],
+
+        //step 3
+        asset_rent: {
+          rental_amount: state.rentingPrice,
+          rental_frequency: state.paymentFrequency,
+          deposit_amount: '200',
+          interest_by: '6/15/2023',
+          available_from: '6/15/2023'
+        },
+        credit_score_requirements: state.creditScoreRequirements,
+        contract_details: [
+          state.contractDetails.guarantor ? ['Guarantor'] : [],
+          state.contractDetails.reviewedProperty ? ['Reviewed property'] : [],
+          state.contractDetails.energyCertificate ? ['Energy certificate'] : []
+        ].flat(),
+
+        status_string: 'Draft'
       };
 
-      const response = await axios(auth.access_token).post('/api/asset', data);
+      console.log('data: ', data);
+
+      // const response = await axios(auth.access_token).post('/api/asset/draft', data);
     } catch (err) {
       console.log(err);
     }

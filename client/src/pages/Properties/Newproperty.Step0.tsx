@@ -40,14 +40,14 @@ export const NewPropertyStep0 = styled(({ propertyService, closeModal, className
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-tenant ${
-                propertyService.state.lookingFor === 0 ? 'active' : ''
+                propertyService.state.lookingFor === 'Rent' ? 'active' : ''
               }`}
-              onClick={() => propertyService.setLookingFor(0)}>
+              onClick={() => propertyService.setLookingFor('Rent')}>
               <div className='indicators'>
                 <IconButton size='large'>
                   <Icon icon='key' size={26} />
                 </IconButton>
-                <Radio checked={propertyService.state.lookingFor === 0} />
+                <Radio checked={propertyService.state.lookingFor === 'Rent'} />
               </div>
 
               <Typography variant='body4' className='title'>
@@ -61,15 +61,15 @@ export const NewPropertyStep0 = styled(({ propertyService, closeModal, className
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-buyer ${
-                propertyService.state.lookingFor === 1 ? 'active' : ''
+                propertyService.state.lookingFor === 'Sale' ? 'active' : ''
               }`}
-              // onClick={() => propertyService.setLookingFor(1)}
+              // onClick={() => propertyService.setLookingFor('Sale')}
             >
               <div className='indicators'>
                 <IconButton size='large' noBackground>
                   <Icon icon='credit-card' />
                 </IconButton>
-                <Radio checked={propertyService.state.lookingFor === 1} />
+                <Radio checked={propertyService.state.lookingFor === 'Sale'} />
               </div>
 
               <Typography variant='body4' className='title'>

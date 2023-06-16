@@ -50,7 +50,11 @@ export const NewPropertyStep2 = styled(
               </div>
               <div className='what-im-looking-for'>
                 <Typography className='choice' variant='body4'>
-                  {['I’m looking for a tenant', 'I’m looking for a buyer'][propertyService.state.lookingFor]}
+                  {
+                    ['I’m looking for a tenant', 'I’m looking for a buyer'][
+                      ['Rent', 'Sale'].indexOf(propertyService.state.lookingFor)
+                    ]
+                  }
                 </Typography>
                 <Link onClick={() => propertyService.setCurrentStep(0)}>Change</Link>
               </div>

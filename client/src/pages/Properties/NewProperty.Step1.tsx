@@ -51,7 +51,7 @@ export const NewPropertyStep1 = styled(
                 <Typography className='choice' variant='body4'>
                   {
                     ['I’m looking for a tenant', 'I’m looking for a buyer'][
-                      newPropertyService.state.lookingFor
+                      ['Rent', 'Sale'].indexOf(newPropertyService.state.lookingFor)
                     ]
                   }
                 </Typography>
@@ -290,10 +290,10 @@ export const NewPropertyStep1 = styled(
                       onChange={() =>
                         newPropertyService.setPropertyFeatures({
                           ...newPropertyService.state.propertyFeatures,
-                          parksNearBy: !newPropertyService.state.propertyFeatures.parksNearBy
+                          parksNearby: !newPropertyService.state.propertyFeatures.parksNearby
                         })
                       }
-                      checked={newPropertyService.state.propertyFeatures.parksNearBy}
+                      checked={newPropertyService.state.propertyFeatures.parksNearby}
                     />
                     <label htmlFor={id}>Parks nearby</label>
                   </div>
