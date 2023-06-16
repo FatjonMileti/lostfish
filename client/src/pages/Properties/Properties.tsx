@@ -139,7 +139,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         )}
       </div>
 
-      <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />
+      {/*<CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} />*/}
 
       <Footer />
     </div>
