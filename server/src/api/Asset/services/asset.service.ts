@@ -80,11 +80,12 @@ const syncAll = async (req: Request, res: Response) => {
 };
 
 const createAsset = async (req: Request, res: Response): Promise<any> => {
-  const data: AssetDocument = req.body as any;
+  const data: AssetDocument = req.body;
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
   data.master_asset_type_string = MasterAssetTypeSring.Residential;
+
   if (data.asset_address.longitude && data.asset_address.longitude) {
     const assetAddress = await googleMapService.getAddress(
       data.asset_address.latitude,
@@ -157,17 +158,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
-    console.log(error);
     throw createError(400, { message: error?.message });
   }
-};
-
-const makeOffer = async (body: IOffer): Promise<any> => {
-  return AssetModel.findOneAndUpdate(
-    { _id: '646234b8723f31cea630853e' },
-    { $push: { offers: body } },
-    { new: true }
-  );
 };
 
 const getById = async (req: Request, res: Response): Promise<any | null> => {
@@ -256,7 +248,6 @@ export default {
   getById,
   createAsset,
   deleteAsset,
-  makeOffer,
   syncAll,
   updateAsset,
   findById,

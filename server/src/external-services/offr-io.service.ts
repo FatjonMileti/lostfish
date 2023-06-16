@@ -1,6 +1,5 @@
 import offrIoRequest from '../offr-io.request';
 import { AssetDocument, MasterAssetTypeSring } from '../api/Asset/asset.interface';
-import config from '../config';
 import { AxiosResponse } from 'axios';
 import { UserDocument } from '../api/User/user.interface';
 import { getCurrentPropertyTypeForPost } from '../api/Asset/helpers';
@@ -94,18 +93,11 @@ const addAssetDocument = async (images: any[], assetId: number) => {
 
   return Promise.all(promisesArray)
     .then((responses: AxiosResponse[]) => {
-      const data: any[] = [];
-      responses.forEach((response: any) => {
-        data.push(response.data);
-      });
-      return data;
+      return responses.map((response: AxiosResponse) => response.data);
     })
     .catch((error: any) => {
       // Handle any errors that occurred during the requests
-      console.error(error);
-    })
-    .finally(() => {
-      return true;
+      return error;
     });
 };
 
