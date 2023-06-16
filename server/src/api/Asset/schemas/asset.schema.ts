@@ -22,7 +22,7 @@ const Contact = {
   surname: { type: String, required: true },
   legal_name: { type: String },
   email: { type: String, required: true },
-  phone: { type: String, required: true },
+  phone: { type: String },
   company: { type: String, default: null },
   contact_type: {
     type: String,

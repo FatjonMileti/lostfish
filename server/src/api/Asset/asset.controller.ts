@@ -81,37 +81,36 @@ import { CASLAction } from '../../casl/casl.interface';
 
 /**
  * @apiDefine CreateAsset
- * @apiBody {string} name
- * @apiBody {string} area_of_interest
- * @apiBody {string} radius
- * @apiBody {object} asset_address
- * @apiBody {number} asset_address.latitude
- * @apiBody {number} asset_address.longitude
- * @apiBody {string} status_string
- * @apiBody {string} transaction_type_string
- * @apiBody {string} property_type
- * @apiBody {object} asset_rent
- * @apiBody {string} asset_rent.rental_amount
- * @apiBody {string} asset_rent.rental_frequency
- * @apiBody {string} asset_rent.deposit_amount
- * @apiBody {Date} asset_rent.interest_by
+ * @apiBody {String} name
+ * @apiBody {String} area_of_interest
+ * @apiBody {String} radius
+ * @apiBody {Object} asset_address
+ * @apiBody {Number} asset_address.latitude
+ * @apiBody {Number} asset_address.longitude
+ * @apiBody {String} status_string
+ * @apiBody {String} transaction_type_string
+ * @apiBody {String} property_type
+ * @apiBody {Object} asset_rent
+ * @apiBody {String} asset_rent.rental_amount
+ * @apiBody {String} asset_rent.rental_frequency
+ * @apiBody {String} asset_rent.deposit_amount
+ * @apiBody {Date} asset_ren.interest_by
  * @apiBody {Date} asset_rent.available_from
- * @apiBody {number} floor_size
- * @apiBody {string} floor_size_unit
- * @apiBody {string[]} property_preference
+ * @apiBody {Number} floor_size
+ * @apiBody {String} floor_size_unit
+ * @apiBody {String[]} property_preference An array of property preferences.
  * @apiBody {Object} room_details
- * @apiBody {string} room_details.number_of_bathrooms
- * @apiBody {string} room_details.number_of_bedrooms
- * @apiBody {string[]} specific_property_features
- * @apiBody {string} credit_score_requirements
- * @apiBody {string[]} contact_details
- * @apiBody {Object[]} property_images
- * @apiBody {string} property_images.originalName
- * @apiBody {string} property_images.filename
- * @apiBody {string} property_images.path
- * @apiBody {string[]} property_features
- * @apiBody {string} credit_score_requirements
- * @apiBody {string[]} contact_details
+ * @apiBody {String} room_details.number_of_bathrooms
+ * @apiBody {String} room_details.number_of_bedrooms
+ * @apiBody {String[]} specific_property_features An array of property Specific property features.
+ * @apiBody {String} credit_score_requirements
+ * @apiBody {Object[]} property_images An array of property images
+ * @apiBody {String} property_images.originalName
+ * @apiBody {String} property_images.filename
+ * @apiBody {String} property_images.path
+ * @apiBody {String[]} property_features An array of property features.
+ * @apiBody {String} credit_score_requirements
+ * @apiBody {String[]} contact_details An array of contact details
  *
  */
 

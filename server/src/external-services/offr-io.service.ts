@@ -59,6 +59,7 @@ const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
   ];
   asset.master_asset_type_string = MasterAssetTypeSring.Residential;
   asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
+
   return asset;
 };
 
@@ -74,38 +75,38 @@ const addAssetDocument = async (images: any[], assetId: number) => {
     Document = 'Document'
   }
 
-  if (images.length > 0) {
-    const imagesToPost = images.map((image: any) => {
-      return {
-        id: image.filename,
-        asset_id: assetId,
-        url: `${config.api_url}/url-to-file/${image.filename}`,
-        filename: image.originalname,
-        caption: '',
-        type: AssetDocumentType.Image,
-        subtype: image.originalname.split('.')[1]
-      };
-    });
-
-    const postData = (data: any): Promise<AxiosResponse> => {
-      return offrIoRequest.post('/asset_file/post', data);
+  const imagesToPost = images.map((image: any) => {
+    return {
+      id: image.filename,
+      asset_id: assetId,
+      data: `https://www.udr.com/globalassets/corporate/homepage/homepage_4_1274towson.jpg`,
+      filename: image.originalName,
+      caption: '',
+      type: AssetDocumentType.Image,
+      subtype: image.originalName.split('.')[1]
     };
-    const promisesArray: Promise<AxiosResponse>[] = imagesToPost.map((data: any) => postData(data));
+  });
 
-    return Promise.all(promisesArray)
-      .then((responses: AxiosResponse[]) => {
-        // Handle the responses here
-        console.log(responses);
-      })
-      .catch((error: any) => {
-        // Handle any errors that occurred during the requests
-        console.error(error);
-      })
-      .finally(() => {
-        return true;
+  const postData = (data: any): Promise<AxiosResponse> => {
+    return offrIoRequest.post('/asset_file/post', data);
+  };
+  const promisesArray: Promise<AxiosResponse>[] = imagesToPost.map((data: any) => postData(data));
+
+  return Promise.all(promisesArray)
+    .then((responses: AxiosResponse[]) => {
+      const data: any[] = [];
+      responses.forEach((response: any) => {
+        data.push(response.data);
       });
-  }
-  return { message: 'no_images_to_add' };
+      return data;
+    })
+    .catch((error: any) => {
+      // Handle any errors that occurred during the requests
+      console.error(error);
+    })
+    .finally(() => {
+      return true;
+    });
 };
 
 export default {

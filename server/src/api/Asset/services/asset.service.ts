@@ -99,15 +99,25 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   try {
     if (validateToSendToOffrIo(data)) {
       const response = await offrIoService.createAsset(data);
-      data.asset_id = response.id;
-      data.asset_attribute = response.asset_attribute;
+      if (response.status === httpStatus.CREATED) {
+        data.asset_id = response.id;
+        data.asset_attribute = response.asset_attribute;
+
+        if (data.hasOwnProperty('property_images') && data.property_images.length > 0) {
+          const responseImages = await offrIoService.addAssetDocument(
+            req.body.property_images,
+            data.asset_id
+          );
+          if (responseImages && responseImages.length > 0) {
+            data.asset_files = [...responseImages];
+          }
+        }
+      }
     }
 
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
-    // if (asset.property_images.length > 0) {
-    //   offrIoService.addAssetDocument(asset.property_images, asset.asset_id).then((r) => console.log(r));
-    // }
+
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });
@@ -131,14 +141,23 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
     }
 
+    if (req.body.hasOwnProperty('property_images') && req.body.property_images.length > 0) {
+      const responseImages = await offrIoService.addAssetDocument(req.body.property_images, asset.asset_id);
+      if (responseImages && responseImages.length > 0) {
+        asset.asset_files = [...asset.asset_files, ...responseImages];
+      }
+    }
+
     const response = await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
     if (response.status === 200) {
       asset.asset_attribute = response.data.asset_attribute;
     }
+
     await asset.save();
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
+    console.log(error);
     throw createError(400, { message: error?.message });
   }
 };

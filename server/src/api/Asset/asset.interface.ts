@@ -192,7 +192,7 @@ export interface AssetDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
-  asset_files: [any];
+  asset_files: any[];
   status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
