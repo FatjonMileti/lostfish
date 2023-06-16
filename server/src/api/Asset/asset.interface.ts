@@ -24,7 +24,8 @@ export enum CountryCode {
   'ZAF' = 'ZAF',
   'KEN' = 'KEN',
   'ARE' = 'ARE',
-  'CAN' = 'CAN'
+  'CAN' = 'CAN',
+  'AL' = 'AL'
 }
 
 export interface ContactDocument extends Document {
