@@ -51,7 +51,11 @@ export const NewPropertyStep3 = styled(
               </div>
               <div className='what-im-looking-for'>
                 <Typography className='choice' variant='body4'>
-                  {['I’m looking for a tenant', 'I’m looking for a buyer'][propertyService.state.lookingFor]}
+                  {
+                    ['I’m looking for a tenant', 'I’m looking for a buyer'][
+                      ['Rent', 'Sale'].indexOf(propertyService.state.lookingFor)
+                    ]
+                  }
                 </Typography>
                 <Link onClick={() => propertyService.setCurrentStep(0)}>Change</Link>
               </div>
@@ -79,7 +83,7 @@ export const NewPropertyStep3 = styled(
                 },
                 {
                   name: 'Add deposit details',
-                  checked: !!propertyService.state.monthsPayedInAdvance
+                  checked: !!propertyService.state.depositAmount
                 },
                 {
                   name: 'Add credit score requirements',
@@ -135,7 +139,7 @@ export const NewPropertyStep3 = styled(
                   <option value='2week'>2week</option>
                   <option value='4week'>4week</option>
                   <option value='Month'>Month</option>
-                  <option value='Year'></option>
+                  <option value='Year'>Year</option>
                 </Select>
               </div>
             </div>
@@ -145,16 +149,13 @@ export const NewPropertyStep3 = styled(
                 Deposit details
               </Typography>
               <div className='section-content'>
-                <Select
-                  label='Months payed in advance'
+                <TextField
+                  label='Deposit amount'
                   required
-                  value={propertyService.state.monthsPayedInAdvance}
-                  onChange={({ target: { value } }) => propertyService.setMonthsPayedInAdvance(value)}>
-                  <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='3'>3</option>
-                </Select>
+                  value={propertyService.state.depositAmount}
+                  onChange={({ target: { value } }) => propertyService.setDepositAmount(value)}
+                  startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                />
               </div>
             </div>
 
