@@ -9,124 +9,6 @@ import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 
-/**
- * @apiDefine CreateAssetExample
- * @apiExample {json} Example request body:
- *    {
- *     "name": "",
- *     "area_of_interest": "",
- *     "radius": "0",
- *     "asset_address": {
- *         "latitude": 0,
- *         "longitude": 0
- *     },
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "property_type": "Detached",
- *     "asset_rent": {
- *         "rental_amount": "1200",
- *         "rental_frequency": "Month",
- *         "deposit_amount": "200",
- *         "interest_by": "6/15/2023",
- *         "available_from": "6/15/2023"
- *     },
- *     "floor_size": 0,
- *     "property_preference": "New Home",
- *     "room_details": {
- *         "number_of_bathrooms": 1,
- *         "number_of_bedrooms": 1
- *     },
- *     "property_features": ["Parks Nearby"],
- *     "specific_property_features": ["Garden","Terrace"],
- *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
- *     "credit_score_requirements": "Good",
- *     "contact_details": ["Guarantor"]
- * }
- */
-
-/**
- * @apiDefine CreateAssetDraftExample
- * @apiExample {json} Example request body:
- *    {
- *     "name": "",
- *     "area_of_interest": "",
- *     "radius": "0",
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "asset_address": {
- *         "latitude": "",
- *         "longitude": ""
- *     },
- *     "property_type": "",
- *     "asset_rent": {
- *         "rental_amount": "",
- *         "rental_frequency": "",
- *         "deposit_amount": "",
- *         "interest_by": "",
- *         "available_from": ""
- *     },
- *     "floor_size": 0,
- *     "property_preference": "",
- *     "room_details": {
- *         "number_of_bathrooms": 1,
- *         "number_of_bedrooms": 1
- *     },
- *     "property_features": [""],
- *     "specific_property_features": [],
- *     "property_images": [],
- *     "credit_score_requirements": "",
- *     "contact_details": []
- * }
- */
-
-/**
- * @apiDefine UpdateAssetExample
- * @apiExample {json} Example request body:
- *    {
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "asset_address": {
- *         "latitude": "",
- *         "longitude": ""
- *     }
- * }
- */
-
-/**
- * @apiDefine CreateAsset
- * @apiBody {String} name
- * @apiBody {String} area_of_interest
- * @apiBody {String} radius
- * @apiBody {Object} asset_address
- * @apiBody {Number} asset_address.latitude
- * @apiBody {Number} asset_address.longitude
- * @apiBody {String} status_string
- * @apiBody {String} transaction_type_string
- * @apiBody {String} property_type
- * @apiBody {Object} asset_rent
- * @apiBody {String} asset_rent.rental_amount
- * @apiBody {String} asset_rent.rental_frequency
- * @apiBody {String} asset_rent.deposit_amount
- * @apiBody {Date} asset_ren.interest_by
- * @apiBody {Date} asset_rent.available_from
- * @apiBody {Number} floor_size
- * @apiBody {String} floor_size_unit
- * @apiBody {String[]} property_preference An array of property preferences.
- * @apiBody {Object} room_details
- * @apiBody {String} room_details.number_of_bathrooms
- * @apiBody {String} room_details.number_of_bedrooms
- * @apiBody {String[]} specific_property_features An array of property Specific property features.
- * @apiBody {String} credit_score_requirements
- * @apiBody {Object[]} property_images An array of property images
- * @apiBody {String} property_images.originalName
- * @apiBody {String} property_images.filename
- * @apiBody {String} property_images.path
- * @apiBody {String[]} property_features An array of property features.
- * @apiBody {String} credit_score_requirements
- * @apiBody {String[]} contact_details An array of contact details
- *
- */
-
 const router: Router = Router();
 
 export class AssetController {
@@ -353,3 +235,123 @@ export class AssetController {
 
   private delete = this.assetService.deleteAsset;
 }
+
+/* API CONSTANTS FOR ASSET DOCUMENTATION */
+
+/**
+ * @apiDefine CreateAssetExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "name": "",
+ *     "area_of_interest": "",
+ *     "radius": "0",
+ *     "asset_address": {
+ *         "latitude": 0,
+ *         "longitude": 0
+ *     },
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "property_type": "Detached",
+ *     "asset_rent": {
+ *         "rental_amount": "1200",
+ *         "rental_frequency": "Month",
+ *         "deposit_amount": "200",
+ *         "interest_by": "6/15/2023",
+ *         "available_from": "6/15/2023"
+ *     },
+ *     "floor_size": 0,
+ *     "property_preference": "New Home",
+ *     "room_details": {
+ *         "number_of_bathrooms": 1,
+ *         "number_of_bedrooms": 1
+ *     },
+ *     "property_features": ["Parks Nearby"],
+ *     "specific_property_features": ["Garden","Terrace"],
+ *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
+ *     "credit_score_requirements": "Good",
+ *     "contact_details": ["Guarantor"]
+ * }
+ */
+
+/**
+ * @apiDefine CreateAssetDraftExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "name": "",
+ *     "area_of_interest": "",
+ *     "radius": "0",
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "asset_address": {
+ *         "latitude": "",
+ *         "longitude": ""
+ *     },
+ *     "property_type": "",
+ *     "asset_rent": {
+ *         "rental_amount": "",
+ *         "rental_frequency": "",
+ *         "deposit_amount": "",
+ *         "interest_by": "",
+ *         "available_from": ""
+ *     },
+ *     "floor_size": 0,
+ *     "property_preference": "",
+ *     "room_details": {
+ *         "number_of_bathrooms": 1,
+ *         "number_of_bedrooms": 1
+ *     },
+ *     "property_features": [""],
+ *     "specific_property_features": [],
+ *     "property_images": [],
+ *     "credit_score_requirements": "",
+ *     "contact_details": []
+ * }
+ */
+
+/**
+ * @apiDefine UpdateAssetExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "asset_address": {
+ *         "latitude": "",
+ *         "longitude": ""
+ *     }
+ * }
+ */
+
+/**
+ * @apiDefine CreateAsset
+ * @apiBody {String} name
+ * @apiBody {String} area_of_interest
+ * @apiBody {String} radius
+ * @apiBody {Object} asset_address
+ * @apiBody {Number} asset_address.latitude
+ * @apiBody {Number} asset_address.longitude
+ * @apiBody {String} status_string
+ * @apiBody {String} transaction_type_string
+ * @apiBody {String} property_type
+ * @apiBody {Object} asset_rent
+ * @apiBody {String} asset_rent.rental_amount
+ * @apiBody {String} asset_rent.rental_frequency
+ * @apiBody {String} asset_rent.deposit_amount
+ * @apiBody {Date} asset_ren.interest_by
+ * @apiBody {Date} asset_rent.available_from
+ * @apiBody {Number} floor_size
+ * @apiBody {String} floor_size_unit
+ * @apiBody {String[]} property_preference An array of property preferences.
+ * @apiBody {Object} room_details
+ * @apiBody {String} room_details.number_of_bathrooms
+ * @apiBody {String} room_details.number_of_bedrooms
+ * @apiBody {String[]} specific_property_features An array of property Specific property features.
+ * @apiBody {String} credit_score_requirements
+ * @apiBody {Object[]} property_images An array of property images
+ * @apiBody {String} property_images.originalName
+ * @apiBody {String} property_images.filename
+ * @apiBody {String} property_images.path
+ * @apiBody {String[]} property_features An array of property features.
+ * @apiBody {String} credit_score_requirements
+ * @apiBody {String[]} contact_details An array of contact details
+ *
+ */

@@ -39,21 +39,11 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
       })(document, 'script', 'facebook-jssdk');
     };
 
-    const initFacebookSDK = () => {
-      (window as any).FB?.getLoginStatus(function (response: any) {
-        if (response.status === 'connected') {
-          onLoginSuccess(response.authResponse.accessToken);
-        }
-      });
-    };
-
-    // loadFacebookSDK();
-    // initFacebookSDK();
+    loadFacebookSDK();
   }, [appId, onLoginSuccess]);
 
   const handleFacebookLogin = () => {
-    return;
-    /* (window as any).FB.login(
+    (window as any).FB.login(
       function (response: any) {
         if (response.authResponse) {
           onLoginSuccess(response.authResponse.accessToken);
@@ -62,7 +52,7 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
         }
       },
       { scope }
-    ); */
+    );
   };
 
   return (

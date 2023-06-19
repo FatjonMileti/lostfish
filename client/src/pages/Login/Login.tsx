@@ -104,7 +104,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       const userDetails = decodeJWT(response.data.access_token);
       userDetails.rules = response.data.rules;
 
-      await buildUserAbility(userDetails, response);
+      buildUserAbility(userDetails, response);
 
       navigate(location?.state?.url ? location.state.url : '/');
     } catch (err: AxiosError | any) {
@@ -133,7 +133,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       });
       const userDetails = decodeJWT(loginGoogleRes.data.access_token);
       userDetails.rules = loginGoogleRes.data.rules;
-      await buildUserAbility(userDetails, loginGoogleRes);
+      buildUserAbility(userDetails, loginGoogleRes);
     } catch (err) {
       console.log(err);
       //handle error
@@ -157,12 +157,13 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     const response = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
     const userDetails = decodeJWT(response.data.access_token);
     userDetails.rules = response.data.rules;
-    await buildUserAbility(userDetails, response);
+    buildUserAbility(userDetails, response);
   };
 
   const handleFacebookLoginFailure = (error: string) => {
     // Handle login failure
     console.error('Facebook login failed:', error);
+    return setError('facebook', { message: 'Facebook login failed', type: 'client' });
   };
 
   return (
