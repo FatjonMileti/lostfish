@@ -80,6 +80,19 @@ import { CASLAction } from '../../casl/casl.interface';
  */
 
 /**
+ * @apiDefine UpdateAssetExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "status_string": "Draft",
+ *     "transaction_type_string": "Rent",
+ *     "asset_address": {
+ *         "latitude": "",
+ *         "longitude": ""
+ *     }
+ * }
+ */
+
+/**
  * @apiDefine CreateAsset
  * @apiBody {String} name
  * @apiBody {String} area_of_interest
@@ -149,7 +162,13 @@ export class AssetController {
       this.createAssetDraft
     );
     this.router.post('/:id/send-invitation', authorize(), validateId, authorize(), this.sendInvitation);
-    this.router.patch('/:id', authorize(), validateId, this.updateAsset);
+    this.router.patch(
+      '/:id',
+      authorize(),
+      validateId,
+      validator(createAssetSchemaValidationDraft),
+      this.updateAsset
+    );
     this.router.delete('/:id', authorize(), validateId, this.delete);
   }
 
@@ -279,9 +298,8 @@ export class AssetController {
    * @apiGroup Asset
    * @apiSampleRequest /api/asset/:id
    *
-   * @apiBody {string} status_string
-   * @apiBody {string} transaction_type_string
-   *
+   * @apiUse CreateAsset
+   * @apiUse UpdateAssetExample
    * @apiPermission admin
    * @apiUse bearer
    */

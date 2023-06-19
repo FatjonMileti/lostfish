@@ -127,10 +127,31 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
 
 const updateAsset = async (req: Request, res: Response): Promise<any> => {
   try {
+    const data: AssetDocument = req.body;
     const id = req.params.id;
     const asset = await findById(id);
 
-    if (req.body.hasOwnProperty('status_string')) {
+    if (data.hasOwnProperty('name')) {
+      asset.name = data.name;
+    }
+
+    if (data.hasOwnProperty('area_of_interest')) {
+      asset.area_of_interest = data.area_of_interest;
+    }
+
+    if (data.hasOwnProperty('radius')) {
+      asset.radius = data.radius;
+    }
+
+    if (data.hasOwnProperty('description')) {
+      asset.description = data.description;
+    }
+
+    if (data.hasOwnProperty('asset_address')) {
+      asset.asset_address = data.asset_address;
+    }
+
+    if (data.hasOwnProperty('status_string')) {
       asset.status_string = getCurrentStatusForPost(req.body.status_string);
     }
 
@@ -142,7 +163,39 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
     }
 
-    if (req.body.hasOwnProperty('property_images') && req.body.property_images.length > 0) {
+    if (data.hasOwnProperty('asset_rent')) {
+      asset.asset_rent = data.asset_rent;
+    }
+
+    if (data.hasOwnProperty('floor_size')) {
+      asset.floor_size = data.floor_size;
+    }
+
+    if (data.hasOwnProperty('room_details')) {
+      asset.room_details = data.room_details;
+    }
+
+    if (data.hasOwnProperty('property_features')) {
+      asset.property_features = data.property_features;
+    }
+
+    if (data.hasOwnProperty('property_preference')) {
+      asset.property_preference = data.property_preference;
+    }
+
+    if (data.hasOwnProperty('specific_property_features')) {
+      asset.specific_property_features = data.specific_property_features;
+    }
+
+    if (data.hasOwnProperty('credit_score_requirements')) {
+      asset.credit_score_requirements = data.credit_score_requirements;
+    }
+
+    if (data.hasOwnProperty('contact_details')) {
+      asset.contact_details = data.contact_details;
+    }
+
+    if (req.body.hasOwnProperty('property_images') && data.property_images.length > 0) {
       const responseImages = await offrIoService.addAssetDocument(req.body.property_images, asset.asset_id);
       if (responseImages && responseImages.length > 0) {
         asset.asset_files = [...asset.asset_files, ...responseImages];
