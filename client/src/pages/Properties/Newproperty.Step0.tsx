@@ -8,86 +8,113 @@ import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Logo } from '../../components/Logo';
 import { Radio } from '../../components/Radio';
-import { PropertyService } from './NewProperty';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import * as yup from 'yup';
 
-export interface NewPropertyStep0 extends HTMLProps<HTMLDivElement> {
+export type Step0FormType = {
+  lookingFor: 'Rent' | 'Sale';
+};
+
+export const step0Schema = yup.object().shape({
+  lookingFor: yup.string().required()
+});
+
+export interface NewPropertyStep0 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
-  propertyService: PropertyService;
+  form: UseFormReturn<Step0FormType>;
+  setCurrentStep: (currentStep: number) => void;
 }
 
-export const NewPropertyStep0 = styled(({ propertyService, closeModal, className }: NewPropertyStep0) => {
-  return (
-    <div className={`new-property-step-0 ${className}`}>
-      <div className='header'>
-        <Logo />
-        <IconButton size='large' noBackground onClick={closeModal}>
-          <Icon icon='close' size={12} />
-        </IconButton>
-      </div>
+export const NewPropertyStep0 = styled(
+  ({ closeModal, className, form, setCurrentStep }: NewPropertyStep0) => {
+    // React.useEffect(() => {
+    //   form.watch();
+    // }, []);
 
-      <div className='content'>
-        <div className='content-form'>
-          <div className='avatar-box'>
-            <img alt='avatar' src={avatar} className='avatar' />
-            <Typography variant='body4'>I own a place</Typography>
-          </div>
-          <Typography variant='body2' className='field-title'>
-            What type of transaction do you seek?
-          </Typography>
+    console.log('form0: ', form.getFieldState('lookingFor'));
 
-          <div className='looking-for-container'>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 1 }}
-              className={`looking-for-choice for-tenant ${
-                propertyService.state.lookingFor === 'Rent' ? 'active' : ''
-              }`}
-              onClick={() => propertyService.setLookingFor('Rent')}>
-              <div className='indicators'>
-                <IconButton size='large'>
-                  <Icon icon='key' size={26} />
-                </IconButton>
-                <Radio checked={propertyService.state.lookingFor === 'Rent'} />
-              </div>
-
-              <Typography variant='body4' className='title'>
-                I’m looking for a tenant
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Select this option if you are looking to rent a house or an apartment.
-              </Typography>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 1 }}
-              className={`looking-for-choice for-buyer ${
-                propertyService.state.lookingFor === 'Sale' ? 'active' : ''
-              }`}
-              // onClick={() => propertyService.setLookingFor('Sale')}
-            >
-              <div className='indicators'>
-                <IconButton size='large' noBackground>
-                  <Icon icon='credit-card' />
-                </IconButton>
-                <Radio checked={propertyService.state.lookingFor === 'Sale'} />
-              </div>
-
-              <Typography variant='body4' className='title'>
-                I’m looking for a buyer
-              </Typography>
-
-              <Typography variant='body4' className='description'>
-                Select this option if you are looking to buy a house or an apartment.
-              </Typography>
-            </motion.div>
-          </div>
+    return (
+      <div className={`new-property-step-0 ${className}`}>
+        <div className='header'>
+          <Logo />
+          <IconButton size='large' noBackground onClick={closeModal}>
+            <Icon icon='close' size={12} />
+          </IconButton>
         </div>
 
-        <Button onClick={() => propertyService.setCurrentStep(1)}>Refine my search</Button>
+        <div className='content'>
+          <div className='content-form'>
+            <div className='avatar-box'>
+              <img alt='avatar' src={avatar} className='avatar' />
+              <Typography variant='body4'>I own a place</Typography>
+            </div>
+            <Typography variant='body2' className='field-title'>
+              What type of transaction do you seek?
+            </Typography>
+
+            <div className='looking-for-container'>
+              <Controller
+                render={({ field }) => (
+                  <>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 1 }}
+                      className={`looking-for-choice for-tenant ${field.value === 'Rent' ? 'active' : ''}`}
+                      onClick={() => field.onChange({ target: { value: 'Rent' } })}>
+                      <div className='indicators'>
+                        <IconButton size='large'>
+                          <Icon icon='key' size={26} />
+                        </IconButton>
+                        <Radio
+                          value='Rent'
+                          checked={form.getValues('lookingFor') === 'Rent'}
+                          onChange={field.onChange}
+                        />
+                      </div>
+
+                      <Typography variant='body4' className='title'>
+                        I’m looking for a tenant
+                      </Typography>
+                      <Typography variant='body4' className='description'>
+                        Select this option if you are looking to rent a house or an apartment.
+                      </Typography>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 1 }}
+                      className={`looking-for-choice for-buyer ${field.value === 'Sale' ? 'active' : ''}`}
+                      onClick={() => field.onChange({ target: { value: 'Sale' } })}>
+                      <div className='indicators'>
+                        <IconButton size='large' noBackground>
+                          <Icon icon='credit-card' />
+                        </IconButton>
+                        <Radio value='Sale' checked={field.value === 'Sale'} onChange={field.onChange} />
+                      </div>
+
+                      <Typography variant='body4' className='title'>
+                        I’m looking for a buyer
+                      </Typography>
+
+                      <Typography variant='body4' className='description'>
+                        Select this option if you are looking to buy a house or an apartment.
+                      </Typography>
+                    </motion.div>
+                  </>
+                )}
+                name='lookingFor'
+                control={form.control}
+              />
+            </div>
+          </div>
+
+          <Button disabled={!form.formState.isValid} onClick={() => setCurrentStep(1)}>
+            Refine my search
+          </Button>
+        </div>
       </div>
-    </div>
-  );
-})`
+    );
+  }
+)`
   &.new-property-step-0 {
     height: 100%;
     display: grid;

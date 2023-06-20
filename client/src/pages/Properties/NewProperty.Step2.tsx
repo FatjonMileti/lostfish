@@ -9,24 +9,70 @@ import { TextField } from '../../components/TextField';
 import { Switch } from '../../components/Switch';
 import { Link } from '../../components/Link';
 import avatar from '../MyAccount/images/avatar1.svg';
-import { PropertyService } from './NewProperty';
 import { Upload } from '../../components/Upload';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import { Step0FormType } from './Newproperty.Step0';
+import * as yup from 'yup';
 
-export interface NewPropertyStep2props extends HTMLProps<HTMLDivElement> {
+export type Step2FormType = {
+  area?: number;
+  nrOfBedrooms?: number;
+  nrOfBathrooms?: number;
+  specificPropertyFeatures: {
+    'Parking spot': boolean;
+    Garden: boolean;
+    Terrace: boolean;
+    'Fully furnished': boolean;
+    'Partially furnished': boolean;
+    Unfurnished: boolean;
+    'Double glazing': boolean;
+    'Allows smoking': boolean;
+    'Allows pets': boolean;
+    'Close to public transport': boolean;
+  };
+  propertyImages: any[];
+};
+export const step2Schema = yup.object().shape({
+  area: yup.number().min(1).required('Property area is required'),
+  nrOfBedrooms: yup.number().required('Number of bedrooms is required'),
+  nrOfBathrooms: yup.number().required('Number of bathroom is required'),
+  specificPropertyFeatures: yup.object().shape({
+    'Parking spot': yup.boolean(),
+    Garden: yup.boolean(),
+    Terrace: yup.boolean(),
+    'Fully furnished': yup.boolean(),
+    'Partially furnished': yup.boolean(),
+    Unfurnished: yup.boolean(),
+    'Double glazing': yup.boolean(),
+    'Allows smoking': yup.boolean(),
+    'Allows pets': yup.boolean(),
+    'Close to public transport': yup.boolean()
+  }),
+  propertyImages: yup.array().min(6)
+});
+
+export interface NewPropertyStep2props extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
   saveAsDraft: () => void;
-  propertyService: PropertyService;
+  form: UseFormReturn<any>;
+  lookingFor: Step0FormType['lookingFor'];
+  setCurrentStep: (currentStep: number) => void;
 }
 
 export const NewPropertyStep2 = styled(
-  ({ className, closeModal, saveAsDraft, propertyService }: NewPropertyStep2props) => {
-    console.log(propertyService.state);
+  ({ className, closeModal, saveAsDraft, form, lookingFor, setCurrentStep }: NewPropertyStep2props) => {
+    React.useEffect(() => {
+      form.watch();
+    }, []);
+
+    console.log('step2 form: ', form.getValues());
+
     return (
       <div className={`new-property-step-2 ${className}`}>
         <div className='header'>
           <Logo />
           <div className='right-side'>
-            <Button variant='secondary' onClick={saveAsDraft}>
+            <Button variant='secondary' disabled={!form.formState.isValid} onClick={saveAsDraft}>
               Save as draft
             </Button>
             <IconButton size='large' noBackground onClick={closeModal}>
@@ -50,13 +96,9 @@ export const NewPropertyStep2 = styled(
               </div>
               <div className='what-im-looking-for'>
                 <Typography className='choice' variant='body4'>
-                  {
-                    ['I’m looking for a tenant', 'I’m looking for a buyer'][
-                      ['Rent', 'Sale'].indexOf(propertyService.state.lookingFor)
-                    ]
-                  }
+                  {{ Rent: 'I’m looking for a tenant', Sale: 'I’m looking for a buyer' }[lookingFor]}
                 </Typography>
-                <Link onClick={() => propertyService.setCurrentStep(0)}>Change</Link>
+                <Link onClick={() => setCurrentStep(0)}>Change</Link>
               </div>
             </div>
 
@@ -78,19 +120,19 @@ export const NewPropertyStep2 = styled(
               {[
                 {
                   name: 'Add area details',
-                  checked: !!propertyService.state.area
+                  checked: !!form.getValues('area')
                 },
                 {
                   name: 'Add rooms details',
-                  checked: !!propertyService.state.nrOfBedrooms && propertyService.state.nrOfBathrooms
+                  checked: !!form.getValues('nrOfBedrooms') && form.getValues('nrOfBathrooms')
                 },
                 {
                   name: 'Add specific property features',
-                  checked: Object.values(propertyService.state.specificPropertyFeatures).includes(true)
+                  checked: Object.values(form.getValues('specificPropertyFeatures')).includes(true)
                 },
                 {
                   name: 'Add property images',
-                  checked: propertyService.state.propertyImages.length >= 6
+                  checked: form.getValues('propertyImages').length >= 6
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -118,8 +160,10 @@ export const NewPropertyStep2 = styled(
                 <TextField
                   label='Property area (in sqm)'
                   required
-                  value={propertyService.state.area}
-                  onChange={({ target: { value } }) => propertyService.setArea(value)}
+                  {...form.register('area')}
+                  error={!!form.formState.errors.area}
+                  helperText={form.formState.errors.area?.message?.toString()}
+                  type='number'
                 />
               </div>
             </div>
@@ -132,14 +176,18 @@ export const NewPropertyStep2 = styled(
                 <TextField
                   label='Number of bedrooms'
                   required
-                  value={propertyService.state.nrOfBedrooms}
-                  onChange={({ target: { value } }) => propertyService.setNrOfBedrooms(value)}
+                  {...form.register('nrOfBedrooms')}
+                  error={!!form.formState.errors.nrOfBedrooms}
+                  helperText={form.formState.errors.nrOfBedrooms?.message?.toString()}
+                  type='number'
                 />
                 <TextField
                   label='Number of bathrooms'
                   required
-                  value={propertyService.state.nrOfBathrooms}
-                  onChange={({ target: { value } }) => propertyService.setNrOfBathrooms(value)}
+                  {...form.register('nrOfBathrooms')}
+                  error={!!form.formState.errors.nrOfBathrooms}
+                  helperText={form.formState.errors.nrOfBathrooms?.message?.toString()}
+                  type='number'
                 />
               </div>
             </div>
@@ -149,177 +197,34 @@ export const NewPropertyStep2 = styled(
                 Specific property features
               </Typography>
               <div className='section-content'>
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          parkingSpot: !propertyService.state.specificPropertyFeatures.parkingSpot
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.parkingSpot}
-                    />
-                    <label htmlFor={id}>Parking spot</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          garden: !propertyService.state.specificPropertyFeatures.garden
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.garden}
-                    />
-                    <label htmlFor={id}>Garden</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          terrace: !propertyService.state.specificPropertyFeatures.terrace
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.terrace}
-                    />
-                    <label htmlFor={id}>Terrace</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          fullyFurnished: !propertyService.state.specificPropertyFeatures.fullyFurnished
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.fullyFurnished}
-                    />
-                    <label htmlFor={id}>Fully furnished</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          partiallyFurnished:
-                            !propertyService.state.specificPropertyFeatures.partiallyFurnished
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.partiallyFurnished}
-                    />
-                    <label htmlFor={id}>Partially furnished</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          unfurnished: !propertyService.state.specificPropertyFeatures.unfurnished
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.unfurnished}
-                    />
-                    <label htmlFor={id}>Unfurnished</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          doubleGlazing: !propertyService.state.specificPropertyFeatures.doubleGlazing
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.doubleGlazing}
-                    />
-                    <label htmlFor={id}>Double glazing</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          allowsSmoking: !propertyService.state.specificPropertyFeatures.allowsSmoking
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.allowsSmoking}
-                    />
-                    <label htmlFor={id}>Allows smoking</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          allowsPets: !propertyService.state.specificPropertyFeatures.allowsPets
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.allowsPets}
-                    />
-                    <label htmlFor={id}>Allows pets</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      onChange={() =>
-                        propertyService.setSpecificPropertyFeatures({
-                          ...propertyService.state.specificPropertyFeatures,
-                          closeToPublicTransport:
-                            !propertyService.state.specificPropertyFeatures.closeToPublicTransport
-                        })
-                      }
-                      checked={propertyService.state.specificPropertyFeatures.closeToPublicTransport}
-                    />
-                    <label htmlFor={id}>Close to public transport</label>
-                  </div>
-                ))(React.useId())}
+                {
+                  <>
+                    {[
+                      'Parking spot',
+                      'Garden',
+                      'Terrace',
+                      'Fully furnished',
+                      'Partially furnished',
+                      'Unfurnished',
+                      'Double glazing',
+                      'Allows smoking',
+                      'Allows pets',
+                      'Close to public transport'
+                    ].map((specificPropertyFeature, specificPropertyFeatureIndex) =>
+                      ((id: string) => (
+                        <div className='switch-wrapper'>
+                          <Switch
+                            id={id}
+                            size='small'
+                            {...form.register(`specificPropertyFeatures.${specificPropertyFeature}`)}
+                            checked={!!form.getValues('specificPropertyFeatures')[specificPropertyFeature]}
+                          />
+                          <label htmlFor={id}>{specificPropertyFeature}</label>
+                        </div>
+                      ))(React.useId())
+                    )}
+                  </>
+                }
               </div>
             </div>
 
@@ -335,34 +240,42 @@ export const NewPropertyStep2 = styled(
                 </Typography>
               </div>
               <div className='section-content'>
-                <div className='images-list'>
-                  {propertyService.state.propertyImages.map((image, imageIndex) => (
-                    <div key={imageIndex} className='image-wrapper'>
-                      <IconButton
-                        size='large'
-                        className='remove-button'
-                        onClick={() => {
-                          propertyService.setPropertyImages(
-                            propertyService.state.propertyImages.filter((_, i) => i !== imageIndex)
-                          );
-                        }}>
-                        <Icon icon='minus' size={11} />
-                      </IconButton>
-                      <img alt='property image' src={URL.createObjectURL(image)} />
-                    </div>
-                  ))}
-                </div>
-                <Upload
-                  multiple
-                  accept='image/*'
-                  onFiles={(files) => {
-                    propertyService.setPropertyImages([...propertyService.state.propertyImages, ...files]);
-                  }}
-                  button={
-                    <IconButton size='large' className='add-button'>
-                      <Icon icon='plus-1' size={16} />
-                    </IconButton>
-                  }></Upload>
+                <Controller
+                  render={({ field: { value = [], onChange } }) => (
+                    <>
+                      <div className='images-list'>
+                        {value.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                onChange({
+                                  target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
+                                });
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={URL.createObjectURL(image)} />
+                          </div>
+                        ))}
+                      </div>
+                      <Upload
+                        multiple
+                        accept='image/*'
+                        onFiles={(files) => {
+                          onChange({ target: { value: [...form.getValues().propertyImages, ...files] } });
+                        }}
+                        button={
+                          <IconButton size='large' className='add-button'>
+                            <Icon icon='plus-1' size={16} />
+                          </IconButton>
+                        }></Upload>
+                    </>
+                  )}
+                  control={form.control}
+                  name='propertyImages'
+                />
               </div>
             </div>
           </div>
@@ -373,11 +286,12 @@ export const NewPropertyStep2 = styled(
             variant='secondary'
             size='large'
             startIcon={<Icon icon='arrow-left-1' size={12} />}
-            onClick={() => propertyService.setCurrentStep(1)}>
-            back back
+            onClick={() => setCurrentStep(1)}>
+            back
           </Button>
           <Button
-            onClick={() => propertyService.setCurrentStep(3)}
+            // disabled={!form.formState.isValid}
+            onClick={() => setCurrentStep(3)}
             size='large'
             endIcon={<Icon icon='arrow-right-1' size={12} />}>
             Next

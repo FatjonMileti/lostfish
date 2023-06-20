@@ -2,12 +2,14 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Modal } from '../../components/Modal';
 
-import { NewPropertyStep0 } from './Newproperty.Step0';
-import { NewPropertyStep1 } from './NewProperty.Step1';
-import { NewPropertyStep2 } from './NewProperty.Step2';
-import { NewPropertyStep3 } from './NewProperty.Step3';
+import { NewPropertyStep0, Step0FormType, step0Schema } from './Newproperty.Step0';
+import { NewPropertyStep1, Step1FormType, step1Schema } from './NewProperty.Step1';
+import { NewPropertyStep2, Step2FormType, step2Schema } from './NewProperty.Step2';
+import { NewPropertyStep3, Step3FormType, step3Schema } from './NewProperty.Step3';
 import axios from '../../utils/axios';
 import { useGlobalState } from '../../globalState';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -15,56 +17,6 @@ export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface NewPropertyStateType {
   currentStep: number;
-  lookingFor: string;
-
-  areaOfInterest: string | undefined;
-  propertyType: string;
-  propertyPreferences: string;
-  propertyFeatures: {
-    parksNearby: boolean;
-    publicTransportNearby: boolean;
-    shoppingCentersNearby: boolean;
-  };
-  radius: string | undefined;
-
-  area: string | undefined;
-  nrOfBedrooms: string | undefined;
-  nrOfBathrooms: string | undefined;
-  specificPropertyFeatures: {
-    parkingSpot: boolean;
-    garden: boolean;
-    terrace: boolean;
-    fullyFurnished: boolean;
-    partiallyFurnished: boolean;
-    unfurnished: boolean;
-    doubleGlazing: boolean;
-    allowsSmoking: boolean;
-    allowsPets: boolean;
-    closeToPublicTransport: boolean;
-  };
-  propertyImages: any[];
-
-  rentingPrice: string | undefined;
-  promotionalPrice: string | undefined;
-  paymentFrequency: string | undefined;
-  depositAmount: string | undefined;
-  creditScoreRequirements: string | undefined;
-  contractDetails: {
-    guarantor: boolean;
-    reviewedProperty: boolean;
-    energyCertificate: boolean;
-  };
-}
-
-export type SetterFunction<T> = (val: T) => void;
-
-export type SettersType<T> = {
-  [P in keyof T as `set${Capitalize<string & P>}`]: SetterFunction<T[P]>;
-};
-
-export interface PropertyService extends SettersType<NewPropertyStateType> {
-  state: NewPropertyStateType;
-  setItemState: (itemKey: keyof NewPropertyStateType) => void;
 }
 
 export const NewProperty = styled(({ className, showStore }: NewPropertyProps) => {
@@ -75,103 +27,93 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   } = useGlobalState();
 
   const [state, setState] = React.useState<NewPropertyStateType>({
-    currentStep: 0,
-    lookingFor: 'Rent',
-    areaOfInterest: 'London, UK',
-    radius: undefined,
-    propertyType: '',
-    propertyPreferences: '',
-    propertyFeatures: {
-      parksNearby: false,
-      publicTransportNearby: false,
-      shoppingCentersNearby: false
-    },
-
-    nrOfBedrooms: undefined,
-    nrOfBathrooms: undefined,
-    area: undefined,
-    specificPropertyFeatures: {
-      parkingSpot: false,
-      garden: false,
-      terrace: false,
-      fullyFurnished: false,
-      partiallyFurnished: false,
-      unfurnished: false,
-      doubleGlazing: false,
-      allowsSmoking: false,
-      allowsPets: false,
-      closeToPublicTransport: false
-    },
-    propertyImages: [],
-
-    rentingPrice: undefined,
-    promotionalPrice: undefined,
-    paymentFrequency: undefined,
-    depositAmount: undefined,
-    creditScoreRequirements: undefined,
-    contractDetails: {
-      guarantor: false,
-      reviewedProperty: false,
-      energyCertificate: false
-    }
+    currentStep: 0
   });
 
-  const setItemState = (itemKey: keyof NewPropertyStateType) => {
-    return (itemValue: NewPropertyStateType[typeof itemKey]) =>
-      setState((state) => ({ ...state, [itemKey]: itemValue }));
-  };
+  const step0Form = useForm<Step0FormType>({
+    defaultValues: {
+      lookingFor: 'Rent'
+    },
+    resolver: yupResolver(step0Schema),
+    mode: 'all'
+  });
 
-  const newPropertyService: PropertyService = {
-    state,
-    setCurrentStep: setItemState('currentStep'),
-    setLookingFor: setItemState('lookingFor'),
-    setAreaOfInterest: setItemState('areaOfInterest'),
-    setRadius: setItemState('radius'),
-    setPropertyType: setItemState('propertyType'),
-    setPropertyPreferences: setItemState('propertyPreferences'),
-    setPropertyFeatures: setItemState('propertyFeatures'),
-    setArea: setItemState('area'),
-    setNrOfBedrooms: setItemState('nrOfBedrooms'),
-    setNrOfBathrooms: setItemState('nrOfBathrooms'),
-    setSpecificPropertyFeatures: setItemState('specificPropertyFeatures'),
-    setRentingPrice: setItemState('rentingPrice'),
-    setPropertyImages: setItemState('propertyImages'),
-    setPromotionalPrice: setItemState('promotionalPrice'),
-    setDepositAmount: setItemState('depositAmount'),
-    setCreditScoreRequirements: setItemState('creditScoreRequirements'),
-    setContractDetails: setItemState('contractDetails'),
-    setPaymentFrequency: setItemState('paymentFrequency'),
-    setItemState
-  };
+  const step1Form = useForm<Step1FormType>({
+    defaultValues: {
+      areaOfInterest: 'London, UK',
+      radius: undefined,
+      propertyType: undefined,
+      propertyPreferences: undefined,
+      propertyFeatures: {
+        parksNearby: false,
+        publicTransportNearby: false,
+        shoppingCentersNearby: false
+      }
+    },
+    resolver: yupResolver(step1Schema),
+    mode: 'all'
+  });
+
+  const step2Form = useForm<Step2FormType>({
+    values: {
+      area: 50,
+      nrOfBedrooms: undefined,
+      nrOfBathrooms: undefined,
+      specificPropertyFeatures: {
+        'Parking spot': false,
+        Garden: false,
+        Terrace: false,
+        'Fully furnished': false,
+        'Partially furnished': false,
+        Unfurnished: false,
+        'Double glazing': false,
+        'Allows smoking': false,
+        'Allows pets': false,
+        'Close to public transport': false
+      },
+      propertyImages: []
+    },
+    resolver: yupResolver(step2Schema),
+    mode: 'all'
+  });
+
+  const step3Form = useForm<Step3FormType>({
+    values: {
+      rentingPrice: undefined,
+      promotionalPrice: undefined,
+      paymentFrequency: undefined,
+      depositAmount: undefined,
+      creditScoreRequirements: undefined,
+      contractDetails: {
+        guarantor: false,
+        reviewedProperty: false,
+        energyCertificate: false
+      }
+    },
+    resolver: yupResolver(step3Schema),
+    mode: 'all'
+  });
 
   const saveProperty = async () => {
     try {
       const data = {
         //step 0
-        transaction_type_string: state.lookingFor,
+        // transaction_type_string: state.lookingFor,
         // name: "",
 
         //step 1
-        area_of_interest: state.areaOfInterest,
-        radius: state.radius,
-        property_type: state.propertyType,
-        property_preference: state.propertyPreferences, //'New Home',
-        property_features: [
-          state.propertyFeatures.parksNearby ? ['Parks Nearby'] : [],
-          state.propertyFeatures.publicTransportNearby ? ['Public transport nearby'] : [],
-          state.propertyFeatures.shoppingCentersNearby ? ['Shopping centers nearby'] : []
-        ].flat(),
+        // area_of_interest: state.areaOfInterest,
+        // radius: state.radius,
+        // property_type: state.propertyType,
+        // property_preference: state.propertyPreferences, //'New Home',
+        // // property_features: [
+        //   state.propertyFeatures.parksNearby ? ['Parks Nearby'] : [],
+        //   state.propertyFeatures.publicTransportNearby ? ['Public transport nearby'] : [],
+        //   state.propertyFeatures.shoppingCentersNearby ? ['Shopping centers nearby'] : []
+        // ].flat(),
         asset_address: {
           latitude: 51.5072178,
           longitude: -0.1275862
-          //   street_number: "",
-          //   route: "",
-          //   neighbourhood: "",
-          //   postal_town: "",
-          //   postal_code: "",
-          //   administrative_area_level_1: "",
-          //   country_code: "GBR",
-          //   text: ""
         },
 
         //step 2
@@ -185,28 +127,68 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
 
         //step 3
         asset_rent: {
-          rental_amount: state.rentingPrice,
-          rental_frequency: state.paymentFrequency,
+          // rental_amount: state.rentingPrice,
+          // rental_frequency: state.paymentFrequency,
           deposit_amount: '200',
           interest_by: '6/15/2023',
           available_from: '6/15/2023'
         },
-        credit_score_requirements: state.creditScoreRequirements,
-        contract_details: [
-          state.contractDetails.guarantor ? ['Guarantor'] : [],
-          state.contractDetails.reviewedProperty ? ['Reviewed property'] : [],
-          state.contractDetails.energyCertificate ? ['Energy certificate'] : []
-        ].flat(),
+        // credit_score_requirements: state.creditScoreRequirements,
+        // contract_details: [
+        //   state.contractDetails.guarantor ? ['Guarantor'] : [],
+        //   state.contractDetails.reviewedProperty ? ['Reviewed property'] : [],
+        //   state.contractDetails.energyCertificate ? ['Energy certificate'] : []
+        // ].flat(),
 
         status_string: 'Draft'
       };
-
-      console.log('data: ', data);
 
       // const response = await axios(auth.access_token).post('/api/asset/draft', data);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const saveAsDraft = async () => {
+    const data = {
+      // step0
+      transaction_type_string: step0Form.getValues('lookingFor'),
+
+      // step1
+      area_of_interest: step1Form.getValues('areaOfInterest'),
+      asset_address: {
+        latitude: 51.5072178,
+        longitude: -0.1275862
+      },
+      radius: step1Form.getValues('radius'),
+      property_type: step1Form.getValues('propertyType'),
+      property_preference: step1Form.getValues('propertyPreferences'),
+      property_features: [
+        step1Form.getValues('propertyFeatures.parksNearby') ? ['Parks Nearby'] : [],
+        step1Form.getValues('propertyFeatures.publicTransportNearby') ? ['Public transport nearby'] : [],
+        step1Form.getValues('propertyFeatures.shoppingCentersNearby') ? ['Shopping centers nearby'] : []
+      ].flat(),
+
+      // step2
+      floor_size: step2Form.getValues('area'),
+      room_details: {
+        number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
+        number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
+      },
+      specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
+        .filter(([key, value]) => value)
+        .map(([key, value]) => key),
+      property_images: []
+    };
+
+    console.log('data', data);
+    const response = await axios(auth.access_token).post('/api/asset/draft', data);
+
+    console.log('response: ', response);
+  };
+
+  const setCurrentStep = (currentStep: number): void => {
+    setState((state) => ({ ...state, currentStep }));
   };
 
   return (
@@ -216,17 +198,22 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
       onBackdropClick={() => setModalVisibility(false)}
       onClose={() => setModalVisibility(false)}>
       {state.currentStep === 0 && (
-        <NewPropertyStep0 closeModal={() => setModalVisibility(false)} propertyService={newPropertyService} />
+        <NewPropertyStep0
+          closeModal={() => setModalVisibility(false)}
+          form={step0Form}
+          setCurrentStep={setCurrentStep}
+        />
       )}
 
       {state.currentStep === 1 && (
         <NewPropertyStep1
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            saveProperty();
-            // setModalVisibility(false);
+            saveAsDraft();
           }}
-          newPropertyService={newPropertyService}
+          form={step1Form}
+          lookingFor={step0Form.getValues('lookingFor')}
+          setCurrentStep={setCurrentStep}
         />
       )}
 
@@ -234,9 +221,11 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
         <NewPropertyStep2
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            setModalVisibility(false);
+            console.log('step2Data: ', step2Form.getValues());
           }}
-          propertyService={newPropertyService}
+          form={step2Form}
+          lookingFor={step0Form.getValues('lookingFor')}
+          setCurrentStep={setCurrentStep}
         />
       )}
 
@@ -244,9 +233,11 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
         <NewPropertyStep3
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            setModalVisibility(false);
+            console.log('step3Data: ', step3Form.getValues());
           }}
-          propertyService={newPropertyService}
+          form={step3Form}
+          lookingFor={step0Form.getValues('lookingFor')}
+          setCurrentStep={setCurrentStep}
         />
       )}
     </Modal>

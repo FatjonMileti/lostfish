@@ -9,25 +9,58 @@ import { TextField } from '../../components/TextField';
 import { Switch } from '../../components/Switch';
 import { Link } from '../../components/Link';
 import avatar from '../MyAccount/images/avatar1.svg';
-import { PropertyService } from './NewProperty';
 import { Radio } from '../../components/Radio';
 import { Select } from '../../components/Select/Select';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import { Step0FormType } from './Newproperty.Step0';
+import * as yup from 'yup';
 
-export interface NewPropertyStep3props extends HTMLProps<HTMLDivElement> {
+export type Step3FormType = {
+  rentingPrice?: number;
+  promotionalPrice?: number;
+  paymentFrequency?: string;
+  depositAmount?: number;
+  creditScoreRequirements?: string;
+  contractDetails: {
+    guarantor: boolean;
+    reviewedProperty: boolean;
+    energyCertificate: boolean;
+  };
+};
+
+export const step3Schema = yup.object().shape({
+  rentingPrice: yup.number().required(),
+  promotionalPrice: yup.number(),
+  paymentFrequency: yup.string(),
+  depositAmount: yup.number(),
+  creditScoreRequirements: yup.string(),
+  contractDetails: yup.object().shape({
+    guarantor: yup.boolean(),
+    reviewedProperty: yup.boolean(),
+    energyCertificate: yup.boolean()
+  })
+});
+
+export interface NewPropertyStep3props extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
   saveAsDraft: () => void;
-  propertyService: PropertyService;
+  form: UseFormReturn<Step3FormType>;
+  lookingFor: Step0FormType['lookingFor'];
+  setCurrentStep: (currentStep: number) => void;
 }
 
 export const NewPropertyStep3 = styled(
-  ({ className, closeModal, saveAsDraft, propertyService }: NewPropertyStep3props) => {
-    console.log(propertyService.state);
+  ({ className, closeModal, saveAsDraft, form, lookingFor, setCurrentStep }: NewPropertyStep3props) => {
+    React.useEffect(() => {
+      form.watch();
+    }, []);
+
     return (
       <div className={`new-property-step-3 ${className}`}>
         <div className='header'>
           <Logo />
           <div className='right-side'>
-            <Button variant='secondary' onClick={saveAsDraft}>
+            <Button variant='secondary' onClick={saveAsDraft} disabled={!form.formState.isValid}>
               Save as draft
             </Button>
             <IconButton size='large' noBackground onClick={closeModal}>
@@ -51,13 +84,9 @@ export const NewPropertyStep3 = styled(
               </div>
               <div className='what-im-looking-for'>
                 <Typography className='choice' variant='body4'>
-                  {
-                    ['I’m looking for a tenant', 'I’m looking for a buyer'][
-                      ['Rent', 'Sale'].indexOf(propertyService.state.lookingFor)
-                    ]
-                  }
+                  {{ Rent: 'I’m looking for a tenant', Sale: 'I’m looking for a buyer' }[lookingFor]}
                 </Typography>
-                <Link onClick={() => propertyService.setCurrentStep(0)}>Change</Link>
+                <Link onClick={() => setCurrentStep(0)}>Change</Link>
               </div>
             </div>
 
@@ -79,19 +108,19 @@ export const NewPropertyStep3 = styled(
               {[
                 {
                   name: 'Add renting price',
-                  checked: !!propertyService.state.rentingPrice
+                  checked: !!form.getValues('rentingPrice')
                 },
                 {
                   name: 'Add deposit details',
-                  checked: !!propertyService.state.depositAmount
+                  checked: !!form.getValues('depositAmount')
                 },
                 {
                   name: 'Add credit score requirements',
-                  checked: !!propertyService.state.creditScoreRequirements
+                  checked: !!form.getValues('creditScoreRequirements')
                 },
                 {
                   name: 'Add contract details',
-                  checked: Object.values(propertyService.state.contractDetails).includes(true)
+                  checked: Object.values(form.getValues('contractDetails')).includes(true)
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -117,22 +146,21 @@ export const NewPropertyStep3 = styled(
               </Typography>
               <div className='section-content'>
                 <TextField
+                  {...form.register('rentingPrice')}
+                  error={!!form.formState.errors.rentingPrice}
+                  helperText={form.formState.errors.rentingPrice?.message?.toString()}
                   label='Add renting price'
                   required
-                  value={propertyService.state.rentingPrice}
-                  onChange={({ target: { value } }) => propertyService.setRentingPrice(value)}
                   startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                  type='number'
                 />
                 <TextField
                   label='Promotional price (optional)'
-                  value={propertyService.state.promotionalPrice}
-                  onChange={({ target: { value } }) => propertyService.setPromotionalPrice(value)}
                   startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                  type='number'
+                  {...form.register('promotionalPrice')}
                 />
-                <Select
-                  label='Payment Frequency'
-                  value={propertyService.state.paymentFrequency}
-                  onChange={({ target: { value } }) => propertyService.setPaymentFrequency(value)}>
+                <Select label='Payment Frequency' {...form.register('paymentFrequency')}>
                   <option></option>
                   <option value='Day'>Day</option>
                   <option value='Week'>Week</option>
@@ -151,10 +179,9 @@ export const NewPropertyStep3 = styled(
               <div className='section-content'>
                 <TextField
                   label='Deposit amount'
-                  required
-                  value={propertyService.state.depositAmount}
-                  onChange={({ target: { value } }) => propertyService.setDepositAmount(value)}
                   startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                  type='number'
+                  {...form.register('depositAmount')}
                 />
               </div>
             </div>
@@ -164,41 +191,28 @@ export const NewPropertyStep3 = styled(
                 Credit score requirements
               </Typography>
               <div className='section-content'>
-                {((id: string) => (
-                  <div className='radio-wrapper'>
-                    <Radio
-                      id={id}
-                      value='Excellent'
-                      checked={propertyService.state.creditScoreRequirements === 'Excellent'}
-                      onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
-                    />
-                    <label htmlFor={id}>Excellent</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='radio-wrapper'>
-                    <Radio
-                      id={id}
-                      value='Good'
-                      checked={propertyService.state.creditScoreRequirements === 'Good'}
-                      onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
-                    />
-                    <label htmlFor={id}>Good</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='radio-wrapper'>
-                    <Radio
-                      id={id}
-                      value='Fair'
-                      checked={propertyService.state.creditScoreRequirements === 'Fair'}
-                      onChange={(e) => propertyService.setCreditScoreRequirements(e.target.value)}
-                    />
-                    <label htmlFor={id}>Fair</label>
-                  </div>
-                ))(React.useId())}
+                <Controller
+                  render={({ field }) => (
+                    <>
+                      {['Excellent', 'Good', 'Fair'].map(
+                        (creditScoreRequirement, creditScoreRequirementIndex) =>
+                          ((id: string) => (
+                            <div className='radio-wrapper' key={creditScoreRequirementIndex}>
+                              <Radio
+                                id={id}
+                                value={creditScoreRequirement}
+                                checked={field.value === creditScoreRequirement}
+                                onChange={field.onChange}
+                              />
+                              <label htmlFor={id}>{creditScoreRequirement}</label>
+                            </div>
+                          ))(React.useId())
+                      )}
+                    </>
+                  )}
+                  name='creditScoreRequirements'
+                  control={form.control}
+                />
               </div>
             </div>
 
@@ -213,13 +227,8 @@ export const NewPropertyStep3 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      onChange={() =>
-                        propertyService.setContractDetails({
-                          ...propertyService.state.contractDetails,
-                          guarantor: !propertyService.state.contractDetails.guarantor
-                        })
-                      }
-                      checked={propertyService.state.contractDetails.guarantor}
+                      {...form.register('contractDetails.guarantor')}
+                      checked={!!form.getValues('contractDetails').guarantor}
                     />
                     <label htmlFor={id}>Guarantor</label>
                   </div>
@@ -230,13 +239,8 @@ export const NewPropertyStep3 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      onChange={() =>
-                        propertyService.setContractDetails({
-                          ...propertyService.state.contractDetails,
-                          reviewedProperty: !propertyService.state.contractDetails.reviewedProperty
-                        })
-                      }
-                      checked={propertyService.state.contractDetails.reviewedProperty}
+                      {...form.register('contractDetails.reviewedProperty')}
+                      checked={!!form.getValues('contractDetails').reviewedProperty}
                     />
                     <label htmlFor={id}>Reviewed property</label>
                   </div>
@@ -247,13 +251,8 @@ export const NewPropertyStep3 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      onChange={() =>
-                        propertyService.setContractDetails({
-                          ...propertyService.state.contractDetails,
-                          energyCertificate: !propertyService.state.contractDetails.energyCertificate
-                        })
-                      }
-                      checked={propertyService.state.contractDetails.energyCertificate}
+                      {...form.register('contractDetails.energyCertificate')}
+                      checked={!!form.getValues('contractDetails').energyCertificate}
                     />
                     <label htmlFor={id}>Energy certificate</label>
                   </div>
@@ -268,10 +267,10 @@ export const NewPropertyStep3 = styled(
             variant='secondary'
             size='large'
             startIcon={<Icon icon='arrow-left-1' size={12} />}
-            onClick={() => propertyService.setCurrentStep(2)}>
+            onClick={() => setCurrentStep(2)}>
             back
           </Button>
-          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />}>
+          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />} disabled>
             Start matching
           </Button>
         </div>
