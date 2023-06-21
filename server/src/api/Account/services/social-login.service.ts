@@ -100,11 +100,13 @@ const loginGoogle = async (req: Request, res: Response) => {
 const loginFacebook = async (req: Request, res: Response) => {
   const fbToken = req.body.token;
 
-  const url = `https://graph.facebook.com/me?fields=id,name,email&access_token=${fbToken}`;
+  const url = `https://graph.facebook.com/me?fields=id,name,email,first_name,last_name&access_token=${fbToken}`;
 
   try {
     const response = await axios.get(url);
     const userDetails: any = response.data;
+
+    console.log({ userDetails });
 
     let user = await userService.findOne({
       email: userDetails.email,
@@ -116,10 +118,10 @@ const loginFacebook = async (req: Request, res: Response) => {
       const name = userDetails.name.split(' ');
       user = await new UserModel({
         email: userDetails.email,
-        first_name: name[0],
-        last_name: name[1],
+        first_name: userDetails.first_name || name[0],
+        last_name: userDetails.last_name || name[1],
         facebook: {
-          username: userDetails?.username || '',
+          username: userDetails?.first_name || name[0],
           is_facebook_verified: true,
           facebook_user_id: userDetails.id
         },
