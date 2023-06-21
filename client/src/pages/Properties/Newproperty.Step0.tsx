@@ -10,13 +10,14 @@ import { Logo } from '../../components/Logo';
 import { Radio } from '../../components/Radio';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import * as yup from 'yup';
+import { ObjectSchema } from 'yup';
 
 export type Step0FormType = {
   lookingFor: 'Rent' | 'Sale';
 };
 
-export const step0Schema = yup.object().shape({
-  lookingFor: yup.string().required()
+export const step0Schema: ObjectSchema<Step0FormType> = yup.object().shape({
+  lookingFor: yup.string().oneOf(['Rent', 'Sale']).required()
 });
 
 export interface NewPropertyStep0 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {

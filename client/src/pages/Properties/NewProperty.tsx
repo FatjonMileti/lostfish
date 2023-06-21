@@ -55,7 +55,7 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   });
 
   const step2Form = useForm<Step2FormType>({
-    values: {
+    defaultValues: {
       area: 50,
       nrOfBedrooms: undefined,
       nrOfBathrooms: undefined,
@@ -78,7 +78,7 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   });
 
   const step3Form = useForm<Step3FormType>({
-    values: {
+    defaultValues: {
       rentingPrice: undefined,
       promotionalPrice: undefined,
       paymentFrequency: undefined,
@@ -178,7 +178,18 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
       specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
         .filter(([key, value]) => value)
         .map(([key, value]) => key),
-      property_images: []
+      property_images: [],
+
+      // step 3
+      asset_rent: {
+        rental_amount: step3Form.getValues('rentingPrice'),
+        rental_frequency: step3Form.getValues('paymentFrequency'),
+        deposit_amount: step3Form.getValues('depositAmount')
+      },
+      credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
+      contact_details: Object.entries(step3Form.getValues('contractDetails'))
+        .filter(([key, value]) => value)
+        .map(([key, value]) => key)
     };
 
     console.log('data', data);

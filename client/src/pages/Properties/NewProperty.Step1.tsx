@@ -14,27 +14,29 @@ import { Radio } from '../../components/Radio';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
+import { ObjectSchema } from 'yup';
 
 export type Step1FormType = {
-  areaOfInterest?: string;
+  areaOfInterest: string;
   radius?: number;
-  propertyType: string;
-  propertyPreferences: string;
+  propertyType?: string;
+  propertyPreferences?: string;
   propertyFeatures: {
     parksNearby: boolean;
     publicTransportNearby: boolean;
     shoppingCentersNearby: boolean;
   };
 };
-export const step1Schema = yup.object().shape({
-  areaOfInterest: yup.string(),
-  radius: yup.number(),
-  propertyType: yup.string(),
-  propertyPreferences: yup.string(),
+
+export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
+  areaOfInterest: yup.string().required(),
+  radius: yup.number().optional(),
+  propertyType: yup.string().optional(),
+  propertyPreferences: yup.string().optional(),
   propertyFeatures: yup.object().shape({
-    parksNearby: yup.boolean(),
-    publicTransportNearby: yup.boolean(),
-    shoppingCentersNearby: yup.boolean()
+    parksNearby: yup.boolean().required(),
+    publicTransportNearby: yup.boolean().required(),
+    shoppingCentersNearby: yup.boolean().required()
   })
 });
 

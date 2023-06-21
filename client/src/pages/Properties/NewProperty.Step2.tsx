@@ -13,11 +13,12 @@ import { Upload } from '../../components/Upload';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
+import { ObjectSchema } from 'yup';
 
 export type Step2FormType = {
-  area?: number;
-  nrOfBedrooms?: number;
-  nrOfBathrooms?: number;
+  area: number;
+  nrOfBedrooms: number;
+  nrOfBathrooms: number;
   specificPropertyFeatures: {
     'Parking spot': boolean;
     Garden: boolean;
@@ -32,23 +33,23 @@ export type Step2FormType = {
   };
   propertyImages: any[];
 };
-export const step2Schema = yup.object().shape({
+export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
   area: yup.number().min(1).required('Property area is required'),
   nrOfBedrooms: yup.number().required('Number of bedrooms is required'),
   nrOfBathrooms: yup.number().required('Number of bathroom is required'),
   specificPropertyFeatures: yup.object().shape({
-    'Parking spot': yup.boolean(),
-    Garden: yup.boolean(),
-    Terrace: yup.boolean(),
-    'Fully furnished': yup.boolean(),
-    'Partially furnished': yup.boolean(),
-    Unfurnished: yup.boolean(),
-    'Double glazing': yup.boolean(),
-    'Allows smoking': yup.boolean(),
-    'Allows pets': yup.boolean(),
-    'Close to public transport': yup.boolean()
+    'Parking spot': yup.boolean().required(),
+    Garden: yup.boolean().required(),
+    Terrace: yup.boolean().required(),
+    'Fully furnished': yup.boolean().required(),
+    'Partially furnished': yup.boolean().required(),
+    Unfurnished: yup.boolean().required(),
+    'Double glazing': yup.boolean().required(),
+    'Allows smoking': yup.boolean().required(),
+    'Allows pets': yup.boolean().required(),
+    'Close to public transport': yup.boolean().required()
   }),
-  propertyImages: yup.array().min(6)
+  propertyImages: yup.array().required()
 });
 
 export interface NewPropertyStep2props extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
@@ -212,7 +213,7 @@ export const NewPropertyStep2 = styled(
                       'Close to public transport'
                     ].map((specificPropertyFeature, specificPropertyFeatureIndex) =>
                       ((id: string) => (
-                        <div className='switch-wrapper'>
+                        <div className='switch-wrapper' key={specificPropertyFeatureIndex}>
                           <Switch
                             id={id}
                             size='small'

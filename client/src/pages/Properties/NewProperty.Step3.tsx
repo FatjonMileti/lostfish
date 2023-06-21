@@ -14,9 +14,10 @@ import { Select } from '../../components/Select/Select';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
+import { ObjectSchema } from 'yup';
 
 export type Step3FormType = {
-  rentingPrice?: number;
+  rentingPrice: number;
   promotionalPrice?: number;
   paymentFrequency?: string;
   depositAmount?: number;
@@ -28,16 +29,16 @@ export type Step3FormType = {
   };
 };
 
-export const step3Schema = yup.object().shape({
+export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   rentingPrice: yup.number().required(),
-  promotionalPrice: yup.number(),
+  promotionalPrice: yup.number().optional(),
   paymentFrequency: yup.string(),
-  depositAmount: yup.number(),
+  depositAmount: yup.number().optional(),
   creditScoreRequirements: yup.string(),
   contractDetails: yup.object().shape({
-    guarantor: yup.boolean(),
-    reviewedProperty: yup.boolean(),
-    energyCertificate: yup.boolean()
+    guarantor: yup.boolean().required(),
+    reviewedProperty: yup.boolean().required(),
+    energyCertificate: yup.boolean().required()
   })
 });
 
@@ -54,6 +55,8 @@ export const NewPropertyStep3 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
+
+    console.log('form', form.formState.errors, form.getValues());
 
     return (
       <div className={`new-property-step-3 ${className}`}>
