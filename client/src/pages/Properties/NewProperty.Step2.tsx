@@ -14,6 +14,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
+import { NewPropertyStateType } from './NewProperty';
 
 export type Step2FormType = {
   area: number;
@@ -58,13 +59,24 @@ export interface NewPropertyStep2props extends Omit<HTMLProps<HTMLDivElement>, '
   form: UseFormReturn<any>;
   lookingFor: Step0FormType['lookingFor'];
   setCurrentStep: (currentStep: number) => void;
+  propertyStore: [NewPropertyStateType, React.Dispatch<React.SetStateAction<NewPropertyStateType>>];
 }
 
 export const NewPropertyStep2 = styled(
-  ({ className, closeModal, saveAsDraft, form, lookingFor, setCurrentStep }: NewPropertyStep2props) => {
+  ({
+    className,
+    closeModal,
+    saveAsDraft,
+    form,
+    lookingFor,
+    setCurrentStep,
+    propertyStore
+  }: NewPropertyStep2props) => {
     React.useEffect(() => {
       form.watch();
     }, []);
+
+    const [propertyState, setPropertyState] = propertyStore;
 
     console.log('step2 form: ', form.getValues());
 
@@ -260,12 +272,35 @@ export const NewPropertyStep2 = styled(
                             <img alt='property image' src={URL.createObjectURL(image)} />
                           </div>
                         ))}
+
+                        {propertyState.newImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setPropertyState((propertyState) => ({
+                                  ...propertyState,
+                                  newImages: propertyState.newImages.filter(
+                                    (_: any, i: number) => i !== imageIndex
+                                  )
+                                }));
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={URL.createObjectURL(image)} />
+                          </div>
+                        ))}
                       </div>
                       <Upload
                         multiple
                         accept='image/*'
                         onFiles={(files) => {
-                          onChange({ target: { value: [...form.getValues().propertyImages, ...files] } });
+                          setPropertyState((propertyState) => ({
+                            ...propertyState,
+                            newImages: [...propertyState.newImages, ...files]
+                          }));
+                          // onChange({ target: { value: [...form.getValues().propertyImages, ...files] } });
                         }}
                         button={
                           <IconButton size='large' className='add-button'>
@@ -291,7 +326,7 @@ export const NewPropertyStep2 = styled(
             back
           </Button>
           <Button
-            // disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid}
             onClick={() => setCurrentStep(3)}
             size='large'
             endIcon={<Icon icon='arrow-right-1' size={12} />}>

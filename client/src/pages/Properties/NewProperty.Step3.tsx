@@ -31,10 +31,16 @@ export type Step3FormType = {
 
 export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   rentingPrice: yup.number().required(),
-  promotionalPrice: yup.number().optional(),
-  paymentFrequency: yup.string(),
-  depositAmount: yup.number().optional(),
-  creditScoreRequirements: yup.string(),
+  promotionalPrice: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .optional(),
+  paymentFrequency: yup.string().optional(),
+  depositAmount: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .optional(),
+  creditScoreRequirements: yup.string().optional(),
   contractDetails: yup.object().shape({
     guarantor: yup.boolean().required(),
     reviewedProperty: yup.boolean().required(),

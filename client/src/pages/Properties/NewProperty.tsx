@@ -17,6 +17,7 @@ export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface NewPropertyStateType {
   currentStep: number;
+  newImages: File[];
 }
 
 export const NewProperty = styled(({ className, showStore }: NewPropertyProps) => {
@@ -27,7 +28,8 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   } = useGlobalState();
 
   const [state, setState] = React.useState<NewPropertyStateType>({
-    currentStep: 0
+    currentStep: 0,
+    newImages: []
   });
 
   const step0Form = useForm<Step0FormType>({
@@ -94,6 +96,26 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
     mode: 'all'
   });
 
+  const uploadImages = async (images: File[]): Promise<any> => {
+    try {
+      const data = new FormData();
+
+      images.forEach((image) => {
+        data.append('images', image);
+      });
+
+      const response = await axios(auth.access_token).post('/api/upload', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const saveProperty = async () => {
     try {
       const data = {
@@ -150,6 +172,11 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
   };
 
   const saveAsDraft = async () => {
+    if (state.newImages.length > 0) {
+      const imageLinks = await uploadImages(state.newImages);
+      console.log('imageLinks: ', imageLinks);
+    }
+
     const data = {
       // step0
       transaction_type_string: step0Form.getValues('lookingFor'),
@@ -232,11 +259,12 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
         <NewPropertyStep2
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            console.log('step2Data: ', step2Form.getValues());
+            saveAsDraft();
           }}
           form={step2Form}
           lookingFor={step0Form.getValues('lookingFor')}
           setCurrentStep={setCurrentStep}
+          propertyStore={[state, setState]}
         />
       )}
 
@@ -244,7 +272,8 @@ export const NewProperty = styled(({ className, showStore }: NewPropertyProps) =
         <NewPropertyStep3
           closeModal={() => setModalVisibility(false)}
           saveAsDraft={() => {
-            console.log('step3Data: ', step3Form.getValues());
+            // console.log('step3Data: ', step3Form.getValues());
+            saveAsDraft();
           }}
           form={step3Form}
           lookingFor={step0Form.getValues('lookingFor')}
