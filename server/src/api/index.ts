@@ -8,7 +8,7 @@ import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
 import { AccountController } from './Account/account.controller';
 import authorize from '../middleware/authorize';
-
+import { upload } from '../app';
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -37,8 +37,24 @@ const router: Router = Router();
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
-const accountController = new AccountController();
+/**
+ * @api {post} /api/upload Upload images
+ * @apiDescription Upload images
+ *
+ * @apiHeader {String} Content-Type multipart/form-data
+ *
+ * @apiParam {File[]} images Array of image files to upload.
+ * @apiGroup Upload
+ * @apiSampleRequest /api/upload
+ *
+ * @apiPermission admin
+ * @apiUse bearer
+ */
+router.post('/upload', authorize(), upload.array('images'), (req, res) => {
+  res.status(200).send(req.files);
+});
 
+const accountController = new AccountController();
 const offerController = new AssetController();
 const userController = new UserController();
 const chatController = new ChatController();

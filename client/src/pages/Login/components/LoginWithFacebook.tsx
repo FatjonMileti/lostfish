@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Icon } from '../../../components/Icon';
 import { Button } from '../../../components/Button';
+import { LoginSocialFacebook } from 'reactjs-social-login';
 
 type FacebookLoginProps = {
   appId: string;
@@ -15,49 +16,23 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
   onLoginFailure,
   scope = 'email'
 }) => {
-  useEffect(() => {
-    const loadFacebookSDK = () => {
-      // Load the Facebook SDK asynchronously
-      (window as any).fbAsyncInit = function () {
-        (window as any).FB.init({
-          appId: appId,
-          cookie: true,
-          xfbml: true,
-          version: 'v11.0'
-        });
-      };
-
-      // Load the SDK asynchronously
-      (function (d, s, id) {
-        let js: any,
-          fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = 'https://connect.facebook.net/en_US/sdk.js';
-        fjs.parentNode?.insertBefore(js, fjs);
-      })(document, 'script', 'facebook-jssdk');
-    };
-
-    loadFacebookSDK();
-  }, [appId, onLoginSuccess]);
-
-  const handleFacebookLogin = () => {
-    (window as any).FB.login(
-      function (response: any) {
-        if (response.authResponse) {
-          onLoginSuccess(response.authResponse.accessToken);
-        } else {
-          onLoginFailure('Facebook login failed');
-        }
-      },
-      { scope }
-    );
-  };
-
   return (
-    <Button variant='secondary' onClick={() => handleFacebookLogin()}>
-      <Icon icon='facebook' />
-    </Button>
+    <LoginSocialFacebook
+      appId={appId}
+      onResolve={(response) => {
+        if (response?.data?.accessToken) {
+          onLoginSuccess(response.data.accessToken);
+        } else {
+          onLoginFailure('failed_to_login_facebook');
+        }
+      }}
+      scope={scope}
+      onReject={(error) => {
+        onLoginFailure('failed_to_login_facebook');
+      }}>
+      <Button variant='secondary'>
+        <Icon icon='facebook' />
+      </Button>
+    </LoginSocialFacebook>
   );
 };

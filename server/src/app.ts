@@ -17,7 +17,7 @@ const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
 import authorize from './middleware/authorize';
-const upload = multer({ dest: 'uploads/asset-images' });
+export const upload = multer({ dest: 'uploads/asset-images' });
 const uploadDocs = multer({ dest: 'uploads/user-docs' });
 
 const app: Application = express();
@@ -101,10 +101,6 @@ app.use('/', require('./routes/index'));
 app.use('/api', require('./api/index'));
 
 app.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
-  res.status(200).send(req.files);
-});
-
-app.post('/upload', authorize(), upload.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
 
