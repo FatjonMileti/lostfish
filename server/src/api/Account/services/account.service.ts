@@ -77,12 +77,14 @@ const refreshToken = async (req: express.Request, res: express.Response) => {
 
   if (!payload) throw createError(401, 'invalid token');
 
+  console.log('payload: ', payload);
+
   const used = await UsedRefreshToken.findOne({ token: refresh_token });
   if (used) throw createError(401, 'refresh_token is already used');
 
   const user = await UserModel.findOne({
     _id: payload.sub!,
-    isDisabled: false
+    is_disabled: false
   });
 
   if (!user) throw createError(401, 'unauthorized');
@@ -100,12 +102,15 @@ const refreshToken = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Refresh
   }).save();
 
+  const rules = packRules(defineAbilitiesFor(user.role).rules);
+
   return res.json({
     token_type: 'bearer',
     access_token: token,
     expires_in: process.env.JWT_EXPIRE_SECONDS,
     refresh_token: refresh,
-    refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
+    refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS,
+    rules
   });
 };
 
