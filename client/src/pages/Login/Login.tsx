@@ -23,7 +23,6 @@ import { LoginWithFacebook } from './components/LoginWithFacebook';
 import { LoginWithTwitter } from './components/LoginWithTwitter';
 import axiosWithToken from '../../utils/axios';
 import { useCookies } from 'react-cookie';
-import { decodeJWT } from './login.helper';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -40,6 +39,7 @@ registerStore(
   },
   { persist: true }
 );
+export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessToken.split('.')[1]));
 
 export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
@@ -77,19 +77,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     if (!!user.auth) navigate('/');
   }, [user.auth]);
 
-  const setRememberMe = (rememberMe: boolean) => {
-    setUser((user: any) => ({ ...user, rememberMe }));
-  };
-
-  const buildUserAbility = (userDetails: any, response: AxiosResponse) => {
-    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-    setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
-
-    if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
-      setCookie('username', userDetails.username);
-    }
-  };
-
   const onSubmit = async (data: any) => {
     setLoading(true);
 
@@ -104,9 +91,24 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       const userDetails = decodeJWT(response.data.access_token);
       userDetails.rules = response.data.rules;
 
-      buildUserAbility(userDetails, response);
+      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
 
-      navigate(location?.state?.url ? location.state.url : '/');
+      const auth = response.data;
+
+      setUser((user: any) => ({
+        ...user,
+        auth: {
+          ...auth,
+          expirationTime: Date.now() + auth.expires_in * 1000,
+          refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+        },
+        userDetails,
+        ability
+      }));
+
+      // if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'true') {
+      //   setCookie('username', userDetails.username);
+      // }
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 
@@ -133,7 +135,21 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       });
       const userDetails = decodeJWT(loginGoogleRes.data.access_token);
       userDetails.rules = loginGoogleRes.data.rules;
-      buildUserAbility(userDetails, loginGoogleRes);
+
+      const ability = buildAbilityFor(userDetails!.role, unpackRules(loginGoogleRes.data.rules));
+
+      const auth = loginGoogleRes.data;
+
+      setUser((user: any) => ({
+        ...user,
+        auth: {
+          ...auth,
+          expirationTime: Date.now() + auth.expires_in * 1000,
+          refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+        },
+        userDetails,
+        ability
+      }));
     } catch (err) {
       console.log(err);
       //handle error
@@ -143,9 +159,22 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   const loginWithTwitter = async (response: { access_token: string; validated: boolean }) => {
     try {
       if (response.validated) {
-        const userDetails = JSON.parse(window.atob(response.access_token.split('.')[1]));
+        const userDetails = decodeJWT(response.access_token);
         const getAuthData = await axiosWithToken(response.access_token).get('/api/account/get-access-tokens');
-        setUser((user: any) => ({ ...user, auth: getAuthData.data, userDetails }));
+
+        const ability = buildAbilityFor(userDetails!.role, unpackRules(getAuthData.data.rules));
+        const auth = getAuthData.data;
+
+        setUser((user: any) => ({
+          ...user,
+          auth: {
+            ...auth,
+            expirationTime: Date.now() + auth.expires_in * 1000,
+            refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+          },
+          userDetails,
+          ability
+        }));
       }
     } catch (err) {
       console.log(err);
@@ -157,7 +186,21 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     const response = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
     const userDetails = decodeJWT(response.data.access_token);
     userDetails.rules = response.data.rules;
-    buildUserAbility(userDetails, response);
+
+    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
+
+    const auth = response.data;
+
+    setUser((user: any) => ({
+      ...user,
+      auth: {
+        ...auth,
+        expirationTime: Date.now() + auth.expires_in * 1000,
+        refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+      },
+      userDetails,
+      ability
+    }));
   };
 
   const handleFacebookLoginFailure = (error: string) => {

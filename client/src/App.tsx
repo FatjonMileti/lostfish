@@ -3,8 +3,6 @@ import { registerStore, useGlobalState } from './globalState';
 import { UIProvider, useUI } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
-import PrivateRoute from './components/routes/private';
-import Layout from './layout';
 import NotFound from './pages/404';
 import Snackbar from '@mui/material/Snackbar';
 import { hideMessage } from './actions/ui';
@@ -34,7 +32,7 @@ import { ChatPage } from './pages/Chat';
 import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 import { UserProvider } from './context/UserProvider';
-import { NewProperty } from './pages/Properties/NewProperty';
+import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -104,51 +102,54 @@ function App() {
   const value = useMemo(() => ({ socket }), [socket]);
 
   return (
-    <SocketContext.Provider value={value}>
-      <UserProvider>
-        <UIProvider>
-          <GeneralSnackbar />
+    <>
+      <SessionMaintainer debug />
+      <SocketContext.Provider value={value}>
+        <UserProvider>
+          <UIProvider>
+            <GeneralSnackbar />
 
-          <BrowserRouter>
-            <Routes>
-              <Route path='/login' element={<Login />} />
-              <Route path='/google/redirect' element={<RedirectUriPage />} />
-              <Route path='/twitter/redirect' element={<RedirectUriPage />} />
-              <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-              <Route path='/create-account' element={<CreateAccount />} />
-              <Route path='/activate-account/:token' element={<VerifyAccount />} />
-              <Route path={'/messages'} element={<ChatPage />} />
-              <Route path='/properties' element={<Properties />} />
-              <Route path='/properties/:id' element={<PrivateProperty />} />
-              <Route path='/properties/:id/view' element={<PublicProperty />} />
-              <Route path='/properties/:id/applications' element={<PropertyApplications />} />
-              <Route path='/matches' element={<Matches />} />
-              <Route path='/about' element={<About />} />
-              <Route path='/mission' element={<Mission />} />
-              <Route path='/forgot-password' element={<ForgotPassword />} />
-              <Route path='/reset-password/:token' element={<ResetPassword />} />
-              <Route path='/components' element={<PreviewComponents />} />
-              <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-              <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
-              <Route path='*' element={<NotFound />} />
+            <BrowserRouter>
+              <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route path='/google/redirect' element={<RedirectUriPage />} />
+                <Route path='/twitter/redirect' element={<RedirectUriPage />} />
+                <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+                <Route path='/create-account' element={<CreateAccount />} />
+                <Route path='/activate-account/:token' element={<VerifyAccount />} />
+                <Route path={'/messages'} element={<ChatPage />} />
+                <Route path='/properties' element={<Properties />} />
+                <Route path='/properties/:id' element={<PrivateProperty />} />
+                <Route path='/properties/:id/view' element={<PublicProperty />} />
+                <Route path='/properties/:id/applications' element={<PropertyApplications />} />
+                <Route path='/matches' element={<Matches />} />
+                <Route path='/about' element={<About />} />
+                <Route path='/mission' element={<Mission />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/reset-password/:token' element={<ResetPassword />} />
+                <Route path='/components' element={<PreviewComponents />} />
+                <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
+                <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                <Route path='*' element={<NotFound />} />
 
-              <Route
-                path='/*'
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Routes>
-                        <Route path='*' element={<NotFound />} />
-                      </Routes>
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        </UIProvider>
-      </UserProvider>
-    </SocketContext.Provider>
+                {/* <Route */}
+                {/*   path='/*' */}
+                {/*   element={ */}
+                {/*     <PrivateRoute> */}
+                {/*       <Layout> */}
+                {/*         <Routes> */}
+                {/*           <Route path='*' element={<NotFound />} /> */}
+                {/*         </Routes> */}
+                {/*       </Layout> */}
+                {/*     </PrivateRoute> */}
+                {/*   } */}
+                {/* /> */}
+              </Routes>
+            </BrowserRouter>
+          </UIProvider>
+        </UserProvider>
+      </SocketContext.Provider>
+    </>
   );
 }
 
