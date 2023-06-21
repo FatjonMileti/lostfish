@@ -1,8 +1,8 @@
 import { Button } from '../../components/Button';
-import { Logo } from '../../components/Logo';
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { Icon } from '../../components/Icon';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -10,7 +10,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
   return (
     <div className={`header ${className}`}>
-      <Logo />
+      <Icon icon='lost-fish-yin' size={64} />
 
       <div className='menu-desktop'>
         <NavLink to='/'>

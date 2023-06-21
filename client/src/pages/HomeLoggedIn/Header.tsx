@@ -1,11 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
-
-import { Link } from '../../components/Link';
 import { Button } from '../../components/Button';
-import { Logo } from '../../components/Logo';
 import { Typography } from '../../components/Typography';
+import { Icon } from '../../components/Icon';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -14,7 +12,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   return (
     <div className={`header ${className}`}>
       <div className='left-part' onClick={() => navigate('/')}>
-        <Logo />
+        <Icon icon='lost-fish-yang' size={64} />
       </div>
 
       <div className='middle-part'>
