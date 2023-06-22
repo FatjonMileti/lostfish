@@ -58,7 +58,7 @@ const findAll = async (req: Request, res: Response) => {
       ]
     });
 
-    response.unfilteredData = count;
+    response.totalDocsUnfiltered = count;
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
