@@ -195,22 +195,25 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.contact_details = data.contact_details;
     }
 
-    if (req.body.hasOwnProperty('property_images') && data.property_images.length > 0) {
-      const responseImages = await offrIoService.addAssetDocument(req.body.property_images, asset.asset_id);
-      if (responseImages && responseImages.length > 0) {
-        asset.asset_files = [...asset.asset_files, ...responseImages];
+    if (asset.asset_id) {
+      if (req.body.hasOwnProperty('property_images') && data.property_images.length > 0) {
+        const responseImages = await offrIoService.addAssetDocument(req.body.property_images, asset.asset_id);
+        if (responseImages && responseImages.length > 0) {
+          asset.asset_files = [...asset.asset_files, ...responseImages];
+        }
       }
-    }
 
-    const response = await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
-    if (response.status === 200) {
-      asset.asset_attribute = response.data.asset_attribute;
+      const response = await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
+      if (response.status === 200) {
+        asset.asset_attribute = response.data.asset_attribute;
+      }
     }
 
     await asset.save();
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
+    console.log(error);
     throw createError(400, { message: error?.message });
   }
 };
