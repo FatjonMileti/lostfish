@@ -87,11 +87,15 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     <div className={`properties-page ${className}`}>
       <Header />
       <Backdrop open={list.loading}></Backdrop>
-      <NewProperty showStore={[showNewPropertyModal, setShowNewPropertyModal]} />
-      <EditProperty
+      <NewProperty
+        showStore={[showNewPropertyModal, setShowNewPropertyModal]}
         propertyId={editPropertyId}
-        showStore={[showEditPropertyModal, setShowEditPropertyModal]}
+        setEditPropertyId={setEditPropertyId}
       />
+      {/* <EditProperty */}
+      {/*   propertyId={editPropertyId} */}
+      {/*   showStore={[showEditPropertyModal, setShowEditPropertyModal]} */}
+      {/* /> */}
 
       <div className='container'>
         {!list.loading && list.totalRows === 0 && (
@@ -136,7 +140,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   viewDetails={() => {
                     // viewDetails(p.id)
                     setEditPropertyId(p.id);
-                    setShowEditPropertyModal(true);
+                    setShowNewPropertyModal(true);
                   }}
                   image={
                     p?.property_images?.[0]
