@@ -1,7 +1,7 @@
 FROM node:16.16
 
 RUN apt update
-RUN apt install -y ffmpeg tzdata lynx file
+RUN apt install -y tzdata lynx file
 ENV TZ Europe/Bucharest
 
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
