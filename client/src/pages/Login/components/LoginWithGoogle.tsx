@@ -23,7 +23,7 @@ export const LoginWithGoogle = (props: any) => {
   };
 
   return (
-    <Button variant='secondary' onClick={handleLoginClick}>
+    <Button variant='secondary' onClick={() => handleLoginClick()}>
       <Icon icon='google' />
     </Button>
   );

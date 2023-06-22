@@ -185,7 +185,7 @@ export class AccountController {
    *
    * @apiBody {string} refresh_token
    *
-   * @apiPermission anonymous
+   * @apiUse bearer
    */
   private refresh = this.accountService.refreshToken;
 

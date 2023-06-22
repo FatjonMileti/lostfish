@@ -4,7 +4,7 @@ import { UserDocument, Role } from './user.interface';
 
 const schema = new Schema<UserDocument>({
   user_id: Number,
-  hash: String,
+  hash: { type: String, default: null },
   role: {
     type: String,
     default: Role.Client

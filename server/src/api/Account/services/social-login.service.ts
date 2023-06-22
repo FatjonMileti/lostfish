@@ -9,6 +9,7 @@ import { Client, auth } from 'twitter-api-sdk';
 import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
 import httpStatus from 'http-status';
+import createError from 'http-errors';
 const { OAuth2Client } = require('google-auth-library');
 
 // Google
@@ -47,10 +48,18 @@ const loginGoogle = async (req: Request, res: Response) => {
     }
 
     let user = await userService.findOne({
-      email: payload.email,
-      'google.is_google_verified': true,
-      is_disabled: false
+      email: payload.email
     });
+
+    if (user && user.is_disabled) {
+      throw createError(httpStatus.UNAUTHORIZED, { message: 'user_is_disabled' });
+    }
+
+    if (user && !user.google.is_google_verified) {
+      user.google.is_google_verified = payload.email_verified;
+      user.google.google_user_id = payload.sub;
+      await user.save();
+    }
 
     if (!user) {
       user = await new UserModel({
@@ -59,11 +68,10 @@ const loginGoogle = async (req: Request, res: Response) => {
         last_name: payload.family_name,
         google: {
           is_google_verified: true,
-          google_user_id: payload?.id || '',
-          username: payload?.username || ''
+          google_user_id: payload.sub || '',
+          username: payload.given_name || ''
         },
         is_disabled: false,
-        hash: null,
         role: Role.Client
       }).save();
 
@@ -91,9 +99,7 @@ const loginGoogle = async (req: Request, res: Response) => {
       rules
     });
   } catch (error: any) {
-    return res
-      .status(error.code || httpStatus.BAD_REQUEST)
-      .send({ message: 'failed_login_with_google', error });
+    return res.status(error.code || httpStatus.BAD_REQUEST).send(error);
   }
 };
 
@@ -106,13 +112,19 @@ const loginFacebook = async (req: Request, res: Response) => {
     const response = await axios.get(url);
     const userDetails: any = response.data;
 
-    console.log({ userDetails });
-
     let user = await userService.findOne({
-      email: userDetails.email,
-      'facebook.is_facebook_verified': true,
-      is_disabled: false
+      email: userDetails.email
     });
+
+    if (user && user.is_disabled) {
+      throw createError(httpStatus.UNAUTHORIZED, { message: 'user_is_disabled' });
+    }
+
+    if (user && !user.facebook.is_facebook_verified) {
+      user.facebook.is_facebook_verified = true;
+      user.facebook.facebook_user_id = userDetails.id;
+      await user.save();
+    }
 
     if (!user) {
       const name = userDetails.name.split(' ');
@@ -154,7 +166,7 @@ const loginFacebook = async (req: Request, res: Response) => {
       rules
     });
   } catch (error: any) {
-    res.status(400).send({ message: 'failed_to_fetch_user', error });
+    res.status(400).send(error);
   }
 };
 
