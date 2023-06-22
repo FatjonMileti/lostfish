@@ -103,52 +103,53 @@ function App() {
 
   return (
     <>
-      <SessionMaintainer debug />
-      <SocketContext.Provider value={value}>
-        <UserProvider>
-          <UIProvider>
-            <GeneralSnackbar />
+      <SessionMaintainer debug>
+        <SocketContext.Provider value={value}>
+          <UserProvider>
+            <UIProvider>
+              <GeneralSnackbar />
 
-            <BrowserRouter>
-              <Routes>
-                <Route path='/login' element={<Login />} />
-                <Route path='/google/redirect' element={<RedirectUriPage />} />
-                <Route path='/twitter/redirect' element={<RedirectUriPage />} />
-                <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-                <Route path='/create-account' element={<CreateAccount />} />
-                <Route path='/activate-account/:token' element={<VerifyAccount />} />
-                <Route path={'/messages'} element={<ChatPage />} />
-                <Route path='/properties' element={<Properties />} />
-                <Route path='/properties/:id' element={<PrivateProperty />} />
-                <Route path='/properties/:id/view' element={<PublicProperty />} />
-                <Route path='/properties/:id/applications' element={<PropertyApplications />} />
-                <Route path='/matches' element={<Matches />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/mission' element={<Mission />} />
-                <Route path='/forgot-password' element={<ForgotPassword />} />
-                <Route path='/reset-password/:token' element={<ResetPassword />} />
-                <Route path='/components' element={<PreviewComponents />} />
-                <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-                <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
-                <Route path='*' element={<NotFound />} />
+              <BrowserRouter>
+                <Routes>
+                  <Route path='/login' element={<Login />} />
+                  <Route path='/google/redirect' element={<RedirectUriPage />} />
+                  <Route path='/twitter/redirect' element={<RedirectUriPage />} />
+                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+                  <Route path='/create-account' element={<CreateAccount />} />
+                  <Route path='/activate-account/:token' element={<VerifyAccount />} />
+                  <Route path={'/messages'} element={<ChatPage />} />
+                  <Route path='/properties' element={<Properties />} />
+                  <Route path='/properties/:id' element={<PrivateProperty />} />
+                  <Route path='/properties/:id/view' element={<PublicProperty />} />
+                  <Route path='/properties/:id/applications' element={<PropertyApplications />} />
+                  <Route path='/matches' element={<Matches />} />
+                  <Route path='/about' element={<About />} />
+                  <Route path='/mission' element={<Mission />} />
+                  <Route path='/forgot-password' element={<ForgotPassword />} />
+                  <Route path='/reset-password/:token' element={<ResetPassword />} />
+                  <Route path='/components' element={<PreviewComponents />} />
+                  <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
+                  <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                  <Route path='*' element={<NotFound />} />
 
-                {/* <Route */}
-                {/*   path='/*' */}
-                {/*   element={ */}
-                {/*     <PrivateRoute> */}
-                {/*       <Layout> */}
-                {/*         <Routes> */}
-                {/*           <Route path='*' element={<NotFound />} /> */}
-                {/*         </Routes> */}
-                {/*       </Layout> */}
-                {/*     </PrivateRoute> */}
-                {/*   } */}
-                {/* /> */}
-              </Routes>
-            </BrowserRouter>
-          </UIProvider>
-        </UserProvider>
-      </SocketContext.Provider>
+                  {/* <Route */}
+                  {/*   path='/*' */}
+                  {/*   element={ */}
+                  {/*     <PrivateRoute> */}
+                  {/*       <Layout> */}
+                  {/*         <Routes> */}
+                  {/*           <Route path='*' element={<NotFound />} /> */}
+                  {/*         </Routes> */}
+                  {/*       </Layout> */}
+                  {/*     </PrivateRoute> */}
+                  {/*   } */}
+                  {/* /> */}
+                </Routes>
+              </BrowserRouter>
+            </UIProvider>
+          </UserProvider>
+        </SocketContext.Provider>
+      </SessionMaintainer>
     </>
   );
 }
