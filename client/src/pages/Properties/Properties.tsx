@@ -18,6 +18,7 @@ import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
 
 import { NewProperty } from './NewProperty';
+import { EditProperty } from './EditProperty';
 
 const state: IGridState = {
   loading: true,
@@ -39,6 +40,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const [isOnCreate, setIsOnCreate] = React.useState(false);
 
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
+  const [showEditPropertyModal, setShowEditPropertyModal] = React.useState<boolean>(false);
+  const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
   const navigate = useNavigate();
 
@@ -85,6 +88,10 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       <Header />
       <Backdrop open={list.loading}></Backdrop>
       <NewProperty showStore={[showNewPropertyModal, setShowNewPropertyModal]} />
+      <EditProperty
+        propertyId={editPropertyId}
+        showStore={[showEditPropertyModal, setShowEditPropertyModal]}
+      />
 
       <div className='container'>
         {!list.loading && list.totalRows === 0 && (
@@ -126,7 +133,11 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   key={pIndex}
                   name={p.name}
                   status={p.status_string}
-                  viewDetails={() => viewDetails(p.id)}
+                  viewDetails={() => {
+                    // viewDetails(p.id)
+                    setEditPropertyId(p.id);
+                    setShowEditPropertyModal(true);
+                  }}
                   image={
                     p?.property_images?.[0]
                       ? `${process.env.REACT_APP_BACK_END_URL}/url-to-file/${p.property_images[0]?.filename}`

@@ -28,11 +28,9 @@ export interface NewPropertyStep0 extends Omit<HTMLProps<HTMLDivElement>, 'form'
 
 export const NewPropertyStep0 = styled(
   ({ closeModal, className, form, setCurrentStep }: NewPropertyStep0) => {
-    // React.useEffect(() => {
-    //   form.watch();
-    // }, []);
-
-    console.log('form0: ', form.getFieldState('lookingFor'));
+    React.useEffect(() => {
+      form.watch();
+    }, []);
 
     return (
       <div className={`new-property-step-0 ${className}`}>

@@ -33,6 +33,7 @@ import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
+import { EditProperty } from './pages/Properties/EditProperty';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -103,7 +104,7 @@ function App() {
 
   return (
     <>
-      <SessionMaintainer debug>
+      <SessionMaintainer>
         <SocketContext.Provider value={value}>
           <UserProvider>
             <UIProvider>
@@ -120,6 +121,7 @@ function App() {
                   <Route path={'/messages'} element={<ChatPage />} />
                   <Route path='/properties' element={<Properties />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />
+
                   <Route path='/properties/:id/view' element={<PublicProperty />} />
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
