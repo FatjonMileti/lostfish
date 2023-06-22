@@ -115,11 +115,13 @@ function App() {
                   <Route path='/login' element={<Login />} />
                   <Route path='/google/redirect' element={<RedirectUriPage />} />
                   <Route path='/twitter/redirect' element={<RedirectUriPage />} />
-                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
                   <Route path='/create-account' element={<CreateAccount />} />
+
+                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+                  <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
                   <Route path='/activate-account/:token' element={<VerifyAccount />} />
                   <Route path={'/messages'} element={<ChatPage />} />
-                  <Route path='/properties' element={<Properties />} />
+
                   <Route path='/properties/:id' element={<PrivateProperty />} />
 
                   <Route path='/properties/:id/view' element={<PublicProperty />} />

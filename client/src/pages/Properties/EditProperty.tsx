@@ -11,7 +11,6 @@ import { useGlobalState } from '../../globalState';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import request from '../../utils/axios';
-import { useParams } from 'react-router-dom';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -21,6 +20,7 @@ export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
 export interface NewPropertyStateType {
   currentStep: number;
   newImages: File[];
+  loadingProperty: boolean;
 }
 
 export const EditProperty = styled(({ className, showStore, propertyId }: NewPropertyProps) => {
@@ -32,8 +32,9 @@ export const EditProperty = styled(({ className, showStore, propertyId }: NewPro
 
   React.useEffect(() => {
     if (propertyId) {
-      console.log('loading property');
-      loadProperty();
+      loadProperty().finally(() => {
+        setState((state) => ({ ...state, loadingProperty: false }));
+      });
     }
   }, [propertyId]);
 
@@ -96,7 +97,8 @@ export const EditProperty = styled(({ className, showStore, propertyId }: NewPro
 
   const [state, setState] = React.useState<NewPropertyStateType>({
     currentStep: 1,
-    newImages: []
+    newImages: [],
+    loadingProperty: true
   });
 
   const step0Form = useForm<Step0FormType>({
@@ -184,57 +186,61 @@ export const EditProperty = styled(({ className, showStore, propertyId }: NewPro
   };
 
   const saveAsDraft = async () => {
-    if (state.newImages.length > 0) {
-      const imageLinks = await uploadImages(state.newImages);
-      console.log('imageLinks: ', imageLinks);
+    try {
+      if (state.newImages.length > 0) {
+        const imageLinks = await uploadImages(state.newImages);
+        console.log('imageLinks: ', imageLinks);
+      }
+
+      const data = {
+        // step0
+        transaction_type_string: step0Form.getValues('lookingFor'),
+
+        // step1
+        area_of_interest: step1Form.getValues('areaOfInterest'),
+        asset_address: {
+          latitude: 51.5072178,
+          longitude: -0.1275862
+        },
+        radius: step1Form.getValues('radius'),
+        property_type: step1Form.getValues('propertyType'),
+        property_preference: step1Form.getValues('propertyPreferences'),
+        property_features: [
+          step1Form.getValues('propertyFeatures.parksNearby') ? ['Parks Nearby'] : [],
+          step1Form.getValues('propertyFeatures.publicTransportNearby') ? ['Public transport nearby'] : [],
+          step1Form.getValues('propertyFeatures.shoppingCentersNearby') ? ['Shopping centers nearby'] : []
+        ].flat(),
+
+        // step2
+        floor_size: step2Form.getValues('area'),
+        room_details: {
+          number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
+          number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
+        },
+        specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key),
+        property_images: [],
+
+        // step 3
+        asset_rent: {
+          rental_amount: step3Form.getValues('rentingPrice'),
+          rental_frequency: step3Form.getValues('paymentFrequency'),
+          deposit_amount: step3Form.getValues('depositAmount')
+        },
+        credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
+        contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key)
+      };
+
+      console.log('data', data);
+      const response = await axios(auth.access_token).patch(`/api/asset/${propertyId}`, data);
+
+      console.log('response: ', response);
+    } catch (err) {
+      throw err;
     }
-
-    const data = {
-      // step0
-      transaction_type_string: step0Form.getValues('lookingFor'),
-
-      // step1
-      area_of_interest: step1Form.getValues('areaOfInterest'),
-      asset_address: {
-        latitude: 51.5072178,
-        longitude: -0.1275862
-      },
-      radius: step1Form.getValues('radius'),
-      property_type: step1Form.getValues('propertyType'),
-      property_preference: step1Form.getValues('propertyPreferences'),
-      property_features: [
-        step1Form.getValues('propertyFeatures.parksNearby') ? ['Parks Nearby'] : [],
-        step1Form.getValues('propertyFeatures.publicTransportNearby') ? ['Public transport nearby'] : [],
-        step1Form.getValues('propertyFeatures.shoppingCentersNearby') ? ['Shopping centers nearby'] : []
-      ].flat(),
-
-      // step2
-      floor_size: step2Form.getValues('area'),
-      room_details: {
-        number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
-        number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
-      },
-      specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
-        .filter(([key, value]) => value)
-        .map(([key, value]) => key),
-      property_images: [],
-
-      // step 3
-      asset_rent: {
-        rental_amount: step3Form.getValues('rentingPrice'),
-        rental_frequency: step3Form.getValues('paymentFrequency'),
-        deposit_amount: step3Form.getValues('depositAmount')
-      },
-      credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
-      contact_details: Object.entries(step3Form.getValues('contractDetails'))
-        .filter(([key, value]) => value)
-        .map(([key, value]) => key)
-    };
-
-    console.log('data', data);
-    const response = await axios(auth.access_token).patch(`/api/asset/${propertyId}`, data);
-
-    console.log('response: ', response);
   };
 
   const setCurrentStep = (currentStep: number): void => {
@@ -276,7 +282,8 @@ export const EditProperty = styled(({ className, showStore, propertyId }: NewPro
           form={step2Form}
           lookingFor={step0Form.getValues('lookingFor')}
           setCurrentStep={setCurrentStep}
-          propertyStore={[state, setState]}
+          newImages={state.newImages}
+          setNewImages={(newImages: File[]) => setState((state) => ({ ...state, newImages }))}
         />
       )}
 
