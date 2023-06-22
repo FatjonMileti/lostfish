@@ -19,6 +19,9 @@ uploads/
 # Package files
 *.jar
 
+# Docker
+docker-compose.yml
+
 # Maven
 target/
 dist/
