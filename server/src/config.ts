@@ -8,7 +8,7 @@ export default {
     database: process.env.DB_DATABASE,
     protocol: process.env.DB_PROTOCOL,
     port: process.env.DB_PORT,
-    connection_string: `${process.env.DB_PROTOCOL}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@localhost:${process.env.DB_PORT}`
+    connection_string: `${process.env.DB_PROTOCOL}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}`
   },
   api_url: process.env.ABSOLUTE_URL,
   map_nearby_url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
