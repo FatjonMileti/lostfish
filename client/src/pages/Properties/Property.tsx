@@ -35,7 +35,7 @@ export const Property = styled(({ className, name, status, viewDetails, image }:
     border-radius: 16px;
     display: flex;
     aspect-ratio: 1.5 / 1;
-    height: 292px;
+    min-height: 292px;
     position: relative;
 
     .property-background-image {

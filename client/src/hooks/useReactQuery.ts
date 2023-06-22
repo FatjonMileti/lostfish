@@ -14,7 +14,8 @@ const state: IGridState = {
   sort: 'created_At',
   asc: false,
   selectedIds: [],
-  search: ''
+  search: '',
+  totalDocsUnfiltered: 0
 };
 
 export const useReactQueryHook = (props: { url: string; name: string }) => {

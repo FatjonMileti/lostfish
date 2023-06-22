@@ -6,19 +6,13 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
-import { GridColDef, GridValueGetterParams, GridRenderCellParams } from '@mui/x-data-grid';
-import IconButton from '@mui/material/IconButton';
-import { Visibility } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
-import { CreateProperty } from './components/CreateProperty';
 import { Backdrop } from '../../components/Backdrop';
 import axios from '../../utils/axios';
 import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
-
 import { NewProperty } from './NewProperty';
-import { EditProperty } from './EditProperty';
 
 const state: IGridState = {
   loading: true,
@@ -31,16 +25,15 @@ const state: IGridState = {
   sort: 'created_at',
   asc: false,
   selectedIds: [],
-  search: 'published'
+  search: 'published',
+  totalDocsUnfiltered: 0
 };
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [list, setList] = React.useState<IGridState>({
     ...state
   });
-  const [isOnCreate, setIsOnCreate] = React.useState(false);
 
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
-  const [showEditPropertyModal, setShowEditPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
   const navigate = useNavigate();
@@ -75,9 +68,12 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       // @ts-ignore
       rows: data.docs.map(({ _id, ...rest }) => ({ id: _id, ...rest })),
       totalRows: data.totalDocs,
-      loading: false
+      loading: false,
+      totalDocsUnfiltered: data.totalDocsUnfiltered
     }));
   };
+
+  console.log('list: ', list);
 
   const viewDetails = (id: string) => {
     navigate(`/properties/${id}`);
@@ -92,13 +88,9 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         propertyId={editPropertyId}
         setEditPropertyId={setEditPropertyId}
       />
-      {/* <EditProperty */}
-      {/*   propertyId={editPropertyId} */}
-      {/*   showStore={[showEditPropertyModal, setShowEditPropertyModal]} */}
-      {/* /> */}
 
       <div className='container'>
-        {!list.loading && list.totalRows === 0 && (
+        {!list.loading && list.totalDocsUnfiltered === 0 && (
           <div className='no-properties'>
             <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
             <Button
@@ -111,7 +103,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           </div>
         )}
 
-        {!list.loading && list.rows.length > 0 && (
+        {!list.loading && list.totalDocsUnfiltered > 0 && (
           <>
             <div className='manage-properties-bar'>
               <Typography variant='body2'>Manage your properties</Typography>
@@ -182,7 +174,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
       .properties-list {
         margin-top: 32px;
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         flex-wrap: wrap;
         column-gap: 24px;
         row-gap: 24px;
