@@ -160,6 +160,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (req.body.hasOwnProperty('property_type')) {
+      asset.property_type = data.property_type;
       asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
     }
 
@@ -213,8 +214,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
-    console.log(error);
-    throw createError(400, { message: error?.message });
+    throw createError(400, error);
   }
 };
 
