@@ -2,6 +2,14 @@ import * as process from 'process';
 require('dotenv').config();
 
 export default {
+  mongo: {
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    protocol: process.env.DB_PROTOCOL,
+    port: process.env.DB_PORT,
+    connection_string: `${process.env.DB_PROTOCOL}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@localhost:${process.env.DB_PORT}`
+  },
   api_url: process.env.ABSOLUTE_URL,
   map_nearby_url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
   map_geocode_url: 'https://maps.googleapis.com/maps/api/geocode/json',
