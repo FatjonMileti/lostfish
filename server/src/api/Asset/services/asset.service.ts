@@ -41,6 +41,8 @@ const findAll = async (req: Request, res: Response) => {
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
   }
 
+  const count = await AssetModel.countDocuments();
+
   try {
     const response = await AssetModel.paginate(query, {
       ...res.locals.paging_options,
@@ -55,6 +57,8 @@ const findAll = async (req: Request, res: Response) => {
         }
       ]
     });
+
+    response.unfilteredData = count;
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
