@@ -1,8 +1,14 @@
 import chalk from 'chalk';
 import mongoose, { ConnectOptions } from 'mongoose';
+import config from '../config';
 
 module.exports = (connectionString: string, log: boolean = true) => {
-  mongoose.connect(connectionString, { autoIndex: true } as ConnectOptions);
+  mongoose.connect(connectionString, {
+    connectTimeoutMS: 30000,
+    user: config.mongo.user,
+    pass: config.mongo.password,
+    dbName: config.mongo.database
+  } as ConnectOptions);
 
   const db = mongoose.connection;
 
