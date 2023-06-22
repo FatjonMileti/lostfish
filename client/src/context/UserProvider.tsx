@@ -93,14 +93,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const getOne = useCallback(async () => {
     try {
-      const response = await axios(user.auth.access_token).get('/api/account/me');
-      const ability = buildAbilityFor(user.userDetails!.role, unpackRules(user.userDetails!.rules));
+      const { data } = await axios(user.auth.access_token).get('/api/account/me');
 
-      setUser((user: any) => ({ ...user, ability }));
+      const ability = buildAbilityFor(data.role, unpackRules(data.rules));
+
+      setUser((user: any) => ({ ...user, ability: user.ability }));
       dispatch({
         type: SET_ACCOUNT,
         payload: {
-          user: response.data,
+          user: data,
           ability
         }
       });

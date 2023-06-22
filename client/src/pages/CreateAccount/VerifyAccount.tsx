@@ -8,7 +8,7 @@ import { useGlobalState } from '../../globalState';
 import { Backdrop } from '../../components/Backdrop';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-
+import { decodeJWT } from '../Login/Login';
 export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const {
     user: [user, setUser]
@@ -38,12 +38,21 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
 
   const verifyRegistration = async (response: any) => {
     setLoading(true);
-
+    const auth = response.data;
     try {
-      const userDetails = JSON.parse(window.atob(response.data.access_token.split('.')[1]));
+      const userDetails = decodeJWT(response.data.access_token);
 
       const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-      setUser((user: any) => ({ ...user, auth: response.data, userDetails, ability }));
+      setUser((user: any) => ({
+        ...user,
+        auth: {
+          ...auth,
+          expirationTime: Date.now() + auth.expires_in * 1000,
+          refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+        },
+        userDetails,
+        ability
+      }));
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
 

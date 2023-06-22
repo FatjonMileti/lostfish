@@ -119,8 +119,10 @@ const getMyProfile = async (req: express.Request, res: express.Response) => {
   if (!user) {
     throw createError(404, { message: 'not_found' });
   }
+  const rules = packRules(defineAbilitiesFor(user.role).rules);
+  const data: any = { ...user.toObject(), rules };
 
-  res.status(httpStatus.OK).send(user);
+  res.status(httpStatus.OK).json(data);
 };
 
 const getAccessToken = async (req: express.Request, res: express.Response) => {
