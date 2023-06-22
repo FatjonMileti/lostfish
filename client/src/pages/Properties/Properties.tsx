@@ -83,11 +83,13 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     <div className={`properties-page ${className}`}>
       <Header />
       <Backdrop open={list.loading}></Backdrop>
-      <NewProperty
-        showStore={[showNewPropertyModal, setShowNewPropertyModal]}
-        propertyId={editPropertyId}
-        setEditPropertyId={setEditPropertyId}
-      />
+      {showNewPropertyModal && (
+        <NewProperty
+          showStore={[showNewPropertyModal, setShowNewPropertyModal]}
+          propertyId={editPropertyId}
+          setEditPropertyId={setEditPropertyId}
+        />
+      )}
 
       <div className='container'>
         {!list.loading && list.totalDocsUnfiltered === 0 && (
@@ -97,7 +99,10 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
               size='large'
               className='add-property-button'
               startIcon={<Icon icon='plus' size={16} />}
-              onClick={() => setShowNewPropertyModal(true)}>
+              onClick={() => {
+                setEditPropertyId(undefined);
+                setShowNewPropertyModal(true);
+              }}>
               Add Property
             </Button>
           </div>
@@ -113,7 +118,10 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 size='large'
                 className='add-property-button'
                 startIcon={<Icon icon='plus' size={16} />}
-                onClick={() => setShowNewPropertyModal(true)}>
+                onClick={() => {
+                  setEditPropertyId(undefined);
+                  setShowNewPropertyModal(true);
+                }}>
                 Add Property
               </Button>
             </div>

@@ -35,7 +35,7 @@ export const NewProperty = styled(
     } = useGlobalState();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
-      currentStep: 0,
+      currentStep: propertyId ? 1 : 0,
       newImages: [],
       loadingProperty: false,
       savingProperty: false
