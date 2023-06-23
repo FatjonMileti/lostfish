@@ -231,15 +231,6 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
     throw createError(404, 'The item does not exist');
   }
 
-  // @ts-ignore
-  asset.property_images = asset.property_images.map((image: any) => {
-    const { filename, ...rest } = image;
-    return {
-      filename: `${req.protocol}://${req.get('host')}/url-to-file/${image.filename}`,
-      ...rest
-    };
-  });
-
   asset.status_string = getCurrentStatusForGet(asset.status_string);
 
   res.status(httpStatus.OK).send(asset);
