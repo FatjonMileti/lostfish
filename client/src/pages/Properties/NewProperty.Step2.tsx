@@ -14,6 +14,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
+import config from '../../config';
 
 export type Step2FormType = {
   area: number;
@@ -35,8 +36,14 @@ export type Step2FormType = {
 };
 export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
   area: yup.number().min(1).required('Property area is required'),
-  nrOfBedrooms: yup.number().required('Number of bedrooms is required'),
-  nrOfBathrooms: yup.number().required('Number of bathroom is required'),
+  nrOfBedrooms: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .required('Number of bedrooms is required'),
+  nrOfBathrooms: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .required('Number of bathroom is required'),
   specificPropertyFeatures: yup.object().shape({
     'Parking spot': yup.boolean().required(),
     Garden: yup.boolean().required(),
@@ -268,7 +275,10 @@ export const NewPropertyStep2 = styled(
                               }}>
                               <Icon icon='minus' size={11} />
                             </IconButton>
-                            <img alt='property image' src={''} />
+                            <img
+                              alt='property image'
+                              src={`${config.apiUrl}/url-to-file/${image.filename}`}
+                            />
                           </div>
                         ))}
 

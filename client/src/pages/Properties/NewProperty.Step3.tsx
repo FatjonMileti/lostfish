@@ -62,7 +62,7 @@ export const NewPropertyStep3 = styled(
       form.watch();
     }, []);
 
-    console.log('form', form.formState.errors, form.getValues());
+    console.log('step3 form: ', form.getValues());
 
     return (
       <div className={`new-property-step-3 ${className}`}>

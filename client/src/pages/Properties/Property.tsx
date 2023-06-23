@@ -15,6 +15,7 @@ export const Property = styled(({ className, name, status, viewDetails, image }:
   return (
     <div className={`property ${className}`}>
       <img className='property-background-image' alt='property-image' src={image || property} />
+
       <div className='property-footer'>
         <div className='details'>
           <div className={`status status-${status.toLowerCase()}`}>

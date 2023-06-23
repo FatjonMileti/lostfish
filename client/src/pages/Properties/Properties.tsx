@@ -6,7 +6,6 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
-import { useNavigate } from 'react-router-dom';
 import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
 import axios from '../../utils/axios';
@@ -35,8 +34,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
-
-  const navigate = useNavigate();
 
   const tabIndex = ['published', 'draft'].indexOf(list.search || '');
   const setTabIndex = (i: number) => setList((list) => ({ ...list, search: ['published', 'draft'][i] }));
@@ -71,12 +68,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       loading: false,
       totalDocsUnfiltered: data.totalDocsUnfiltered
     }));
-  };
-
-  console.log('list: ', list);
-
-  const viewDetails = (id: string) => {
-    navigate(`/properties/${id}`);
   };
 
   return (

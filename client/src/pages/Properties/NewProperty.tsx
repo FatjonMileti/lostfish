@@ -116,6 +116,8 @@ export const NewProperty = styled(
       }
     }, [propertyId]);
 
+    const setNewImages = (newImages: File[]) => setState((state) => ({ ...state, newImages }));
+
     const uploadImages = async (images: File[]): Promise<any> => {
       try {
         const data = new FormData();
@@ -173,11 +175,11 @@ export const NewProperty = styled(
             return acc;
           }, {})
         );
-
+        step2Form.setValue('propertyImages', data.property_images);
         // step 3
         step3Form.setValue('rentingPrice', data.asset_rent.rental_amount);
         step3Form.setValue('paymentFrequency', data.asset_rent.rental_frequency);
-        step3Form.setValue('depositAmount', data.asset_rent.deposit_amount);
+        step3Form.setValue('depositAmount', data.asset_rent.deposit_amount || undefined);
         step3Form.setValue('creditScoreRequirements', data.credit_score_requirements);
         step3Form.setValue(
           'contractDetails',
@@ -196,9 +198,10 @@ export const NewProperty = styled(
     const saveAsDraft = async () => {
       try {
         if (state.newImages.length > 0) {
-          const imageLinks = await uploadImages(state.newImages);
-          console.log('imageLinks: ', imageLinks);
-          step2Form.setValue('propertyImages', imageLinks);
+          const newImagesLinks = await uploadImages(state.newImages);
+          console.log('imageLinks: ', newImagesLinks);
+          setNewImages([]);
+          step2Form.setValue('propertyImages', [...step2Form.getValues('propertyImages'), ...newImagesLinks]);
         }
 
         const payload = {
@@ -229,7 +232,7 @@ export const NewProperty = styled(
           specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
-          property_images: [],
+          property_images: step2Form.getValues('propertyImages'),
 
           // step 3
           asset_rent: {
@@ -293,23 +296,26 @@ export const NewProperty = styled(
         {state.currentStep === 2 && (
           <NewPropertyStep2
             closeModal={() => setModalVisibility(false)}
-            saveAsDraft={() => {
-              saveAsDraft();
+            saveAsDraft={async () => {
+              setState((state) => ({ ...state, savingProperty: true }));
+              await saveAsDraft();
+              setState((state) => ({ ...state, savingProperty: false }));
             }}
             form={step2Form}
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
             newImages={state.newImages}
-            setNewImages={(newImages: File[]) => setState((state) => ({ ...state, newImages }))}
+            setNewImages={setNewImages}
           />
         )}
 
         {state.currentStep === 3 && (
           <NewPropertyStep3
             closeModal={() => setModalVisibility(false)}
-            saveAsDraft={() => {
-              // console.log('step3Data: ', step3Form.getValues());
-              saveAsDraft();
+            saveAsDraft={async () => {
+              setState((state) => ({ ...state, savingProperty: true }));
+              await saveAsDraft();
+              setState((state) => ({ ...state, savingProperty: false }));
             }}
             form={step3Form}
             lookingFor={step0Form.getValues('lookingFor')}

@@ -33,7 +33,6 @@ import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
-import { EditProperty } from './pages/Properties/EditProperty';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
