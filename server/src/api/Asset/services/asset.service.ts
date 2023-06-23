@@ -212,6 +212,10 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       if (response.status === 200) {
         asset.asset_attribute = response.data.asset_attribute;
       }
+    } else {
+      if (req.body.hasOwnProperty('property_images')) {
+        asset.property_images = data.property_images;
+      }
     }
 
     await asset.save();
