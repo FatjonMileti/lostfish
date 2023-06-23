@@ -8,7 +8,9 @@ import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
 import { AccountController } from './Account/account.controller';
 import authorize from '../middleware/authorize';
-import { upload } from '../app';
+import { uploadDocs } from '../app';
+import config from '../config';
+import UploadService from '../utils/image';
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -50,7 +52,18 @@ const router: Router = Router();
  * @apiPermission admin
  * @apiUse bearer
  */
-router.post('/upload', authorize(), upload.array('images'), (req, res) => {
+
+const uploadService = UploadService.getInstance();
+const uploader =
+  config.node_env === 'development'
+    ? uploadService.createLocalUploader()
+    : uploadService.createLiveUploader();
+
+router.post('/upload', authorize(), uploader.array('images'), (req, res) => {
+  res.status(200).send(req.files);
+});
+
+router.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
 
