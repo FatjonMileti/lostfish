@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response, Request } from 'express';
 import assetService from './services/asset.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
@@ -8,6 +8,9 @@ import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
+import httpStatus from 'http-status';
+const fs = require('fs');
+const path = require('path');
 
 const router: Router = Router();
 
@@ -35,6 +38,7 @@ export class AssetController {
     this.router.post('/:id/send-application', authorize(), validateId, this.sendApplication);
     this.router.patch('/:id/approve-application', authorize(), validateId, this.approveApplication);
     this.router.patch('/:id/update-application', authorize(), validateId, this.updateApplication);
+    this.router.get('/:id/image/:imageId', validateId, this.getSingleImage);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
     this.router.post(
@@ -53,6 +57,14 @@ export class AssetController {
     );
     this.router.delete('/:id', authorize(), validateId, this.delete);
   }
+
+  /**
+   * @api {get} /api/asset/:id/image/:imageId Get asset image
+   * @apiDescription Get single image
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/:id/image/:imageId
+   */
+  private getSingleImage = this.assetService.getSingleImage;
 
   /**
    * @api {get} /api/asset Get asset

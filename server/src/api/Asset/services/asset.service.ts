@@ -16,6 +16,8 @@ import {
 } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
+const fs = require('fs');
+const path = require('path');
 
 const mailService = MailService.getInstance();
 
@@ -298,6 +300,32 @@ const getAssetImages = async (req: Request, res: Response) => {
   }
 };
 
+const getSingleImage = async (req: Request, res: Response) => {
+  const { id, imageId } = req.params;
+  try {
+    const asset = await findById(id);
+    const { property_images } = asset;
+
+    const getImage = property_images.find((image: any) => image.filename === imageId);
+    if (!getImage) {
+      res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+    }
+
+    const filePath = path.join(__dirname, '../../../uploads/asset-images/', imageId);
+
+    fs.readFile(filePath, (err: any, data: any) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to read file' });
+      }
+
+      res.setHeader('Content-Type', getImage.mimetype || 'application/octet-stream');
+      res.send(data);
+    });
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
 export default {
   findAll,
   getById,
@@ -307,5 +335,6 @@ export default {
   updateAsset,
   findById,
   sendAssetInvitation,
-  getAssetImages
+  getAssetImages,
+  getSingleImage
 };
