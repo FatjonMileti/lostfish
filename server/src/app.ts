@@ -16,9 +16,8 @@ const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
-import authorize from './middleware/authorize';
-export const upload = multer({ dest: 'uploads/asset-images' });
-const uploadDocs = multer({ dest: 'uploads/user-docs' });
+
+export const uploadDocs = multer({ dest: 'uploads/user-docs' });
 
 const app: Application = express();
 
@@ -71,7 +70,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/url-to-file', express.static(path.join(__dirname, '..', 'uploads/asset-images')));
 app.use('/url-to-user-docs', express.static(path.join(__dirname, '..', 'uploads/user-docs')));
 
 app.use(
@@ -99,10 +97,6 @@ app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 app.use('/', require('./routes/index'));
 
 app.use('/api', require('./api/index'));
-
-app.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
-  res.status(200).send(req.files);
-});
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
