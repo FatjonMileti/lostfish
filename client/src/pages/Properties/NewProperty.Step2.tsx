@@ -67,6 +67,7 @@ export interface NewPropertyStep2props extends Omit<HTMLProps<HTMLDivElement>, '
   setCurrentStep: (currentStep: number) => void;
   newImages: File[];
   setNewImages: (newImages: File[]) => void;
+  propertyId?: string;
 }
 
 export const NewPropertyStep2 = styled(
@@ -78,7 +79,8 @@ export const NewPropertyStep2 = styled(
     lookingFor,
     setCurrentStep,
     newImages,
-    setNewImages
+    setNewImages,
+    propertyId
   }: NewPropertyStep2props) => {
     React.useEffect(() => {
       form.watch();
@@ -277,7 +279,7 @@ export const NewPropertyStep2 = styled(
                             </IconButton>
                             <img
                               alt='property image'
-                              src={`${config.apiUrl}/url-to-file/${image.filename}`}
+                              src={`${config.apiUrl}/api/asset/${propertyId}/image/${image.filename}`}
                             />
                           </div>
                         ))}

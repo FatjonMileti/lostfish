@@ -18,7 +18,7 @@ const state: IGridState = {
   rows: [],
   totalRows: 0,
   rowsPerPageOptions: [10, 20, 50],
-  pageSize: 10,
+  pageSize: 9,
   page: 1,
   rowCount: 0,
   sort: 'created_at',
@@ -47,27 +47,30 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   }, [tabIndex]);
 
   const getAssets = async () => {
-    const { search, asc, sort, pageSize, page } = list;
+    try {
+      const { search, asc, sort, pageSize, page } = list;
 
-    let query: string = `?page=${page}`;
-    if (pageSize) {
-      query += `&pageSize=${pageSize}`;
+      const { data } = await axios(auth.access_token).get('/api/asset', {
+        params: {
+          page: page || undefined,
+          pageSize: pageSize || undefined,
+          sort: sort || undefined,
+          asc: asc.toString() || undefined,
+          status: search || undefined
+        }
+      });
+
+      setList((prevList: any) => ({
+        ...prevList,
+        // @ts-ignore
+        rows: data.docs,
+        totalRows: data.totalDocs,
+        loading: false,
+        totalDocsUnfiltered: data.totalDocsUnfiltered
+      }));
+    } catch (err) {
+      throw err;
     }
-    if (sort) {
-      query += `&sort=${sort}&asc=${asc.toString()}`;
-    }
-    if (search) {
-      query += `&status=${search}`;
-    }
-    const { data } = await axios(auth.access_token).get(`/api/asset${query}`);
-    setList((prevList: any) => ({
-      ...prevList,
-      // @ts-ignore
-      rows: data.docs.map(({ _id, ...rest }) => ({ id: _id, ...rest })),
-      totalRows: data.totalDocs,
-      loading: false,
-      totalDocsUnfiltered: data.totalDocsUnfiltered
-    }));
   };
 
   return (
@@ -79,6 +82,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={editPropertyId}
           setEditPropertyId={setEditPropertyId}
+          fetchAssets={() => getAssets()}
         />
       )}
 
@@ -130,12 +134,12 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   status={p.status_string}
                   viewDetails={() => {
                     // viewDetails(p.id)
-                    setEditPropertyId(p.id);
+                    setEditPropertyId(p._id);
                     setShowNewPropertyModal(true);
                   }}
                   image={
                     p?.property_images?.[0]
-                      ? `${process.env.REACT_APP_BACK_END_URL}/url-to-file/${p.property_images[0]?.filename}`
+                      ? `${process.env.REACT_APP_BACK_END_URL}/api/asset/${p._id}/image/${p.property_images[0]?.filename}`
                       : undefined
                   }
                 />

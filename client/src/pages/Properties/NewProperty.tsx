@@ -17,6 +17,7 @@ export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
   setEditPropertyId: (propertyId: string) => void;
+  fetchAssets: () => void;
 }
 
 export interface NewPropertyStateType {
@@ -27,7 +28,7 @@ export interface NewPropertyStateType {
 }
 
 export const NewProperty = styled(
-  ({ className, showStore, propertyId, setEditPropertyId }: NewPropertyProps) => {
+  ({ className, showStore, propertyId, setEditPropertyId, fetchAssets }: NewPropertyProps) => {
     const [modalVisibility, setModalVisibility] = showStore;
 
     const {
@@ -286,6 +287,7 @@ export const NewProperty = styled(
               setState((state) => ({ ...state, savingProperty: true }));
               await saveAsDraft();
               setState((state) => ({ ...state, savingProperty: false }));
+              fetchAssets();
             }}
             form={step1Form}
             lookingFor={step0Form.getValues('lookingFor')}
@@ -300,12 +302,14 @@ export const NewProperty = styled(
               setState((state) => ({ ...state, savingProperty: true }));
               await saveAsDraft();
               setState((state) => ({ ...state, savingProperty: false }));
+              fetchAssets();
             }}
             form={step2Form}
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
             newImages={state.newImages}
             setNewImages={setNewImages}
+            propertyId={propertyId}
           />
         )}
 
@@ -316,6 +320,7 @@ export const NewProperty = styled(
               setState((state) => ({ ...state, savingProperty: true }));
               await saveAsDraft();
               setState((state) => ({ ...state, savingProperty: false }));
+              fetchAssets();
             }}
             form={step3Form}
             lookingFor={step0Form.getValues('lookingFor')}
