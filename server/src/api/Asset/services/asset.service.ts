@@ -311,7 +311,7 @@ const getSingleImage = async (req: Request, res: Response) => {
       res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
     }
 
-    const filePath = path.join(__dirname, '../../../uploads/asset-images/', imageId);
+    const filePath = path.join(__dirname, '../../../../uploads/asset-images/', imageId);
 
     fs.readFile(filePath, (err: any, data: any) => {
       if (err) {
