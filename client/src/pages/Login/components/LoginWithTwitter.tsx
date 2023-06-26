@@ -18,12 +18,10 @@ export const LoginWithTwitter = (props: any) => {
     const authUrl = `${response.data.authUrl}`;
     const popupWindow = window.open(authUrl, '_blank');
 
+    window.addEventListener('message', handleCodeMessage);
     if (popupWindow) {
-      popupWindow.opener = window;
       popupWindow.focus();
     }
-
-    window.addEventListener('message', handleCodeMessage);
   };
 
   return (

@@ -12,6 +12,7 @@ import { uploadDocs } from '../app';
 import config from '../config';
 import UploadService from '../utils/image';
 import { ProtectedApiController } from './Get/get-data.controller';
+import { CriteriaController } from './Criteria/criteria.controller';
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -70,6 +71,7 @@ router.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) 
 
 const protectedController = new ProtectedApiController();
 
+const criteriaController = new CriteriaController();
 const accountController = new AccountController();
 const offerController = new AssetController();
 const userController = new UserController();
@@ -80,6 +82,7 @@ const attributeController = new AttributeController();
 const conditionController = new ConditionController();
 
 router.use('/public', protectedController.router);
+router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);
 router.use('/user', authorize(), userController.router);
 router.use('/asset', offerController.router);
