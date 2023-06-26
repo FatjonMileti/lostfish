@@ -10,6 +10,7 @@ import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
+import config from '../../../config';
 const { OAuth2Client } = require('google-auth-library');
 
 // Google
@@ -221,7 +222,7 @@ const loginWithTwitter = async (req: Request, res: Response) => {
     //   refresh_token: refresh,
     //   refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS
     // });
-    res.redirect('http://localhost:4000/login?validated=true&access_token=' + token);
+    res.redirect(`${config.front_end_url}/login?validated=true&access_token=` + token);
   } catch (error) {
     console.log(error);
     res.send(error);

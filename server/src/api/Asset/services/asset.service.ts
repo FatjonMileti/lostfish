@@ -326,6 +326,20 @@ const getSingleImage = async (req: Request, res: Response) => {
   }
 };
 
+const findPublishedProperties = async (req: Request, res: Response) => {
+  const query: any = {
+    status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
+  };
+
+  try {
+    const response = await AssetModel.find(query);
+
+    return res.status(httpStatus.OK).send(response);
+  } catch (error: any) {
+    return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
+  }
+};
+
 export default {
   findAll,
   getById,
@@ -336,5 +350,6 @@ export default {
   findById,
   sendAssetInvitation,
   getAssetImages,
-  getSingleImage
+  getSingleImage,
+  findPublishedProperties
 };

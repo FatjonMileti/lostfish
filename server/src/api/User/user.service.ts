@@ -309,6 +309,23 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
 const mapToUser = (userDocument: UserDocument): any => {
   return { id: userDocument._id, ...userDocument.toObject() };
 };
+
+const getUserPublicData = async (req: Request, res: Response) => {
+  const { search } = req.query;
+
+  const query: {
+    is_disabled: boolean;
+    role: string;
+  } = {
+    is_disabled: false,
+    role: Role.Client
+  };
+
+  const users = await UserModel.find(query, { email: 1, first_name: 1, last_name: 1, role: 1 });
+
+  res.status(httpStatus.OK).send(users);
+};
+
 export default {
   getAll,
   getById,
@@ -317,5 +334,6 @@ export default {
   updateUser,
   deleteUser,
   resetUserPassword,
-  sendResetPasswordInstructions
+  sendResetPasswordInstructions,
+  getUserPublicData
 };

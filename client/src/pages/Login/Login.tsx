@@ -30,14 +30,14 @@ const schema = yup.object().shape({
 });
 
 registerStore(
-    'user',
-    {
-      rememberMe: false,
-      auth: null,
-      userDetails: null,
-      ability: null
-    },
-    { persist: true }
+  'user',
+  {
+    rememberMe: false,
+    auth: null,
+    userDetails: null,
+    ability: null
+  },
+  { persist: true }
 );
 export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessToken.split('.')[1]));
 
@@ -66,8 +66,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   const {
     user: [user, setUser]
   } = useGlobalState();
-
-  const location = useLocation();
 
   const [loading, setLoading] = React.useState(false);
 
@@ -210,91 +208,92 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   };
 
   return (
-      <div className={`login-page ${className}`}>
-        <Header />
-        <Backdrop open={loading}></Backdrop>
-        <div className='container'>
-          <div className='left-part'>
-            <Typography variant='body2' className='main-title'>
-              Log in
+    <div className={`login-page ${className}`}>
+      <Header />
+      <Backdrop open={loading}></Backdrop>
+      <div className='container'>
+        <div className='left-part'>
+          <Typography variant='body2' className='main-title'>
+            Log in
+          </Typography>
+
+          <div className='dont-have-account'>
+            <Typography variant='body4' className='new-to-lostfish'>
+              New to Lostfish?
             </Typography>
+            <Link variant='body4' onClick={() => navigate('/create-account')}>
+              Create account
+            </Link>
+          </div>
 
-            <div className='dont-have-account'>
-              <Typography variant='body4' className='new-to-lostfish'>
-                New to Lostfish?
-              </Typography>
-              <Link variant='body4' onClick={() => navigate('/create-account')}>
-                Create account
-              </Link>
-            </div>
+          <div className='identity-providers'>
+            <Button variant='secondary'>
+              <Icon icon='apple' />
+            </Button>
 
-            <div className='identity-providers'>
-              <Button variant='secondary'>
-                <Icon icon='apple' />
+            <LoginWithFacebook
+              appId={config.facebook.facebook_id}
+              onLoginSuccess={handleFacebookLoginSuccess}
+              onLoginFailure={handleFacebookLoginFailure}
+              scope='email'
+            />
+
+            <LoginWithTwitter onSuccess={loginWithTwitter} />
+
+            <LoginWithGoogle onSuccess={loginWithGoogle} />
+          </div>
+
+          <div className='or-line'>
+            <span />
+            <Typography variant='body5'>OR</Typography>
+            <span />
+          </div>
+
+          <form className='content' onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <TextField
+                label='Email'
+                className='email-input'
+                required
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message?.toString()}
+              />
+
+              <TextField
+                type={showPassword ? 'text' : 'password'}
+                label='Password'
+                className='password-input'
+                required
+                {...register('password')}
+                endAdornment={
+                  <IconButton
+                    noBackground
+                    style={{ color: '#184d6d' }}
+                    onClick={() => setShowPassword((show) => !show)}>
+                    {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
+                  </IconButton>
+                }
+                error={!!errors.password}
+                helperText={errors.password?.message?.toString()}
+              />
+
+              <Button className='login-button' type='submit' disabled={!isValid} size='large'>
+                Sign in
               </Button>
 
-              <LoginWithFacebook
-                  appId={config.facebook.facebook_id}
-                  onLoginSuccess={handleFacebookLoginSuccess}
-                  onLoginFailure={handleFacebookLoginFailure}
-                  scope='email'
-              />
-              <LoginWithTwitter onSuccess={loginWithTwitter} />
-
-              <LoginWithGoogle onSuccess={loginWithGoogle} />
-            </div>
-
-            <div className='or-line'>
-              <span />
-              <Typography variant='body5'>OR</Typography>
-              <span />
-            </div>
-
-            <form className='content' onSubmit={handleSubmit(onSubmit)}>
-              <div>
-                <TextField
-                    label='Email'
-                    className='email-input'
-                    required
-                    {...register('email')}
-                    error={!!errors.email}
-                    helperText={errors.email?.message?.toString()}
-                />
-
-                <TextField
-                    type={showPassword ? 'text' : 'password'}
-                    label='Password'
-                    className='password-input'
-                    required
-                    {...register('password')}
-                    endAdornment={
-                      <IconButton
-                          noBackground
-                          style={{ color: '#184d6d' }}
-                          onClick={() => setShowPassword((show) => !show)}>
-                        {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
-                      </IconButton>
-                    }
-                    error={!!errors.password}
-                    helperText={errors.password?.message?.toString()}
-                />
-
-                <Button className='login-button' type='submit' disabled={!isValid} size='large'>
-                  Sign in
-                </Button>
-
-                <div className='keep-me-signed-in-section'>
-                  <Typography variant='body4'>Forgot your password?</Typography>
-                  <Link variant='body4' onClick={() => navigate('/forgot-password')}>
-                    Reset password
-                  </Link>
-                </div>
+              <div className='keep-me-signed-in-section'>
+                <Typography variant='body4'>Forgot your password?</Typography>
+                <Link variant='body4' onClick={() => navigate('/forgot-password')}>
+                  Reset password
+                </Link>
               </div>
-            </form>
-          </div>
-          <div className='right-part'></div>
+            </div>
+          </form>
         </div>
+        <div className='right-part'></div>
       </div>
+    </div>
   );
 })`
   &.login-page {
