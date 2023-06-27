@@ -18,9 +18,9 @@ export class CriteriaController {
 
   private initializeRoutes() {
     this.router.get('/:id', authorize(), validateId, this.getById);
-    this.router.post(this.path, authorize(), this.createAsset);
-    this.router.post('/draft', authorize(), this.createAssetDraft);
-    this.router.patch('/:id', authorize(), validateId, this.updateAsset);
+    this.router.post(this.path, authorize(), this.createCriteria);
+    this.router.post('/draft', authorize(), this.createCriteriaDraft);
+    this.router.patch('/:id', authorize(), validateId, this.updateCriteria);
     this.router.delete('/:id', authorize(), validateId, this.delete);
   }
 
@@ -37,7 +37,7 @@ export class CriteriaController {
   private getById = this.criteriaService.getById;
 
   /**
-   * @api {post} /api/asset Post
+   * @api {post} /api/criteria Post new criteria
    * @apiDescription Add a new criteria
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria
@@ -47,7 +47,7 @@ export class CriteriaController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createAsset = this.criteriaService.createAsset;
+  private createCriteria = this.criteriaService.createCriteria;
 
   /**
    * @api {post} /api/criteria/draft Post as draft
@@ -60,7 +60,7 @@ export class CriteriaController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createAssetDraft = this.criteriaService.createAsset;
+  private createCriteriaDraft = this.criteriaService.createCriteria;
 
   /**
    * @api {patch} /api/criteria/:id Patch one criteria
@@ -73,7 +73,7 @@ export class CriteriaController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private updateAsset = this.criteriaService.updateAsset;
+  private updateCriteria = this.criteriaService.updateCriteria;
 
   /**
    * @api {delete} /api/criteria/:id Delete
@@ -85,40 +85,33 @@ export class CriteriaController {
    * @apiUse bearer
    */
 
-  private delete = this.criteriaService.deleteAsset;
+  private delete = this.criteriaService.deleteCriteria;
 }
 
-/* API CONSTANTS FOR ASSET DOCUMENTATION */
+/* API CONSTANTS FOR CRITERIA DOCUMENTATION */
 
 /**
  * @apiDefine CreateCriteriaExample
  * @apiExample {json} Example request body:
- *    {
+ *   {
+ *     "area_of_interest": "London, Uk",
  *     "budget": "100 - 1000",
- *     "area_of_interest": "",
  *     "radius": "0",
- *     "asset_address": {
- *         "latitude": 0,
- *         "longitude": 0
- *     },
  *     "transaction_type_string": "Rent",
- *     "property_type": "Detached",
- *     "asset_rent": {
- *         "rental_amount": "1200",
- *         "rental_frequency": "Month",
- *         "deposit_amount": "200",
- *         "interest_by": "6/15/2023",
- *         "available_from": "6/15/2023"
+ *     "asset_address": {
+ *         "latitude": 51.5072178,
+ *         "longitude": -0.1275862
  *     },
- *     "floor_size": 0,
- *     "property_preference": "New Home",
+ *     "property_type": "Detached",
+ *     "property_preferences": ["New Homes"],
+ *     "floor_size": "80 - 100",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
- *     "property_features": ["Parks Nearby"],
- *     "specific_property_features": ["Garden","Terrace"],
- *     "credit_score_requirements": "Good"
+ *     "property_features": ["Park nearby","Shoping centers nearby"],
+ *     "specific_property_features": ["Parking spot"],
+ *     "credit_score_requirements": "Excellent"
  * }
  */
 
@@ -126,31 +119,24 @@ export class CriteriaController {
  * @apiDefine CreateCriteriaDraftExample
  * @apiExample {json} Example request body:
  *    {
+ *     "area_of_interest": "London, Uk",
  *     "budget": "100 - 1000",
- *     "area_of_interest": "",
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
  *     "asset_address": {
  *         "latitude": "",
  *         "longitude": ""
  *     },
- *     "property_type": "",
- *     "asset_rent": {
- *         "rental_amount": "",
- *         "rental_frequency": "",
- *         "deposit_amount": "",
- *         "interest_by": "",
- *         "available_from": ""
- *     },
- *     "floor_size": 0,
- *     "property_preference": "",
+ *     "property_type": "Detached",
+ *     "property_preferences": ["New Homes","Auction"],
+ *     "floor_size": "80 - 100",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
- *     "property_features": [""],
- *     "specific_property_features": [],
- *     "credit_score_requirements": "",
+ *     "property_features": ["Park nearby","Shoping centers nearby"],
+ *     "specific_property_features": ["Parking spot"],
+ *     "credit_score_requirements": "Excellent"
  * }
  */
 
@@ -170,27 +156,21 @@ export class CriteriaController {
 /**
  * @apiDefine CreateCriteria
  * @apiBody {String} area_of_interest
- * @apiBody {String} budget
- * @apiBody {String} radius
  * @apiBody {Object} asset_address
  * @apiBody {Number} asset_address.latitude
  * @apiBody {Number} asset_address.longitude
- * @apiBody {String} transaction_type_string
- * @apiBody {String} property_type
- * @apiBody {Object} asset_rent
- * @apiBody {String} asset_rent.rental_amount
- * @apiBody {String} asset_rent.rental_frequency
- * @apiBody {String} asset_rent.deposit_amount
- * @apiBody {Date} asset_ren.interest_by
- * @apiBody {Date} asset_rent.available_from
+ * @apiBody {String} radius
+ * @apiBody {String[]} property_type
+ * @apiBody {String[]} property_class
+ * @apiBody {String[]} property_features An array of property features.
  * @apiBody {Number} floor_size
- * @apiBody {String} floor_size_unit
- * @apiBody {String[]} property_preference An array of property preferences.
  * @apiBody {Object} room_details
  * @apiBody {String} room_details.number_of_bathrooms
  * @apiBody {String} room_details.number_of_bedrooms
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements
+ * @apiBody {String} budget
+ * @apiBody {String} transaction_type_string
  * @apiBody {String[]} property_features An array of property features.
  *
  */

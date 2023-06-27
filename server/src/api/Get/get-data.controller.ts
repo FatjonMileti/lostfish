@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import assetService from '../Asset/services/asset.service';
 import userService from '../User/user.service';
-
+import tokenAuthorize from '../../middleware/tokenAuthorize';
 const router: Router = Router();
 
 export class ProtectedApiController {
@@ -14,24 +14,25 @@ export class ProtectedApiController {
   }
 
   private initializeRoutes() {
-    this.router.get('/asset/get', this.getPublishedAssets);
-    this.router.get('/user/get', this.getUsers);
+    this.router.get('/property/get', tokenAuthorize(), this.getPublishedAssets);
+    this.router.get('/user/get', tokenAuthorize(), this.getUsers);
   }
 
   /**
-   * @api {get} /api/public/asset/get Get asset
-   * @apiDescription Get all assets
-   * @apiGroup Public
-   * @apiSampleRequest /api/public/asset/get
+   * @api {get} /api/v1/property/get Get published properties
+   * @apiDescription Get all published properties
+   * @apiGroup MatchesData
+   * @apiSampleRequest /api/v1/property/get
+   * @apiHeader {String} Token Authentication token.
    */
   private getPublishedAssets = this.assetService.findPublishedProperties;
 
   /**
-   * @api {get} /api/public/user/get Get users
+   * @api {get} /api/v1/user/get Get users
    * @apiDescription Get all users with their criteria
-   * @apiGroup Public
-   * @apiSampleRequest /api/public/user/get
-   *
+   * @apiGroup MatchesData
+   * @apiSampleRequest /api/v1/user/get
+   * @apiHeader {String} Token Authentication token.
    */
   private getUsers = this.userService.getUserPublicData;
 }

@@ -61,5 +61,6 @@ export enum Role {
   Admin = 'Admin',
   Agent = 'Agent',
   Client = 'Client',
-  Solicitor = 'Solicitor'
+  Solicitor = 'Solicitor',
+  Landlord = 'Landlord'
 }

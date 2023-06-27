@@ -81,7 +81,7 @@ const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
 
-router.use('/public', protectedController.router);
+router.use('/v1', protectedController.router);
 router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);
 router.use('/user', authorize(), userController.router);

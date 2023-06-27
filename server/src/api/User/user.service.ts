@@ -311,17 +311,49 @@ const mapToUser = (userDocument: UserDocument): any => {
 };
 
 const getUserPublicData = async (req: Request, res: Response) => {
-  const { search } = req.query;
-
   const query: {
     is_disabled: boolean;
-    role: string;
+    role: any;
   } = {
     is_disabled: false,
-    role: Role.Client
+    role: { $in: [Role.Client, Role.Agent] }
   };
 
-  const users = await UserModel.find(query, { email: 1, first_name: 1, last_name: 1, role: 1 });
+  const users = await UserModel.aggregate([
+    {
+      $match: query
+    },
+    {
+      $lookup: {
+        from: 'criterias',
+        localField: '_id',
+        foreignField: 'created_by',
+        as: 'criteria'
+      }
+    },
+    {
+      $unwind: {
+        path: '$criteria',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        first_name: 1,
+        last_name: 1,
+        email: 1,
+        user_type: {
+          $cond: {
+            if: { $eq: ['$role', 'Agent'] },
+            then: 'Landlord',
+            else: 'Client'
+          }
+        },
+        criteria: 1
+      }
+    }
+  ]);
 
   res.status(httpStatus.OK).send(users);
 };

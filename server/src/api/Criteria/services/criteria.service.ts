@@ -1,17 +1,17 @@
-import AssetModel from '../schemas/criteria.schema';
+import CriteriaModel from '../schemas/criteria.schema';
 import { CriteriaDocument } from '../criteria.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import { getCurrentStatusForPost } from '../helpers';
-
 import googleMapService from '../../../external-services/google-map.service';
-import CriteriaSchema from '../schemas/criteria.schema';
+import { CurrencyCode } from '../../Asset/asset.interface';
 
-const createAsset = async (req: Request, res: Response): Promise<any> => {
+const createCriteria = async (req: Request, res: Response): Promise<any> => {
   const data: CriteriaDocument = req.body;
   data.created_by = res.locals.user_id;
-
+  data.floor_size_unit = 'Meter Squared';
+  data.currency_code = CurrencyCode.GBP;
   if (data.asset_address.longitude && data.asset_address.longitude) {
     const assetAddress = await googleMapService.getAddress(
       data.asset_address.latitude,
@@ -24,7 +24,7 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   }
 
   try {
-    const criteria: CriteriaDocument = new AssetModel({ ...data });
+    const criteria: CriteriaDocument = new CriteriaModel({ ...data });
     await criteria.save();
 
     res.status(httpStatus.CREATED).send(criteria.toObject());
@@ -33,7 +33,7 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const updateAsset = async (req: Request, res: Response): Promise<any> => {
+const updateCriteria = async (req: Request, res: Response): Promise<any> => {
   try {
     const data: CriteriaDocument = req.body;
     const id = req.params.id;
@@ -67,10 +67,6 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       criteria.property_type = data.property_type;
     }
 
-    if (data.hasOwnProperty('asset_rent')) {
-      criteria.asset_rent = data.asset_rent;
-    }
-
     if (data.hasOwnProperty('floor_size')) {
       criteria.floor_size = data.floor_size;
     }
@@ -81,10 +77,6 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     if (data.hasOwnProperty('property_features')) {
       criteria.property_features = data.property_features;
-    }
-
-    if (data.hasOwnProperty('property_preference')) {
-      criteria.property_preference = data.property_preference;
     }
 
     if (data.hasOwnProperty('specific_property_features')) {
@@ -106,7 +98,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 const getById = async (req: Request, res: Response): Promise<any | null> => {
   const id = req.params.id;
 
-  const criteria: CriteriaDocument | null = await CriteriaSchema.findOne({ _id: id });
+  const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ _id: id });
 
   if (!criteria) {
     throw createError(404, 'The item does not exist');
@@ -116,7 +108,7 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
 };
 
 const findById = async (id: string): Promise<any | null> => {
-  const criteria: CriteriaDocument | null = await CriteriaSchema.findOne({ _id: id });
+  const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ _id: id });
 
   if (!criteria) {
     throw createError(404, 'The item does not exist');
@@ -124,16 +116,16 @@ const findById = async (id: string): Promise<any | null> => {
   return criteria;
 };
 
-const deleteAsset = async (req: Request, res: Response) => {
+const deleteCriteria = async (req: Request, res: Response) => {
   const id = req.params.id;
-  await CriteriaSchema.findByIdAndDelete(id);
+  await CriteriaModel.findByIdAndDelete(id);
   res.status(httpStatus.NO_CONTENT).send();
 };
 
 export default {
   getById,
-  createAsset,
-  deleteAsset,
-  updateAsset,
+  createCriteria,
+  deleteCriteria,
+  updateCriteria,
   findById
 };
