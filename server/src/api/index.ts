@@ -56,11 +56,11 @@ const router: Router = Router();
  */
 
 const uploadService = UploadService.getInstance();
-const uploader =
-  config.node_env === 'development'
-    ? uploadService.createLocalUploader()
-    : uploadService.createLiveUploader();
-
+// const uploader =
+//   config.node_env === 'development'
+//     ? uploadService.createLocalUploader()
+//     : uploadService.createLiveUploader();
+const uploader = uploadService.createLocalUploader();
 router.post('/upload', authorize(), uploader.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
