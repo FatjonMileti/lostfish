@@ -332,7 +332,7 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   };
 
   try {
-    const response = await AssetModel.find(query);
+    const response = await AssetModel.find(query, { property_images: 0 });
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
