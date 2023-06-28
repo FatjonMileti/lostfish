@@ -175,7 +175,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-const findOne = async (query: any) => {
+const findOne = async (query: any): Promise<UserDocument | null> => {
   try {
     return UserModel.findOne({ ...query });
   } catch (error: any) {

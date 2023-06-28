@@ -1,30 +1,32 @@
 import { Button } from '../../../components/Button';
 import { Icon } from '../../../components/Icon';
-import React from 'react';
+import React, { useCallback } from 'react';
 import config from '../../../config';
-
+import { LoginSocialGoogle, IResolveParams } from 'reactjs-social-login';
 export const LoginWithGoogle = (props: any) => {
   const { onSuccess } = props;
 
-  const handleCodeMessage = (event: any) => {
-    if (event?.data?.code === undefined) return;
-    const { code } = event.data;
-    onSuccess({ code });
-    window.removeEventListener('message', handleCodeMessage);
-  };
-
-  const handleLoginClick = () => {
-    const authUrl = `${config.googleAuthFullUrl}`;
-    const popupWindow = window.open(authUrl, '_blank');
-    window.addEventListener('message', handleCodeMessage);
-    if (popupWindow) {
-      popupWindow.focus();
-    }
-  };
+  const onLoginStart = useCallback(() => {
+    console.log('login start');
+  }, []);
 
   return (
-    <Button variant='secondary' onClick={() => handleLoginClick()}>
-      <Icon icon='google' />
-    </Button>
+    <LoginSocialGoogle
+      client_id={config.google.google_app_id || ''}
+      onLoginStart={onLoginStart}
+      redirect_uri={config.google.redirect_page || ''}
+      scope='profile email'
+      discoveryDocs='claims_supported'
+      access_type='offline'
+      onResolve={({ provider, data }: IResolveParams) => {
+        onSuccess({ provider, user: data });
+      }}
+      onReject={(err) => {
+        console.log(err);
+      }}>
+      <Button variant='secondary'>
+        <Icon icon='google' />
+      </Button>
+    </LoginSocialGoogle>
   );
 };

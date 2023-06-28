@@ -1,16 +1,26 @@
 import { Request, Response } from 'express';
 import UserModel from '../../User/user.schema';
-import { Role } from '../../User/user.interface';
+import { Role, UserDocument } from '../../User/user.interface';
 import { LoginLog, LoginLogAction } from '../../../data/logs';
 import userService from '../../User/user.service';
 import accountService from './account.service';
 import axios from 'axios';
-import { Client, auth } from 'twitter-api-sdk';
+import { auth, Client } from 'twitter-api-sdk';
 import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
 import config from '../../../config';
+
+interface TokenResponse {
+  token_type: string;
+  access_token: string;
+  expires_in: string;
+  refresh_token: string;
+  refresh_expires_in: string;
+  rules: any;
+}
+
 const { OAuth2Client } = require('google-auth-library');
 
 // Google
@@ -243,9 +253,95 @@ const generateTwitterUrl = async (req: Request, res: Response) => {
   }
 };
 
+const createUserFromGoogle = async (user: any): Promise<UserDocument> => {
+  return await new UserModel({
+    email: user.email,
+    first_name: user.given_name,
+    last_name: user.family_name,
+    google: {
+      username: user.name,
+      is_google_verified: true,
+      google_user_id: user.sub
+    },
+    is_disabled: false,
+    hash: null,
+    role: Role.Client
+  }).save();
+};
+
+const createUserFromFacebook = async (user: any): Promise<UserDocument> => {
+  return await new UserModel({
+    email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    facebook: {
+      username: user.name,
+      is_facebook_verified: true,
+      facebook_user_id: user.userID
+    },
+    is_disabled: false,
+    hash: null,
+    role: Role.Client
+  }).save();
+};
+
+const generateTokensForCurrentUser = async (user: UserDocument): Promise<TokenResponse> => {
+  const { token, refresh } = accountService.generateTokens(user);
+  const rules = packRules(defineAbilitiesFor(user.role).rules);
+
+  return {
+    token_type: 'bearer',
+    access_token: token,
+    expires_in: process.env.JWT_EXPIRE_SECONDS || '',
+    refresh_token: refresh,
+    refresh_expires_in: process.env.REFRESH_EXPIRE_SECONDS || '',
+    rules
+  };
+};
+
+const loginThirdParties = async (req: Request, res: Response) => {
+  const { provider, user } = req.body;
+
+  try {
+    const existingUser = await userService.findOne({
+      email: user.email
+    });
+
+    if (!existingUser) {
+      if (provider === 'google') {
+        const newUser: UserDocument = await createUserFromGoogle(user);
+        const response: TokenResponse = await generateTokensForCurrentUser(newUser);
+        return res.status(httpStatus.OK).send(response);
+      }
+
+      if (provider === 'facebook') {
+        const newUser: UserDocument = await createUserFromFacebook(user);
+        const response: TokenResponse = await generateTokensForCurrentUser(newUser);
+        return res.status(httpStatus.OK).send(response);
+      }
+    } else {
+      if (existingUser && existingUser.is_disabled) {
+        throw createError(httpStatus.UNAUTHORIZED, { message: 'user_is_disabled' });
+      }
+
+      await new LoginLog({
+        user: existingUser._id,
+        info: existingUser.first_name,
+        action: LoginLogAction.Login
+      }).save();
+
+      const response: TokenResponse = await generateTokensForCurrentUser(existingUser);
+      res.send(response);
+    }
+  } catch (error: any) {
+    res.status(400).send(error);
+  }
+};
+
 export default {
   loginGoogle,
   loginFacebook,
   loginWithTwitter,
-  generateTwitterUrl
+  generateTwitterUrl,
+  loginThirdParties
 };

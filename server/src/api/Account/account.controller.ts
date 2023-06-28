@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 const router: Router = Router();
 import authorize from '../../middleware/authorize';
 import { loginLimiter } from '../../middleware/rateLimiter';
@@ -40,14 +40,38 @@ export class AccountController {
     );
     this.router.post('/logout', authorize(), this.logout);
     this.router.post('/login-google', this.loginGoogle);
+    this.router.post('/login-social', this.loginSocial);
     this.router.post('/login-facebook', this.loginFacebook);
     this.router.get('/create-twitter-url', this.generateTwitterUrl);
-    this.router.get('/login-twitter-callback', this.loginWithTwitter);
+    this.router.post('/login-twitter-callback', this.loginWithTwitter);
     this.router.get('/get-access-tokens', authorize(), this.getAccessToken);
     this.router.get('/me', authorize(), this.getMyProfile);
     this.router.post('/register', this.createAccount);
     this.router.get('/invitation/:token', this.getAccountInvitation);
   }
+
+  /**
+   * @apiDefine LoginSocial
+   * @apiBody {String} provider
+   * @apiBody {Object} user
+   * @apiBody {String} user.given_name
+   * @apiBody {String} user.family_name
+   * @apiBody {String} user.email
+   * @apiBody {String} user.name
+   * @apiBody {String} user.scope
+   * @apiBody {Boolean} user.email_verified
+   *
+   */
+
+  /**
+   * @api {post} /api/account/login-social Login with socials
+   * @apiDescription Login with socials
+   * @apiGroup Account
+   * @apiSampleRequest /api/account/login-social
+   * @apiUse LoginSocial
+   *
+   */
+  private loginSocial = this.socialLoginService.loginThirdParties;
 
   /**
    * @api {post} /api/account/register Create account
