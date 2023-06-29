@@ -8,7 +8,6 @@ import { useGlobalState } from '../../../globalState';
 
 export const RedirectUriTwitterPage = () => {
   const [cookies, setCookie, removeCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
-  console.log({ cookies });
 
   const navigate = useNavigate();
   const {
@@ -33,6 +32,8 @@ export const RedirectUriTwitterPage = () => {
       if (cookies.oauth2_token) {
         removeCookie('oauth2_token');
       }
+    } else {
+      return navigate('/login');
     }
   }, []);
 
