@@ -116,12 +116,10 @@ const loginWithTwitter = async (req: Request, res: Response) => {
   // 1. get the access token with the code
   const TwitterOAuthToken = await getTwitterOAuthToken(code as string);
   if (!TwitterOAuthToken) {
-    return res.send('not ok');
+    return res.redirect(config.front_end_url + '/login');
   }
 
   const twitterUser = await getTwitterUser(TwitterOAuthToken.access_token);
-
-  console.log({ twitterUser, TwitterOAuthToken });
 
   if (twitterUser) {
     const existingUser = await userService.findOne({
