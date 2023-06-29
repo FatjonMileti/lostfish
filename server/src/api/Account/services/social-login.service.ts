@@ -10,6 +10,7 @@ import defineAbilitiesFor from '../../../casl/casl';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
 import config from '../../../config';
+import * as process from 'process';
 
 //========================================================================
 interface TokenResponse {
@@ -97,8 +98,9 @@ export const COOKIE_NAME = 'oauth2_token';
 // cookie setting options
 const cookieOptions: CookieOptions = {
   httpOnly: false,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'none'
+  domain: process.env.DOMAIN,
+  secure: process.env.NODE_ENV === 'stage',
+  sameSite: 'strict'
 };
 
 async function addCookieToRes(res: Response, user: UserDocument) {
