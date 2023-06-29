@@ -98,7 +98,7 @@ export const COOKIE_NAME = 'oauth2_token';
 const cookieOptions: CookieOptions = {
   httpOnly: false,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict'
+  sameSite: 'none'
 };
 
 async function addCookieToRes(res: Response, user: UserDocument) {
