@@ -37,10 +37,10 @@ export const RedirectUriTwitterPage = () => {
   }, []);
 
   React.useEffect(() => {
-    if (!!user.auth) navigate('/');
-  }, [user.auth]);
-
-  console.log({ user });
+    if (user && user.auth) {
+      return navigate('/');
+    }
+  }, [user]);
 
   return <p>Loading...</p>;
 };

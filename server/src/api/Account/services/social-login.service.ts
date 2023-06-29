@@ -113,7 +113,6 @@ async function addCookieToRes(res: Response, user: UserDocument) {
 const loginWithTwitter = async (req: Request, res: Response) => {
   const { code, state } = req.query;
 
-  // 1. get the access token with the code
   const TwitterOAuthToken = await getTwitterOAuthToken(code as string);
   if (!TwitterOAuthToken) {
     return res.redirect(config.front_end_url + '/login');
@@ -128,7 +127,7 @@ const loginWithTwitter = async (req: Request, res: Response) => {
     });
     if (existingUser) {
       await addCookieToRes(res, existingUser);
-      return res.redirect(config.front_end_url);
+      return res.redirect(config.front_end_url + '/twitter/redirect');
     } else {
       const newUser = await createUserFromTwitter(twitterUser);
       await addCookieToRes(res, newUser);
