@@ -13,7 +13,7 @@ export default {
   redirect_uri: `${process.env.REACT_APP_FRONT_END_URL}`,
   twitter: {
     client_id: `${process.env.REACT_APP_TWITTER_APP_ID}`,
-    redirect_page: process.env.REACT_APP_GOOGLE_REDIRECT_URI
+    redirect_page: process.env.REACT_APP_TWITTER_REDIRECT_PAGE
   },
   apple: {
     client_id: `${process.env.REACT_APP_APPLE_ID} || 'ttest'`
