@@ -49,17 +49,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
-  const params = new URLSearchParams(useLocation().search);
-  const validated = params.get('validated');
-  const access_token = params.get('access_token');
-
-  const [cookies, setCookie] = useCookies(['username', 'acceptCookies']);
-
-  React.useEffect(() => {
-    if (validated && access_token) {
-      loginWithTwitter({ validated: Boolean(validated), access_token });
-    }
-  }, [validated, access_token]);
+  const [cookies, setCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -126,32 +116,29 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     }
   };
 
-  const loginWithGoogle = async (response: { code: string }) => {
-    try {
-      const loginGoogleRes = await axios.post(`${config.apiUrl}/api/account/login-google`, {
-        code: response.code
-      });
-      const userDetails = decodeJWT(loginGoogleRes.data.access_token);
-      userDetails.rules = loginGoogleRes.data.rules;
+  const loginWithSocials = async ({ provider, user }: { provider: string; user: any }) => {
+    const response = await axios.post(`${config.apiUrl}/api/account/login-social`, {
+      provider,
+      user
+    });
 
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(loginGoogleRes.data.rules));
+    const userDetails = decodeJWT(response.data.access_token);
+    userDetails.rules = response.data.rules;
 
-      const auth = loginGoogleRes.data;
+    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
 
-      setUser((user: any) => ({
-        ...user,
-        auth: {
-          ...auth,
-          expirationTime: Date.now() + auth.expires_in * 1000,
-          refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
-        },
-        userDetails,
-        ability
-      }));
-    } catch (err) {
-      console.log(err);
-      //handle error
-    }
+    const auth = response.data;
+
+    setUser((user: any) => ({
+      ...user,
+      auth: {
+        ...auth,
+        expirationTime: Date.now() + auth.expires_in * 1000,
+        refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+      },
+      userDetails,
+      ability
+    }));
   };
 
   const loginWithTwitter = async (response: { access_token: string; validated: boolean }) => {
@@ -178,27 +165,6 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       console.log(err);
       //handle error
     }
-  };
-
-  const handleFacebookLoginSuccess = async (accessToken: string) => {
-    const response = await axios.post(`${config.apiUrl}/api/account/login-facebook`, { token: accessToken });
-    const userDetails = decodeJWT(response.data.access_token);
-    userDetails.rules = response.data.rules;
-
-    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-
-    const auth = response.data;
-
-    setUser((user: any) => ({
-      ...user,
-      auth: {
-        ...auth,
-        expirationTime: Date.now() + auth.expires_in * 1000,
-        refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
-      },
-      userDetails,
-      ability
-    }));
   };
 
   const handleFacebookLoginFailure = (error: string) => {
@@ -233,14 +199,14 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
             <LoginWithFacebook
               appId={config.facebook.facebook_id}
-              onLoginSuccess={handleFacebookLoginSuccess}
+              onLoginSuccess={loginWithSocials}
               onLoginFailure={handleFacebookLoginFailure}
               scope='email'
             />
 
             <LoginWithTwitter onSuccess={loginWithTwitter} />
 
-            <LoginWithGoogle onSuccess={loginWithGoogle} />
+            <LoginWithGoogle onSuccess={loginWithSocials} />
           </div>
 
           <div className='or-line'>

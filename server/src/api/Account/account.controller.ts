@@ -39,11 +39,8 @@ export class AccountController {
       this.refresh
     );
     this.router.post('/logout', authorize(), this.logout);
-    this.router.post('/login-google', this.loginGoogle);
     this.router.post('/login-social', this.loginSocial);
-    this.router.post('/login-facebook', this.loginFacebook);
-    this.router.get('/create-twitter-url', this.generateTwitterUrl);
-    this.router.post('/login-twitter-callback', this.loginWithTwitter);
+    this.router.get('/login-twitter-callback', this.loginWithTwitter);
     this.router.get('/get-access-tokens', authorize(), this.getAccessToken);
     this.router.get('/me', authorize(), this.getMyProfile);
     this.router.post('/register', this.createAccount);
@@ -54,12 +51,6 @@ export class AccountController {
    * @apiDefine LoginSocial
    * @apiBody {String} provider
    * @apiBody {Object} user
-   * @apiBody {String} user.given_name
-   * @apiBody {String} user.family_name
-   * @apiBody {String} user.email
-   * @apiBody {String} user.name
-   * @apiBody {String} user.scope
-   * @apiBody {Boolean} user.email_verified
    *
    */
 
@@ -140,39 +131,7 @@ export class AccountController {
   private login = this.accountService.login;
 
   /**
-   * @api {post} /api/account/login-google Login Google
-   * @apiDescription Login user with google
-   * @apiGroup Account
-   * @apiSampleRequest /api/account/login-google
-   *
-   * @apiBody {string} code
-   *
-   * @apiPermission anonymous
-   * @apiSuccess {String} token_type
-   * @apiSuccess {String} access_token
-   * @apiSuccess {String} expires_in
-   * @apiSuccess {String} refresh_token
-   */
-  private loginGoogle = this.socialLoginService.loginGoogle;
-
-  /**
-   * @api {post} /api/account/login-google Login Facebook
-   * @apiDescription Login user with facebook
-   * @apiGroup Account
-   * @apiSampleRequest /api/account/login-facebook
-   *
-   * @apiBody {string} token
-   *
-   * @apiPermission anonymous
-   * @apiSuccess {String} token_type
-   * @apiSuccess {String} access_token
-   * @apiSuccess {String} expires_in
-   * @apiSuccess {String} refresh_token
-   */
-  private loginFacebook = this.socialLoginService.loginFacebook;
-
-  /**
-   * @api {post} /api/account/login-twitter-callback Login Twitter callback
+   * @api {get} /api/account/login-twitter-callback Login Twitter callback
    * @apiDescription Login user with twitter callback
    * @apiGroup Account
    * @apiSampleRequest /api/account/login-twitter-callback
@@ -186,20 +145,6 @@ export class AccountController {
    * @apiSuccess {String} refresh_token
    */
   private loginWithTwitter = this.socialLoginService.loginWithTwitter;
-
-  /**
-   * @api {get} /api/account/create-twitter-url Login Twitter generate url
-   * @apiDescription Login user with twitter
-   * @apiGroup Account
-   * @apiSampleRequest /api/account/create-twitter-url
-   *
-   * @apiPermission anonymous
-   * @apiSuccess {String} token_type
-   * @apiSuccess {String} access_token
-   * @apiSuccess {String} expires_in
-   * @apiSuccess {String} refresh_token
-   */
-  private generateTwitterUrl = this.socialLoginService.generateTwitterUrl;
 
   /**
    * @api {post} /api/account/refresh Refresh

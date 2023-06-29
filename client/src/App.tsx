@@ -33,6 +33,7 @@ import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
+import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
 const GeneralSnackbar = () => {
   const UIContext = useUI();
   if (!UIContext) return null;
@@ -113,7 +114,7 @@ function App() {
                 <Routes>
                   <Route path='/login' element={<Login />} />
                   <Route path='/google/redirect' element={<RedirectUriPage />} />
-                  <Route path='/twitter/redirect' element={<RedirectUriPage />} />
+                  <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                   <Route path='/create-account' element={<CreateAccount />} />
 
                   <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
