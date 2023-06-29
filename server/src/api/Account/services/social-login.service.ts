@@ -36,9 +36,8 @@ const BasicAuthToken = Buffer.from(
 
 export const twitterOauthTokenParams = {
   client_id: TWITTER_OAUTH_CLIENT_ID ?? '',
-  // based on code_challenge
   code_verifier: '8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA',
-  redirect_uri: `http://www.localhost:3000/api/account/login-twitter-callback`,
+  redirect_uri: config.twitter.redirect_url ?? '',
   grant_type: 'authorization_code'
 };
 

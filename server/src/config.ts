@@ -10,6 +10,9 @@ export default {
     port: process.env.DB_PORT,
     connection_string: `${process.env.DB_PROTOCOL}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}`
   },
+  twitter: {
+    redirect_url: process.env.TWITTER_REDIRECT_URL
+  },
   api_url: process.env.ABSOLUTE_URL,
   lostfish_api_token: process.env.LOSTFISH_API_ACCESS_TOKEN,
   map_nearby_url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
