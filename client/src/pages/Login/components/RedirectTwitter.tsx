@@ -30,7 +30,9 @@ export const RedirectUriTwitterPage = () => {
         userDetails,
         ability
       }));
-      // removeCookie('oauth2_token');
+      if (cookies.oauth2_token) {
+        removeCookie('oauth2_token');
+      }
     }
   }, []);
 
