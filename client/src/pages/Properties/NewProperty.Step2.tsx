@@ -68,6 +68,7 @@ export interface NewPropertyStep2props extends Omit<HTMLProps<HTMLDivElement>, '
   newImages: File[];
   setNewImages: (newImages: File[]) => void;
   propertyId?: string;
+  onDeleteClick: () => void;
 }
 
 export const NewPropertyStep2 = styled(
@@ -80,7 +81,8 @@ export const NewPropertyStep2 = styled(
     setCurrentStep,
     newImages,
     setNewImages,
-    propertyId
+    propertyId,
+    onDeleteClick
   }: NewPropertyStep2props) => {
     React.useEffect(() => {
       form.watch();
@@ -93,6 +95,14 @@ export const NewPropertyStep2 = styled(
         <div className='header'>
           <Logo />
           <div className='right-side'>
+            {propertyId && (
+              <Button
+                className='delete-button'
+                startIcon={<Icon icon='trash' size={20} />}
+                onClick={onDeleteClick}>
+                Delete property
+              </Button>
+            )}
             <Button variant='secondary' disabled={!form.formState.isValid} onClick={saveAsDraft}>
               Save as draft
             </Button>
@@ -356,6 +366,14 @@ export const NewPropertyStep2 = styled(
       .right-side {
         display: flex;
         column-gap: 32px;
+        .delete-button {
+          color: #e5155a;
+          background-color: white;
+          border: none;
+          .icon {
+            color: #e5155a;
+          }
+        }
       }
     }
 

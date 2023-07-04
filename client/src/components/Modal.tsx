@@ -4,11 +4,20 @@ import React, { DialogHTMLAttributes } from 'react';
 export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
   onBackdropClick?: () => void;
+  disableScrollLock?: boolean;
 }
 
 export const Modal = styled(
-  ({ children, open, onClose = () => {}, className, onBackdropClick = () => {} }: ModalProps) => {
+  ({
+    children,
+    open,
+    onClose = () => {},
+    className,
+    onBackdropClick = () => {},
+    disableScrollLock = false
+  }: ModalProps) => {
     React.useEffect(() => {
+      if (disableScrollLock) return;
       if (open) {
         document.body.style.overflow = 'hidden';
       } else {

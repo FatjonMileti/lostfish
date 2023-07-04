@@ -54,10 +54,21 @@ export interface NewPropertyStep3props extends Omit<HTMLProps<HTMLDivElement>, '
   form: UseFormReturn<Step3FormType>;
   lookingFor: Step0FormType['lookingFor'];
   setCurrentStep: (currentStep: number) => void;
+  propertyId?: string;
+  onDeleteClick: () => void;
 }
 
 export const NewPropertyStep3 = styled(
-  ({ className, closeModal, saveAsDraft, form, lookingFor, setCurrentStep }: NewPropertyStep3props) => {
+  ({
+    className,
+    closeModal,
+    saveAsDraft,
+    form,
+    lookingFor,
+    setCurrentStep,
+    propertyId,
+    onDeleteClick
+  }: NewPropertyStep3props) => {
     React.useEffect(() => {
       form.watch();
     }, []);
@@ -69,6 +80,14 @@ export const NewPropertyStep3 = styled(
         <div className='header'>
           <Logo />
           <div className='right-side'>
+            {propertyId && (
+              <Button
+                className='delete-button'
+                startIcon={<Icon icon='trash' size={20} />}
+                onClick={onDeleteClick}>
+                Delete property
+              </Button>
+            )}
             <Button variant='secondary' onClick={saveAsDraft} disabled={!form.formState.isValid}>
               Save as draft
             </Button>
@@ -302,6 +321,14 @@ export const NewPropertyStep3 = styled(
       .right-side {
         display: flex;
         column-gap: 32px;
+        .delete-button {
+          color: #e5155a;
+          background-color: white;
+          border: none;
+          .icon {
+            color: #e5155a;
+          }
+        }
       }
     }
 

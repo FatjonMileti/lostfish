@@ -12,6 +12,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import request from '../../utils/axios';
 import { Backdrop } from '../../components/Backdrop';
+import { Typography } from '../../components/Typography';
+import { Button } from '../../components/Button';
+import { IconButton } from '../../components/IconButton';
+import { Icon } from '../../components/Icon';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -25,6 +29,7 @@ export interface NewPropertyStateType {
   newImages: File[];
   loadingProperty: boolean;
   savingProperty: boolean;
+  deletePropertyConfirmationModal: boolean;
 }
 
 export const NewProperty = styled(
@@ -39,10 +44,9 @@ export const NewProperty = styled(
       currentStep: propertyId ? 1 : 0,
       newImages: [],
       loadingProperty: false,
-      savingProperty: false
+      savingProperty: false,
+      deletePropertyConfirmationModal: false
     });
-
-    console.log('newIMages: ', state.newImages);
 
     const step0Form = useForm<Step0FormType>({
       defaultValues: {
@@ -189,8 +193,6 @@ export const NewProperty = styled(
             return acc;
           }, {})
         );
-
-        console.log('propertyData: ', data);
       } catch (err) {
         throw err;
       }
@@ -200,7 +202,6 @@ export const NewProperty = styled(
       try {
         if (state.newImages.length > 0) {
           const newImagesLinks = await uploadImages(state.newImages);
-          console.log('imageLinks: ', newImagesLinks);
           setNewImages([]);
           step2Form.setValue('propertyImages', [...step2Form.getValues('propertyImages'), ...newImagesLinks]);
         }
@@ -262,6 +263,30 @@ export const NewProperty = styled(
       }
     };
 
+    const deleteProperty = async () => {
+      await axios(auth.access_token).delete(`/api/asset/${propertyId}`);
+    };
+
+    const onDeleteConfirm = async () => {
+      try {
+        setState((state) => ({ ...state, deletePropertyConfirmationModal: false }));
+        setState((state) => ({ ...state, savingProperty: true }));
+        await deleteProperty();
+      } finally {
+        setState((state) => ({ ...state, savingProperty: false }));
+        setModalVisibility(false);
+        fetchAssets();
+      }
+    };
+
+    const onDeleteClick = () => {
+      setState((state) => ({ ...state, deletePropertyConfirmationModal: true }));
+    };
+
+    const onCancelDelete = () => {
+      setState((state) => ({ ...state, deletePropertyConfirmationModal: false }));
+    };
+
     const setCurrentStep = (currentStep: number): void => {
       setState((state) => ({ ...state, currentStep }));
     };
@@ -292,6 +317,8 @@ export const NewProperty = styled(
             form={step1Form}
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
+            onDeleteClick={onDeleteClick}
+            propertyId={propertyId}
           />
         )}
 
@@ -310,6 +337,7 @@ export const NewProperty = styled(
             newImages={state.newImages}
             setNewImages={setNewImages}
             propertyId={propertyId}
+            onDeleteClick={onDeleteClick}
           />
         )}
 
@@ -325,8 +353,36 @@ export const NewProperty = styled(
             form={step3Form}
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
+            onDeleteClick={onDeleteClick}
+            propertyId={propertyId}
           />
         )}
+
+        <Modal
+          disableScrollLock
+          open={state.deletePropertyConfirmationModal}
+          className='delete-confirm-modal'
+          onBackdropClick={onCancelDelete}>
+          <div className='modal-header'>
+            <IconButton size='large' noBackground onClick={onCancelDelete}>
+              <Icon icon='close' size={12} />
+            </IconButton>
+          </div>
+          <Typography variant='body2' className='title'>
+            Are you sure you want to delete the property?
+          </Typography>
+          <Typography variant='body4' className='description'>
+            The action can be reverted anymore. Do you want to delete this property?
+          </Typography>
+          <div className='actions'>
+            <Button size='large' variant='secondary' onClick={onCancelDelete}>
+              Cancel
+            </Button>
+            <Button size='large' onClick={onDeleteConfirm}>
+              Delete
+            </Button>
+          </div>
+        </Modal>
       </Modal>
     );
   }
@@ -341,6 +397,35 @@ export const NewProperty = styled(
 
     .modal-container {
       padding: 0;
+    }
+
+    .delete-confirm-modal {
+      .modal-container {
+        padding: 0;
+      }
+      padding: 24px;
+      max-width: 440px;
+      .modal-header {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .title {
+        margin-top: 24px;
+        text-align: center;
+      }
+
+      .description {
+        margin-top: 16px;
+        text-align: center;
+      }
+      .actions {
+        margin-top: 48px;
+        display: flex;
+        column-gap: 16px;
+        .button {
+          flex-grow: 1;
+        }
+      }
     }
   }
 `;
