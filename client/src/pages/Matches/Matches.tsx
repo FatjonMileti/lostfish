@@ -3,6 +3,7 @@ import { Header } from '../HomeLoggedIn/Header';
 import React, { HTMLAttributes } from 'react';
 import { Footer } from '../Home/Footer';
 import { ImageGallery } from './ImageGalery';
+import { SetCriteria } from '../SetCriteria/SetCriteria';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -10,6 +11,7 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
       <Header />
       <div className='page-body'>
         <ImageGallery />
+        <SetCriteria />
       </div>
       <Footer />
     </div>
