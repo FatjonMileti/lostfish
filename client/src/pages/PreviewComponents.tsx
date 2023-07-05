@@ -23,6 +23,7 @@ import { TextField } from '../components/TextField';
 import { LoadingMatch } from '../components/LoadingMatch';
 
 import { Tabs, Tab } from '../components/Tab';
+import { ArrowButton } from '../components/ArrowButton';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -33,6 +34,14 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
       <div className='grouped'>
+        <div>
+          <ArrowButton />
+          <ArrowButton direction='right' />
+          <ArrowButton inverted />
+          <ArrowButton hero />
+          <ArrowButton size='large' />
+          <ArrowButton size='small' />
+        </div>
         <div>
           <Tabs value={activeTab} onChange={(i: number) => setActiveTab(i)}>
             <Tab label='Include' />
