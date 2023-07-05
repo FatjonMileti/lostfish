@@ -20,14 +20,25 @@ import { Modal } from '../components/Modal';
 import { Checkbox } from '../components/Checkbox';
 import { TextField } from '../components/TextField';
 
+import { LoadingMatch } from '../components/LoadingMatch';
+
+import { Tabs, Tab } from '../components/Tab';
+
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = React.useState(false);
-
+  const [activeTab, setActiveTab] = React.useState(0);
   return (
     <div className={`preview-components ${className}`}>
+      <LoadingMatch />
       <div className='grouped'>
+        <div>
+          <Tabs value={activeTab} onChange={(i: number) => setActiveTab(i)}>
+            <Tab label='Include' />
+            <Tab label='Exclude' />
+          </Tabs>
+        </div>
         <div className='match-ctas'>
           <Typography>Match CTAs</Typography>
 
@@ -51,9 +62,9 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
         <div className='toggles'>
           <Typography>Switch</Typography>
           <Switch size='small' />
-          <Switch checked size='small' />
+          <Switch defaultChecked size='small' />
           <Switch size='medium' />
-          <Switch checked size='medium' />
+          <Switch defaultChecked size='medium' />
         </div>
 
         <div className='checkboxes'>
@@ -260,7 +271,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
 
     .icons-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
 
       border: 1px dashed black;
