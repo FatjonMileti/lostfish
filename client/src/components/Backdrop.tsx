@@ -1,26 +1,31 @@
 import { styled } from '@mui/system';
-import { Backdrop as MuiBackdrop } from '@mui/material';
+import { LoadingMatch } from './LoadingMatch';
+import { HTMLAttributes } from 'react';
+import { motion } from 'framer-motion';
 
-import { keyframes } from '@emotion/react';
+export interface BackdropProps extends HTMLAttributes<HTMLDivElement> {
+  open: boolean;
+}
+export const Backdrop = styled(({ className, open }: BackdropProps) => {
+  return open ? (
+    <motion.div className={className}>
+      <LoadingMatch />
+    </motion.div>
+  ) : null;
+})`
+  & {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
 
-const pulseOpacity = keyframes`
-  0% {
-    opacity: 0.05;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+    //cursor: wait;
   }
-  50% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 0.05;
-  }
-`;
-
-export const Backdrop = styled(MuiBackdrop)`
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  animation: ${pulseOpacity} 2s ease-out;
-  animation-iteration-count: infinite;
-  opacity: 1;
-  cursor: wait;
 `;

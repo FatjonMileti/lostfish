@@ -4,11 +4,16 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
+import { useGlobalState } from '../../globalState';
+import { avatars } from './avatars';
 
-export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  selectedAvatar?: number;
+}
 
 export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
+
   return (
     <div className={`header ${className}`}>
       <div className='left-part' onClick={() => navigate('/')}>
@@ -104,7 +109,14 @@ export const Header = styled(({ className }: HeaderProps) => {
         height: 45px;
         width: 45px;
         border-radius: 50%;
-        background-color: #c0daff;
+        //background-color: #c0daff;
+
+        background-color: ${(props) =>
+          props.selectedAvatar ? avatars[props.selectedAvatar].backgroundColor : '#c0daff'};
+
+        background-image: url(${(props) =>
+          props.selectedAvatar ? avatars[props.selectedAvatar].image : 'initial'});
+        background-size: contain;
       }
 
       .trust-score {
