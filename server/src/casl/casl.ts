@@ -14,7 +14,7 @@ function defineAbilitiesFor(role: string): PureAbility<[CASLAction, AppSubjects]
     can(CASLAction.Read, 'Asset');
   } else if (role === Role.Agent) {
     can(CASLAction.Read, 'Asset');
-    can(CASLAction.Manage, 'Agent');
+    can(CASLAction.Manage, 'all');
   }
 
   return build();
