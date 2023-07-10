@@ -5,18 +5,24 @@ import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
-
 import { Carousel } from './Carousel';
 
+import gallery1 from './gallery1.png';
+import gallery2 from './gallery2.png';
+import gallery3 from './gallery3.png';
+
 const images = [
-  'https://picsum.photos/900/600?random=1',
-  'https://picsum.photos/900/600?random=2',
-  'https://picsum.photos/900/600?random=3',
-  'https://picsum.photos/900/600?random=4',
+  gallery1,
+  gallery2,
+  gallery3,
   'https://picsum.photos/900/600?random=1',
   'https://picsum.photos/900/600?random=2',
   'https://picsum.photos/900/600?random=3',
   'https://picsum.photos/900/600?random=4'
+  // 'https://picsum.photos/900/600?random=1',
+  // 'https://picsum.photos/900/600?random=2',
+  // 'https://picsum.photos/900/600?random=3',
+  // 'https://picsum.photos/900/600?random=4'
 
   // add more images as needed
 ];
