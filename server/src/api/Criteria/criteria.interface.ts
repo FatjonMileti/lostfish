@@ -33,4 +33,9 @@ export interface CriteriaDocument extends Document {
   edited_by?: ObjectId | string;
   created_at: Date;
   created_by?: ObjectId | string;
+
+  //////////////////////////////
+
+  looking_for: String;
+  moving_time: String;
 }
