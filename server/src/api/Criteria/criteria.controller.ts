@@ -113,7 +113,7 @@ export class CriteriaController {
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
  *      "looking_for": "I own a place",
- *      "moving_time": "String",
+ *      "moving_time": "2023-07-11",
  * }
  */
 
@@ -140,7 +140,7 @@ export class CriteriaController {
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
  *      "looking_for": "I own a place",
- *      "moving_time": "String",
+ *      "moving_time": "2023-07-11",
  * }
  */
 
@@ -176,7 +176,7 @@ export class CriteriaController {
  * @apiBody {String} budget
  * @apiBody {String} transaction_type_string
  * @apiBody {String[]} property_features An array of property features.
- * @apiBody {String[]} looking_for
- * @apiBody {String[]} moving_time
+ * @apiBody {String} looking_for
+ * @apiBody {String} moving_time
  *
  */

@@ -31,11 +31,8 @@ export interface CriteriaDocument extends Document {
   currency_code: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
-  created_at: Date;
-  created_by?: ObjectId | string;
-
-  //////////////////////////////
-
   looking_for: String;
   moving_time: String;
+  created_at: Date;
+  created_by?: ObjectId | string;
 }
