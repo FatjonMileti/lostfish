@@ -36,11 +36,15 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
 const updateCriteria = async (req: Request, res: Response): Promise<any> => {
   try {
     const data: CriteriaDocument = req.body;
-    const id = req.params.id;
-    const criteria = await findById(id);
+
+    const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ created_by: res.locals.user_id });
+
+    if (!criteria) {
+      return res.status(httpStatus.NOT_FOUND).send({ message: 'criteria not found' });
+    }
 
     if (data.hasOwnProperty('budget')) {
-      criteria.name = data.budget;
+      criteria.budget = data.budget;
     }
 
     if (data.hasOwnProperty('area_of_interest')) {
@@ -53,10 +57,6 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
 
     if (data.hasOwnProperty('asset_address')) {
       criteria.asset_address = data.asset_address;
-    }
-
-    if (data.hasOwnProperty('status_string')) {
-      criteria.status_string = getCurrentStatusForPost(req.body.status_string);
     }
 
     if (req.body.hasOwnProperty('transaction_type_string')) {
@@ -103,6 +103,18 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const getByUserId = async (req: Request, res: Response): Promise<any | null> => {
+  const userId = res.locals.user_id;
+
+  const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ created_by: userId });
+
+  if (!criteria) {
+    throw createError(404, 'The item does not exist');
+  }
+
+  res.status(httpStatus.OK).send(criteria);
+};
+
 const getById = async (req: Request, res: Response): Promise<any | null> => {
   const id = req.params.id;
 
@@ -135,5 +147,6 @@ export default {
   createCriteria,
   deleteCriteria,
   updateCriteria,
-  findById
+  findById,
+  getByUserId
 };

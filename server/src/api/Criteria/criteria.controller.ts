@@ -17,12 +17,23 @@ export class CriteriaController {
   }
 
   private initializeRoutes() {
+    this.router.get('/', authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), this.createCriteria);
     this.router.post('/draft', authorize(), this.createCriteriaDraft);
-    this.router.patch('/:id', authorize(), validateId, this.updateCriteria);
-    this.router.delete('/:id', authorize(), validateId, this.delete);
+    this.router.patch('/', authorize(), validateId, this.updateCriteria);
   }
+
+  /**
+   * @api {get} /api/criteria Get criteria associated with user
+   * @apiDescription Get criteria for logged in user
+   * @apiGroup Criteria
+   * @apiSampleRequest /api/criteria
+   *
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private getCriteria = this.criteriaService.getByUserId;
 
   /**
    * @api {get} /api/criteria/:id Get by Id
@@ -63,10 +74,10 @@ export class CriteriaController {
   private createCriteriaDraft = this.criteriaService.createCriteria;
 
   /**
-   * @api {patch} /api/criteria/:id Patch one criteria
-   * @apiDescription Update existing criteria
+   * @api {patch} /api/criteria Patch criteria
+   * @apiDescription Update existing criteria for logged in user
    * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
+   * @apiSampleRequest /api/criteria
    *
    * @apiUse CreateCriteria
    * @apiUse CreateCriteriaExample
@@ -74,18 +85,6 @@ export class CriteriaController {
    * @apiUse bearer
    */
   private updateCriteria = this.criteriaService.updateCriteria;
-
-  /**
-   * @api {delete} /api/criteria/:id Delete
-   * @apiDescription Delete criteria
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
-   * @apiParam id
-   * @apiPermission admin
-   * @apiUse bearer
-   */
-
-  private delete = this.criteriaService.deleteCriteria;
 }
 
 /* API CONSTANTS FOR CRITERIA DOCUMENTATION */
