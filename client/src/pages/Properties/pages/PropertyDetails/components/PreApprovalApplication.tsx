@@ -10,7 +10,8 @@ import { FormControlledSelect } from '../../../components/FormControlledSelect';
 import { Button } from '../../../../../components/Button';
 import { UploadImages } from '../../../components/UploadImages';
 import config from '../../../../../config';
-import { useUserStore } from '../../../../Login/Login';
+
+import { useUserStore } from '../../../../../globalState/user';
 
 enum ApproveType {
   PRE_APPROVE = 'Pre approval',

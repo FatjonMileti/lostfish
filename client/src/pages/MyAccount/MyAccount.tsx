@@ -18,7 +18,8 @@ import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
 
 import { Avatar } from '../HomeLoggedIn/Header';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {

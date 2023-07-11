@@ -12,7 +12,8 @@ import axios from '../../utils/axios';
 import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
 import { NewProperty } from './NewProperty';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 const state: IGridState = {
   loading: true,

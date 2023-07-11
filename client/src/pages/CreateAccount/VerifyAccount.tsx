@@ -8,7 +8,8 @@ import { useGlobalState } from '../../globalState/globalState';
 import { Backdrop } from '../../components/Backdrop';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT, useUserStore } from '../Login/Login';
+import { decodeJWT } from '../Login/Login';
+import { useUserStore } from '../../globalState/user';
 export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const setUser = useUserStore((user) => user.set);
 

@@ -8,7 +8,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../utils/axios';
 import { useGlobalState } from '../../globalState/globalState';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 const userNotificationSchema = yup.object().shape({
   email_me_when_i_get_a_match: yup.boolean(),

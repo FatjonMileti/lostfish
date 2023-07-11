@@ -11,7 +11,8 @@ import moment from 'moment';
 
 import { MuiModal } from '../../../components/MuiModal';
 import request from '../../../utils/axios';
-import { useUserStore } from '../../Login/Login';
+
+import { useUserStore } from '../../../globalState/user';
 
 export const PropertyApplications = () => {
   const params = useParams<{ id: string }>();

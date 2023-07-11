@@ -7,7 +7,8 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { useGlobalState } from '../../../globalState/globalState';
-import { useUserStore } from '../../Login/Login';
+
+import { useUserStore } from '../../../globalState/user';
 
 function stringToColor(string: string) {
   let hash = 0;

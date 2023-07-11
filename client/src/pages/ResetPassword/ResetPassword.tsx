@@ -15,7 +15,8 @@ import * as yup from 'yup';
 
 import loginIllustration from '../Login/loginIllustration.png';
 import { useGlobalState } from '../../globalState/globalState';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 const schema = yup.object().shape({
   password: yup.string().required('password is required'),

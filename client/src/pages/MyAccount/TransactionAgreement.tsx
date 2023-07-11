@@ -8,7 +8,8 @@ import { useGlobalState } from '../../globalState/globalState';
 import axios from '../../utils/axios';
 import config from '../../config';
 import { useUser } from '../../context/UserProvider';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);

@@ -22,7 +22,8 @@ import {
 import { SelectMultiple } from './SelectMultiple';
 import { UploadImages } from './UploadImages';
 import { FormControlledSelect } from './FormControlledSelect';
-import { useUserStore } from '../../Login/Login';
+
+import { useUserStore } from '../../../globalState/user';
 
 const firstFormSchema = yup.object().shape({
   transaction_type_string: yup.string().required('Transaction is required'),

@@ -8,7 +8,8 @@ import { buildAbilityFor } from '../utils/ability.util';
 import { AbilityContext } from './AbilityContext';
 import { AppAbilityType, AppAbility } from '../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { useUserStore } from '../pages/Login/Login';
+
+import { useUserStore } from '../globalState/user';
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };
 };

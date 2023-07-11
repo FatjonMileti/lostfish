@@ -12,7 +12,8 @@ import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 import axios from '../../utils/axios';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 export interface userProfileType {
   avatar?: string;

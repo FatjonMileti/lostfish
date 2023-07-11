@@ -12,7 +12,8 @@ import axios from '../../../../../utils/axios';
 import { useGlobalState } from '../../../../../globalState/globalState';
 import { useParams } from 'react-router-dom';
 import { Typography } from '../../../../../components/Typography';
-import { useUserStore } from '../../../../Login/Login';
+
+import { useUserStore } from '../../../../../globalState/user';
 
 export const Overview = () => {
   const { property, isInitialized } = useProperty();

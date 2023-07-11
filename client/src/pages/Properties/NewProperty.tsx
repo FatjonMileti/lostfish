@@ -16,7 +16,8 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];

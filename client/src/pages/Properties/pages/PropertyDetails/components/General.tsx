@@ -9,7 +9,8 @@ import { useGlobalState } from '../../../../../globalState/globalState';
 import { useParams } from 'react-router-dom';
 import { StatusRent, StatusSale } from '../../../property.interface';
 import { Button } from '../../../../../components/Button';
-import { useUserStore } from '../../../../Login/Login';
+
+import { useUserStore } from '../../../../../globalState/user';
 
 export const General = () => {
   const { property, isInitialized } = useProperty();

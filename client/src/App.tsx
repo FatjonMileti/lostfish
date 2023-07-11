@@ -4,7 +4,7 @@ import { UIProvider } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
-import { Login, useUserStore } from './pages/Login/Login';
+import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
@@ -29,6 +29,7 @@ import { PropertyApplications } from './pages/Properties/pages/PropertyApplicati
 import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
+import { useUserStore } from './globalState/user';
 
 registerStore(
   'notification',

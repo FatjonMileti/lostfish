@@ -12,7 +12,8 @@ import Typography from '@mui/material/Typography';
 import { Compose } from './components/Compose';
 import { useGlobalState } from '../../globalState/globalState';
 import SocketContext from '../../context/SocketContext';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 type Username = string | undefined | null;
 type Room = any | null;

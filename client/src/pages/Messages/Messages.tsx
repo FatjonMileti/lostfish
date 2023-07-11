@@ -14,7 +14,8 @@ import noMessages from './noMessages.png';
 import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 registerStore('transactionAgreement', { signed: false });
 

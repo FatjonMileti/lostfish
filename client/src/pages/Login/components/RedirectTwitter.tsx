@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { buildAbilityFor } from '../../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT, useUserStore } from '../Login';
+import { decodeJWT } from '../Login';
 import { useGlobalState } from '../../../globalState/globalState';
+import { useUserStore } from '../../../globalState/user';
 
 export const RedirectUriTwitterPage = () => {
   const [cookies, setCookie, removeCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);

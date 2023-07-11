@@ -16,7 +16,8 @@ import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { Backdrop } from '../../components/Backdrop';
-import { useUserStore } from '../Login/Login';
+
+import { useUserStore } from '../../globalState/user';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),

@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useGlobalState } from '../../../globalState/globalState';
 import axios from '../../../utils/axios';
 import NotFoundPage from '../../404';
-import { useUserStore } from '../../Login/Login';
+
+import { useUserStore } from '../../../globalState/user';
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };

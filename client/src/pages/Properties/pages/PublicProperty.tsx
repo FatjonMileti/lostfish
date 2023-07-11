@@ -11,7 +11,8 @@ import { useGlobalState } from '../../../globalState/globalState';
 import axios from '../../../utils/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '../../HomeLoggedIn/Header';
-import { useUserStore } from '../../Login/Login';
+
+import { useUserStore } from '../../../globalState/user';
 
 export const PublicProperty = () => {
   const [property, setProperty] = React.useState<any>(null);

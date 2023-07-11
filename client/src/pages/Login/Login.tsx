@@ -5,8 +5,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { buildAbilityFor } from '../../utils/ability.util';
-import { registerStore, useGlobalState } from '../../globalState/globalState';
+import { useCookies } from 'react-cookie';
 import { unpackRules } from '@casl/ability/extra';
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
@@ -14,66 +13,33 @@ import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { Link } from '../../components/Link';
 import { IconButton } from '../../components/IconButton';
-import config from '../../config';
 import { Backdrop } from '../../components/Backdrop';
-import { Header } from './Header';
-import loginIllustration from './loginIllustration.png';
 import { LoginWithGoogle } from './components/LoginWithGoogle';
 import { LoginWithFacebook } from './components/LoginWithFacebook';
 import { LoginWithTwitter } from './components/LoginWithTwitter';
 import axiosWithToken from '../../utils/axios';
-import { useCookies } from 'react-cookie';
-
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { Header } from './Header';
+import { buildAbilityFor } from '../../utils/ability.util';
+// import { useUserStore } from '../../globalState/user';
+import config from '../../config';
+import loginIllustration from './loginIllustration.png';
+import { useUserStore } from '../../globalState/user';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
 
-type UserStoreType = {
-  rememberMe: boolean;
-  auth?: any;
-  userDetails: any;
-  ability: any;
-  set: (
-    partial:
-      | UserStoreType
-      | Partial<UserStoreType>
-      | ((state: UserStoreType) => UserStoreType | Partial<UserStoreType>),
-    replace?: boolean | undefined
-  ) => void;
-};
-export const useUserStore = create<UserStoreType>()(
-  persist(
-    (set, get) => ({
-      rememberMe: false,
-      auth: null,
-      userDetails: null,
-      ability: null,
-      set
-    }),
-    { name: 'userStore' }
-  )
-);
-
 export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessToken.split('.')[1]));
 
 export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isValid }
-  } = useForm({ resolver: yupResolver(schema), mode: 'all' });
+  const loginForm = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
   const [cookies, setCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
 
   const [showPassword, setShowPassword] = React.useState(false);
 
   const user = useUserStore();
-  const setUser = useUserStore((state) => state.set);
 
   const [loading, setLoading] = React.useState(false);
 
@@ -101,7 +67,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
       const auth = response.data;
 
-      setUser((user: any) => ({
+      user.set((user: any) => ({
         ...user,
         auth: {
           ...auth,
@@ -121,11 +87,11 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
       if (!message) throw err;
 
       if (message === 'user_not_found') {
-        return setError('email', { message: 'user not found!', type: 'server' });
+        return loginForm.setError('email', { message: 'user not found!', type: 'server' });
       }
 
       if (message === 'incorrect_password') {
-        return setError('password', { message: 'incorrect password', type: 'server' });
+        return loginForm.setError('password', { message: 'incorrect password', type: 'server' });
       }
 
       throw err;
@@ -147,7 +113,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
     const auth = response.data;
 
-    setUser((user: any) => ({
+    user.set((user: any) => ({
       ...user,
       auth: {
         ...auth,
@@ -168,7 +134,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
         const ability = buildAbilityFor(userDetails!.role, unpackRules(getAuthData.data.rules));
         const auth = getAuthData.data;
 
-        setUser((user: any) => ({
+        user.set((user: any) => ({
           ...user,
           auth: {
             ...auth,
@@ -188,7 +154,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   const handleFacebookLoginFailure = (error: string) => {
     // Handle login failure
     console.error('Facebook login failed:', error);
-    return setError('facebook', { message: 'Facebook login failed', type: 'client' });
+    return loginForm.setError('facebook', { message: 'Facebook login failed', type: 'client' });
   };
 
   return (
@@ -233,15 +199,15 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
             <span />
           </div>
 
-          <form className='content' onSubmit={handleSubmit(onSubmit)}>
+          <form className='content' onSubmit={loginForm.handleSubmit(onSubmit)}>
             <div>
               <TextField
                 label='Email'
                 className='email-input'
                 required
-                {...register('email')}
-                error={!!errors.email}
-                helperText={errors.email?.message?.toString()}
+                {...loginForm.register('email')}
+                error={!!loginForm.formState.errors.email}
+                helperText={loginForm.formState.errors.email?.message?.toString()}
               />
 
               <TextField
@@ -249,7 +215,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
                 label='Password'
                 className='password-input'
                 required
-                {...register('password')}
+                {...loginForm.register('password')}
                 endAdornment={
                   <IconButton
                     noBackground
@@ -258,11 +224,15 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
                     {<Icon icon={showPassword ? 'eye' : 'eye-invisible'} />}
                   </IconButton>
                 }
-                error={!!errors.password}
-                helperText={errors.password?.message?.toString()}
+                error={!!loginForm.formState.errors.password}
+                helperText={loginForm.formState.errors.password?.message?.toString()}
               />
 
-              <Button className='login-button' type='submit' disabled={!isValid} size='large'>
+              <Button
+                className='login-button'
+                type='submit'
+                disabled={!loginForm.formState.isValid}
+                size='large'>
                 Sign in
               </Button>
 
