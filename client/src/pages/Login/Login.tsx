@@ -3,10 +3,10 @@ import { styled } from '@mui/system';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { buildAbilityFor } from '../../utils/ability.util';
-import { registerStore, useGlobalState } from '../../globalState';
+import { registerStore, useGlobalState } from '../../globalState/globalState';
 import { unpackRules } from '@casl/ability/extra';
 import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
@@ -24,21 +24,40 @@ import { LoginWithTwitter } from './components/LoginWithTwitter';
 import axiosWithToken from '../../utils/axios';
 import { useCookies } from 'react-cookie';
 
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
   password: yup.string().min(6).max(32).required()
 });
 
-registerStore(
-  'user',
-  {
-    rememberMe: false,
-    auth: null,
-    userDetails: null,
-    ability: null
-  },
-  { persist: true }
+type UserStoreType = {
+  rememberMe: boolean;
+  auth?: any;
+  userDetails: any;
+  ability: any;
+  set: (
+    partial:
+      | UserStoreType
+      | Partial<UserStoreType>
+      | ((state: UserStoreType) => UserStoreType | Partial<UserStoreType>),
+    replace?: boolean | undefined
+  ) => void;
+};
+export const useUserStore = create<UserStoreType>()(
+  persist(
+    (set, get) => ({
+      rememberMe: false,
+      auth: null,
+      userDetails: null,
+      ability: null,
+      set
+    }),
+    { name: 'userStore' }
+  )
 );
+
 export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessToken.split('.')[1]));
 
 export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -53,9 +72,8 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
 
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
+  const user = useUserStore();
+  const setUser = useUserStore((state) => state.set);
 
   const [loading, setLoading] = React.useState(false);
 

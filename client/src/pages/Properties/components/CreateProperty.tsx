@@ -7,7 +7,7 @@ import { Button } from '../../../components/Button';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../../utils/axios';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
 import { CreatePropertyMap } from './CreatePropertyMap';
 import { debounce } from 'lodash';
 import {
@@ -22,6 +22,7 @@ import {
 import { SelectMultiple } from './SelectMultiple';
 import { UploadImages } from './UploadImages';
 import { FormControlledSelect } from './FormControlledSelect';
+import { useUserStore } from '../../Login/Login';
 
 const firstFormSchema = yup.object().shape({
   transaction_type_string: yup.string().required('Transaction is required'),
@@ -142,9 +143,8 @@ export const CreateProperty = (props: any) => {
   const [radios, setRadius] = useState<number>(0);
   const [mapDetails, setMapDetails] = useState<any>(null);
   const [attributes, setAttributes] = useState<any[]>([]);
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+
+  const { auth } = useUserStore();
 
   React.useEffect(() => {
     getAttributes();

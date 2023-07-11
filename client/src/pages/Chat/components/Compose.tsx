@@ -6,7 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useUser } from '../../../context/user';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
+import { useUserStore } from '../../Login/Login';
 export const Compose = (props: any) => {
   const { socket, username, user_id } = props;
   const [currentMessage, setCurrentMessage] = useState<string>('');
@@ -14,9 +15,7 @@ export const Compose = (props: any) => {
   const [messageList, setMessageList] = useState([]);
   const [userList, setUserList] = useState([]);
 
-  let {
-    user: [user]
-  } = useGlobalState();
+  const user = useUserStore();
 
   const { auth } = user;
 

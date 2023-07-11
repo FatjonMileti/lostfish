@@ -1,10 +1,10 @@
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import React from 'react';
 import axios from 'axios';
 import config from '../../config';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT } from './Login';
+import { decodeJWT, useUserStore } from './Login';
 import { Backdrop } from '../../components/Backdrop';
 
 export const SessionMaintainer = ({
@@ -14,9 +14,8 @@ export const SessionMaintainer = ({
   debug?: boolean;
   children?: React.ReactNode;
 }) => {
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
+  const user = useUserStore();
+  const setUser = useUserStore((state) => state.set);
 
   const [refreshTimeoutId, setRefreshTimeoutId] = React.useState<NodeJS.Timeout | undefined>(undefined);
   const [resumingSession, setResumingSession] = React.useState<boolean>(true);

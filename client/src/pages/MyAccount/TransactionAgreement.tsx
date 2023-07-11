@@ -4,10 +4,11 @@ import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import axios from '../../utils/axios';
 import config from '../../config';
 import { useUser } from '../../context/UserProvider';
+import { useUserStore } from '../Login/Login';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -28,9 +29,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
     }
   };
 
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
+  const { userDetails, auth } = useUserStore();
 
   const handleAddDocumentClick = () => {
     if (fileInputRef.current) {

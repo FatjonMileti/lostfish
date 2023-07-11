@@ -7,7 +7,8 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../utils/axios';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
+import { useUserStore } from '../Login/Login';
 
 const userNotificationSchema = yup.object().shape({
   email_me_when_i_get_a_match: yup.boolean(),
@@ -32,9 +33,7 @@ type CheckBoxName =
 export const NotificationSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { user, getOne } = useUser();
 
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
+  const { userDetails, auth } = useUserStore();
 
   const {
     control,

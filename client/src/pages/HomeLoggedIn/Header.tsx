@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import { avatars } from './avatars';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}

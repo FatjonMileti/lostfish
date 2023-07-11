@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { registerStore, useGlobalState } from './globalState';
+import { registerStore, useGlobalState } from './globalState/globalState';
 import { UIProvider } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
-import { Login } from './pages/Login/Login';
+import { Login, useUserStore } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
@@ -40,9 +40,7 @@ registerStore(
 );
 
 function App() {
-  const {
-    user: [user]
-  } = useGlobalState();
+  const user = useUserStore();
 
   const {
     notification: [notification, setNotification]

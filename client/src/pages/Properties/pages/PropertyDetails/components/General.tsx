@@ -5,17 +5,16 @@ import { Typography } from '../../../../../components/Typography';
 import { Map } from './Map';
 import { Controller, useForm } from 'react-hook-form';
 import axios from '../../../../../utils/axios';
-import { useGlobalState } from '../../../../../globalState';
+import { useGlobalState } from '../../../../../globalState/globalState';
 import { useParams } from 'react-router-dom';
 import { StatusRent, StatusSale } from '../../../property.interface';
 import { Button } from '../../../../../components/Button';
+import { useUserStore } from '../../../../Login/Login';
 
 export const General = () => {
   const { property, isInitialized } = useProperty();
 
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+  const { auth } = useUserStore();
 
   const params = useParams<{ id: string }>();
 

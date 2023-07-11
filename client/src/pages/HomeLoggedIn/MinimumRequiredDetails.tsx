@@ -5,7 +5,7 @@ import { TransactionType } from './Mrd.TransactionType';
 import { WhenDoYouWantToMove } from './Mrd.WhenDoYouWantToMove';
 import { AreaOfInterest } from './Mrd.AreaOfInterest';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import { Button } from '../../components/Button';
 
 interface MinimumRequiredDetailsProps extends HTMLAttributes<HTMLDivElement> {

@@ -3,16 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { buildAbilityFor } from '../../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT } from '../Login';
-import { useGlobalState } from '../../../globalState';
+import { decodeJWT, useUserStore } from '../Login';
+import { useGlobalState } from '../../../globalState/globalState';
 
 export const RedirectUriTwitterPage = () => {
   const [cookies, setCookie, removeCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
 
   const navigate = useNavigate();
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
+
+  const user = useUserStore();
+  const setUser = useUserStore((state) => state.set);
 
   React.useEffect(() => {
     if (cookies && cookies.oauth2_token) {

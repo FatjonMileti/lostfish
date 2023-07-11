@@ -7,17 +7,17 @@ import { Map } from './PropertyDetails/components/Map';
 import { NearestPlaces } from './PropertyDetails/components/NearestPlaces';
 import { NearestSchools } from './PropertyDetails/components/NearestSchools';
 import { NearestImportantPlaces } from './PropertyDetails/components/NearestImportantPlaces';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
 import axios from '../../../utils/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '../../HomeLoggedIn/Header';
+import { useUserStore } from '../../Login/Login';
 
 export const PublicProperty = () => {
   const [property, setProperty] = React.useState<any>(null);
   const [conditions, setConditions] = React.useState<any[]>([]);
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
+
+  const { auth } = useUserStore();
 
   const navigate = useNavigate();
 

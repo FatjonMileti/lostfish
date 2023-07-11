@@ -7,7 +7,7 @@ import { Textarea } from '../../components/Textarea';
 import { motion } from 'framer-motion';
 
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import axios from '../../utils/axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,6 +16,7 @@ import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { Backdrop } from '../../components/Backdrop';
+import { useUserStore } from '../Login/Login';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -38,9 +39,10 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
   const [loading, setLoading] = React.useState(false);
 
   const {
-    user: [{ auth, userDetails }],
     userProfile: [userProfile, setUserProfile]
   } = useGlobalState();
+
+  const { userDetails, auth } = useUserStore();
 
   const profileDetailsForm = useForm<ProfileDetails>({
     resolver: yupResolver(userSchema),

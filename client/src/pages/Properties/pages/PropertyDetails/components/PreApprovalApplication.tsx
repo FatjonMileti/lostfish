@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '../../../../../components/Typography';
 import { Grid } from '@mui/material';
-import { useGlobalState } from '../../../../../globalState';
+import { useGlobalState } from '../../../../../globalState/globalState';
 import axios from '../../../../../utils/axios';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { FormControlledSelect } from '../../../components/FormControlledSelect';
 import { Button } from '../../../../../components/Button';
 import { UploadImages } from '../../../components/UploadImages';
 import config from '../../../../../config';
+import { useUserStore } from '../../../../Login/Login';
 
 enum ApproveType {
   PRE_APPROVE = 'Pre approval',
@@ -35,9 +36,8 @@ export const PreApprovalApplication = () => {
   const [property, setProperty] = React.useState<any>(null);
   const [documents, setDocuments] = React.useState<any[]>(DOCUMENT_TYPES);
   const [application, setApplication] = React.useState<any | null>(null);
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
+
+  const { auth } = useUserStore();
 
   const {
     control,

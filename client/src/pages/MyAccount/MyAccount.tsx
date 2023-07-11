@@ -3,7 +3,7 @@ import React, { HTMLAttributes, HTMLProps } from 'react';
 import { Typography } from '../../components/Typography';
 import { Header } from '../HomeLoggedIn/Header';
 import request from '../../utils/axios';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { motion } from 'framer-motion';
@@ -18,12 +18,15 @@ import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
 
 import { Avatar } from '../HomeLoggedIn/Header';
+import { useUserStore } from '../Login/Login';
 
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
-    user: [user, setUser],
     userProfile: [userProfile, setUserProfile]
   } = useGlobalState();
+
+  const user = useUserStore();
+  const setUser = useUserStore((state) => state.set);
 
   console.log('userProfile: ', userProfile);
 

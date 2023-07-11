@@ -6,7 +6,7 @@ import { Chatbox } from './Chatbox';
 import { Header } from '../HomeLoggedIn/Header';
 import { useQuery } from '@tanstack/react-query';
 import request from '../../utils/axios';
-import { useGlobalState, registerStore } from '../../globalState';
+import { useGlobalState, registerStore } from '../../globalState/globalState';
 import SocketContext from '../../context/SocketContext';
 import { IMessageItem, IRoom } from './messages.interface';
 
@@ -14,14 +14,16 @@ import noMessages from './noMessages.png';
 import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
+import { useUserStore } from '../Login/Login';
 
 registerStore('transactionAgreement', { signed: false });
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const {
-    user: [{ userDetails, auth }],
     transactionAgreement: [transactionAgreement, setTransactionAgreement]
   } = useGlobalState();
+
+  const { userDetails, auth } = useUserStore();
 
   const { socket } = useContext(SocketContext);
 

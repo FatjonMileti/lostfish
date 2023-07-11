@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { registerStore, useGlobalState } from '../../globalState';
+import { registerStore, useGlobalState } from '../../globalState/globalState';
 
 import { Header } from './Header';
 import { WhatAreYouLookingFor } from './WhatAreYouLookingFor';
@@ -12,6 +12,7 @@ import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 import axios from '../../utils/axios';
+import { useUserStore } from '../Login/Login';
 
 export interface userProfileType {
   avatar?: string;
@@ -57,10 +58,11 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
   const navigate = useNavigate();
 
   const {
-    user: [{ auth, userDetails: ud }],
     userProfile: [userProfile, setUserProfile],
     matchCriteria: [matchCriteria, setMatchCriteria]
   } = useGlobalState();
+
+  const { auth, userDetails: ud } = useUserStore();
 
   console.log('ud: ', ud);
 

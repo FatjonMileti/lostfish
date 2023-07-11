@@ -1,7 +1,8 @@
 import React, { ChangeEvent, FC, useState } from 'react';
 import axios from '../../../utils/axios';
 import Grid from '@mui/material/Grid';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
+import { useUserStore } from '../../Login/Login';
 interface MyComponentProps {
   handleImagesUpload: (images: any[], item?: any) => void;
   url?: string;
@@ -12,9 +13,7 @@ export const UploadImages: FC<MyComponentProps> = ({ handleImagesUpload, url, mu
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+  const { auth } = useUserStore();
 
   const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
