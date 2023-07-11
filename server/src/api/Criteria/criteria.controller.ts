@@ -42,7 +42,7 @@ export class CriteriaController {
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria
    *
-   * @apiUse CreateAsset
+   * @apiUse CreateCriteria
    * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
@@ -68,8 +68,8 @@ export class CriteriaController {
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria/:id
    *
-   * @apiUse CreateAsset
-   * @apiUse UpdateAssetExample
+   * @apiUse CreateCriteria
+   * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
    */
@@ -99,11 +99,11 @@ export class CriteriaController {
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
  *     "asset_address": {
- *         "latitude": 51.5072178,
- *         "longitude": -0.1275862
+ *         "latitude": "",
+ *         "longitude": ""
  *     },
  *     "property_type": "Detached",
- *     "property_preferences": ["New Homes"],
+ *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
@@ -111,7 +111,9 @@ export class CriteriaController {
  *     },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
- *     "credit_score_requirements": "Excellent"
+ *     "credit_score_requirements": "Excellent",
+ *      "looking_for": "I own a place",
+ *      "moving_time": "This month"
  * }
  */
 
@@ -136,20 +138,9 @@ export class CriteriaController {
  *     },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
- *     "credit_score_requirements": "Excellent"
- * }
- */
-
-/**
- * @apiDefine UpdateAssetExample
- * @apiExample {json} Example request body:
- *    {
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "asset_address": {
- *         "latitude": "",
- *         "longitude": ""
- *     }
+ *     "credit_score_requirements": "Excellent",
+ *     "looking_for": "I own a place",
+ *     "moving_time": "This month"
  * }
  */
 
@@ -172,5 +163,7 @@ export class CriteriaController {
  * @apiBody {String} budget
  * @apiBody {String} transaction_type_string
  * @apiBody {String[]} property_features An array of property features.
+ * @apiBody {String} looking_for
+ * @apiBody {String} moving_time
  *
  */

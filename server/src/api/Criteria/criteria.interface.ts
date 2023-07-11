@@ -29,6 +29,8 @@ export interface CriteriaDocument extends Document {
   transaction_type_string: string;
   floor_size_unit: string;
   currency_code: string;
+  looking_for: string;
+  moving_time: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;
