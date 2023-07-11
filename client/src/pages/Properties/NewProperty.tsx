@@ -7,7 +7,7 @@ import { NewPropertyStep1, Step1FormType, step1Schema } from './NewProperty.Step
 import { NewPropertyStep2, Step2FormType, step2Schema } from './NewProperty.Step2';
 import { NewPropertyStep3, Step3FormType, step3Schema } from './NewProperty.Step3';
 import axios from '../../utils/axios';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import request from '../../utils/axios';
@@ -16,6 +16,8 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
+
+import { useUserStore } from '../../globalState/user';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -36,9 +38,7 @@ export const NewProperty = styled(
   ({ className, showStore, propertyId, setEditPropertyId, fetchAssets }: NewPropertyProps) => {
     const [modalVisibility, setModalVisibility] = showStore;
 
-    const {
-      user: [{ auth }]
-    } = useGlobalState();
+    const { auth } = useUserStore();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       currentStep: propertyId ? 1 : 0,

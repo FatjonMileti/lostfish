@@ -1,8 +1,10 @@
 import React, { ReactNode, useState, useCallback, useContext, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
 import axios from '../../../utils/axios';
 import NotFoundPage from '../../404';
+
+import { useUserStore } from '../../../globalState/user';
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };
@@ -73,9 +75,7 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<any>(null);
   const params = useParams<{ id: string }>();
 
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
+  const { auth } = useUserStore();
 
   useEffect(() => {
     getOne();

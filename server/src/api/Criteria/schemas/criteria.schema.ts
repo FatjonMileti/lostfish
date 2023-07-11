@@ -2,6 +2,7 @@ import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { CriteriaDocument } from '../criteria.interface';
+import { string } from 'joi';
 
 const schema = new Schema<CriteriaDocument>({
   area_of_interest: String,
@@ -37,6 +38,8 @@ const schema = new Schema<CriteriaDocument>({
   },
   floor_size_unit: String,
   currency_code: String,
+  looking_for: String,
+  moving_time: String,
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

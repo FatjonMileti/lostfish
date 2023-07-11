@@ -13,13 +13,13 @@ export interface SelectAvatarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarProps) => {
-  const [selectedAvatar, setSelectedAvatar] = React.useState(0);
+  const [avatar, setSelectedAvatar] = React.useState(0);
   const handleNextClick = () => {
-    setSelectedAvatar(selectedAvatar === avatars.length - 1 ? 0 : selectedAvatar + 1);
+    setSelectedAvatar(avatar === avatars.length - 1 ? 0 : avatar + 1);
   };
 
   const handlePrevClick = () => {
-    setSelectedAvatar(selectedAvatar === 0 ? avatars.length - 1 : selectedAvatar - 1);
+    setSelectedAvatar(avatar === 0 ? avatars.length - 1 : avatar - 1);
   };
 
   return (
@@ -37,13 +37,13 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
             return (
               <motion.div
                 animate={{
-                  x: `calc(${-100 * selectedAvatar}% + ${32 * selectedAvatar}px)`,
-                  opacity: avatarIndex === selectedAvatar ? 1 : 0.5
+                  x: `calc(${-100 * avatar}% + ${32 * avatar}px)`,
+                  opacity: avatarIndex === avatar ? 1 : 0.5
                 }}
                 transition={{ ease: 'easeOut', duration: 0.5 }}
                 onClick={() => setSelectedAvatar(avatarIndex)}
                 key={avatarIndex}
-                className={`avatar ${avatarIndex === selectedAvatar ? 'active' : ''}`}
+                className={`avatar ${avatarIndex === avatar ? 'active' : ''}`}
                 style={{ backgroundColor }}>
                 <img src={image} alt='avatar' />
               </motion.div>
@@ -52,7 +52,7 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
         </div>
         <div className='action-buttons'>
           <ArrowButton size='large' direction='left' onClick={handlePrevClick} />
-          <Button size='large' onClick={() => onSelectAvatar(selectedAvatar)}>
+          <Button size='large' onClick={() => onSelectAvatar(avatar)}>
             Select avatar
           </Button>
           <ArrowButton size='large' direction='right' onClick={handleNextClick} />
@@ -98,7 +98,7 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
           opacity: 0.5;
           margin-left: -32px;
           cursor: pointer;
-          &:first-child {
+          &:first-of-type {
             margin-left: 0;
           }
 

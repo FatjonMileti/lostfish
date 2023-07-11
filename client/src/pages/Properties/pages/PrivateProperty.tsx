@@ -1,7 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { Paper } from '@mui/material';
-import { useGlobalState } from '../../../globalState';
 import { Header } from '../../HomeLoggedIn/Header';
 import { AssetTabs } from './PropertyDetails/components/Tabs';
 import { Overview } from './PropertyDetails/components/Overview';
@@ -29,12 +28,7 @@ const tabList = [
 ];
 
 export const PrivateProperty = () => {
-  const [property, setProperty] = React.useState<any>(null);
-  const [conditions, setConditions] = React.useState<any[]>([]);
   const [currentTab, setCurrentTab] = React.useState(0);
-  const {
-    user: [{ auth, userDetails }]
-  } = useGlobalState();
 
   const tabPanels = [
     { content: <Overview /> },

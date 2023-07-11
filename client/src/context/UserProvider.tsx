@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useCallback, useContext, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGlobalState } from '../globalState';
+import { useGlobalState } from '../globalState/globalState';
 import axios from '../utils/axios';
 import NotFoundPage from '../pages/404';
 import { UserDocument } from '../pages/MyAccount/user.interface';
@@ -8,6 +8,8 @@ import { buildAbilityFor } from '../utils/ability.util';
 import { AbilityContext } from './AbilityContext';
 import { AppAbilityType, AppAbility } from '../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
+
+import { useUserStore } from '../globalState/user';
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined ? { type: Key } : { type: Key; payload: M[Key] };
 };
@@ -83,9 +85,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<any>(null);
   const params = useParams<{ id: string }>();
 
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
+  const user = useUserStore();
+  const setUser = useUserStore((state) => state.set);
 
   useEffect(() => {
     if (user.auth) getOne();

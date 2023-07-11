@@ -17,12 +17,23 @@ export class CriteriaController {
   }
 
   private initializeRoutes() {
+    this.router.get('/', authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), this.createCriteria);
     this.router.post('/draft', authorize(), this.createCriteriaDraft);
-    this.router.patch('/:id', authorize(), validateId, this.updateCriteria);
-    this.router.delete('/:id', authorize(), validateId, this.delete);
+    this.router.patch('/', authorize(), validateId, this.updateCriteria);
   }
+
+  /**
+   * @api {get} /api/criteria Get criteria associated with user
+   * @apiDescription Get criteria for logged in user
+   * @apiGroup Criteria
+   * @apiSampleRequest /api/criteria
+   *
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private getCriteria = this.criteriaService.getByUserId;
 
   /**
    * @api {get} /api/criteria/:id Get by Id
@@ -42,7 +53,7 @@ export class CriteriaController {
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria
    *
-   * @apiUse CreateAsset
+   * @apiUse CreateCriteria
    * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
@@ -63,29 +74,17 @@ export class CriteriaController {
   private createCriteriaDraft = this.criteriaService.createCriteria;
 
   /**
-   * @api {patch} /api/criteria/:id Patch one criteria
-   * @apiDescription Update existing criteria
+   * @api {patch} /api/criteria Patch criteria
+   * @apiDescription Update existing criteria for logged in user
    * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
+   * @apiSampleRequest /api/criteria
    *
-   * @apiUse CreateAsset
-   * @apiUse UpdateAssetExample
+   * @apiUse CreateCriteria
+   * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
    */
   private updateCriteria = this.criteriaService.updateCriteria;
-
-  /**
-   * @api {delete} /api/criteria/:id Delete
-   * @apiDescription Delete criteria
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
-   * @apiParam id
-   * @apiPermission admin
-   * @apiUse bearer
-   */
-
-  private delete = this.criteriaService.deleteCriteria;
 }
 
 /* API CONSTANTS FOR CRITERIA DOCUMENTATION */
@@ -99,11 +98,11 @@ export class CriteriaController {
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
  *     "asset_address": {
- *         "latitude": 51.5072178,
- *         "longitude": -0.1275862
+ *         "latitude": "",
+ *         "longitude": ""
  *     },
  *     "property_type": "Detached",
- *     "property_preferences": ["New Homes"],
+ *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
@@ -111,7 +110,9 @@ export class CriteriaController {
  *     },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
- *     "credit_score_requirements": "Excellent"
+ *     "credit_score_requirements": "Excellent",
+ *      "looking_for": "I own a place",
+ *      "moving_time": "This month"
  * }
  */
 
@@ -136,20 +137,9 @@ export class CriteriaController {
  *     },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
- *     "credit_score_requirements": "Excellent"
- * }
- */
-
-/**
- * @apiDefine UpdateAssetExample
- * @apiExample {json} Example request body:
- *    {
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "asset_address": {
- *         "latitude": "",
- *         "longitude": ""
- *     }
+ *     "credit_score_requirements": "Excellent",
+ *     "looking_for": "I own a place",
+ *     "moving_time": "This month"
  * }
  */
 
@@ -172,5 +162,7 @@ export class CriteriaController {
  * @apiBody {String} budget
  * @apiBody {String} transaction_type_string
  * @apiBody {String[]} property_features An array of property features.
+ * @apiBody {String} looking_for
+ * @apiBody {String} moving_time
  *
  */

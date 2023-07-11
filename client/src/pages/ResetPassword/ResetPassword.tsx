@@ -14,7 +14,9 @@ import config from '../../config';
 import * as yup from 'yup';
 
 import loginIllustration from '../Login/loginIllustration.png';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
+
+import { useUserStore } from '../../globalState/user';
 
 const schema = yup.object().shape({
   password: yup.string().required('password is required'),
@@ -32,9 +34,7 @@ export const ResetPassword = styled(({ className }: HTMLAttributes<HTMLDivElemen
     formState: { errors, isValid }
   } = useForm({ resolver: yupResolver(schema), mode: 'all' });
 
-  const {
-    user: [user, setUser]
-  } = useGlobalState();
+  const setUser = useUserStore((user) => user.set);
 
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();

@@ -1,17 +1,18 @@
 import React from 'react';
-import { useReactQueryHook } from '../../../hooks/useReactQuery';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../HomeLoggedIn/Header';
 import { Backdrop } from '../../../components/Backdrop';
 import { Grid, Paper, Box } from '@mui/material';
 import { Typography } from '../../../components/Typography';
 import axios from '../../../utils/axios';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
 import { Button } from '../../../components/Button';
 import moment from 'moment';
 
 import { MuiModal } from '../../../components/MuiModal';
 import request from '../../../utils/axios';
+
+import { useUserStore } from '../../../globalState/user';
 
 export const PropertyApplications = () => {
   const params = useParams<{ id: string }>();
@@ -30,9 +31,7 @@ export const PropertyApplications = () => {
     setLoading(false);
   };
 
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+  const { auth } = useUserStore();
 
   if (loading) {
     return <p>Loader...</p>;
