@@ -1,5 +1,4 @@
 import React from 'react';
-import { useReactQueryHook } from '../../../hooks/useReactQuery';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../HomeLoggedIn/Header';
 import { Backdrop } from '../../../components/Backdrop';

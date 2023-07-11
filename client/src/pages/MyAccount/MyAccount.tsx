@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLProps } from 'react';
+import React, { HTMLAttributes, HTMLProps } from 'react';
 import { Typography } from '../../components/Typography';
 import { Header } from '../HomeLoggedIn/Header';
 import request from '../../utils/axios';
@@ -17,10 +17,15 @@ import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
 
+import { Avatar } from '../HomeLoggedIn/Header';
+
 export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
   const {
-    user: [user, setUser]
+    user: [user, setUser],
+    userProfile: [userProfile, setUserProfile]
   } = useGlobalState();
+
+  console.log('userProfile: ', userProfile);
 
   const navigate = useNavigate();
 
@@ -42,7 +47,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
       <div className='container'>
         <div className='left-menu'>
           <div className='menu-header'>
-            <div className='avatar'></div>
+            <Avatar avatar={userProfile.avatar} />
 
             <div>
               <Typography variant='body3' className='name'>
@@ -136,8 +141,6 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
           .avatar {
             height: 65px;
             width: 65px;
-            border-radius: 50%;
-            background-color: #c0daff;
           }
 
           .name {

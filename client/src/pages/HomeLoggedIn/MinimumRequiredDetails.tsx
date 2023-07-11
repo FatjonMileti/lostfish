@@ -13,7 +13,7 @@ interface MinimumRequiredDetailsProps extends HTMLAttributes<HTMLDivElement> {
 }
 export const MinimumRequiredDetails = styled(({ className, startMatching }: MinimumRequiredDetailsProps) => {
   const {
-    userDetails: [userDetails, setUserDetails]
+    userProfile: [userDetails, setUserDetails]
   } = useGlobalState();
 
   const onTransactionTypeChange = async (transactionType: string) => {
@@ -38,13 +38,21 @@ export const MinimumRequiredDetails = styled(({ className, startMatching }: Mini
       />
       <AnimatePresence>
         {userDetails.transactionType && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+          <motion.div
+            key='whenDoYouWantToMove'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
             <WhenDoYouWantToMove onWhenChange={onWhenChange} value={userDetails.whenDoYouWantToMove} />
           </motion.div>
         )}
 
         {userDetails.whenDoYouWantToMove && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+          <motion.div
+            key='areaOfInterest'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
             <AreaOfInterest
               areaOfInterest={userDetails.areaOfInterest}
               onAreaChange={onAreaOfInterestChange}
@@ -53,7 +61,11 @@ export const MinimumRequiredDetails = styled(({ className, startMatching }: Mini
         )}
 
         {userDetails.whenDoYouWantToMove && userDetails.areaOfInterest && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+          <motion.div
+            key='startMatching'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
             <Button onClick={startMatching}>Start matching</Button>
           </motion.div>
         )}

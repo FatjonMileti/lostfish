@@ -11,37 +11,45 @@ import { MinimumRequiredDetails } from './MinimumRequiredDetails';
 import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
+import axios from '../../utils/axios';
 
-registerStore(
-  'userDetails',
+export interface userProfileType {
+  avatar?: string;
+  fetchProfile: (access_token: string) => Promise<void>;
+}
+
+export interface MatchCriteriaType {
+  lookingFor?: string;
+  transactionType?: string;
+  whenDoYouWantToMove?: string;
+  areaOfInterest?: string;
+  startedMatching: boolean;
+}
+
+const defaultMatchCriteria: MatchCriteriaType = {
+  lookingFor: undefined,
+  transactionType: undefined,
+  whenDoYouWantToMove: undefined,
+  areaOfInterest: undefined,
+  startedMatching: false
+};
+
+registerStore<userProfileType>(
+  'userProfile',
   {
-    selectedAvatar: undefined,
-    lookingFor: undefined,
-    transactionType: undefined,
-    whenDoYouWantToMove: undefined,
-    areaOfInterest: undefined,
-    startedMatching: false
+    avatar: undefined,
+    fetchProfile: async (access_token: string) => {
+      try {
+        await axios(access_token).get('/api/account/me');
+      } catch (err) {
+        throw err;
+      }
+    }
   },
   { persist: true }
 );
 
-export const fakeAvatarService = {
-  selectAvatar: async (avatarIndex: number) => {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        localStorage.setItem('selectedAvatar', avatarIndex.toString());
-        resolve(true);
-      }, 1000);
-    });
-  },
-  getSelectedAvatar: async (): Promise<undefined | number> => {
-    return await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(parseInt(localStorage.getItem('selectedAvatar') || ''));
-      }, 500);
-    });
-  }
-};
+registerStore('matchCriteria', defaultMatchCriteria, { persist: true });
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -49,14 +57,21 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
   const navigate = useNavigate();
 
   const {
-    userDetails: [userDetails, setUserDetails]
+    user: [{ auth, userDetails: ud }],
+    userProfile: [userProfile, setUserProfile],
+    matchCriteria: [matchCriteria, setMatchCriteria]
   } = useGlobalState();
 
-  const onSelectAvatar = async (selectedAvatar: number) => {
+  console.log('ud: ', ud);
+
+  const onSelectAvatar = async (avatar: number) => {
     setLoading(true);
     try {
-      await fakeAvatarService.selectAvatar(selectedAvatar);
-      setUserDetails({ ...userDetails, selectedAvatar });
+      await axios(auth.access_token).patch('/api/user/' + ud.user_id, {
+        avatar: avatar
+      });
+
+      setUserProfile({ ...userProfile, avatar: avatar });
     } catch (err) {
       throw err;
     } finally {
@@ -66,7 +81,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
   const onLookingForChange = async (lookingFor: string) => {
     try {
-      setUserDetails({ ...userDetails, lookingFor });
+      setMatchCriteria({ ...matchCriteria, lookingFor });
     } catch (err) {
       throw err;
     }
@@ -80,22 +95,30 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       }, 3000);
     });
     setLoading(false);
-    setUserDetails({ ...userDetails, startMatching: true });
+    setMatchCriteria({ ...matchCriteria, startMatching: true });
     navigate('/matches');
   };
 
   return (
     <div className={`home-logged-in-page ${className}`}>
-      <Header selectedAvatar={userDetails.selectedAvatar} />
+      <Header />
 
       <Backdrop open={loading}></Backdrop>
 
-      {userDetails.startMatching && <Button onClick={() => setUserDetails({})}>Reset</Button>}
+      {matchCriteria.startMatching && (
+        <Button
+          onClick={() => {
+            setMatchCriteria({});
+            setUserProfile({});
+          }}>
+          Reset
+        </Button>
+      )}
 
-      {!userDetails.startMatching && (
+      {!matchCriteria.startMatching && (
         <>
           <AnimatePresence>
-            {userDetails.selectedAvatar === undefined && (
+            {userProfile.avatar === undefined && (
               <motion.div
                 key='SelectAvatar'
                 initial={{ opacity: 0 }}
@@ -109,7 +132,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {userDetails.selectedAvatar !== undefined && !userDetails.lookingFor && (
+            {userProfile.avatar !== undefined && !matchCriteria.lookingFor && (
               <motion.div
                 key='WhatAreYouLookingFor'
                 initial={{ opacity: 0 }}
@@ -118,8 +141,8 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
                   duration: 1
                 }}>
                 <WhatAreYouLookingFor
-                  selectedAvatar={userDetails.selectedAvatar}
-                  lookingFor={userDetails.lookingFor}
+                  avatar={userProfile.avatar}
+                  lookingFor={matchCriteria.lookingFor}
                   onLookingForChange={onLookingForChange}
                 />
               </motion.div>
@@ -127,7 +150,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {userDetails.selectedAvatar !== undefined && !!userDetails.lookingFor && (
+            {userProfile.avatar !== undefined && !!matchCriteria.lookingFor && (
               <motion.div
                 key='MinimumRequiredDetails'
                 initial={{ opacity: 0 }}

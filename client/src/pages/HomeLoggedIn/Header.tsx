@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
@@ -7,12 +7,14 @@ import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
 import { avatars } from './avatars';
 
-export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAvatar?: number;
-}
+export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
+
+  const {
+    userProfile: [userProfile]
+  } = useGlobalState();
 
   return (
     <div className={`header ${className}`}>
@@ -64,7 +66,7 @@ export const Header = styled(({ className }: HeaderProps) => {
         </div>
 
         <NavLink to='/my-account'>
-          <div className='avatar'></div>
+          <Avatar avatar={userProfile.avatar ? parseInt(userProfile.avatar) : undefined} />
         </NavLink>
       </div>
     </div>
@@ -106,17 +108,6 @@ export const Header = styled(({ className }: HeaderProps) => {
       column-gap: 8px;
 
       .avatar {
-        height: 45px;
-        width: 45px;
-        border-radius: 50%;
-        //background-color: #c0daff;
-
-        background-color: ${(props) =>
-          props.selectedAvatar ? avatars[props.selectedAvatar].backgroundColor : '#c0daff'};
-
-        background-image: url(${(props) =>
-          props.selectedAvatar ? avatars[props.selectedAvatar].image : 'initial'});
-        background-size: contain;
       }
 
       .trust-score {
@@ -134,5 +125,24 @@ export const Header = styled(({ className }: HeaderProps) => {
         }
       }
     }
+  }
+`;
+
+interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
+  avatar?: number;
+}
+
+export const Avatar = styled(({ className, avatar }: AvatarProps) => {
+  console.log('avatar: ', avatar);
+  return <div className={`avatar ${className}`}></div>;
+})`
+  & {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.avatar ? avatars[props.avatar].backgroundColor : '#c0daff')};
+
+    background-image: url(${(props) => (props.avatar ? avatars[props.avatar].image : 'initial')});
+    background-size: contain;
   }
 `;

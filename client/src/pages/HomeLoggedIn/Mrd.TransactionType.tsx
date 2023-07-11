@@ -33,6 +33,7 @@ export const TransactionType = styled(
                 <Radio
                   value='Rent'
                   checked={transactionType === 'Tenant'}
+                  readOnly
                   // onChange={field.onChange}
                 />
               </div>
@@ -49,7 +50,7 @@ export const TransactionType = styled(
                 <Typography variant='body4' className='title'>
                   I’m looking for a buyer
                 </Typography>
-                <Radio value='Sale' checked={transactionType === 'Buyer'} />
+                <Radio value='Sale' checked={transactionType === 'Buyer'} readOnly />
               </div>
             </motion.div>
           </>

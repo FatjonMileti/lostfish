@@ -6,43 +6,16 @@ import { TextField } from '../../components/TextField';
 import { Textarea } from '../../components/Textarea';
 import { motion } from 'framer-motion';
 
-import avatar1 from './images/avatar1.svg';
-import avatar2 from './images/avatar2.svg';
-import avatar3 from './images/avatar3.svg';
-import avatar4 from './images/avatar4.svg';
-import avatar5 from './images/avatar5.svg';
 import { Icon } from '../../components/Icon';
 import { useGlobalState } from '../../globalState';
 import axios from '../../utils/axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useUser } from '../../context/UserProvider';
 import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
-
-const avatars = [
-  {
-    image: avatar1,
-    backgroundColor: '#F7AC75'
-  },
-  {
-    image: avatar2,
-    backgroundColor: '#FDDF44'
-  },
-  {
-    image: avatar3,
-    backgroundColor: '#3DE2E2'
-  },
-  {
-    image: avatar4,
-    backgroundColor: '#184D6D'
-  },
-  {
-    image: avatar5,
-    backgroundColor: '#408140'
-  }
-];
+import { avatars } from '../HomeLoggedIn/avatars';
+import { Backdrop } from '../../components/Backdrop';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -52,30 +25,24 @@ const userSchema = yup.object().shape({
   description: yup.string().nullable()
 });
 
-interface FormData {
+interface ProfileDetails {
   first_name: string;
   last_name: string;
   email: string;
   phone: string;
   description: string;
-  avatar: string;
+  avatar: number;
 }
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [selectedAvatar, setSelectedAvatar] = React.useState(0);
-
-  const { user } = useUser();
+  const [loading, setLoading] = React.useState(false);
 
   const {
-    user: [{ auth, userDetails }]
+    user: [{ auth, userDetails }],
+    userProfile: [userProfile, setUserProfile]
   } = useGlobalState();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue
-  } = useForm<FormData>({
+  const profileDetailsForm = useForm<ProfileDetails>({
     resolver: yupResolver(userSchema),
     defaultValues: {
       first_name: '',
@@ -83,119 +50,131 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: avatars[selectedAvatar].image
+      avatar: userProfile.avatar
     }
   });
 
   const handleSelectedAvatar = (index: number) => {
-    setSelectedAvatar(index);
-    setValue('avatar', avatars[index].image);
+    profileDetailsForm.setValue('avatar', index);
   };
 
   React.useEffect(() => {
-    getUser();
-  }, [user]);
+    profileDetailsForm.watch();
+    loadProfile();
+  }, []);
 
-  const getUser = () => {
-    if (user) {
-      const { first_name, last_name, email, phone, description, avatar } = user;
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios(auth.access_token).get('/api/account/me');
+      setUserProfile({ ...data });
 
-      setValue('first_name', first_name);
-      setValue('last_name', last_name);
-      setValue('email', email);
-      setValue('phone', phone);
-      setValue('description', description);
-      if (avatar) {
-        const findIndex = avatars.findIndex((av: any) => av.image === avatar);
-        if (findIndex !== -1) {
-          setSelectedAvatar(findIndex);
-        }
-      }
+      const { first_name, last_name, email, phone, description, avatar } = data;
+
+      profileDetailsForm.setValue('first_name', first_name);
+      profileDetailsForm.setValue('last_name', last_name);
+      profileDetailsForm.setValue('email', email);
+      profileDetailsForm.setValue('phone', phone);
+      profileDetailsForm.setValue('description', description);
+      profileDetailsForm.setValue('avatar', parseInt(avatar));
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
+
+  console.log('userProfile', userProfile);
 
   const onSubmit = async (data: any) => {
-    const response = await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
-    if (response.status === 200) {
-      alert('Updated with success!');
+    setLoading(true);
+    try {
+      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
+
+      await loadProfile();
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!user) {
-    return <div>Loader...</div>;
-  }
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={`profile-details ${className}`}>
-      <div className='left-part'>
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Contact information
-          </Typography>
-          <div className='contact-information'>
-            <TextField
-              label='First Name'
-              {...register('first_name')}
-              error={!!errors?.first_name}
-              helperText={errors?.first_name?.message}
-            />
-            <TextField
-              label='Last Name'
-              {...register('last_name')}
-              error={!!errors?.last_name}
-              helperText={errors?.last_name?.message}
-            />
-            <TextField
-              label='Email'
-              {...register('email')}
-              error={!!errors?.email}
-              helperText={errors?.email?.message}
-            />
-            <TextField label='Phone' {...register('phone')} />
+    <>
+      <Backdrop open={loading} />
+      <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
+        <div className='left-part'>
+          <div className='section'>
+            <Typography className='section-title' variant='body4'>
+              Contact information
+            </Typography>
+            <div className='contact-information'>
+              <TextField
+                label='First Name'
+                {...profileDetailsForm.register('first_name')}
+                error={!!profileDetailsForm.formState.errors?.first_name}
+                helperText={profileDetailsForm.formState.errors?.first_name?.message}
+              />
+              <TextField
+                label='Last Name'
+                {...profileDetailsForm.register('last_name')}
+                error={!!profileDetailsForm.formState.errors?.last_name}
+                helperText={profileDetailsForm.formState.errors?.last_name?.message}
+              />
+              <TextField
+                label='Email'
+                {...profileDetailsForm.register('email')}
+                error={!!profileDetailsForm.formState.errors?.email}
+                helperText={profileDetailsForm.formState.errors?.email?.message}
+              />
+              <TextField label='Phone' {...profileDetailsForm.register('phone')} />
+            </div>
           </div>
-        </div>
 
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Personal details
-          </Typography>
-          <div className='personal-details'>
-            <Textarea
-              rows={6}
-              label='Describe yourself (your matches will see this)'
-              {...register('description')}
-              defaultValue=''></Textarea>
+          <div className='section'>
+            <Typography className='section-title' variant='body4'>
+              Personal details
+            </Typography>
+            <div className='personal-details'>
+              <Textarea
+                rows={6}
+                label='Describe yourself (your matches will see this)'
+                {...profileDetailsForm.register('description')}
+                defaultValue=''></Textarea>
+            </div>
           </div>
-        </div>
 
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Setup avatar
-          </Typography>
-          <div className='setup-avatar'>
-            {avatars.map(({ image, backgroundColor }, avatarIndex) => {
-              return (
-                <motion.div
-                  // whileTap={{ scale: 0.9 }}
-                  // whileHover={{ scale: 1.5 }}
-                  onClick={() => handleSelectedAvatar(avatarIndex)}
-                  key={avatarIndex}
-                  className={`avatar ${avatarIndex === selectedAvatar ? 'active' : ''}`}
-                  style={{ backgroundColor }}>
-                  <img src={image} />
-                  <Icon icon='checked' color='black' size={10} />
-                </motion.div>
-              );
-            })}
+          <div className='section'>
+            <Typography className='section-title' variant='body4'>
+              Setup avatar
+            </Typography>
+            <div className='setup-avatar'>
+              {avatars.map(({ image, backgroundColor }, avatarIndex) => {
+                const active = avatarIndex === profileDetailsForm.getValues('avatar');
+
+                return (
+                  <motion.div
+                    // whileTap={{ scale: 0.9 }}
+                    // whileHover={{ scale: 1.5 }}
+                    onClick={() => handleSelectedAvatar(avatarIndex)}
+                    key={avatarIndex}
+                    className={`avatar ${active ? 'active' : ''}`}
+                    style={{ backgroundColor }}>
+                    <img src={image} />
+                    <Icon icon='checked' color='black' size={10} />
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-      <div className='right-part'>
-        <Can do={CASLAction.Update} on='User'>
-          <Button type='submit'>Save changes</Button>
-        </Can>
-      </div>
-    </form>
+        <div className='right-part'>
+          <Can do={CASLAction.Update} on='User'>
+            <Button type='submit'>Save changes</Button>
+          </Can>
+        </div>
+      </form>
+    </>
   );
 })`
   &.profile-details {

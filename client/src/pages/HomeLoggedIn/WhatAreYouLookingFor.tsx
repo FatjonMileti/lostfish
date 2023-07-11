@@ -54,7 +54,7 @@ const shapeChange2 = keyframes`
 `;
 
 export interface WhatAreYouLookingForProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAvatar: number;
+  avatar: number;
   lookingFor?: string;
   onLookingForChange: (lookingFor: string) => Promise<void>;
 }
@@ -189,9 +189,9 @@ export const WhatAreYouLookingFor = styled(
           &.second {
             //background-blend-mode: darken;
 
-            background-color: ${(props) => avatars[props.selectedAvatar].backgroundColor};
+            background-color: ${(props) => avatars[props.avatar].backgroundColor};
             // background-image: url(${tenantImage});
-            background-image: url(${(props) => avatars[props.selectedAvatar].image});
+            background-image: url(${(props) => avatars[props.avatar].image});
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
