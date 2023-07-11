@@ -42,7 +42,7 @@ export class CriteriaController {
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria
    *
-   * @apiUse CreateAsset
+   * @apiUse CreateCriteria
    * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
@@ -68,8 +68,8 @@ export class CriteriaController {
    * @apiGroup Criteria
    * @apiSampleRequest /api/criteria/:id
    *
-   * @apiUse CreateAsset
-   * @apiUse UpdateAssetExample
+   * @apiUse CreateCriteria
+   * @apiUse CreateCriteriaExample
    * @apiPermission admin
    * @apiUse bearer
    */
@@ -113,7 +113,7 @@ export class CriteriaController {
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
  *      "looking_for": "I own a place",
- *      "moving_time": "2023-07-11",
+ *      "moving_time": "This month"
  * }
  */
 
@@ -139,21 +139,8 @@ export class CriteriaController {
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
- *      "looking_for": "I own a place",
- *      "moving_time": "2023-07-11",
- * }
- */
-
-/**
- * @apiDefine UpdateAssetExample
- * @apiExample {json} Example request body:
- *    {
- *     "status_string": "Draft",
- *     "transaction_type_string": "Rent",
- *     "asset_address": {
- *         "latitude": "",
- *         "longitude": ""
- *     }
+ *     "looking_for": "I own a place",
+ *     "moving_time": "This month"
  * }
  */
 

@@ -38,9 +38,9 @@ const schema = new Schema<CriteriaDocument>({
   },
   floor_size_unit: String,
   currency_code: String,
-  edited_at: Date,
   looking_for: String,
   moving_time: String,
+  edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },
   created_by: { type: Schema.Types.ObjectId, ref: 'user' }
