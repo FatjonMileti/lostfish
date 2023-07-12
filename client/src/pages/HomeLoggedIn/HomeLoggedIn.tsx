@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Header } from './Header';
@@ -14,6 +13,7 @@ import axios from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { useCriteriaStore } from '../../globalState/criteria';
+import { NoWaitingSection } from './NoWaitingSection';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -22,21 +22,6 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
   const profileStore = useProfileStore();
   const criteriaStore = useCriteriaStore();
 
-  React.useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios(auth.access_token).get('/api/account/me');
-      profileStore.set((profile) => ({ ...profile, ...data }));
-    } catch (err) {
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
   const onSelectAvatar = async (avatar: number) => {
     setLoading(true);
     try {
@@ -65,24 +50,32 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       <Backdrop open={loading}></Backdrop>
 
-      <Button
-        style={{ position: 'absolute' }}
-        onClick={() => {
-          profileStore.set({ avatar: undefined });
-          criteriaStore.set({
-            startedMatching: false,
-            lookingFor: undefined,
-            transactionType: undefined,
-            whenDoYouWantToMove: undefined
-          });
-        }}>
-        Reset
-      </Button>
+      <div className='container'>
+        {criteriaStore.startedMatching && (
+          <>
+            <NoWaitingSection />
+          </>
+        )}
+      </div>
+
+      {/* <Button */}
+      {/*   style={{ position: 'absolute', top: '128px', left: '36px' }} */}
+      {/*   onClick={() => { */}
+      {/*     profileStore.set({ avatar: undefined }); */}
+      {/*     criteriaStore.set({ */}
+      {/*       startedMatching: false, */}
+      {/*       lookingFor: undefined, */}
+      {/*       transactionType: undefined, */}
+      {/*       whenDoYouWantToMove: undefined */}
+      {/*     }); */}
+      {/*   }}> */}
+      {/*   Reset */}
+      {/* </Button> */}
 
       {!criteriaStore.startedMatching && (
         <>
           <AnimatePresence>
-            {profileStore.avatar === undefined && (
+            {isNaN(parseInt(profileStore.avatar || '')) && (
               <motion.div
                 key='SelectAvatar'
                 initial={{ opacity: 0 }}
@@ -96,7 +89,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {profileStore.avatar !== undefined && !criteriaStore.lookingFor && (
+            {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
               <motion.div
                 key='WhatAreYouLookingFor'
                 initial={{ opacity: 0 }}
@@ -114,7 +107,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {profileStore.avatar !== undefined && !!criteriaStore.lookingFor && (
+            {!isNaN(parseInt(profileStore.avatar || '')) && !!criteriaStore.lookingFor && (
               <motion.div
                 key='MinimumRequiredDetails'
                 initial={{ opacity: 0 }}
@@ -137,5 +130,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto; //min-content;
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+
+    .container {
+      padding: 24px 36px;
+    }
   }
 `;

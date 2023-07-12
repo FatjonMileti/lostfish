@@ -24,6 +24,7 @@ import { LoadingMatch } from '../components/LoadingMatch';
 
 import { Tabs, Tab } from '../components/Tab';
 import { ArrowButton } from '../components/ArrowButton';
+import { Label } from '../components/Label';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -34,6 +35,13 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
       <div className='grouped'>
+        <div>
+          <Label>Label</Label>
+          <Label variant='tertiary'>tertiary</Label>
+          <Label variant='tertiary' size='small'>
+            tertiary small
+          </Label>
+        </div>
         <div>
           <ArrowButton />
           <ArrowButton direction='right' />

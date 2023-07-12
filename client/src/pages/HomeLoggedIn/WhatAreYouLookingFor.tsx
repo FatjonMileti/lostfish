@@ -71,7 +71,7 @@ export const WhatAreYouLookingFor = styled(
             Start your search by selection one of the options below.
           </Typography>
           <div className='circles'>
-            <div className='circle first' onClick={() => onLookingForChange('looking for a place')}>
+            <div className='circle first' onClick={() => onLookingForChange('I’m looking for a place')}>
               <Typography className='looking-for-text' variant='body4'>
                 I’m looking for a place
               </Typography>
@@ -79,7 +79,7 @@ export const WhatAreYouLookingFor = styled(
                 <Icon icon='plus' size={24} color='white' />
               </IconButton>
             </div>
-            <motion.div className='circle second' onClick={() => onLookingForChange('looking for a place')}>
+            <motion.div className='circle second' onClick={() => onLookingForChange('I own a place')}>
               <IconButton className='plus-button' inverted>
                 <Icon icon='plus' size={24} color='white' />
               </IconButton>
@@ -89,7 +89,7 @@ export const WhatAreYouLookingFor = styled(
             </motion.div>
           </div>
           <div className='action-buttons'>
-            <Button variant='secondary' onClick={() => onLookingForChange('looking for a place')}>
+            <Button variant='secondary' onClick={() => onLookingForChange('I’m looking for a place')}>
               Skip for now
             </Button>
           </div>
@@ -180,7 +180,9 @@ export const WhatAreYouLookingFor = styled(
             .looking-for-text {
               position: absolute;
               bottom: calc(50% - 14px);
-              left: -231px;
+              //left: -231px;
+              width: max-content;
+              right: calc(100% + 50px);
               border: none;
               color: #a7a7a7;
             }
@@ -240,7 +242,9 @@ export const WhatAreYouLookingFor = styled(
             .looking-for-text {
               position: absolute;
               bottom: calc(50% - 14px);
-              right: -166px;
+              width: max-content;
+              left: calc(100% + 50px);
+
               border: none;
               color: #a7a7a7;
             }

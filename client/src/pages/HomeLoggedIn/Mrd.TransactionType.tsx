@@ -21,34 +21,29 @@ export const TransactionType = styled(
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-tenant ${transactionType === 'Tenant' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Tenant')}>
+              onClick={() => onTransactionTypeChange('Rent')}>
               <div className='indicators'>
                 <IconButton size='large'>
                   <Icon icon='key' size={26} />
                 </IconButton>
 
                 <Typography variant='body4' className='title'>
-                  I’m looking for a tenant
+                  I’m looking to rent a place
                 </Typography>
-                <Radio
-                  value='Rent'
-                  checked={transactionType === 'Tenant'}
-                  readOnly
-                  // onChange={field.onChange}
-                />
+                <Radio value='Rent' checked={transactionType === 'Tenant'} readOnly />
               </div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-buyer ${transactionType === 'Buyer' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Buyer')}>
+              onClick={() => onTransactionTypeChange('Buy')}>
               <div className='indicators'>
                 <IconButton size='large' noBackground>
                   <Icon icon='credit-card' />
                 </IconButton>
                 <Typography variant='body4' className='title'>
-                  I’m looking for a buyer
+                  I’m looking to buy a place
                 </Typography>
                 <Radio value='Sale' checked={transactionType === 'Buyer'} readOnly />
               </div>
