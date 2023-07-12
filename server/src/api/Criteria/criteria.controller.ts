@@ -20,7 +20,6 @@ export class CriteriaController {
     this.router.get('/', authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), this.createCriteria);
-    this.router.post('/draft', authorize(), this.createCriteriaDraft);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);
   }
 
@@ -59,19 +58,6 @@ export class CriteriaController {
    * @apiUse bearer
    */
   private createCriteria = this.criteriaService.createCriteria;
-
-  /**
-   * @api {post} /api/criteria/draft Post as draft
-   * @apiDescription Add a new criteria as draft
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/draft
-   *
-   * @apiUse CreateCriteria
-   * @apiUse CreateCriteriaDraftExample
-   * @apiPermission admin
-   * @apiUse bearer
-   */
-  private createCriteriaDraft = this.criteriaService.createCriteria;
 
   /**
    * @api {patch} /api/criteria Patch criteria

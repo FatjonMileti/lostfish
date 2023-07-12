@@ -12,14 +12,17 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
-  if (data.asset_address.longitude && data.asset_address.longitude) {
-    const assetAddress = await googleMapService.getAddress(
-      data.asset_address.latitude,
-      data.asset_address.longitude
-    );
+  if (data.area_of_interest) {
+    const cordinates = await googleMapService.getCoordinates(data.area_of_interest);
+    if (cordinates.geometry) {
+      const { lat, lng } = cordinates.geometry.location;
+      if (lat && lng) {
+        const assetAddress = await googleMapService.getAddress(lat, lng);
 
-    if (assetAddress) {
-      data.asset_address = assetAddress;
+        if (assetAddress) {
+          data.asset_address = assetAddress;
+        }
+      }
     }
   }
 

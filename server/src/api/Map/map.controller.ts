@@ -13,7 +13,8 @@ export class MapController {
     this.router.get('/station', this.getNearestStations);
     this.router.get('/school', this.getNearestSchools);
     this.router.get('/places', this.getNearestImportantPlaces);
-    this.router.get('/address/:address/radius/:radius', this.findPlaceWithAddress);
+    this.router.get('/address/:address/', this.findPlaceWithAddress);
+    this.router.get('/address/:address/radius/:radius', this.findPlaceWithAddressAndRadius);
   }
 
   /**
@@ -83,8 +84,8 @@ export class MapController {
   };
 
   /**
-   * @api {get} /api/map/address/:address/radius/:radius Get address
-   * @apiDescription Get Address
+   * @api {get} /api/map/address/:address/radius/:radius Get Address with radius
+   * @apiDescription Get Address with radius
    * @apiGroup Map
    * @apiSampleRequest /api/map/address/:address/radius/:radius
    *
@@ -92,10 +93,33 @@ export class MapController {
    * @apiQuery {string} longitude longitude
    *
    */
-  private findPlaceWithAddress = async (req: express.Request, res: express.Response) => {
+  private findPlaceWithAddressAndRadius = async (req: express.Request, res: express.Response) => {
     const address = req.params.address;
     /* TODO How we will use radius ?*/
     const radius = req.params.radius;
+    const coordinates = await this.googleMapService.getCoordinates(address);
+    if (!coordinates) {
+      throw createError(404, 'Coordinates not found');
+    }
+
+    try {
+      res.send(coordinates);
+    } catch (error: any) {
+      return res.status(400).send(error?.request?.data);
+    }
+  };
+
+  /**
+   * @api {get} /api/map/address/:address Get address
+   * @apiDescription Get Address
+   * @apiGroup Map
+   * @apiSampleRequest /api/map/address/:address
+   *
+   * @apiQuery {string} address
+   *
+   */
+  private findPlaceWithAddress = async (req: express.Request, res: express.Response) => {
+    const address = req.params.address;
     const coordinates = await this.googleMapService.getCoordinates(address);
     if (!coordinates) {
       throw createError(404, 'Coordinates not found');
