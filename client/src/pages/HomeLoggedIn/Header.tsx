@@ -1,20 +1,20 @@
 import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
+
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState/globalState';
+
 import { avatars } from './avatars';
+import { useProfileStore } from '../../globalState/profile';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
 
-  const {
-    userProfile: [userProfile]
-  } = useGlobalState();
+  const profileStore = useProfileStore();
 
   return (
     <div className={`header ${className}`}>
@@ -66,7 +66,7 @@ export const Header = styled(({ className }: HeaderProps) => {
         </div>
 
         <NavLink to='/my-account'>
-          <Avatar avatar={userProfile.avatar ? parseInt(userProfile.avatar) : undefined} />
+          <Avatar avatar={profileStore.avatar ? parseInt(profileStore.avatar) : undefined} />
         </NavLink>
       </div>
     </div>
@@ -133,7 +133,6 @@ interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Avatar = styled(({ className, avatar }: AvatarProps) => {
-  console.log('avatar: ', avatar);
   return <div className={`avatar ${className}`}></div>;
 })`
   & {

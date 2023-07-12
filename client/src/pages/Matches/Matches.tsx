@@ -5,11 +5,16 @@ import { Footer } from '../Home/Footer';
 import { ImageGallery } from './ImageGalery';
 import { SetCriteria } from '../SetCriteria/SetCriteria';
 
+import { MatchesProperties } from './MatchesProperties';
+
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const lookingFor = 'looking for a place';
+
   return (
     <div className={`matches-page ${className}`}>
       <Header />
       <div className='page-body'>
+        {lookingFor === 'looking for a place' && <MatchesProperties />}
         <ImageGallery />
         <SetCriteria />
       </div>

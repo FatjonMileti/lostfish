@@ -1,12 +1,10 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, HTMLProps } from 'react';
-import { Typography } from '../../components/Typography';
-import { Header } from '../HomeLoggedIn/Header';
-import request from '../../utils/axios';
-import { useGlobalState } from '../../globalState/globalState';
+import React, { HTMLAttributes } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { Icon } from '../../components/Icon';
 import { motion } from 'framer-motion';
+
+import { Icon } from '../../components/Icon';
+import { Typography } from '../../components/Typography';
 
 import { Dashboard } from './Dashboard';
 import { ProfileDetails } from './ProfileDetails';
@@ -16,31 +14,26 @@ import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
-
-import { Avatar } from '../HomeLoggedIn/Header';
+import { Avatar, Header } from '../HomeLoggedIn/Header';
+import request from '../../utils/axios';
 
 import { useUserStore } from '../../globalState/user';
+import { useProfileStore } from '../../globalState/profile';
 
-export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
-  const {
-    userProfile: [userProfile, setUserProfile]
-  } = useGlobalState();
-
-  const user = useUserStore();
-  const setUser = useUserStore((state) => state.set);
-
-  console.log('userProfile: ', userProfile);
+export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const userStore = useUserStore();
+  const profileStore = useProfileStore();
 
   const navigate = useNavigate();
 
   const logOut = async () => {
     try {
-      await request(user.auth.access_token).post('/api/account/logout', {
-        refresh_token: user.auth.refresh_token
+      await request(userStore.auth.access_token).post('/api/account/logout', {
+        refresh_token: userStore.auth.refresh_token
       });
     } catch (err) {
     } finally {
-      setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+      userStore.set((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
       navigate('/');
     }
   };
@@ -51,7 +44,7 @@ export const MyAccount = styled(({ className }: HTMLProps<HTMLDivElement>) => {
       <div className='container'>
         <div className='left-menu'>
           <div className='menu-header'>
-            <Avatar avatar={userProfile.avatar} />
+            <Avatar avatar={profileStore.avatar ? parseInt(profileStore.avatar) : undefined} />
 
             <div>
               <Typography variant='body3' className='name'>

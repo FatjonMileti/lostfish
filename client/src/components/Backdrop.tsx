@@ -15,6 +15,7 @@ export const Backdrop = styled(({ className, open }: BackdropProps) => {
 })`
   & {
     position: fixed;
+    inset: 0;
     width: 100vw;
     height: 100vh;
     z-index: 999;

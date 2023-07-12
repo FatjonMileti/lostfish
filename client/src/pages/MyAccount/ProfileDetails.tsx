@@ -1,23 +1,23 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
+import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
 import { Textarea } from '../../components/Textarea';
-import { motion } from 'framer-motion';
-
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState/globalState';
-import axios from '../../utils/axios';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import Can from '../../components/Can';
-import { CASLAction } from '../../utils/ability.util';
-import { avatars } from '../HomeLoggedIn/avatars';
 import { Backdrop } from '../../components/Backdrop';
 
+import axios from '../../utils/axios';
+import { CASLAction } from '../../utils/ability.util';
+import { avatars } from '../HomeLoggedIn/avatars';
 import { useUserStore } from '../../globalState/user';
+import { useProfileStore } from '../../globalState/profile';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -33,15 +33,13 @@ interface ProfileDetails {
   email: string;
   phone: string;
   description: string;
-  avatar: number;
+  avatar?: number;
 }
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState(false);
 
-  const {
-    userProfile: [userProfile, setUserProfile]
-  } = useGlobalState();
+  const profileStore = useProfileStore();
 
   const { userDetails, auth } = useUserStore();
 
@@ -53,7 +51,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: userProfile.avatar
+      avatar: profileStore.avatar ? parseInt(profileStore.avatar) : undefined
     }
   });
 
@@ -66,20 +64,19 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     loadProfile();
   }, []);
 
+  React.useEffect(() => {
+    profileDetailsForm.setValue('first_name', profileStore.first_name);
+    profileDetailsForm.setValue('last_name', profileStore.last_name);
+    profileDetailsForm.setValue('email', profileStore.email);
+    profileDetailsForm.setValue('phone', profileStore.phone);
+    profileDetailsForm.setValue('description', profileStore.description);
+    profileDetailsForm.setValue('avatar', parseInt(profileStore.avatar || ''));
+  }, [profileStore]);
+
   const loadProfile = async () => {
     setLoading(true);
     try {
-      const { data } = await axios(auth.access_token).get('/api/account/me');
-      setUserProfile({ ...data });
-
-      const { first_name, last_name, email, phone, description, avatar } = data;
-
-      profileDetailsForm.setValue('first_name', first_name);
-      profileDetailsForm.setValue('last_name', last_name);
-      profileDetailsForm.setValue('email', email);
-      profileDetailsForm.setValue('phone', phone);
-      profileDetailsForm.setValue('description', description);
-      profileDetailsForm.setValue('avatar', parseInt(avatar));
+      await profileStore.fetchProfile(auth.access_token);
     } catch (err) {
       throw err;
     } finally {
@@ -87,13 +84,10 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     }
   };
 
-  console.log('userProfile', userProfile);
-
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
-
       await loadProfile();
     } catch (err) {
       throw err;
@@ -104,8 +98,8 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
   return (
     <>
-      <Backdrop open={loading} />
       <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
+        <Backdrop open={loading} />
         <div className='left-part'>
           <div className='section'>
             <Typography className='section-title' variant='body4'>
@@ -157,13 +151,11 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
                 return (
                   <motion.div
-                    // whileTap={{ scale: 0.9 }}
-                    // whileHover={{ scale: 1.5 }}
                     onClick={() => handleSelectedAvatar(avatarIndex)}
                     key={avatarIndex}
                     className={`avatar ${active ? 'active' : ''}`}
                     style={{ backgroundColor }}>
-                    <img src={image} />
+                    <img src={image} alt='avatar' />
                     <Icon icon='checked' color='black' size={10} />
                   </motion.div>
                 );

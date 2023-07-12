@@ -9,8 +9,6 @@ export interface WhenDoYouWantToMoveProps extends HTMLAttributes<HTMLDivElement>
   value?: string;
 }
 export const WhenDoYouWantToMove = styled(({ className, onWhenChange, value }: WhenDoYouWantToMoveProps) => {
-  console.log('value: ', value);
-
   return (
     <div className={className}>
       <Typography variant='body2'>When do you want to move in?</Typography>
@@ -35,7 +33,6 @@ export const WhenDoYouWantToMove = styled(({ className, onWhenChange, value }: W
                   size={16}
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log('clicked');
                     onWhenChange('');
                   }}
                 />
