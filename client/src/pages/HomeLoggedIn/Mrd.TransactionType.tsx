@@ -21,7 +21,7 @@ export const TransactionType = styled(
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-tenant ${transactionType === 'Tenant' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Rent')}>
+              onClick={() => onTransactionTypeChange('Tenant')}>
               <div className='indicators'>
                 <IconButton size='large'>
                   <Icon icon='key' size={26} />
@@ -37,7 +37,7 @@ export const TransactionType = styled(
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
               className={`looking-for-choice for-buyer ${transactionType === 'Buyer' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Buy')}>
+              onClick={() => onTransactionTypeChange('Buyer')}>
               <div className='indicators'>
                 <IconButton size='large' noBackground>
                   <Icon icon='credit-card' />
