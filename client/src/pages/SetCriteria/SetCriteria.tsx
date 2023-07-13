@@ -8,7 +8,8 @@ import { SetCriteriaStep2, Step2FormType, step2Schema } from './SetCriteria.Step
 import { SetCriteriaStep3, Step3FormType, step3Schema } from './SetCriteria.Step3';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Backdrop } from '../../components/Backdrop';
+import { useGlobalState } from '../../globalState';
+import request from '../../utils/axios';
 
 export interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   criteriaId?: string;
@@ -16,20 +17,20 @@ export interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface NewCriteriaStateType {
   currentStep: number;
-  newImages: File[];
   loadingProperty: boolean;
-  savingProperty: boolean;
   deletePropertyConfirmationModal: boolean;
 }
 
 export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) => {
   const [showModal, setShowModal] = useState(false);
 
+  // const {
+  //   user: [{ auth }]
+  // } = useGlobalState();
+
   const [state, setState] = React.useState<NewCriteriaStateType>({
     currentStep: criteriaId ? 1 : 0,
-    newImages: [],
     loadingProperty: false,
-    savingProperty: false,
     deletePropertyConfirmationModal: false
   });
 
@@ -45,8 +46,16 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
     defaultValues: {
       areaOfInterest: 'E.g. Bristol or BA1 2LR',
       radius: undefined,
-      propertyType: undefined,
-      propertyPreferences: undefined,
+      propertyType: {
+        detached: false,
+        semiDetached: false,
+        terraced: false,
+        flats: false,
+        bungalows: false,
+        farmsLand: false,
+        parkHomes: false
+      },
+      propertyClass: undefined,
       propertyFeatures: {
         parksNearby: false,
         publicTransportNearby: false,
@@ -83,18 +92,8 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
     defaultValues: {
       idealBudget: undefined,
       depositInformation: undefined,
-      specificPropertyFeatures: {
-        'Parking spot': false,
-        Garden: false,
-        Terrace: false,
-        'Fully furnished': false,
-        'Partially furnished': false,
-        Unfurnished: false,
-        'Double glazing': false,
-        'Allows smoking': false,
-        'Allows pets': false,
-        'Close to public transport': false
-      }
+      creditScore: undefined,
+      contactDetails: undefined
     },
     resolver: yupResolver(step3Schema),
     mode: 'all'
@@ -122,7 +121,6 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             setCurrentStep={setCurrentStep}
           />
         )}
-        <Backdrop open={state.savingProperty}></Backdrop>
         {state.currentStep === 1 && (
           <SetCriteriaStep1
             closeModal={() => setShowModal(false)}

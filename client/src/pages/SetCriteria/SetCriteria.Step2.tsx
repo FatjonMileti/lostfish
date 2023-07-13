@@ -250,7 +250,7 @@ export const SetCriteriaStep2 = styled(
             back
           </Button>
           <Button
-            disabled={!form.formState.isValid}
+            // disabled={!form.formState.isValid}
             onClick={() => setCurrentStep(3)}
             size='large'
             endIcon={<Icon icon='arrow-right-1' size={12} />}>

@@ -19,7 +19,7 @@ import { Tabs, Tab } from '../../components/Tab';
 export type Step1FormType = {
   areaOfInterest: string;
   radius?: number;
-  propertyType?: {
+  propertyType: {
     detached: boolean;
     semiDetached: boolean;
     terraced: boolean;
@@ -28,7 +28,13 @@ export type Step1FormType = {
     farmsLand: boolean;
     parkHomes: boolean;
   };
-  propertyPreferences?: string;
+  propertyClass?: string;
+  // propertyClass?: {
+  //   newHome: boolean;
+  //   retirementHome: boolean;
+  //   sharedOwnership: boolean;
+  //   auction: boolean;
+  // };
   propertyFeatures: {
     parksNearby: boolean;
     publicTransportNearby: boolean;
@@ -48,7 +54,13 @@ export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
     farmsLand: yup.boolean().required(),
     parkHomes: yup.boolean().required()
   }),
-  propertyPreferences: yup.string().optional(),
+  propertyClass: yup.string().required(),
+  // propertyClass: yup.object().shape({
+  //   newHome: yup.boolean().required(),
+  //   retirementHome: yup.boolean().required(),
+  //   sharedOwnership: yup.boolean().required(),
+  //   auction: yup.boolean().required()
+  // }),
   propertyFeatures: yup.object().shape({
     parksNearby: yup.boolean().required(),
     publicTransportNearby: yup.boolean().required(),
@@ -65,11 +77,17 @@ export interface SetCriteriaStep1 extends Omit<HTMLProps<HTMLDivElement>, 'form'
   propertyId?: string;
 }
 
-type PropertyClassType = {
-  'New home': boolean;
-  'Retirement home': boolean;
-  'Shared ownership': boolean;
-  Auction: boolean;
+// type PropertyClassType = {
+//   'New home': boolean;
+//   'Retirement home': boolean;
+//   'Shared ownership': boolean;
+//   Auction: boolean;
+// };
+
+type feautersType = {
+  'Parks nearby': boolean;
+  'Public transport nearby': boolean;
+  'Shopping centers nearby': boolean;
 };
 
 export const SetCriteriaStep1 = styled(
@@ -86,11 +104,18 @@ export const SetCriteriaStep1 = styled(
       form.watch();
     }, []);
 
-    const [activeTab, setActiveTab] = React.useState<PropertyClassType>({
-      'New home': false,
-      'Retirement home': false,
-      'Shared ownership': false,
-      Auction: false
+    const [activeTab, setActiveTab] = React.useState<string>('');
+    //   <PropertyClassType>({
+    //   'New home': false,
+    //   'Retirement home': false,
+    //   'Shared ownership': false,
+    //   Auction: false
+    // });
+
+    const [fActiveTab, setfActiveTab] = React.useState<feautersType>({
+      'Parks nearby': false,
+      'Public transport nearby': false,
+      'Shopping centers nearby': false
     });
 
     return (
@@ -156,11 +181,12 @@ export const SetCriteriaStep1 = styled(
                 },
                 {
                   name: 'Select the type of property you are looking for',
-                  checked: !!form.getValues('propertyType')
+                  checked: Object.values(form.getValues('propertyType')).includes(true)
+                  // checked: !form.getValues('propertyType')
                 },
                 {
                   name: ' Include or exclude property class',
-                  checked: !!form.getValues('propertyPreferences')
+                  checked: !!form.getValues('propertyClass')
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -210,89 +236,31 @@ export const SetCriteriaStep1 = styled(
                 Property Type
               </Typography>
               <div className='section-content'>
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.detached')}
-                      checked={!!form.getValues('propertyType')?.detached}
-                    />
-                    <label htmlFor={id}>Detached</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.semiDetached')}
-                      checked={!!form.getValues('propertyType')?.semiDetached}
-                    />
-                    <label htmlFor={id}>Semi-Detached</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.terraced')}
-                      checked={!!form.getValues('propertyType')?.terraced}
-                    />
-                    <label htmlFor={id}>Terraced</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.flats')}
-                      checked={!!form.getValues('propertyType')?.flats}
-                    />
-                    <label htmlFor={id}>Flats</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.bungalows')}
-                      checked={!!form.getValues('propertyType')?.bungalows}
-                    />
-                    <label htmlFor={id}>Bungalows</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.parkHomes')}
-                      checked={!!form.getValues('propertyType')?.parkHomes}
-                    />
-                    <label htmlFor={id}>Park homes</label>
-                  </div>
-                ))(React.useId())}
-
-                {((id: string) => (
-                  <div className='switch-wrapper'>
-                    <Switch
-                      id={id}
-                      size='small'
-                      {...form.register('propertyType.farmsLand')}
-                      checked={!!form.getValues('propertyType')?.farmsLand}
-                    />
-                    <label htmlFor={id}>Farms/Land</label>
-                  </div>
-                ))(React.useId())}
+                {
+                  <>
+                    {[
+                      'detached',
+                      'semiDetached',
+                      'terraced',
+                      'flats',
+                      'bungalows',
+                      'farmsLand',
+                      'parkHomes'
+                    ].map((propertyType, propertyTypeIndex) =>
+                      ((id: string) => (
+                        <div className='switch-wrapper' key={propertyTypeIndex}>
+                          <Switch
+                            id={id}
+                            size='small'
+                            // {...form.register(`propertyType.${propertyType}`)}
+                            // checked={!!form.getValues('propertyType')[propertyType]}
+                          />
+                          <label htmlFor={id}>{propertyType}</label>
+                        </div>
+                      ))(React.useId())
+                    )}
+                  </>
+                }
               </div>
             </div>
             <div className='section property-preferences-section'>
@@ -304,27 +272,27 @@ export const SetCriteriaStep1 = styled(
                   render={({ field }) => (
                     <>
                       {['New home', 'Retirement home', 'Shared ownership', 'Auction'].map(
-                        (propertyPreference: string, propertyPreferenceIndex) =>
-                          ((id: string) => (
-                            <div className='tabs-wrapper' key={propertyPreferenceIndex}>
-                              <label htmlFor={id}>{propertyPreference}:</label>
-                              <Tabs
-                                value={activeTab[propertyPreference as keyof PropertyClassType] ? 1 : 0}
-                                onChange={(i: number) =>
-                                  setActiveTab((activeTab) => ({
-                                    ...activeTab,
-                                    [propertyPreference]: i === 0 ? false : true
-                                  }))
-                                }>
-                                <Tab label='Include' />
-                                <Tab label='Exclude' />
-                              </Tabs>
-                            </div>
-                          ))(React.useId())
+                        (propertyPreference: string, propertyPreferenceIndex) => (
+                          <div className='tabs-wrapper' key={propertyPreferenceIndex}>
+                            <label htmlFor={propertyPreference}>{propertyPreference}:</label>
+                            <Tabs
+                              value={field.value === propertyPreference ? 1 : 0}
+                              onChange={(i: number) => {
+                                if (i === 1) {
+                                  field.onChange(propertyPreference);
+                                } else {
+                                  field.onChange('');
+                                }
+                              }}>
+                              <Tab label='Include' />
+                              <Tab label='Exclude' />
+                            </Tabs>
+                          </div>
+                        )
                       )}
                     </>
                   )}
-                  name='propertyPreferences'
+                  name='propertyClass'
                   control={form.control}
                 />
               </div>
@@ -337,15 +305,15 @@ export const SetCriteriaStep1 = styled(
                 <Controller
                   render={({ field }) => (
                     <>
-                      {['Pranks nearby', 'Public transport nearby', 'Shopping centers nearby'].map(
+                      {['Parks nearby', 'Public transport nearby', 'Shopping centers nearby'].map(
                         (propertyPreference: string, propertyPreferenceIndex) =>
                           ((id: string) => (
                             <div className='tabs-wrapper' key={propertyPreferenceIndex}>
                               <label htmlFor={id}>{propertyPreference}:</label>
                               <Tabs
-                                value={activeTab[propertyPreference as keyof PropertyClassType] ? 1 : 0}
+                                value={fActiveTab[propertyPreference as keyof feautersType] ? 1 : 0}
                                 onChange={(i: number) =>
-                                  setActiveTab((activeTab) => ({
+                                  setfActiveTab((activeTab) => ({
                                     ...activeTab,
                                     [propertyPreference]: i === 0 ? false : true
                                   }))
@@ -358,7 +326,7 @@ export const SetCriteriaStep1 = styled(
                       )}
                     </>
                   )}
-                  name='propertyPreferences'
+                  name='propertyClass'
                   control={form.control}
                 />
               </div>

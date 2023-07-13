@@ -17,39 +17,18 @@ import { Tabs, Tab } from '../../components/Tab';
 export type Step3FormType = {
   idealBudget: number;
   depositInformation: number;
-  specificPropertyFeatures: {
-    'Parking spot': boolean;
-    Garden: boolean;
-    Terrace: boolean;
-    'Fully furnished': boolean;
-    'Partially furnished': boolean;
-    Unfurnished: boolean;
-    'Double glazing': boolean;
-    'Allows smoking': boolean;
-    'Allows pets': boolean;
-    'Close to public transport': boolean;
-  };
+  creditScore: string;
+  contactDetails: string[];
 };
 
 export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
-  idealBudget: yup.number().min(1).required('Property area is required'),
-  depositInformation: yup
-    .number()
-    .transform((value) => (isNaN(value) ? undefined : value))
-    .required('Number of bedrooms is required'),
-  specificPropertyFeatures: yup.object().shape({
-    'Parking spot': yup.boolean().required(),
-    Garden: yup.boolean().required(),
-    Terrace: yup.boolean().required(),
-    'Fully furnished': yup.boolean().required(),
-    'Partially furnished': yup.boolean().required(),
-    Unfurnished: yup.boolean().required(),
-    'Double glazing': yup.boolean().required(),
-    'Allows smoking': yup.boolean().required(),
-    'Allows pets': yup.boolean().required(),
-    'Close to public transport': yup.boolean().required()
-  })
+  idealBudget: yup.number().required(),
+  depositInformation: yup.number().required(),
+  creditScore: yup.string().required(),
+  contactDetails: yup.array().required()
 });
+
+type ButtonType = 'guarantor' | 'reviewedProperty' | 'energyCertificate';
 
 export interface SetCriteriaStep3 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
@@ -75,9 +54,14 @@ export const SetCriteriaStep3 = styled(
     }, []);
 
     const [activeTab, setActiveTab] = React.useState(0);
+    const [selectedButtons, setSelectedButtons] = React.useState<ButtonType[]>([]);
+
+    React.useEffect(() => {
+      form.setValue('contactDetails', selectedButtons.length > 0 ? 'selected' : '');
+    }, [selectedButtons]);
 
     return (
-      <div className={`set-criteria-step-2 ${className}`}>
+      <div className={`set-criteria-step-3 ${className}`}>
         <div className='header'>
           <Logo />
           <div className='right-side'>
@@ -141,12 +125,13 @@ export const SetCriteriaStep3 = styled(
                   checked: !!form.getValues('depositInformation')
                 },
                 {
-                  name: 'Add parameters bellow your ideal credit score'
-                  //   checked: Object.values(form.getValues('specificPropertyFeatures')).includes(true)
+                  name: 'Add parameters bellow your ideal credit score',
+                  checked: !isNaN(parseInt(form.getValues('creditScore')))
                 },
                 {
-                  name: 'Add more contact details'
-                  //  checked: Object.values(form.getValues('specificPropertyFeatures')).includes(true)
+                  name: 'Add more contact details',
+                  checked: selectedButtons.length > 0
+                  // checked: !isNaN(parseInt(form.getValues('contactDetails')))
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -188,7 +173,7 @@ export const SetCriteriaStep3 = styled(
                 Deposit information
               </Typography>
               <div className='section-content'>
-                <Select label='Months payed in advance'>
+                <Select label='Months payed in advance' {...form.register('depositInformation')}>
                   <option></option>
                   <option value='1'>1</option>
                   <option value='5'>2</option>
@@ -197,12 +182,16 @@ export const SetCriteriaStep3 = styled(
                 </Select>
               </div>
             </div>
-            <div className='section specific-property-features-section'>
+            <div className='section credit-score'>
               <Typography className='section-title' variant='body4'>
                 Credit score
               </Typography>
-              <div className='section-content'>
-                <Tabs value={activeTab} onChange={(i: number) => setActiveTab(i)}>
+              <div className='tabs-wrapper'>
+                <Tabs
+                  value={form.getValues('creditScore')}
+                  onChange={(i: number) => {
+                    form.setValue('creditScore', i);
+                  }}>
                   <Tab label='Excellent' />
                   <Tab label='Good' />
                   <Tab label='Fair' />
@@ -210,22 +199,79 @@ export const SetCriteriaStep3 = styled(
               </div>
               <div className='note'>
                 <Typography>
-                  Note: Checking your credit report with a CRA is free and doesn’t affect your credit score.
+                  <span className='span-note'>Note:</span>{' '}
+                  <span className='underline-note'>Checking your credit report</span> with a CRA is free and
+                  doesn’t affect your credit score.
                 </Typography>
               </div>
             </div>
-            <div className='section specific-property-features-section'>
+            <div className='credit-details'>
               <Typography className='section-title' variant='body4'>
                 Contact details
               </Typography>
               <div className='section-content'>
-                <Button size='large' variant='primary' inverted>
+                {/* {...form.register('contactDetails')} */}
+                <Button
+                  size='large'
+                  variant='primary'
+                  endIcon={
+                    selectedButtons.includes('guarantor') ? (
+                      <Icon icon='close' size={16} />
+                    ) : (
+                      <Icon icon='plus' size={16} />
+                    )
+                  }
+                  inverted
+                  className={`${selectedButtons.includes('guarantor') ? 'active' : ''}`}
+                  onClick={() => {
+                    if (selectedButtons.includes('guarantor')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'guarantor'));
+                    } else {
+                      setSelectedButtons([...selectedButtons, 'guarantor']);
+                    }
+                  }}>
                   Guarantor
                 </Button>
-                <Button size='large' variant='primary' inverted>
+                <Button
+                  size='large'
+                  variant='primary'
+                  endIcon={
+                    selectedButtons.includes('reviewedProperty') ? (
+                      <Icon icon='close' size={16} />
+                    ) : (
+                      <Icon icon='plus' size={16} />
+                    )
+                  }
+                  inverted
+                  className={`${selectedButtons.includes('reviewedProperty') ? 'active' : ''}`}
+                  onClick={() => {
+                    if (selectedButtons.includes('reviewedProperty')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'reviewedProperty'));
+                    } else {
+                      setSelectedButtons([...selectedButtons, 'reviewedProperty']);
+                    }
+                  }}>
                   Reviewed property
                 </Button>
-                <Button size='large' variant='primary' inverted>
+                <Button
+                  size='large'
+                  variant='primary'
+                  endIcon={
+                    selectedButtons.includes('energyCertificate') ? (
+                      <Icon icon='close' size={16} />
+                    ) : (
+                      <Icon icon='plus' size={16} />
+                    )
+                  }
+                  inverted
+                  className={`${selectedButtons.includes('energyCertificate') ? 'active' : ''}`}
+                  onClick={() => {
+                    if (selectedButtons.includes('energyCertificate')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'energyCertificate'));
+                    } else {
+                      setSelectedButtons([...selectedButtons, 'energyCertificate']);
+                    }
+                  }}>
                   Energy certificate
                 </Button>
               </div>
@@ -249,7 +295,7 @@ export const SetCriteriaStep3 = styled(
     );
   }
 )`
-  &.set-criteria-step-2 {
+  &.set-criteria-step-3 {
     height: 100%;
     display: grid;
     grid-template-rows: min-content auto min-content;
@@ -328,15 +374,6 @@ export const SetCriteriaStep3 = styled(
               }
             }
           }
-
-          .what-im-looking-for {
-            display: grid;
-            row-gap: 8px;
-            align-content: center;
-            .choice {
-              font-weight: 700;
-            }
-          }
         }
 
         .step-details {
@@ -399,7 +436,7 @@ export const SetCriteriaStep3 = styled(
         align-content: flex-start;
         .section {
           display: grid;
-          row-gap: 24px;
+          row-gap: 16px;
 
           .section-title {
             color: #646464;
@@ -415,83 +452,90 @@ export const SetCriteriaStep3 = styled(
 
           &.rooms-details-section {
             .section-content {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr 1fr;
-              column-gap: 24px;
-              row-gap: 24px;
+              display: flex;
+              width: 208px;
+              flex-direction: column;
+              align-items: flex-start;
+              row-gap: 4px;
             }
           }
+          
+          &.credit-score {
+            .tabs-wrapper {
+              display: flex;
+              padding: 4px;
+              align-items: flex-start;
 
-          &.specific-property-features-section {
-            .section-content {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr 1fr;
-              column-gap: 24px;
-              row-gap: 24px;
-
-              .switch-wrapper {
-                display: flex;
-                column-gap: 8px;
-                align-items: center;
-                label {
-                  color: #0d2a38;
-                  font-weight: 400;
-                  font-size: 14px;
-                  line-height: 20px;
-                  font-family: 'Roobert', serif;
-                }
+              .tabs {
+                border: 1px solid #E7E7E7;
               }
             }
-          }
 
-          &.property-images-section {
-            .section-texts {
-              display: grid;
-              row-gap: 8px;
-            }
+            width: 441px; 
 
-            .section-content {
-              display: grid;
-              grid-template-columns: max-content min-content;
-              gap: 24px;
-
-              .images-list {
-                display: flex;
-                column-gap: 2px;
-                flex-wrap: wrap;
-                .image-wrapper {
-                  border-radius: 4px;
-                  height: 64px;
-                  width: 96px;
-                  position: relative;
-
-                  .remove-button {
-                    position: absolute;
-                    color: white;
-                    background-color: #e5155a;
-                    padding: 3px;
-                    right: 2px;
-                    top: 2px;
-                  }
-
-                  img {
-                    height: 100%;
-                    width: 100%;
-                    border-radius: 4px;
-                  }
+            .active {
+                  background-color: #c0daff;
                 }
-              }
+              
+            .note {
+              display: flex;
+              padding: 12px;
+              align-items: flex-start;
+              align-self: stretch;
+              background-color: #F3F4F5;
+              border-radius: 8px; 
 
-              .add-button {
-                border: 2px solid #184d6d;
-                padding: 22px;
-                box-sizing: border-box;
+              .typography {
+                color:  #646464;
+                font-family: Roobert;
+                font-size: 14px;
+                font-style: normal;
+                line-height: 20px;
+
+                .span-note {
+                  font-weight: 700;
+                }
+                .underline-note {
+                  text-decoration: underline;
+                }
               }
             }
           }
         }
+        /////
+        .credit-details {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+          align-self: stretch;
+
+          .section-title {
+            color: #646464;
+          }
+          
+          .section-content {
+              display: flex;
+              align-items: center;
+              column-gap: 12px;
+
+              .button {
+                padding: 12px;
+                border-radius: 250px;
+                border: 2px solid #C0DAFF;
+                gap: 8px;
+                
+                .icon {
+                  border-radius: 50%;
+                  background-color: white;
+                  padding: 4px;
+                }
+              }
+          }
+        }
       }
     }
+  }
 
     .footer {
       padding: 20px 36px;
