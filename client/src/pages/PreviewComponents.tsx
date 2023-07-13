@@ -37,6 +37,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
       <div className='grouped'>
         <div>
           <Label>Label</Label>
+          <Label active>Label</Label>
           <Label variant='tertiary'>tertiary</Label>
           <Label variant='tertiary' size='small'>
             tertiary small
@@ -181,7 +182,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
         </div>
 
         <div className='icons-list'>
-          {iconList(iconSet).map((icon) => (
+          {iconList(iconSet).map((icon: any) => (
             <div className='icon-item'>
               <Icon icon={icon} size={20} color='black' />
               <p>{icon}</p>

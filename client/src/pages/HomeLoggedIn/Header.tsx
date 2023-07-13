@@ -66,7 +66,7 @@ export const Header = styled(({ className }: HeaderProps) => {
         </div>
 
         <NavLink to='/my-account'>
-          <Avatar avatar={profileStore.avatar ? parseInt(profileStore.avatar) : undefined} />
+          <Avatar avatar={profileStore.avatar ? profileStore.avatar : undefined} />
         </NavLink>
       </div>
     </div>
@@ -129,7 +129,7 @@ export const Header = styled(({ className }: HeaderProps) => {
 `;
 
 interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
-  avatar?: number;
+  avatar?: string;
 }
 
 export const Avatar = styled(({ className, avatar }: AvatarProps) => {
@@ -139,9 +139,10 @@ export const Avatar = styled(({ className, avatar }: AvatarProps) => {
     height: 45px;
     width: 45px;
     border-radius: 50%;
-    background-color: ${(props) => (props.avatar ? avatars[props.avatar].backgroundColor : '#c0daff')};
+    background-color: ${(props) =>
+      props.avatar ? avatars[parseInt(props.avatar)].backgroundColor : '#c0daff'};
 
-    background-image: url(${(props) => (props.avatar ? avatars[props.avatar].image : 'initial')});
+    background-image: url(${(props) => (props.avatar ? avatars[parseInt(props.avatar)].image : 'initial')});
     background-size: contain;
   }
 `;

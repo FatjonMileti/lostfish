@@ -31,7 +31,6 @@ import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
 import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
-import axios from './utils/axios';
 import { useProfileStore } from './globalState/profile';
 
 registerStore(

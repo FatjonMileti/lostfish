@@ -1,18 +1,17 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Header } from '../HomeLoggedIn/Header';
 import { HTMLAttributes } from 'react';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState/globalState';
-import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
+
+import { Header } from '../HomeLoggedIn/Header';
+import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
-import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
 import { NewProperty } from './NewProperty';
-
 import { useUserStore } from '../../globalState/user';
 
 const state: IGridState = {
@@ -26,7 +25,7 @@ const state: IGridState = {
   sort: 'created_at',
   asc: false,
   selectedIds: [],
-  search: 'published',
+  search: '',
   totalDocsUnfiltered: 0
 };
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -37,14 +36,11 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
-  const tabIndex = ['published', 'draft'].indexOf(list.search || '');
-  const setTabIndex = (i: number) => setList((list) => ({ ...list, search: ['published', 'draft'][i] }));
-
   const { auth } = useUserStore();
 
   React.useEffect(() => {
     getAssets();
-  }, [tabIndex]);
+  }, []);
 
   const getAssets = async () => {
     try {
@@ -53,7 +49,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       const { data } = await axios(auth.access_token).get('/api/asset', {
         params: {
           page: page || undefined,
-          pageSize: pageSize || undefined,
+          pageSize: 9,
           sort: sort || undefined,
           asc: asc.toString() || undefined,
           status: search || undefined
@@ -106,11 +102,16 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         {!list.loading && list.totalDocsUnfiltered > 0 && (
           <>
             <div className='manage-properties-bar'>
-              <Typography variant='body2'>Manage your properties</Typography>
+              <div className='texts'>
+                <Typography variant='body2'>My Properties</Typography>
+                <Typography variant='body5'>
+                  Here you can find all your conversations with your matches or Lostfish representatives
+                </Typography>
+              </div>
 
               <Button
                 variant='secondary'
-                size='large'
+                size='medium'
                 className='add-property-button'
                 startIcon={<Icon icon='plus' size={16} />}
                 onClick={() => {
@@ -120,11 +121,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 Add Property
               </Button>
             </div>
-
-            <Tabs value={tabIndex} onChange={setTabIndex} className='status-tabs'>
-              <Tab label='Published' />
-              <Tab label='Drafts' />
-            </Tabs>
 
             <div className='properties-list'>
               {list.rows.map((p, pIndex) => (
@@ -149,18 +145,17 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         )}
       </div>
 
-      {/* <CreateProperty closeCreateScreen={() => setIsOnCreate(!isOnCreate)} /> */}
-
       <Footer />
     </div>
   );
 })`
   &.properties-page {
-    background: linear-gradient(141.18deg, #cdf0ea 10.08%, #f9f9f9 98.58%);
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
     min-height: 100vh;
 
     display: grid;
     grid-template-rows: min-content auto min-content;
+    row-gap: 32px;
 
     .container {
       padding: 24px 36px 48px 36px;
@@ -169,6 +164,11 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        .texts {
+          display: grid;
+          row-gap: 12px;
+        }
       }
 
       .status-tabs {
@@ -178,7 +178,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       .properties-list {
         margin-top: 32px;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
         flex-wrap: wrap;
         column-gap: 24px;
         row-gap: 24px;

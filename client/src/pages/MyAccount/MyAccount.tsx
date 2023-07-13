@@ -44,7 +44,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       <div className='container'>
         <div className='left-menu'>
           <div className='menu-header'>
-            <Avatar avatar={profileStore.avatar ? parseInt(profileStore.avatar) : undefined} />
+            <Avatar avatar={profileStore.avatar ? profileStore.avatar : undefined} />
 
             <div>
               <Typography variant='body3' className='name'>
