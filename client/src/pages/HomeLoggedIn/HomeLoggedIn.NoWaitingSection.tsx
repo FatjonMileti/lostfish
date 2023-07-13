@@ -4,11 +4,25 @@ import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
 import { Icon } from '../../components/Icon';
+import illustration1 from './illustration1.png';
 
 export const NoWaitingSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
-      <div className='left'></div>
+      <div className='left'>
+        <div className='description-part'>
+          <div className='texts'>
+            <Typography>No waiting, no chasing, no middlemen.</Typography>
+            <Typography variant='body4'>
+              Our goal is to increase transparency and trust in the process to achieve the best results for
+              customers in a quick, calm, and informed manner.
+            </Typography>
+          </div>
+
+          <Button size='large'>Find out more</Button>
+        </div>
+        <div className='illustration-part'></div>
+      </div>
       <div className='right'>
         <div className='card matches-card'>
           <Typography variant='body3' className='title'>
@@ -72,6 +86,33 @@ export const NoWaitingSection = styled(({ className }: HTMLAttributes<HTMLDivEle
     grid-template-columns: 4fr 1fr;
 
     .left {
+      border-radius: 12px;
+      background: var(--monochrome-pure-white, #fff);
+      box-shadow: 0px -24px 48px 0px rgba(0, 0, 0, 0.02);
+
+      display: grid;
+
+      grid-template-columns: auto min-content;
+
+      .description-part {
+        padding: 36px;
+        display: grid;
+        align-content: center;
+        row-gap: 48px;
+
+        .texts {
+          display: grid;
+          row-gap: 16px;
+        }
+      }
+
+      .illustration-part {
+        width: 556px;
+        background-image: url(${illustration1});
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      }
     }
 
     .right {
@@ -81,6 +122,7 @@ export const NoWaitingSection = styled(({ className }: HTMLAttributes<HTMLDivEle
         border-radius: 12px;
         padding: 24px;
         box-sizing: border-box;
+        width: 324px;
 
         &.matches-card {
           background: linear-gradient(135deg, #e6f0ff 0%, #d3e5ff 100%);
@@ -111,7 +153,7 @@ export const NoWaitingSection = styled(({ className }: HTMLAttributes<HTMLDivEle
         }
 
         .title {
-          font-family: At Gambit;
+          font-family: At Gambit,serif;
         }
 
         .number {

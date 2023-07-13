@@ -7,13 +7,12 @@ import { WhatAreYouLookingFor } from './WhatAreYouLookingFor';
 import { MinimumRequiredDetails } from './MinimumRequiredDetails';
 import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
-import { Button } from '../../components/Button';
 import axios from '../../utils/axios';
 
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { useCriteriaStore } from '../../globalState/criteria';
-import { NoWaitingSection } from './NoWaitingSection';
+import { NoWaitingSection } from './HomeLoggedIn.NoWaitingSection';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
