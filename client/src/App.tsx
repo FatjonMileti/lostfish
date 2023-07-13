@@ -48,8 +48,6 @@ function App() {
   const criteriaStore = useCriteriaStore();
   const profileStore = useProfileStore();
 
-  console.log('criteriaStore: ', criteriaStore);
-
   const {
     notification: [notification, setNotification]
   } = useGlobalState();

@@ -58,7 +58,7 @@ export const NewProperty = styled(
 
     const step1Form = useForm<Step1FormType>({
       defaultValues: {
-        areaOfInterest: 'London, UK',
+        areaOfInterest: '',
         radius: undefined,
         propertyType: undefined,
         propertyPreferences: undefined,
