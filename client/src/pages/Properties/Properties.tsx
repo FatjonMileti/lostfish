@@ -83,7 +83,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       )}
 
       <div className='container'>
-        {!list.loading && list.totalDocsUnfiltered === 0 && (
+        {!list.loading && list.rows.length === 0 && (
           <div className='no-properties'>
             <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
             <Button
@@ -99,7 +99,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           </div>
         )}
 
-        {!list.loading && list.totalDocsUnfiltered > 0 && (
+        {!list.loading && list.rows.length > 0 && (
           <>
             <div className='manage-properties-bar'>
               <div className='texts'>
