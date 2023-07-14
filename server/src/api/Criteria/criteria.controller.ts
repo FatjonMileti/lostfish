@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import criteriaService from './services/criteria.service';
 import authorize from '../../middleware/authorize';
-import validator from '../../middleware/validator';
-import { createAssetSchemaValidation, createAssetSchemaValidationDraft } from './criteria.validation';
 
 import validateId from '../../middleware/object-id.validator';
 
@@ -17,12 +15,22 @@ export class CriteriaController {
   }
 
   private initializeRoutes() {
+    this.router.get(this.path, authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), this.createCriteria);
-    this.router.post('/draft', authorize(), this.createCriteriaDraft);
-    this.router.patch('/:id', authorize(), validateId, this.updateCriteria);
-    this.router.delete('/:id', authorize(), validateId, this.delete);
+    this.router.patch('/', authorize(), validateId, this.updateCriteria);
   }
+
+  /**
+   * @api {get} /api/criteria Get criteria associated with user
+   * @apiDescription Get criteria for logged in user
+   * @apiGroup Criteria
+   * @apiSampleRequest /api/criteria
+   *
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private getCriteria = this.criteriaService.getByUserId;
 
   /**
    * @api {get} /api/criteria/:id Get by Id
@@ -50,23 +58,10 @@ export class CriteriaController {
   private createCriteria = this.criteriaService.createCriteria;
 
   /**
-   * @api {post} /api/criteria/draft Post as draft
-   * @apiDescription Add a new criteria as draft
+   * @api {patch} /api/criteria Patch criteria
+   * @apiDescription Update existing criteria for logged in user
    * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/draft
-   *
-   * @apiUse CreateCriteria
-   * @apiUse CreateCriteriaDraftExample
-   * @apiPermission admin
-   * @apiUse bearer
-   */
-  private createCriteriaDraft = this.criteriaService.createCriteria;
-
-  /**
-   * @api {patch} /api/criteria/:id Patch one criteria
-   * @apiDescription Update existing criteria
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
+   * @apiSampleRequest /api/criteria
    *
    * @apiUse CreateCriteria
    * @apiUse CreateCriteriaExample
@@ -74,18 +69,6 @@ export class CriteriaController {
    * @apiUse bearer
    */
   private updateCriteria = this.criteriaService.updateCriteria;
-
-  /**
-   * @api {delete} /api/criteria/:id Delete
-   * @apiDescription Delete criteria
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/:id
-   * @apiParam id
-   * @apiPermission admin
-   * @apiUse bearer
-   */
-
-  private delete = this.criteriaService.deleteCriteria;
 }
 
 /* API CONSTANTS FOR CRITERIA DOCUMENTATION */

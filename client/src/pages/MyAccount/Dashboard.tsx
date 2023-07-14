@@ -1,13 +1,16 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
+import { Link } from '../../components/Link';
+import { Avatar } from '../../components/Avatar';
+
 import cloud from './images/cloud.png';
-import tenant1 from './images/tentant1.png';
-import tenant2 from './images/tenant2.png';
 import property from './images/property.png';
 import verified from './images/verified.svg';
-import { Link } from '../../components/Link';
+
+import { avatars } from '../HomeLoggedIn/avatars';
 
 export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -58,12 +61,7 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
         <div className='tenants'>
           <div className='tenant'>
-            <img
-              style={{ backgroundColor: '#fddf44' }}
-              className='profile-image'
-              src={tenant1}
-              alt='tenant profile'
-            />
+            <Avatar image={avatars[0].image} className='profile-image' />
             <Typography className='tenant-name' variant='body4'>
               Nancy Jones
               <img src={verified} alt='verified' />
@@ -72,12 +70,7 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           </div>
 
           <div className='tenant'>
-            <img
-              style={{ backgroundColor: '#3de2e2' }}
-              className='profile-image'
-              src={tenant2}
-              alt='tenant-profile'
-            />
+            <Avatar image={avatars[1].image} className='profile-image' />
             <Typography className='tenant-name' variant='body4'>
               Nick Young
               <img src={verified} alt='verified' />
@@ -198,8 +191,8 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           align-content: flex-start;
 
           .profile-image {
-            border-radius: 50%;
-            aspect-ratio: 1/1;
+            height: 208px;
+            width: 208px;
           }
 
           .tenant-name {

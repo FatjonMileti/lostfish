@@ -1,10 +1,10 @@
 import { styled } from '@mui/system';
-import { Button } from '../../components/Button';
 import React, { HTMLAttributes } from 'react';
 
+import { Button } from '../../components/Button';
 import { ArrowButton } from '../../components/ArrowButton';
-import { motion } from 'framer-motion';
 import { Typography } from '../../components/Typography';
+import { Avatar } from '../../components/Avatar';
 
 import { avatars } from '../HomeLoggedIn/avatars';
 
@@ -35,7 +35,8 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
         <div className='avatars-list'>
           {avatars.map(({ image, backgroundColor }, avatarIndex) => {
             return (
-              <motion.div
+              <Avatar
+                image={avatars[avatarIndex].image}
                 animate={{
                   x: `calc(${-100 * avatar}% + ${32 * avatar}px)`,
                   opacity: avatarIndex === avatar ? 1 : 0.5
@@ -43,10 +44,8 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
                 transition={{ ease: 'easeOut', duration: 0.5 }}
                 onClick={() => setSelectedAvatar(avatarIndex)}
                 key={avatarIndex}
-                className={`avatar ${avatarIndex === avatar ? 'active' : ''}`}
-                style={{ backgroundColor }}>
-                <img src={image} alt='avatar' />
-              </motion.div>
+                className={`${avatarIndex === avatar ? 'active' : ''}`}
+              />
             );
           })}
         </div>
@@ -92,12 +91,12 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
           position: relative;
           width: 400px;
           height: 400px;
-          border-radius: 50%;
           overflow: hidden;
           flex-shrink: 0;
           opacity: 0.5;
           margin-left: -32px;
           cursor: pointer;
+          box-sizing: border-box;
           &:first-of-type {
             margin-left: 0;
           }
@@ -106,12 +105,7 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
             opacity: 1;
             position: relative;
             z-index: 1;
-          }
-          img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            border: 4px solid var(--primary-brand-sand, #eee0d3);
           }
         }
       }

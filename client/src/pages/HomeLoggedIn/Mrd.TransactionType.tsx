@@ -28,14 +28,9 @@ export const TransactionType = styled(
                 </IconButton>
 
                 <Typography variant='body4' className='title'>
-                  I’m looking for a tenant
+                  I’m looking to rent a place
                 </Typography>
-                <Radio
-                  value='Rent'
-                  checked={transactionType === 'Tenant'}
-                  readOnly
-                  // onChange={field.onChange}
-                />
+                <Radio value='Rent' checked={transactionType === 'Tenant'} readOnly />
               </div>
             </motion.div>
             <motion.div
@@ -48,7 +43,7 @@ export const TransactionType = styled(
                   <Icon icon='credit-card' />
                 </IconButton>
                 <Typography variant='body4' className='title'>
-                  I’m looking for a buyer
+                  I’m looking to buy a place
                 </Typography>
                 <Radio value='Sale' checked={transactionType === 'Buyer'} readOnly />
               </div>

@@ -1,80 +1,33 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-
-import { registerStore, useGlobalState } from '../../globalState/globalState';
 
 import { Header } from './Header';
 import { WhatAreYouLookingFor } from './WhatAreYouLookingFor';
 import { MinimumRequiredDetails } from './MinimumRequiredDetails';
 import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
-import { Button } from '../../components/Button';
 import axios from '../../utils/axios';
 
 import { useUserStore } from '../../globalState/user';
-
-export interface userProfileType {
-  avatar?: string;
-  fetchProfile: (access_token: string) => Promise<void>;
-}
-
-export interface MatchCriteriaType {
-  lookingFor?: string;
-  transactionType?: string;
-  whenDoYouWantToMove?: string;
-  areaOfInterest?: string;
-  startedMatching: boolean;
-}
-
-const defaultMatchCriteria: MatchCriteriaType = {
-  lookingFor: undefined,
-  transactionType: undefined,
-  whenDoYouWantToMove: undefined,
-  areaOfInterest: undefined,
-  startedMatching: false
-};
-
-registerStore<userProfileType>(
-  'userProfile',
-  {
-    avatar: undefined,
-    fetchProfile: async (access_token: string) => {
-      try {
-        await axios(access_token).get('/api/account/me');
-      } catch (err) {
-        throw err;
-      }
-    }
-  },
-  { persist: true }
-);
-
-registerStore('matchCriteria', defaultMatchCriteria, { persist: true });
+import { useProfileStore } from '../../globalState/profile';
+import { useCriteriaStore } from '../../globalState/criteria';
+import { NoWaitingSection } from './HomeLoggedIn.NoWaitingSection';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
-  const navigate = useNavigate();
-
-  const {
-    userProfile: [userProfile, setUserProfile],
-    matchCriteria: [matchCriteria, setMatchCriteria]
-  } = useGlobalState();
-
-  const { auth, userDetails: ud } = useUserStore();
-
-  console.log('ud: ', ud);
+  const { auth, userDetails } = useUserStore();
+  const profileStore = useProfileStore();
+  const criteriaStore = useCriteriaStore();
 
   const onSelectAvatar = async (avatar: number) => {
     setLoading(true);
     try {
-      await axios(auth.access_token).patch('/api/user/' + ud.user_id, {
+      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
         avatar: avatar
       });
-
-      setUserProfile({ ...userProfile, avatar: avatar });
+      profileStore.set((profile) => ({ ...profile, avatar: avatar.toString() }));
     } catch (err) {
       throw err;
     } finally {
@@ -84,22 +37,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
   const onLookingForChange = async (lookingFor: string) => {
     try {
-      setMatchCriteria({ ...matchCriteria, lookingFor });
+      criteriaStore.set({ lookingFor });
     } catch (err) {
       throw err;
     }
-  };
-
-  const startMatching = async () => {
-    setLoading(true);
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 3000);
-    });
-    setLoading(false);
-    setMatchCriteria({ ...matchCriteria, startMatching: true });
-    navigate('/matches');
   };
 
   return (
@@ -108,20 +49,32 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       <Backdrop open={loading}></Backdrop>
 
-      {matchCriteria.startMatching && (
-        <Button
-          onClick={() => {
-            setMatchCriteria({});
-            setUserProfile({});
-          }}>
-          Reset
-        </Button>
-      )}
+      <div className='container'>
+        {criteriaStore.startedMatching && (
+          <>
+            <NoWaitingSection />
+          </>
+        )}
+      </div>
 
-      {!matchCriteria.startMatching && (
+      {/* <Button */}
+      {/*   style={{ position: 'absolute', top: '128px', left: '36px' }} */}
+      {/*   onClick={() => { */}
+      {/*     profileStore.set({ avatar: undefined }); */}
+      {/*     criteriaStore.set({ */}
+      {/*       startedMatching: false, */}
+      {/*       lookingFor: undefined, */}
+      {/*       transactionType: undefined, */}
+      {/*       whenDoYouWantToMove: undefined */}
+      {/*     }); */}
+      {/*   }}> */}
+      {/*   Reset */}
+      {/* </Button> */}
+
+      {!criteriaStore.startedMatching && (
         <>
           <AnimatePresence>
-            {userProfile.avatar === undefined && (
+            {isNaN(parseInt(profileStore.avatar || '')) && (
               <motion.div
                 key='SelectAvatar'
                 initial={{ opacity: 0 }}
@@ -135,7 +88,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {userProfile.avatar !== undefined && !matchCriteria.lookingFor && (
+            {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
               <motion.div
                 key='WhatAreYouLookingFor'
                 initial={{ opacity: 0 }}
@@ -144,8 +97,8 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
                   duration: 1
                 }}>
                 <WhatAreYouLookingFor
-                  avatar={userProfile.avatar}
-                  lookingFor={matchCriteria.lookingFor}
+                  avatar={profileStore.avatar ? parseInt(profileStore.avatar) : 0}
+                  lookingFor={criteriaStore.lookingFor}
                   onLookingForChange={onLookingForChange}
                 />
               </motion.div>
@@ -153,7 +106,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           </AnimatePresence>
 
           <AnimatePresence>
-            {userProfile.avatar !== undefined && !!matchCriteria.lookingFor && (
+            {!isNaN(parseInt(profileStore.avatar || '')) && !!criteriaStore.lookingFor && (
               <motion.div
                 key='MinimumRequiredDetails'
                 initial={{ opacity: 0 }}
@@ -161,7 +114,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
                 transition={{
                   duration: 1
                 }}>
-                <MinimumRequiredDetails startMatching={startMatching} />
+                <MinimumRequiredDetails />
               </motion.div>
             )}
           </AnimatePresence>
@@ -176,5 +129,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto; //min-content;
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+
+    .container {
+      padding: 24px 36px;
+    }
   }
 `;

@@ -2,47 +2,44 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 
 import { Typography } from '../../components/Typography';
-import verified from './images/verified.svg';
 import { Link } from '../../components/Link';
-import avatar1 from './images/avatar1.svg';
-import avatar2 from './images/avatar2.svg';
-import avatar3 from './images/avatar3.svg';
-import avatar4 from './images/avatar4.svg';
-import avatar5 from './images/avatar5.svg';
+import { Tabs, Tab } from '../../components/Tab';
+import { Button } from '../../components/Button';
 
+import verified from './images/verified.svg';
 import property from './images/property.png';
 import property1 from './images/property1.png';
 
-const avatars = [
+import { avatars } from '../HomeLoggedIn/avatars';
+import { Avatar } from '../../components/Avatar';
+
+const starredTenants = [
   {
-    image: avatar1,
+    image: avatars[0].image,
     backgroundColor: '#F7AC75',
     name: 'Nancy Jones'
   },
   {
-    image: avatar2,
+    image: avatars[1].image,
     backgroundColor: '#FDDF44',
     name: 'Nick Young'
   },
   {
-    image: avatar3,
+    image: avatars[2].image,
     backgroundColor: '#3DE2E2',
     name: 'Nick Young'
   },
   {
-    image: avatar4,
+    image: avatars[3].image,
     backgroundColor: '#184D6D',
     name: 'Toby Anderson'
   },
   {
-    image: avatar5,
+    image: avatars[4].image,
     backgroundColor: '#408140',
     name: 'Mark Williamson'
   }
 ];
-
-import { Tabs, Tab } from '../../components/Tab';
-import { Button } from '../../components/Button';
 
 export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [activeTab, setActiveTab] = React.useState(0);
@@ -57,15 +54,10 @@ export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivEleme
         <div className='tenants-tab'>
           <Typography variant='body5'>You will only see starred matches from your current search.</Typography>
           <div className='tenants'>
-            {avatars.map(({ image, backgroundColor }, tenantIndex) => {
+            {starredTenants.map(({ image, backgroundColor }, tenantIndex) => {
               return (
                 <div className='tenant'>
-                  <img
-                    style={{ backgroundColor }}
-                    className='profile-image'
-                    src={image}
-                    alt='tenant profile'
-                  />
+                  <Avatar image={image} className='profile-image' />
                   <Typography className='tenant-name' variant='body4'>
                     Nancy Jones
                     <img src={verified} alt='verified' />
@@ -143,8 +135,7 @@ export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivEleme
           align-content: flex-start;
 
           .profile-image {
-            border-radius: 50%;
-            aspect-ratio: 1/1;
+            height: 208px;
             width: 208px;
           }
 

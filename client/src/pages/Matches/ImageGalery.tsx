@@ -7,10 +7,10 @@ import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 import { Carousel } from './Carousel';
 
-import gallery1 from './gallery1.png';
-import gallery2 from './gallery2.png';
-import gallery3 from './gallery3.png';
-import gallery4 from './gallery4.png';
+import gallery1 from './images/gallery1.png';
+import gallery2 from './images/gallery2.png';
+import gallery3 from './images/gallery3.png';
+import gallery4 from './images/gallery4.png';
 
 const images = [
   gallery1,

@@ -30,6 +30,8 @@ import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
 import { useUserStore } from './globalState/user';
+import { useCriteriaStore } from './globalState/criteria';
+import { useProfileStore } from './globalState/profile';
 
 registerStore(
   'notification',
@@ -42,12 +44,30 @@ registerStore(
 
 function App() {
   const user = useUserStore();
+  const criteriaStore = useCriteriaStore();
+  const profileStore = useProfileStore();
 
   const {
     notification: [notification, setNotification]
   } = useGlobalState();
 
   const [socket, setSocket] = useState<Socket | null>(null);
+
+  React.useEffect(() => {
+    if (user.auth) {
+      criteriaStore.fetchCriteria(user.auth.access_token);
+    } else {
+      criteriaStore.reset();
+    }
+  }, [user.auth]);
+
+  React.useEffect(() => {
+    if (user.auth) {
+      profileStore.fetchProfile(user.auth.access_token);
+    } else {
+      profileStore.reset();
+    }
+  }, [user.auth]);
 
   React.useEffect(() => {
     if (user.auth) {
@@ -83,25 +103,24 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path='/login' element={<Login />} />
-                  <Route path='/google/redirect' element={<RedirectUriPage />} />
-                  <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
-                  <Route path='/create-account' element={<CreateAccount />} />
-
-                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-                  <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
-                  <Route path='/activate-account/:token' element={<VerifyAccount />} />
-                  <Route path={'/messages'} element={<ChatPage />} />
-
-                  <Route path='/properties/:id' element={<PrivateProperty />} />
-
-                  <Route path='/properties/:id/view' element={<PublicProperty />} />
-                  <Route path='/properties/:id/applications' element={<PropertyApplications />} />
-                  <Route path='/matches' element={<Matches />} />
+                  <Route path='/components' element={<PreviewComponents />} />
                   <Route path='/about' element={<About />} />
                   <Route path='/mission' element={<Mission />} />
                   <Route path='/forgot-password' element={<ForgotPassword />} />
+                  <Route path='/create-account' element={<CreateAccount />} />
+                  <Route path='/google/redirect' element={<RedirectUriPage />} />
+                  <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
+                  <Route path='/activate-account/:token' element={<VerifyAccount />} />
                   <Route path='/reset-password/:token' element={<ResetPassword />} />
-                  <Route path='/components' element={<PreviewComponents />} />
+
+                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+
+                  <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
+                  <Route path='/messages' element={<ChatPage />} />
+                  <Route path='/properties/:id' element={<PrivateProperty />} />
+                  <Route path='/properties/:id/view' element={<PublicProperty />} />
+                  <Route path='/properties/:id/applications' element={<PropertyApplications />} />
+                  <Route path='/matches' element={<Matches />} />
                   <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
                   <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
                   <Route path='*' element={<NotFound />} />

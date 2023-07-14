@@ -1,23 +1,24 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
+import { HTMLMotionProps, motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { TextField } from '../../components/TextField';
 import { Textarea } from '../../components/Textarea';
-import { motion } from 'framer-motion';
-
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState/globalState';
-import axios from '../../utils/axios';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import Can from '../../components/Can';
+import { Backdrop } from '../../components/Backdrop';
+import { Avatar } from '../../components/Avatar';
+
+import axios from '../../utils/axios';
 import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
-import { Backdrop } from '../../components/Backdrop';
-
 import { useUserStore } from '../../globalState/user';
+import { useProfileStore } from '../../globalState/profile';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -33,15 +34,13 @@ interface ProfileDetails {
   email: string;
   phone: string;
   description: string;
-  avatar: number;
+  avatar?: string;
 }
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState(false);
 
-  const {
-    userProfile: [userProfile, setUserProfile]
-  } = useGlobalState();
+  const profileStore = useProfileStore();
 
   const { userDetails, auth } = useUserStore();
 
@@ -53,12 +52,12 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: userProfile.avatar
+      avatar: profileStore.avatar ? profileStore.avatar : undefined
     }
   });
 
   const handleSelectedAvatar = (index: number) => {
-    profileDetailsForm.setValue('avatar', index);
+    profileDetailsForm.setValue('avatar', index.toString());
   };
 
   React.useEffect(() => {
@@ -66,20 +65,19 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     loadProfile();
   }, []);
 
+  React.useEffect(() => {
+    profileDetailsForm.setValue('first_name', profileStore.first_name);
+    profileDetailsForm.setValue('last_name', profileStore.last_name);
+    profileDetailsForm.setValue('email', profileStore.email);
+    profileDetailsForm.setValue('phone', profileStore.phone);
+    profileDetailsForm.setValue('description', profileStore.description);
+    profileDetailsForm.setValue('avatar', profileStore.avatar || '');
+  }, [profileStore]);
+
   const loadProfile = async () => {
     setLoading(true);
     try {
-      const { data } = await axios(auth.access_token).get('/api/account/me');
-      setUserProfile({ ...data });
-
-      const { first_name, last_name, email, phone, description, avatar } = data;
-
-      profileDetailsForm.setValue('first_name', first_name);
-      profileDetailsForm.setValue('last_name', last_name);
-      profileDetailsForm.setValue('email', email);
-      profileDetailsForm.setValue('phone', phone);
-      profileDetailsForm.setValue('description', description);
-      profileDetailsForm.setValue('avatar', parseInt(avatar));
+      await profileStore.fetchProfile(auth.access_token);
     } catch (err) {
       throw err;
     } finally {
@@ -87,13 +85,10 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     }
   };
 
-  console.log('userProfile', userProfile);
-
   const onSubmit = async (data: any) => {
     setLoading(true);
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
-
       await loadProfile();
     } catch (err) {
       throw err;
@@ -104,8 +99,8 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
   return (
     <>
-      <Backdrop open={loading} />
       <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
+        <Backdrop open={loading} />
         <div className='left-part'>
           <div className='section'>
             <Typography className='section-title' variant='body4'>
@@ -153,19 +148,16 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             </Typography>
             <div className='setup-avatar'>
               {avatars.map(({ image, backgroundColor }, avatarIndex) => {
-                const active = avatarIndex === profileDetailsForm.getValues('avatar');
+                const active = avatarIndex === parseInt(profileDetailsForm.getValues('avatar') || '');
 
                 return (
-                  <motion.div
-                    // whileTap={{ scale: 0.9 }}
-                    // whileHover={{ scale: 1.5 }}
+                  <Avatar
+                    image={avatars[avatarIndex].image}
                     onClick={() => handleSelectedAvatar(avatarIndex)}
                     key={avatarIndex}
-                    className={`avatar ${active ? 'active' : ''}`}
-                    style={{ backgroundColor }}>
-                    <img src={image} />
+                    className={`${active ? 'active' : ''}`}>
                     <Icon icon='checked' color='black' size={10} />
-                  </motion.div>
+                  </Avatar>
                 );
               })}
             </div>
@@ -220,19 +212,18 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
       .avatar {
         position: relative;
-        border-radius: 50%;
         cursor: pointer;
         height: 72px;
         width: 72px;
         box-sizing: border-box;
         display: flex;
 
-        img {
-          border-radius: 50%;
+        .icon {
+          display: none !important;
         }
 
         &.active {
-          outline: 2px solid #c0daff;
+          outline: 2px solid #eee0d3;
 
           :before {
             content: '';
@@ -242,15 +233,16 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            border: 2px solid #c0daff;
+            border: 2px solid var(--primary-brand-sand, #eee0d3);
             position: absolute;
           }
 
           .icon {
+            display: initial !important;
             position: absolute;
             z-index: 4;
             bottom: -8px;
-            background: #c0daff;
+            background: #eee0d3;
             left: 50%;
             transform: translateX(-50%);
             border-radius: 50%;

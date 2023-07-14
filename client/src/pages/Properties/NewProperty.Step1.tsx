@@ -15,6 +15,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
+import { AreaOfInterest } from './NewPropery.AreaOfInterest';
 
 export type Step1FormType = {
   areaOfInterest: string;
@@ -63,6 +64,8 @@ export const NewPropertyStep1 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
+
+    console.log('step1 form values: ', form.getValues());
 
     return (
       <div className={`new-property-step-1 ${className}`}>
@@ -166,7 +169,7 @@ export const NewPropertyStep1 = styled(
                 Property location
               </Typography>
               <div className='section-content'>
-                <TextField
+                <AreaOfInterest
                   startAdornment={
                     <span style={{ padding: '13px 0 13px 13px' }}>
                       <Icon icon='search' size={20} color='#CFD5D5' />
@@ -174,7 +177,8 @@ export const NewPropertyStep1 = styled(
                   }
                   placeholder='E.g. Bristol or BA1 2LR'
                   label='Area of interest'
-                  {...form.register('areaOfInterest')}
+                  areaOfInterest={form.getValues('areaOfInterest')}
+                  onAreaChange={(newValue) => form.setValue('areaOfInterest', newValue)}
                 />
                 <Select label='Radius' {...form.register('radius')}>
                   <option></option>

@@ -24,6 +24,9 @@ import { LoadingMatch } from '../components/LoadingMatch';
 
 import { Tabs, Tab } from '../components/Tab';
 import { ArrowButton } from '../components/ArrowButton';
+import { Label } from '../components/Label';
+import { Avatar } from '../components/Avatar';
+import { avatars } from './HomeLoggedIn/avatars';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -34,6 +37,18 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
       <div className='grouped'>
+        <div>
+          <Avatar image={avatars[0].image} />
+          <Avatar image={avatars[1].image} style={{ width: '100px', height: '100px' }} />
+        </div>
+        <div>
+          <Label>Label</Label>
+          <Label active>Label</Label>
+          <Label variant='tertiary'>tertiary</Label>
+          <Label variant='tertiary' size='small'>
+            tertiary small
+          </Label>
+        </div>
         <div>
           <ArrowButton />
           <ArrowButton direction='right' />
@@ -173,7 +188,7 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
         </div>
 
         <div className='icons-list'>
-          {iconList(iconSet).map((icon) => (
+          {iconList(iconSet).map((icon: any) => (
             <div className='icon-item'>
               <Icon icon={icon} size={20} color='black' />
               <p>{icon}</p>
