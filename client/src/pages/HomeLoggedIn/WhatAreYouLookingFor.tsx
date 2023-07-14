@@ -106,7 +106,7 @@ export const WhatAreYouLookingFor = styled(
       }
 
       .circles {
-        width: 568px;
+        width: 567px;
         height: 324px;
         position: relative;
         margin-top: 72px;
