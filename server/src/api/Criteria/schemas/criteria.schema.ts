@@ -2,7 +2,6 @@ import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { CriteriaDocument } from '../criteria.interface';
-import { string } from 'joi';
 
 const schema = new Schema<CriteriaDocument>({
   area_of_interest: String,

@@ -1,110 +1,71 @@
-import { Router, Request } from 'express';
+import { Router, Request, Response } from 'express';
 import docusignService from './docusign.service';
+import authorize from '../../middleware/authorize';
+import Envelope from './schemas/envelope';
 const router: Router = Router();
-import docusign, { ProvisioningInformation, EnvelopeDefinition } from 'docusign-esign';
 const jwtConfig = require('./jwtConfig.json');
-import fs from 'fs';
-import path from 'path';
 
-router.post('/form', async (request, response) => {
-  await checkToken(request);
-  const envelopesApi = getEnvelopesApi(request);
-  const envelope = makeEnvelope(request.body.name, request.body.email, request.body.company);
+export class DocusignController {
+  public router = router;
+  public docusignService = docusignService;
 
-  const results = await envelopesApi.createEnvelope(jwtConfig.dsJWTClientId, {
-    envelopeDefinition: envelope
-  });
-  if (results) {
-    console.log('envelope results ', results);
-    // Create the recipient view, the Signing Ceremony
-    const viewRequest = makeRecipientViewRequest(request.body.name, request.body.email);
-    if (results.envelopeId != null) {
-      const newresults = await envelopesApi.createRecipientView(jwtConfig.dsJWTClientId, results.envelopeId, {
-        recipientViewRequest: viewRequest
-      });
-      if (newresults.url != null) {
-        response.redirect(newresults.url);
-      }
-    }
+  constructor() {
+    this.initializeRoutes();
   }
-});
 
-function getEnvelopesApi(request: Request) {
-  const dsApiClient = new docusign.ApiClient();
-  dsApiClient.setBasePath(jwtConfig.basePath);
-  // @ts-ignore
-  dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + request.session.access_token);
-  return new docusign.EnvelopesApi(dsApiClient);
-}
-
-function makeEnvelope(name: string, email: string, company: string) {
-  const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
-  env.templateId = jwtConfig.templateId;
-  const text = docusign.Text.constructFromObject({
-    tabLabel: 'company_name',
-    value: company
-  });
-
-  // Pull together the existing and new tabs in a Tabs object:
-  const tabs = docusign.Tabs.constructFromObject({
-    textTabs: [text]
-  });
-
-  const signer1 = docusign.TemplateRole.constructFromObject({
-    email,
-    name,
-    tabs,
-    clientUserId: 10000,
-    roleName: 'Applicant'
-  });
-
-  env.templateRoles = [signer1];
-  env.status = 'sent';
-
-  return env;
-}
-
-function makeRecipientViewRequest(name: string, email: string) {
-  const viewRequest = new docusign.RecipientViewRequest();
-
-  viewRequest.returnUrl = 'http://localhost:3000/api/docusign/success';
-  viewRequest.authenticationMethod = 'none';
-
-  // Recipient information must match embedded recipient info
-  // we used to create the envelope.
-  viewRequest.email = email;
-  viewRequest.userName = name;
-  viewRequest.clientUserId = process.env.CLIENT_USER_ID;
-
-  return viewRequest;
-}
-
-async function checkToken(request: Request) {
-  // @ts-ignore
-  if (request.session.access_token && Date.now() < request.session.expires_at) {
-    console.log('re-using access_token ', request.session.access_token);
-  } else {
-    console.log('generating a new access token');
-    const dsApiClient = new docusign.ApiClient();
-    dsApiClient.setBasePath(jwtConfig.basePath);
-    const results = await dsApiClient.requestJWTUserToken(
-      jwtConfig.dsJWTClientId,
-      jwtConfig.impersonatedUserGuid,
-      'signature',
-      fs.readFileSync(path.join(__dirname, 'private.key')),
-      3600
-    );
-    console.log(results.body);
-    request.session.access_token = results.body.access_token;
-    request.session.expires_at = Date.now() + (results.body.expires_in - 60) * 1000;
+  private initializeRoutes() {
+    this.router.get('/', this.authenticate);
+    this.router.post('/form', authorize(), this.sendForm);
+    this.router.get('/consent', this.getConsent);
+    this.router.get('/callback', this.redirectCallback);
+    this.router.get('/success', this.successSign);
   }
+
+  private authenticate = async (req: Request, res: Response) => {
+    const token = await this.docusignService.getToken();
+
+    res.send('token' + token);
+  };
+
+  /**
+   * @api {post} /api/docusign/form Create ne wenvelope
+   * @apiDescription Add a new envelope as draft
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/form
+   *
+   * @apiUse CreateDocusignForm
+   * @apiUse CreateDocusignFormExample
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private sendForm = this.docusignService.sendEnvelope;
+
+  private getConsent = async (req: Request, res: Response) => {
+    const redirectUri = await docusignService.getConsent();
+    res.redirect(redirectUri);
+  };
+
+  private redirectCallback = async (req: Request, res: Response) => {
+    res.send('authorization granted');
+  };
+
+  private successSign = async (req: Request, res: Response) => {
+    res.send('Success');
+  };
 }
 
-router.get('/', async (request, response) => {
-  await checkToken(request);
-  response.sendFile(path.join(__dirname, 'main.html'));
-});
+/**
+ * @apiDefine CreateDocusignFormExample
+ * @apiExample {json} Example request body:
+ *    {
+ *     "tenant": "gikbjkjb3tl3ntlk4lk",
+ *     "company": "Fsd"
+ * }
+ */
 
-router.get('/success', (request, resposne) => {
-  resposne.send('Success');
-});
+/**
+ * @apiDefine CreateDocusignForm
+ * @apiBody {String} tenant
+ * @apiBody {String} company
+ *
+ */

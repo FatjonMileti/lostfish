@@ -5,6 +5,6 @@
   "integrationKey": "bbf12626-86ab-4034-9a19-0cbbeaa55a7f",
   "privateKeyLocation":  "./private.key",
   "dsOauthServer": "https://account-d.docusign.com",
-  "templateId": "2a573eba-81ba-4db1-ac55-8c879134573f",
+  "templateId": "2a573eba-feba-486a-9925-748e9134413c",
   "basePath": "https://demo.docusign.net/restapi"
 }

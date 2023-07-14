@@ -3,7 +3,7 @@ import { CriteriaDocument } from '../criteria.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
-import { getCurrentStatusForPost } from '../helpers';
+
 import googleMapService from '../../../external-services/google-map.service';
 import { CurrencyCode } from '../../Asset/asset.interface';
 
@@ -12,7 +12,7 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
-  if (data.asset_address.longitude && data.asset_address.longitude) {
+  if (data?.asset_address.longitude && data.asset_address.longitude) {
     const assetAddress = await googleMapService.getAddress(
       data.asset_address.latitude,
       data.asset_address.longitude
@@ -131,7 +131,7 @@ const findById = async (id: string): Promise<any | null> => {
   const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ _id: id });
 
   if (!criteria) {
-    throw createError(404, 'The item does not exist');
+    throw createError(httpStatus.NOT_FOUND, 'The item does not exist');
   }
   return criteria;
 };

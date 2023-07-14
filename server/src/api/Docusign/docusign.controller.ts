@@ -2,7 +2,7 @@ import { Router } from 'express';
 import docusignService from './docusign.service';
 const router: Router = Router();
 
-export class DocusignController {
+export class DocusignControllerd {
   public router = router;
   public docusignService = docusignService;
   constructor() {
