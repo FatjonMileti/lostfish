@@ -22,7 +22,7 @@ export const WhenDoYouWantToMove = styled(({ className, onWhenChange, value }: W
           'I’m not in a rush',
           'I want to take my time'
         ].map((when: string) => (
-          <div>
+          <div key={when}>
             {/* <label>{when}</label> */}
             {/* <Radio value={when} onClick={() => onWhenChange('Today')} /> */}
             <Label active={value === when} onClick={() => onWhenChange(when)}>

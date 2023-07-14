@@ -46,9 +46,10 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
               startedMatching: true
             }));
           } catch (err: any) {
-            console.log('criteria error: ', err.response.status);
             if (err.response.status === 404) {
               set((profile) => ({ ...criteriaInitialState }));
+            } else {
+              console.log('criteria error: ', err.response.status);
             }
           }
         }
