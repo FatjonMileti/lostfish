@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import criteriaService from './services/criteria.service';
 import authorize from '../../middleware/authorize';
-import validator from '../../middleware/validator';
-import { createAssetSchemaValidation, createAssetSchemaValidationDraft } from './criteria.validation';
 
 import validateId from '../../middleware/object-id.validator';
 
@@ -17,7 +15,7 @@ export class CriteriaController {
   }
 
   private initializeRoutes() {
-    this.router.get('/', authorize(), this.getCriteria);
+    this.router.get(this.path, authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), this.createCriteria);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);

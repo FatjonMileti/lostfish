@@ -13,6 +13,7 @@ import config from '../config';
 import UploadService from '../utils/image';
 import { ProtectedApiController } from './Get/get-data.controller';
 import { CriteriaController } from './Criteria/criteria.controller';
+import { DocusignController } from './Docusign/docusign-test.controller';
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -80,8 +81,10 @@ const mapController = new MapController();
 const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
+const docusignController = new DocusignController();
 
 router.use('/v1', protectedController.router);
+router.use('/docusign', docusignController.router);
 router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);
 router.use('/user', authorize(), userController.router);
