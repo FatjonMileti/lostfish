@@ -34,7 +34,7 @@ interface ProfileDetails {
   email: string;
   phone: string;
   description: string;
-  avatar?: number;
+  avatar?: string;
 }
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -52,12 +52,12 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: profileStore.avatar ? parseInt(profileStore.avatar) : undefined
+      avatar: profileStore.avatar ? profileStore.avatar : undefined
     }
   });
 
   const handleSelectedAvatar = (index: number) => {
-    profileDetailsForm.setValue('avatar', index);
+    profileDetailsForm.setValue('avatar', index.toString());
   };
 
   React.useEffect(() => {
@@ -71,7 +71,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     profileDetailsForm.setValue('email', profileStore.email);
     profileDetailsForm.setValue('phone', profileStore.phone);
     profileDetailsForm.setValue('description', profileStore.description);
-    profileDetailsForm.setValue('avatar', parseInt(profileStore.avatar || ''));
+    profileDetailsForm.setValue('avatar', profileStore.avatar || '');
   }, [profileStore]);
 
   const loadProfile = async () => {
@@ -148,7 +148,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             </Typography>
             <div className='setup-avatar'>
               {avatars.map(({ image, backgroundColor }, avatarIndex) => {
-                const active = avatarIndex === profileDetailsForm.getValues('avatar');
+                const active = avatarIndex === parseInt(profileDetailsForm.getValues('avatar') || '');
 
                 return (
                   <Avatar
