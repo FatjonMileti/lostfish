@@ -105,8 +105,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
               {conversations.map((row: IRoom, rowIndex: number) => {
                 const fullName =
                   userDetails?.user_id === row?.author?._id
-                    ? `${row.participant.first_name} ${row.participant.last_name}`
-                    : `${row.author.first_name} ${row.author.last_name}`;
+                    ? `${row.participant?.first_name} ${row.participant?.last_name}`
+                    : `${row.author?.first_name} ${row.author?.last_name}`;
 
                 return (
                   <Conversation

@@ -134,7 +134,7 @@ const findById = async (id: string): Promise<any | null> => {
   const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ _id: id });
 
   if (!criteria) {
-    throw createError(404, 'The item does not exist');
+    throw createError(httpStatus.NOT_FOUND, 'The item does not exist');
   }
   return criteria;
 };
