@@ -1,10 +1,11 @@
-import React, { HTMLAttributes } from 'react';
+import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
+import { Avatar } from '../../components/Avatar';
 
 import { avatars } from './avatars';
 import { useProfileStore } from '../../globalState/profile';
@@ -66,7 +67,7 @@ export const Header = styled(({ className }: HeaderProps) => {
         </div>
 
         <NavLink to='/my-account'>
-          <Avatar avatar={profileStore.avatar ? profileStore.avatar : undefined} />
+          <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)].image : undefined} />
         </NavLink>
       </div>
     </div>
@@ -125,24 +126,5 @@ export const Header = styled(({ className }: HeaderProps) => {
         }
       }
     }
-  }
-`;
-
-interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
-  avatar?: string;
-}
-
-export const Avatar = styled(({ className, avatar }: AvatarProps) => {
-  return <div className={`avatar ${className}`}></div>;
-})`
-  & {
-    height: 45px;
-    width: 45px;
-    border-radius: 50%;
-    background-color: ${(props) =>
-      props.avatar ? avatars[parseInt(props.avatar)].backgroundColor : '#c0daff'};
-
-    background-image: url(${(props) => (props.avatar ? avatars[parseInt(props.avatar)].image : 'initial')});
-    background-size: contain;
   }
 `;

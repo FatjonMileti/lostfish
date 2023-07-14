@@ -14,11 +14,14 @@ import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
-import { Avatar, Header } from '../HomeLoggedIn/Header';
+import { Header } from '../HomeLoggedIn/Header';
 import request from '../../utils/axios';
 
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
+
+import { Avatar } from '../../components/Avatar';
+import { avatars } from '../HomeLoggedIn/avatars';
 
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -44,7 +47,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       <div className='container'>
         <div className='left-menu'>
           <div className='menu-header'>
-            <Avatar avatar={profileStore.avatar ? profileStore.avatar : undefined} />
+            <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)].image : undefined} />
 
             <div>
               <Typography variant='body3' className='name'>

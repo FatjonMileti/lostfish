@@ -1,12 +1,17 @@
-import avatar1 from '../MyAccount/images/avatar1.svg';
-import avatar2 from '../MyAccount/images/avatar2.svg';
-import avatar3 from '../MyAccount/images/avatar3.svg';
-import avatar4 from '../MyAccount/images/avatar4.svg';
-import avatar5 from '../MyAccount/images/avatar5.svg';
+import avatar0 from '../MyAccount/images/fancy-avatar-0.jpg';
+import avatar1 from '../MyAccount/images/fancy-avatar-1.jpg';
+import avatar2 from '../MyAccount/images/fancy-avatar-2.jpg';
+import avatar3 from '../MyAccount/images/fancy-avatar-3.jpg';
+import avatar4 from '../MyAccount/images/fancy-avatar-4.jpg';
+import avatar5 from '../MyAccount/images/fancy-avatar-5.jpg';
 
 export type AvatarType = { image: string; backgroundColor: string };
 
 export const avatars: AvatarType[] = [
+  {
+    image: avatar0,
+    backgroundColor: '#F7AC75'
+  },
   {
     image: avatar1,
     backgroundColor: '#F7AC75'

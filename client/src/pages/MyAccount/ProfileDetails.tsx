@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { motion } from 'framer-motion';
+import { HTMLMotionProps, motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -12,6 +12,7 @@ import { Textarea } from '../../components/Textarea';
 import { Icon } from '../../components/Icon';
 import Can from '../../components/Can';
 import { Backdrop } from '../../components/Backdrop';
+import { Avatar } from '../../components/Avatar';
 
 import axios from '../../utils/axios';
 import { CASLAction } from '../../utils/ability.util';
@@ -150,14 +151,13 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 const active = avatarIndex === profileDetailsForm.getValues('avatar');
 
                 return (
-                  <motion.div
+                  <Avatar
+                    image={avatars[avatarIndex].image}
                     onClick={() => handleSelectedAvatar(avatarIndex)}
                     key={avatarIndex}
-                    className={`avatar ${active ? 'active' : ''}`}
-                    style={{ backgroundColor }}>
-                    <img src={image} alt='avatar' />
+                    className={`${active ? 'active' : ''}`}>
                     <Icon icon='checked' color='black' size={10} />
-                  </motion.div>
+                  </Avatar>
                 );
               })}
             </div>
@@ -212,19 +212,18 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
       .avatar {
         position: relative;
-        border-radius: 50%;
         cursor: pointer;
         height: 72px;
         width: 72px;
         box-sizing: border-box;
         display: flex;
 
-        img {
-          border-radius: 50%;
+        .icon {
+          display: none !important;
         }
 
         &.active {
-          outline: 2px solid #c0daff;
+          outline: 2px solid #eee0d3;
 
           :before {
             content: '';
@@ -234,15 +233,16 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            border: 2px solid #c0daff;
+            border: 2px solid var(--primary-brand-sand, #eee0d3);
             position: absolute;
           }
 
           .icon {
+            display: initial !important;
             position: absolute;
             z-index: 4;
             bottom: -8px;
-            background: #c0daff;
+            background: #eee0d3;
             left: 50%;
             transform: translateX(-50%);
             border-radius: 50%;

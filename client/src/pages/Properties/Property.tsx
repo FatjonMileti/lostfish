@@ -1,12 +1,15 @@
 import { styled } from '@mui/system';
-import property from '../MyAccount/images/property.png';
+import React, { HTMLProps, MouseEventHandler } from 'react';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
-import React, { HTMLProps, MouseEventHandler } from 'react';
 import { Label } from '../../components/Label';
 import { Icon } from '../../components/Icon';
+import { Avatar } from '../../components/Avatar';
 
-import { Avatar } from '../HomeLoggedIn/Header';
+import { avatars } from '../HomeLoggedIn/avatars';
+
+import property from '../MyAccount/images/property.png';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;
@@ -59,15 +62,17 @@ export const Property = styled(
             </Typography>
           </div>
 
+          <div className='line' />
+
           <div className='actions-and-potential-matches'>
             <div className='potential-matches'>
               <Typography className='title' variant='body5'>
                 Potential matches
               </Typography>
               <div className='potential-matches-list'>
-                <Avatar avatar='0' />
-                <Avatar avatar='1' />
-                <Avatar avatar='2' />
+                <Avatar image={avatars[0].image} />
+                <Avatar image={avatars[1].image} />
+                <Avatar image={avatars[2].image} />
                 <div className='others-number'>
                   <Typography variant='body4'>+49</Typography>
                 </div>
@@ -137,6 +142,12 @@ export const Property = styled(
 
       .description {
         margin-top: 24px;
+      }
+
+      .line {
+        background: var(--neutral-light-grey, #f3f4f5);
+        height: 1px;
+        align-self: stretch;
       }
 
       .actions-and-potential-matches {

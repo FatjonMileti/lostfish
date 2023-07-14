@@ -23,16 +23,6 @@ const scale = keyframes`
   }
 `;
 
-const scaleOut = keyframes`
-  from {
-    transform: scale(1.1);
-  }
-
-  to {
-    transform: scale(1);
-  }
-`;
-
 const shapeChange = keyframes`
   from {
     clip-path: circle(50% at 125% 50%);
@@ -137,8 +127,6 @@ export const WhatAreYouLookingFor = styled(
             background-image: url(${imLookingForPlace});
             position: absolute;
             left: 0;
-            // animation: ${scaleOut} 0.5s;
-            // animation-fill-mode: forwards;
 
             :hover {
               z-index: 1;
@@ -189,20 +177,16 @@ export const WhatAreYouLookingFor = styled(
           }
 
           &.second {
-            //background-blend-mode: darken;
-
             background-color: ${(props) => avatars[props.avatar].backgroundColor};
-            // background-image: url(${tenantImage});
+
             background-image: url(${(props) => avatars[props.avatar].image});
-            background-size: contain;
-            background-position: center;
+
             background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
 
             position: absolute;
             right: 0;
-
-            // animation: ${scaleOut} 0.5s;
-            // animation-fill-mode: forwards;
 
             :hover {
               z-index: 1;
