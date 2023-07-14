@@ -25,7 +25,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     setLoading(true);
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
-        avatar: avatar
+        avatar: avatar.toString()
       });
       profileStore.set((profile) => ({ ...profile, avatar: avatar.toString() }));
     } catch (err) {
