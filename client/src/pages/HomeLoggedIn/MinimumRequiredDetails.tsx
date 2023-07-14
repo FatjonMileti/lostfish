@@ -91,37 +91,36 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
           transactionType={state.transactionType}
           onTransactionTypeChange={onTransactionTypeChange}
         />
-        <AnimatePresence>
-          {state.transactionType && (
-            <motion.div
-              key='whenDoYouWantToMove'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}>
-              <WhenDoYouWantToMove onWhenChange={onWhenChange} value={state.whenDoYouWantToMove} />
-            </motion.div>
-          )}
 
-          {state.whenDoYouWantToMove && (
-            <motion.div
-              key='areaOfInterest'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}>
-              <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
-            </motion.div>
-          )}
+        {state.transactionType && (
+          <motion.div
+            key='whenDoYouWantToMove'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
+            <WhenDoYouWantToMove onWhenChange={onWhenChange} value={state.whenDoYouWantToMove} />
+          </motion.div>
+        )}
 
-          {state.whenDoYouWantToMove && state.areaOfInterest && (
-            <motion.div
-              key='startMatching'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}>
-              <Button onClick={startMatching}>Start matching</Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {state.whenDoYouWantToMove && (
+          <motion.div
+            key='areaOfInterest'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
+            <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
+          </motion.div>
+        )}
+
+        {state.whenDoYouWantToMove && state.areaOfInterest && (
+          <motion.div
+            key='startMatching'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}>
+            <Button onClick={startMatching}>Start matching</Button>
+          </motion.div>
+        )}
       </div>
     </>
   );

@@ -25,7 +25,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     setLoading(true);
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
-        avatar: avatar
+        avatar: avatar.toString()
       });
       profileStore.set((profile) => ({ ...profile, avatar: avatar.toString() }));
     } catch (err) {
@@ -73,51 +73,45 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       {!criteriaStore.startedMatching && (
         <>
-          <AnimatePresence>
-            {isNaN(parseInt(profileStore.avatar || '')) && (
-              <motion.div
-                key='SelectAvatar'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1
-                }}>
-                <SelectAvatar onSelectAvatar={onSelectAvatar} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {isNaN(parseInt(profileStore.avatar || '')) && (
+            <motion.div
+              key='SelectAvatar'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 1
+              }}>
+              <SelectAvatar onSelectAvatar={onSelectAvatar} />
+            </motion.div>
+          )}
 
-          <AnimatePresence>
-            {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
-              <motion.div
-                key='WhatAreYouLookingFor'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1
-                }}>
-                <WhatAreYouLookingFor
-                  avatar={profileStore.avatar ? parseInt(profileStore.avatar) : 0}
-                  lookingFor={criteriaStore.lookingFor}
-                  onLookingForChange={onLookingForChange}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
+            <motion.div
+              key='WhatAreYouLookingFor'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 1
+              }}>
+              <WhatAreYouLookingFor
+                avatar={profileStore.avatar ? parseInt(profileStore.avatar) : 0}
+                lookingFor={criteriaStore.lookingFor}
+                onLookingForChange={onLookingForChange}
+              />
+            </motion.div>
+          )}
 
-          <AnimatePresence>
-            {!isNaN(parseInt(profileStore.avatar || '')) && !!criteriaStore.lookingFor && (
-              <motion.div
-                key='MinimumRequiredDetails'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1
-                }}>
-                <MinimumRequiredDetails />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {!isNaN(parseInt(profileStore.avatar || '')) && !!criteriaStore.lookingFor && (
+            <motion.div
+              key='MinimumRequiredDetails'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 1
+              }}>
+              <MinimumRequiredDetails />
+            </motion.div>
+          )}
         </>
       )}
 
