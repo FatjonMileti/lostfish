@@ -6,7 +6,9 @@ import ListItemText from '@mui/material/ListItemText';
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import { useGlobalState } from '../../../globalState';
+import { useGlobalState } from '../../../globalState/globalState';
+
+import { useUserStore } from '../../../globalState/user';
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -40,9 +42,7 @@ function stringAvatar(name: string) {
 export const ItemList = (props: { rows: any[]; joinRoom: (roomId?: string) => void }) => {
   const { rows, joinRoom } = props;
 
-  let {
-    user: [user]
-  } = useGlobalState();
+  const user = useUserStore();
 
   const { userDetails } = user;
 

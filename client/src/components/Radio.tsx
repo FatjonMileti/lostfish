@@ -22,6 +22,7 @@ export const Radio = styled(
     border: 2px solid #184d6d;
     border-radius: 50%;
     position: relative;
+    flex-shrink: 0;
 
     input {
       margin: 0;

@@ -10,8 +10,10 @@ import { ItemList } from './components/ItemList';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Compose } from './components/Compose';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import SocketContext from '../../context/SocketContext';
+
+import { useUserStore } from '../../globalState/user';
 
 type Username = string | undefined | null;
 type Room = any | null;
@@ -22,11 +24,9 @@ export const ChatPage = () => {
 
   const [messages, setMessages] = useState<any>([]);
 
-  let {
-    user: [user]
-  } = useGlobalState();
-
   const { socket } = useContext(SocketContext);
+
+  const user = useUserStore();
 
   const { userDetails, auth } = user;
 

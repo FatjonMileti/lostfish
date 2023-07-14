@@ -1,14 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { registerStore, useGlobalState } from './globalState';
-import { UIProvider, useUI } from './context/ui';
+import { registerStore, useGlobalState } from './globalState/globalState';
+import { UIProvider } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
-import Snackbar from '@mui/material/Snackbar';
-import { hideMessage } from './actions/ui';
-import IconButton from '@mui/material/IconButton';
-import { Close } from '@mui/icons-material';
-import Alert from '@mui/material/Alert';
 import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
@@ -34,28 +29,7 @@ import { PropertyApplications } from './pages/Properties/pages/PropertyApplicati
 import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
-const GeneralSnackbar = () => {
-  const UIContext = useUI();
-  if (!UIContext) return null;
-
-  return (
-    <Snackbar
-      open={UIContext.state.isSnackbarOpen}
-      autoHideDuration={4000}
-      // message={UIContext.state.message}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      onClose={hideMessage(UIContext)}
-      action={
-        <IconButton size='small' aria-label='close' color='inherit' onClick={hideMessage(UIContext)}>
-          <Close fontSize='small' />
-        </IconButton>
-      }>
-      <Alert onClose={hideMessage(UIContext)} severity={UIContext.state.severity} sx={{ width: '100%' }}>
-        {UIContext.state.message}
-      </Alert>
-    </Snackbar>
-  );
-};
+import { useUserStore } from './globalState/user';
 
 registerStore(
   'notification',
@@ -67,9 +41,7 @@ registerStore(
 );
 
 function App() {
-  const {
-    user: [user]
-  } = useGlobalState();
+  const user = useUserStore();
 
   const {
     notification: [notification, setNotification]
@@ -108,8 +80,6 @@ function App() {
         <SocketContext.Provider value={value}>
           <UserProvider>
             <UIProvider>
-              <GeneralSnackbar />
-
               <BrowserRouter>
                 <Routes>
                   <Route path='/login' element={<Login />} />
@@ -157,5 +127,4 @@ function App() {
     </>
   );
 }
-
 export default App;

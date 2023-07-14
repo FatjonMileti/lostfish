@@ -87,6 +87,14 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.credit_score_requirements = data.credit_score_requirements;
     }
 
+    if (data.hasOwnProperty('looking_for')) {
+      criteria.looking_for = data.looking_for;
+    }
+
+    if (data.hasOwnProperty('moving_time')) {
+      criteria.moving_time = data.moving_time;
+    }
+
     await criteria.save();
 
     res.status(httpStatus.OK).send(criteria);

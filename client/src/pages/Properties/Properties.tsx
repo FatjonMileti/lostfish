@@ -5,13 +5,15 @@ import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState';
+import { useGlobalState } from '../../globalState/globalState';
 import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
 import axios from '../../utils/axios';
 import { Tab, Tabs } from '../../components/Tab';
 import { Property } from './Property';
 import { NewProperty } from './NewProperty';
+
+import { useUserStore } from '../../globalState/user';
 
 const state: IGridState = {
   loading: true,
@@ -38,9 +40,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const tabIndex = ['published', 'draft'].indexOf(list.search || '');
   const setTabIndex = (i: number) => setList((list) => ({ ...list, search: ['published', 'draft'][i] }));
 
-  const {
-    user: [{ auth }]
-  } = useGlobalState();
+  const { auth } = useUserStore();
 
   React.useEffect(() => {
     getAssets();

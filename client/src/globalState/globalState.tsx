@@ -18,15 +18,16 @@ const GlobalStateContext = React.createContext(defaultValue);
 export const useGlobalState = () => React.useContext(GlobalStateContext);
 
 let storages: { [key: string]: Storage } = {};
-export const registerStore = (name: string, defaultState: any, config: Storage['config'] | void) => {
+
+export function registerStore<S>(name: string, defaultState: S, config: Storage['config'] | void) {
   storages[name] = {
     name: name,
     defaultState,
     useState:
-      (config?.persist && ((defaultState: any) => usePersistedState(defaultState, name, config.storage))) ||
+      (config?.persist && ((defaultState: S) => usePersistedState(defaultState, name, config.storage))) ||
       React.useState
   };
-};
+}
 
 export const usePersistedState = (
   defaultValue: any,

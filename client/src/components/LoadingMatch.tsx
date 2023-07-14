@@ -13,8 +13,7 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
         duration: 2,
         ease: 'easeInOut',
         times: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4],
-        repeat: Infinity,
-        repeatDelay: 0.5
+        repeat: Infinity
       }}>
       <motion.div
         className='circle-1 circle'
@@ -25,8 +24,7 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
           duration: 2,
           ease: 'easeInOut',
           times: [0, 0.4, 0.45, 0.5],
-          repeat: Infinity,
-          repeatDelay: 0.5
+          repeat: Infinity
         }}>
         <motion.div
           className='inner-circle circle'
@@ -37,8 +35,7 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
             duration: 2,
             ease: 'easeInOut',
             times: [0, 0.45, 0.5],
-            repeat: Infinity,
-            repeatDelay: 0.5
+            repeat: Infinity
           }}
         />
       </motion.div>
@@ -51,8 +48,7 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
           duration: 2,
           ease: 'easeInOut',
           times: [0, 0.4, 0.45, 0.5],
-          repeat: Infinity,
-          repeatDelay: 0.5
+          repeat: Infinity
         }}>
         <motion.div
           className='inner-circle circle'
@@ -63,8 +59,7 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
             duration: 2,
             ease: 'easeInOut',
             times: [0, 0.45, 0.5],
-            repeat: Infinity,
-            repeatDelay: 0.5
+            repeat: Infinity
           }}
         />
       </motion.div>
@@ -75,7 +70,6 @@ export const LoadingMatch = styled(({ className }: HTMLAttributes<HTMLDivElement
     width: 254px;
     aspect-ratio: 1/1;
     position: relative;
-    //border: 1px solid black;
     border-radius: 50%;
     .circle {
       width: 100px;

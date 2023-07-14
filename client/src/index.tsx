@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { GlobalStateProvider } from './globalState';
+import { GlobalStateProvider } from './globalState/globalState';
 import App from './App';
 import './assets/css/Index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
