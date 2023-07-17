@@ -34,9 +34,9 @@ export const ImageGallery = styled(({ className }: HTMLAttributes<HTMLDivElement
   const indexStore = React.useState(0);
 
   return (
-    <div className={className}>
+    <>
       <Modal
-        className='gallery-modal'
+        className={`gallery-modal ${className}`}
         open={modalVisibility}
         onBackdropClick={() => setModalVisibility(false)}>
         <div className='header'>
@@ -47,11 +47,15 @@ export const ImageGallery = styled(({ className }: HTMLAttributes<HTMLDivElement
         </div>
         <Carousel indexStore={indexStore} images={images}></Carousel>
       </Modal>
-      <Button onClick={() => setModalVisibility(true)}>Open Gallery</Button>
-    </div>
+      <Button
+        style={{ position: 'absolute', left: '110px', top: '26px' }}
+        onClick={() => setModalVisibility(true)}>
+        Open Gallery
+      </Button>
+    </>
   );
 })`
-  .gallery-modal {
+  &.gallery-modal {
     width: 100vw;
     height: 100vh;
 
