@@ -18,7 +18,7 @@ export default {
   map_nearby_url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
   map_geocode_url: 'https://maps.googleapis.com/maps/api/geocode/json',
   google_key: process.env.GOOGLE_MAP_KEY,
-  node_env: process.env.NODE_ENV,
+  node_env: process.env.NODE_ENV ?? 'development',
   connection_string: process.env.DB_CONNECTION_STRING,
   offr_io_token: process.env.OFFR_IO_TOKEN,
   front_end_url: process.env.FRONTEND_URL,
