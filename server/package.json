@@ -8,8 +8,8 @@
     "dev": "ts-node ./src/bin/www.ts",
     "dev-brk": "nodemon --inspect-brk ./src/bin/www.ts",
     "docs": "npx apidoc -i ./src/api -o ./docs",
-    "build": "tsc",
-    "start-dist": "node ./dist/src/bin/www.js",
+    "build": "tsc -p tsconfig.json",
+    "start-dist": "node ./dist/bin/www.js",
     "format": "npx prettier -w ./src"
   },
   "nodemonConfig": {

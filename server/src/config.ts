@@ -36,5 +36,15 @@ export default {
     client_secret: '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',
     redirect_uris: ['http://localhost:4000/google/redirect'],
     javascript_origins: ['http://localhost:4000']
+  },
+  docusign: {
+    dsJWTClientId: process.env.DS_JWT_CLIENT_ID || '',
+    appAccountId: process.env.APP_ACCOUNT_ID || '',
+    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID || '',
+    integrationKey: process.env.INTEGRATION_KEY || '',
+    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION || '',
+    dsOauthServer: process.env.DS_OAUTH_SERVER || '',
+    templateId: process.env.TEMPLATE_ID || '',
+    basePath: process.env.BASE_PATH || ''
   }
 };
