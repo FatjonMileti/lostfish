@@ -67,7 +67,7 @@ export const Header = styled(({ className }: HeaderProps) => {
         </div>
 
         <NavLink to='/my-account'>
-          <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)].image : undefined} />
+          <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined} />
         </NavLink>
       </div>
     </div>

@@ -38,13 +38,19 @@ export default {
     javascript_origins: ['http://localhost:4000']
   },
   docusign: {
-    dsJWTClientId: process.env.DS_JWT_CLIENT_ID || '',
-    appAccountId: process.env.APP_ACCOUNT_ID || '',
-    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID || '',
-    integrationKey: process.env.INTEGRATION_KEY || '',
-    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION || '',
-    dsOauthServer: process.env.DS_OAUTH_SERVER || '',
-    templateId: process.env.TEMPLATE_ID || '',
-    basePath: process.env.BASE_PATH || ''
+    dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
+    appAccountId: process.env.APP_ACCOUNT_ID ?? '',
+    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
+    integrationKey: process.env.INTEGRATION_KEY ?? '',
+    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
+    dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
+    templateId: process.env.TEMPLATE_ID ?? '',
+    basePath: process.env.BASE_PATH ?? ''
+  },
+  aws: {
+    region: process.env.AWS_REGION ?? '',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
+    awsBucket: process.env.AWS_BACKET ?? ''
   }
 };

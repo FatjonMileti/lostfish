@@ -25,11 +25,6 @@ if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
   echo no need to update
 else
   git pull
-  bash $WORKING_PATH/server/tools/start.sh
   bash $WORKING_PATH/client/tools/start.sh
-
-  # Only reload caddy in internal testing server
-  #  if [ "$ENVIRONMENT" = "testing" ]; then
-  #    bash $WORKING_PATH/tools/reload-caddy.sh
-  #  fi
+  bash $WORKING_PATH/server/tools/start.sh
 fi

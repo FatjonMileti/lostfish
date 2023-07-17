@@ -34,6 +34,7 @@
     "@types/docusign-esign": "^5.19.0",
     "@types/passport": "^1.0.12",
     "@types/passport-google-oauth20": "^2.0.11",
+    "aws-sdk": "^2.1415.0",
     "axios": "^1.3.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
