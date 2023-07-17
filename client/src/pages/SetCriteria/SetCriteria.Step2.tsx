@@ -13,6 +13,8 @@ import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
 import { Switch } from '../../components/Switch';
 import { Select } from '../../components/Select/Select';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 
 export type Step2FormType = {
   area: number;
@@ -56,6 +58,12 @@ export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
   })
 });
 
+//Slider
+function valuetext(value: number) {
+  return `${value}`;
+}
+//--------//
+
 export interface SetCriteriaStep2 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
   form: UseFormReturn<any>;
@@ -78,6 +86,17 @@ export const SetCriteriaStep2 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
+
+    //Slider
+
+    const [value, setValue] = React.useState<number[]>([80, 130]);
+
+    const handleChange = (event: Event, newValue: number | number[]) => {
+      setValue(newValue as number[]);
+      form.setValue('area', value);
+    };
+
+    //--------//
 
     return (
       <div className={`set-criteria-step-2 ${className}`}>
@@ -169,17 +188,18 @@ export const SetCriteriaStep2 = styled(
               <Typography className='section-title' variant='body4'>
                 Area preferences
               </Typography>
+              {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                {/* <TextField
-                  label='Property area (in sqm)'
-                  {...form.register('area')}
-                  error={!!form.formState.errors.area}
-                  helperText={form.formState.errors.area?.message?.toString()}
-                  type='number'
-                /> */}
-                <Typography className='section-title' variant='body4'>
-                  ///////////Slider component//////////
-                </Typography>
+                <Box sx={{ width: 441 }}>
+                  <Slider
+                    value={value}
+                    min={10}
+                    max={150}
+                    onChange={handleChange}
+                    valueLabelDisplay='on'
+                    valueLabelFormat={valuetext}
+                  />
+                </Box>
               </div>
             </div>
             <div className='section rooms-details-section'>
@@ -190,16 +210,16 @@ export const SetCriteriaStep2 = styled(
                 <Select label='Bedrooms' {...form.register('nrOfBedrooms')}>
                   <option></option>
                   <option value='1'>1</option>
-                  <option value='5'>2</option>
-                  <option value='10'>5</option>
-                  <option value='50'>10</option>
+                  <option value='2'>2</option>
+                  <option value='5'>5</option>
+                  <option value='10'>10</option>
                 </Select>
                 <Select label='Bathrooms' {...form.register('nrOfBathrooms')}>
                   <option></option>
                   <option value='1'>1</option>
-                  <option value='5'>2</option>
-                  <option value='10'>5</option>
-                  <option value='50'>10</option>
+                  <option value='2'>2</option>
+                  <option value='3'>3</option>
+                  <option value='4'>4</option>
                 </Select>
               </div>
             </div>
@@ -423,6 +443,18 @@ export const SetCriteriaStep2 = styled(
               flex-direction: column;
               align-items: flex-start;
               row-gap: 16px;
+            }
+
+            /////Slider Range//////
+
+            .MuiSlider-root {
+              color: #184d6d;
+            }
+
+            .css-nnid7-MuiSlider-valueLabel {
+              color: #184d6d;
+              background-color: #fff;
+              padding: 0px;
             }
           }
 

@@ -8,7 +8,9 @@ import { SetCriteriaStep2, Step2FormType, step2Schema } from './SetCriteria.Step
 import { SetCriteriaStep3, Step3FormType, step3Schema } from './SetCriteria.Step3';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useGlobalState } from '../../globalState';
+import axios from '../../utils/axios';
+
+import { useUserStore } from '../../globalState/user';
 import request from '../../utils/axios';
 
 export interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
@@ -24,9 +26,9 @@ export interface NewCriteriaStateType {
 export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) => {
   const [showModal, setShowModal] = useState(false);
 
-  // const {
-  //   user: [{ auth }]
-  // } = useGlobalState();
+  const { auth } = useUserStore();
+
+  console.log('auth', auth);
 
   const [state, setState] = React.useState<NewCriteriaStateType>({
     currentStep: criteriaId ? 1 : 0,
@@ -55,11 +57,15 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         farmsLand: false,
         parkHomes: false
       },
-      propertyClass: undefined,
-      propertyFeatures: {
-        parksNearby: false,
-        publicTransportNearby: false,
-        shoppingCentersNearby: false
+      propertyClass: {
+        'New home': true,
+        'Retirement home': true,
+        'Shared ownership': true,
+        Auction: true,
+        ////////// propertyFeatures////////////
+        'Parks nearby': true,
+        'Public transport nearby': true,
+        'Shopping centers nearby': true
       }
     },
     resolver: yupResolver(step1Schema),
@@ -90,14 +96,69 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
 
   const step3Form = useForm<Step3FormType>({
     defaultValues: {
-      idealBudget: undefined,
+      idealBudget: [1000, 5000],
       depositInformation: undefined,
-      creditScore: undefined,
-      contactDetails: undefined
+      creditScore: 'Excellent',
+      contractDetails: {
+        guarantor: false,
+        reviewedProperty: false,
+        energyCertificate: false
+      }
     },
     resolver: yupResolver(step3Schema),
     mode: 'all'
   });
+
+  // console.log(step3Form.getValues());
+
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        // step0
+        transaction_type_string: step0Form.getValues('lookingFor'),
+
+        // step1
+        area_of_interest: step1Form.getValues('areaOfInterest'),
+        radius: step1Form.getValues('radius'),
+        property_type: step1Form.getValues('propertyType'),
+        property_preference: [
+          step1Form.getValues('propertyClass.New home') ? ['New home'] : [],
+          step1Form.getValues('propertyClass.Retirement home') ? ['Retirement home'] : [],
+          step1Form.getValues('propertyClass.Shared ownership') ? ['Shared ownership'] : []
+        ].flat(),
+        property_features: [
+          step1Form.getValues('propertyClass.Parks nearby') ? ['Parks nearby'] : [],
+          step1Form.getValues('propertyClass.Public transport nearby') ? ['Public transport nearby'] : [],
+          step1Form.getValues('propertyClass.Shopping centers nearby') ? ['Shopping centers nearby'] : []
+        ].flat(),
+
+        // step2
+        floor_size: step2Form.getValues('area'),
+        room_details: {
+          number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
+          number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
+        },
+        specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key),
+
+        // step 3
+        budget: step3Form.getValues('idealBudget'),
+        depositInformation: step3Form.getValues('depositInformation'),
+        credit_score_requirements: step3Form.getValues('creditScore'),
+        contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key)
+      };
+      const { data } = await axios(auth.access_token).patch(`/api/criteria/${criteriaId}`, payload);
+
+      console.log('response.data: ', data);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  /////-------/////
 
   const setCurrentStep = (currentStep: number): void => {
     setState((state) => ({ ...state, currentStep }));
@@ -127,6 +188,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             form={step1Form}
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
+            criteriaId={criteriaId}
             onDeleteClick={onDeleteClick}
           />
         )}
@@ -150,6 +212,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             setCurrentStep={setCurrentStep}
             criteriaId={criteriaId}
             onDeleteClick={onDeleteClick}
+            handleSubmit={handleSubmit}
           />
         )}
       </Modal>

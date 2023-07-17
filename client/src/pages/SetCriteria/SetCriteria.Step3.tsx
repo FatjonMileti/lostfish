@@ -13,22 +13,38 @@ import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
 import { Select } from '../../components/Select/Select';
 import { Tabs, Tab } from '../../components/Tab';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 
 export type Step3FormType = {
-  idealBudget: number;
+  idealBudget: number[];
   depositInformation: number;
   creditScore: string;
-  contactDetails: string[];
+  contractDetails: {
+    guarantor: boolean;
+    reviewedProperty: boolean;
+    energyCertificate: boolean;
+  };
 };
 
 export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
-  idealBudget: yup.number().required(),
+  idealBudget: yup.array().required(),
   depositInformation: yup.number().required(),
   creditScore: yup.string().required(),
-  contactDetails: yup.array().required()
+  contractDetails: yup.object().shape({
+    guarantor: yup.boolean().required(),
+    reviewedProperty: yup.boolean().required(),
+    energyCertificate: yup.boolean().required()
+  })
 });
 
 type ButtonType = 'guarantor' | 'reviewedProperty' | 'energyCertificate';
+
+//Slider
+function valuetext(value: number) {
+  return `£${value}`;
+}
+//--------//
 
 export interface SetCriteriaStep3 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
   closeModal: () => void;
@@ -37,6 +53,7 @@ export interface SetCriteriaStep3 extends Omit<HTMLProps<HTMLDivElement>, 'form'
   setCurrentStep: (currentStep: number) => void;
   criteriaId?: string;
   onDeleteClick: () => void;
+  handleSubmit: () => void;
 }
 
 export const SetCriteriaStep3 = styled(
@@ -47,17 +64,29 @@ export const SetCriteriaStep3 = styled(
     lookingFor,
     setCurrentStep,
     criteriaId,
-    onDeleteClick
+    onDeleteClick,
+    handleSubmit
   }: SetCriteriaStep3) => {
     React.useEffect(() => {
       form.watch();
     }, []);
 
+    //Slider
+
+    const [value, setValue] = React.useState<number[]>([2000, 5200]);
+
+    const handleChange = (event: Event, newValue: number | number[]) => {
+      setValue(newValue as number[]);
+      form.setValue('idealBudget', value);
+    };
+
+    //--------//
+
     const [activeTab, setActiveTab] = React.useState(0);
     const [selectedButtons, setSelectedButtons] = React.useState<ButtonType[]>([]);
 
     React.useEffect(() => {
-      form.setValue('contactDetails', selectedButtons.length > 0 ? 'selected' : '');
+      form.setValue('contractDetails', selectedButtons);
     }, [selectedButtons]);
 
     return (
@@ -126,12 +155,11 @@ export const SetCriteriaStep3 = styled(
                 },
                 {
                   name: 'Add parameters bellow your ideal credit score',
-                  checked: !isNaN(parseInt(form.getValues('creditScore')))
+                  checked: !!form.getValues('creditScore')
                 },
                 {
                   name: 'Add more contact details',
                   checked: selectedButtons.length > 0
-                  // checked: !isNaN(parseInt(form.getValues('contactDetails')))
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -155,17 +183,18 @@ export const SetCriteriaStep3 = styled(
               <Typography className='section-title' variant='body4'>
                 Budget (pcm)
               </Typography>
+              {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                {/* <TextField
-                  label='Property area (in sqm)'
-                  {...form.register('area')}
-                  error={!!form.formState.errors.area}
-                  helperText={form.formState.errors.area?.message?.toString()}
-                  type='number'
-                /> */}
-                <Typography className='section-title' variant='body4'>
-                  ///////////Slider component//////////
-                </Typography>
+                <Box sx={{ width: 441 }}>
+                  <Slider
+                    value={value}
+                    min={100}
+                    max={6000}
+                    onChange={handleChange}
+                    valueLabelDisplay='on'
+                    valueLabelFormat={valuetext}
+                  />
+                </Box>
               </div>
             </div>
             <div className='section rooms-details-section'>
@@ -176,9 +205,9 @@ export const SetCriteriaStep3 = styled(
                 <Select label='Months payed in advance' {...form.register('depositInformation')}>
                   <option></option>
                   <option value='1'>1</option>
-                  <option value='5'>2</option>
-                  <option value='10'>5</option>
-                  <option value='50'>10</option>
+                  <option value='2'>2</option>
+                  <option value='5'>5</option>
+                  <option value='10'>10</option>
                 </Select>
               </div>
             </div>
@@ -188,9 +217,11 @@ export const SetCriteriaStep3 = styled(
               </Typography>
               <div className='tabs-wrapper'>
                 <Tabs
-                  value={form.getValues('creditScore')}
+                  value={activeTab}
                   onChange={(i: number) => {
-                    form.setValue('creditScore', i);
+                    const creditScores = ['Excellent', 'Good', 'Fair'];
+                    form.setValue('creditScore', creditScores[i]);
+                    setActiveTab(i);
                   }}>
                   <Tab label='Excellent' />
                   <Tab label='Good' />
@@ -207,7 +238,7 @@ export const SetCriteriaStep3 = styled(
             </div>
             <div className='credit-details'>
               <Typography className='section-title' variant='body4'>
-                Contact details
+                Contract details
               </Typography>
               <div className='section-content'>
                 {/* {...form.register('contactDetails')} */}
@@ -287,7 +318,7 @@ export const SetCriteriaStep3 = styled(
             onClick={() => setCurrentStep(2)}>
             back
           </Button>
-          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />} disabled>
+          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />} onClick={handleSubmit}>
             Start matching
           </Button>
         </div>
@@ -442,11 +473,17 @@ export const SetCriteriaStep3 = styled(
             color: #646464;
           }
 
-          &.area-details-section {
-            .section-content {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr 1fr;
-              column-gap: 24px;
+          /////Slider Range//////
+
+         &.area-details-section {
+              .MuiSlider-root {
+                color: #184D6D;
+              }
+
+            .css-nnid7-MuiSlider-valueLabel {
+              color: #184D6D;
+              background-color: #fff;
+              padding: 0px;
             }
           }
 
@@ -469,6 +506,10 @@ export const SetCriteriaStep3 = styled(
               .tabs {
                 border: 1px solid #E7E7E7;
               }
+
+              .active {
+                  background-color: #c0daff;
+                }
             }
 
             width: 441px; 
