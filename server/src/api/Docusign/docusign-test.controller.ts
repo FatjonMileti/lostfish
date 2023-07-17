@@ -1,9 +1,7 @@
 import { Router, Request, Response } from 'express';
 import docusignService from './docusign.service';
 import authorize from '../../middleware/authorize';
-import Envelope from './schemas/envelope';
 const router: Router = Router();
-const jwtConfig = require('./jwtConfig.json');
 
 export class DocusignController {
   public router = router;

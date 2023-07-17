@@ -1,5 +1,6 @@
-import docusign, { EnvelopeDefinition, ProvisioningInformation } from 'docusign-esign';
-const jwtConfig = require('./jwtConfig.json');
+import docusign, { EnvelopeDefinition } from 'docusign-esign';
+import config from '../../config';
+const jwtConfig = config.docusign;
 import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
@@ -10,16 +11,11 @@ import userService from '../User/user.service';
 import createError from 'http-errors';
 import { UserDocument } from '../User/user.interface';
 
-const demoDocsPath = path.resolve(__dirname, './demo_documents');
-const doc2File = 'World_Wide_Corp_Battle_Plan_Trafalgar.docx';
-const doc3File = 'World_Wide_Corp_lorem.pdf';
-
 const SCOPES = ['signature', 'impersonation'];
 
 const getConsent = () => {
   const urlScopes = SCOPES.join('+');
 
-  // Construct consent URL
   // const redirectUri = 'https://developers.docusign.com/platform/auth/consent';
   const redirectUri = 'http://localhost:3000/api/docusign/callback';
   const consentUrl =
@@ -67,43 +63,6 @@ const authenticateDocusign = async () => {
   }
 };
 
-const getArgs = ({
-  apiAccountId,
-  accessToken,
-  basePath,
-  details
-}: {
-  apiAccountId: string;
-  accessToken: string;
-  basePath: string;
-  details: {
-    signerEmail: string;
-    signerName: string;
-    ccEmail: string;
-    ccName: string;
-  };
-}) => {
-  const { signerEmail, signerName, ccEmail, ccName } = details;
-
-  const envelopeArgs = {
-    signerEmail,
-    signerName,
-    ccEmail,
-    ccName,
-    status: 'sent',
-    doc2File: path.resolve(demoDocsPath, doc2File),
-    doc3File: path.resolve(demoDocsPath, doc3File)
-  };
-  const args = {
-    accessToken,
-    basePath,
-    accountId: apiAccountId,
-    envelopeArgs
-  };
-
-  return args;
-};
-
 const getToken = async () => {
   const getLastToken = await DocusignToken.findOne().sort({ created_at: -1 });
   if (getLastToken && Date.now() < new Date(getLastToken.expires_in).getTime()) {
@@ -118,7 +77,7 @@ const getToken = async () => {
       jwtConfig.dsJWTClientId,
       jwtConfig.impersonatedUserGuid,
       ['signature'],
-      fs.readFileSync(path.join(__dirname, '../../tools/docusign/', 'private.key')),
+      fs.readFileSync(path.join(__dirname, '../../../', 'private.key')),
       3600
     );
 
@@ -197,73 +156,74 @@ const sendEnvelope = async (request: Request, response: Response) => {
   try {
     const envelopesApi = await getEnvelopesApi(request);
 
-    // const landlord = await userService.findOne({ _id: response.locals.user_id });
-    // const tenant = await userService.findOne({ _id: request.body.tenant });
-    // if (!landlord || !tenant) {
-    //   throw createError(httpStatus.NOT_FOUND).send({ message: 'User not found' });
-    // }
-    //
-    // const envelope = makeEnvelope(landlord, tenant, request.body.company);
-    //
-    // const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
-    //   envelopeDefinition: envelope
-    // });
-    //
-    // if (results) {
-    //   await Envelope.create({
-    //     envelope_id: results.envelopeId,
-    //     status: results.status,
-    //     status_date_time: results.statusDateTime,
-    //     uri: results.uri,
-    //     land_lord: response.locals.user_id ?? '',
-    //     tenant: request.body.tenant ?? '',
-    //     created_by: response.locals.user_id ?? ''
-    //   });
-    // }
-    //
-    // if (results && results.envelopeId) {
-    //   const viewRequestLandlord = makeRecipientViewRequest(
-    //     `${landlord.first_name} ${landlord.last_name}`,
-    //     landlord.email,
-    //     landlord._id
-    //   );
-    //
-    //   const viewRequestTenant = makeRecipientViewRequest(
-    //     `${tenant.first_name} ${tenant.last_name}`,
-    //     tenant.email,
-    //     tenant._id
-    //   );
-    //
-    //   const landlordResults = await envelopesApi.createRecipientView(
-    //     jwtConfig.appAccountId,
-    //     results.envelopeId,
-    //     {
-    //       recipientViewRequest: viewRequestLandlord
-    //     }
-    //   );
-    //
-    //   const tenantResults = await envelopesApi.createRecipientView(
-    //     jwtConfig.appAccountId,
-    //     results.envelopeId,
-    //     {
-    //       recipientViewRequest: viewRequestTenant
-    //     }
-    //   );
-    //   const existingEnvelope = await Envelope.findOne({ envelope_id: results.envelopeId });
-    //   if (!existingEnvelope) {
-    //     throw createError(httpStatus.NOT_FOUND).send('Envelope not found');
-    //   }
-    //   if (existingEnvelope) {
-    //     existingEnvelope.sign_url_landlord = landlordResults.url ?? '';
-    //     existingEnvelope.sign_url_tenant = tenantResults.url ?? '';
-    //   }
-    //
-    //   await existingEnvelope.save();
-    //
-    //   return response.send('ok');
-    // }
+    const landlord = await userService.findOne({ _id: response.locals.user_id });
+    const tenant = await userService.findOne({ _id: request.body.tenant });
+    if (!landlord || !tenant) {
+      throw createError(httpStatus.NOT_FOUND).send({ message: 'User not found' });
+    }
+
+    const envelope = makeEnvelope(landlord, tenant, request.body.company);
+
+    const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
+      envelopeDefinition: envelope
+    });
+
+    if (results) {
+      await Envelope.create({
+        envelope_id: results.envelopeId,
+        status: results.status,
+        status_date_time: results.statusDateTime,
+        uri: results.uri,
+        land_lord: response.locals.user_id ?? '',
+        tenant: request.body.tenant ?? '',
+        created_by: response.locals.user_id ?? ''
+      });
+    }
+
+    if (results && results.envelopeId) {
+      const viewRequestLandlord = makeRecipientViewRequest(
+        `${landlord.first_name} ${landlord.last_name}`,
+        landlord.email,
+        landlord._id
+      );
+
+      const viewRequestTenant = makeRecipientViewRequest(
+        `${tenant.first_name} ${tenant.last_name}`,
+        tenant.email,
+        tenant._id
+      );
+
+      const landlordResults = await envelopesApi.createRecipientView(
+        jwtConfig.appAccountId,
+        results.envelopeId,
+        {
+          recipientViewRequest: viewRequestLandlord
+        }
+      );
+
+      const tenantResults = await envelopesApi.createRecipientView(
+        jwtConfig.appAccountId,
+        results.envelopeId,
+        {
+          recipientViewRequest: viewRequestTenant
+        }
+      );
+      const existingEnvelope = await Envelope.findOne({ envelope_id: results.envelopeId });
+      if (!existingEnvelope) {
+        throw createError(httpStatus.NOT_FOUND).send('Envelope not found');
+      }
+      if (existingEnvelope) {
+        existingEnvelope.sign_url_landlord = landlordResults.url ?? '';
+        existingEnvelope.sign_url_tenant = tenantResults.url ?? '';
+      }
+
+      await existingEnvelope.save();
+
+      return response.send('ok');
+    }
     response.send('ok');
   } catch (error: any) {
+    console.log(error);
     return response.status(httpStatus.BAD_REQUEST).send({ ...error?.response?.body });
   }
 };
@@ -271,7 +231,6 @@ const sendEnvelope = async (request: Request, response: Response) => {
 export default {
   getConsent,
   authenticateDocusign,
-  getArgs,
   getToken,
   makeRecipientViewRequest,
   getEnvelopesApi,
