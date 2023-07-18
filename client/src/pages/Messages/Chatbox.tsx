@@ -111,7 +111,7 @@ export const Chatbox = styled(
 
             const fromMe = authorId.toString() === user_id.toString();
             const isLastMessageFromAuthor =
-              messageList.findLastIndex((m) => m.sender._id === authorId) === messageIndex;
+              messageList.findLastIndex((m: any) => m.sender._id === authorId) === messageIndex;
 
             const isFirstInGroup =
               !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.sender?._id !== authorId;
