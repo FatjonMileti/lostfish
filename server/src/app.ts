@@ -34,7 +34,7 @@ const mailService = MailService.getInstance();
 
 if (config.node_env === 'development') {
   mailService.createLocalConnection();
-} else if (config.node_env === 'stage') {
+} else if (['stage', 'production'].includes(config.node_env)) {
   mailService.createConnection();
 }
 

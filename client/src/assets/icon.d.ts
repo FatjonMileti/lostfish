@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "star-solid"
   | "bathtub"
   | "double-bed"
   | "ruler"

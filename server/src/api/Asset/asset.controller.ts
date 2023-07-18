@@ -31,6 +31,7 @@ export class AssetController {
       ability(CASLAction.Read, 'Asset'),
       this.findAll
     );
+    this.router.get('/published', authorize(), this.gePublishedApplications);
     this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', authorize(), validateId, this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
@@ -100,6 +101,17 @@ export class AssetController {
    * @apiPermission admin
    */
   private getAssetApplications = this.assetApplicationService.getAssetApplications;
+
+  /**
+   * @api {get} /api/asset/published Get published properties
+   * @apiDescription Get all published properties (Matches example)
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/published
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private gePublishedApplications = this.assetService.findPublishedProperties;
 
   /**
    * @api {get} /api/asset/:id/application Get aset application

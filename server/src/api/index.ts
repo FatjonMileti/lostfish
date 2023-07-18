@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { UserController } from './User/user.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
@@ -14,6 +14,7 @@ import UploadService from '../utils/image';
 import { ProtectedApiController } from './Get/get-data.controller';
 import { CriteriaController } from './Criteria/criteria.controller';
 import { DocusignController } from './Docusign/docusign-test.controller';
+import { S3Controller } from './S3Controller/s3.controller';
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -57,16 +58,14 @@ const router: Router = Router();
  */
 
 const uploadService = UploadService.getInstance();
-// const uploader =
-//   config.node_env === 'development'
-//     ? uploadService.createLocalUploader()
-//     : uploadService.createLiveUploader();
-const uploader = uploadService.createLocalUploader();
-router.post('/upload', authorize(), uploader.array('images'), (req, res) => {
+const publicUploader = uploadService.createPublicUploader();
+const protectedUploader = uploadService.createPrivateUploader();
+
+router.post('/upload', authorize(), publicUploader.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
 
-router.post('/upload-docs', authorize(), uploadDocs.array('images'), (req, res) => {
+router.post('/upload-docs', authorize(), protectedUploader.array('images'), (req, res) => {
   res.status(200).send(req.files);
 });
 
@@ -82,8 +81,10 @@ const notificationController = new NotificationController();
 const attributeController = new AttributeController();
 const conditionController = new ConditionController();
 const docusignController = new DocusignController();
-
+const s3controller = new S3Controller();
 router.use('/v1', protectedController.router);
+
+router.use('/s3', s3controller.router);
 router.use('/docusign', docusignController.router);
 router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);

@@ -10,7 +10,7 @@ import { Backdrop } from '../../components/Backdrop';
 import { Header } from '../HomeLoggedIn/Header';
 import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
-import { Property } from './Property';
+import { Property } from './Property/Property';
 import { NewProperty } from './NewProperty';
 import { useUserStore } from '../../globalState/user';
 
@@ -22,7 +22,7 @@ const state: IGridState = {
   pageSize: 9,
   page: 1,
   rowCount: 0,
-  sort: 'created_at',
+  sort: 'updated_at',
   asc: false,
   selectedIds: [],
   search: '',
@@ -135,8 +135,15 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   }}
                   image={
                     p?.property_images?.[0]
-                      ? `${process.env.REACT_APP_BACK_END_URL}/api/asset/${p._id}/image/${p.property_images[0]?.filename}`
+                      ? `${process.env.REACT_APP_BACK_END_URL}/api/s3/${p.property_images[0]?.key}`
                       : undefined
+                  }
+                  images={
+                    p.property_images.length > 0
+                      ? p.property_images.map(
+                          (image: any) => `${process.env.REACT_APP_BACK_END_URL}/api/s3/${image?.key}`
+                        )
+                      : []
                   }
                 />
               ))}

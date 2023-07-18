@@ -8,8 +8,8 @@
     "dev": "ts-node ./src/bin/www.ts",
     "dev-brk": "nodemon --inspect-brk ./src/bin/www.ts",
     "docs": "npx apidoc -i ./src/api -o ./docs",
-    "build": "tsc",
-    "start-dist": "node ./dist/src/bin/www.js",
+    "build": "tsc -p tsconfig.json",
+    "start-dist": "node ./dist/bin/www.js",
     "format": "npx prettier -w ./src"
   },
   "nodemonConfig": {
@@ -34,6 +34,7 @@
     "@types/docusign-esign": "^5.19.0",
     "@types/passport": "^1.0.12",
     "@types/passport-google-oauth20": "^2.0.11",
+    "aws-sdk": "^2.1415.0",
     "axios": "^1.3.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",

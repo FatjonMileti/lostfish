@@ -7,20 +7,33 @@ import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 import { Carousel } from './Carousel';
 
-import gallery1 from './images/gallery1.png';
-import gallery2 from './images/gallery2.png';
-import gallery3 from './images/gallery3.png';
-import gallery4 from './images/gallery4.png';
+import gallery1 from './images/gallery-1.png';
+import gallery2 from './images/gallery-2.png';
+import gallery3 from './images/gallery-3.png';
+import gallery4 from './images/gallery-4.png';
+import gallery5 from './images/gallery-5.png';
+import gallery6 from './images/gallery-6.png';
+import gallery7 from './images/gallery-7.png';
+import gallery8 from './images/gallery-8.png';
+import gallery9 from './images/gallery-9.png';
+import gallery10 from './images/gallery-10.png';
 
 const images = [
   gallery1,
   gallery2,
   gallery3,
   gallery4,
-  'https://picsum.photos/900/600?random=1',
-  'https://picsum.photos/900/600?random=2',
-  'https://picsum.photos/900/600?random=3',
-  'https://picsum.photos/900/600?random=4'
+  gallery5,
+  gallery6,
+  gallery7,
+  gallery8,
+  gallery9,
+  gallery10
+
+  // 'https://picsum.photos/900/600?random=1',
+  // 'https://picsum.photos/900/600?random=2',
+  // 'https://picsum.photos/900/600?random=3',
+  // 'https://picsum.photos/900/600?random=4'
   // 'https://picsum.photos/900/600?random=1',
   // 'https://picsum.photos/900/600?random=2',
   // 'https://picsum.photos/900/600?random=3',
@@ -34,9 +47,9 @@ export const ImageGallery = styled(({ className }: HTMLAttributes<HTMLDivElement
   const indexStore = React.useState(0);
 
   return (
-    <div className={className}>
+    <>
       <Modal
-        className='gallery-modal'
+        className={`gallery-modal ${className}`}
         open={modalVisibility}
         onBackdropClick={() => setModalVisibility(false)}>
         <div className='header'>
@@ -47,11 +60,15 @@ export const ImageGallery = styled(({ className }: HTMLAttributes<HTMLDivElement
         </div>
         <Carousel indexStore={indexStore} images={images}></Carousel>
       </Modal>
-      <Button onClick={() => setModalVisibility(true)}>Open Gallery</Button>
-    </div>
+      <Button
+        style={{ position: 'absolute', left: '110px', top: '26px' }}
+        onClick={() => setModalVisibility(true)}>
+        Open Gallery
+      </Button>
+    </>
   );
 })`
-  .gallery-modal {
+  &.gallery-modal {
     width: 100vw;
     height: 100vh;
 

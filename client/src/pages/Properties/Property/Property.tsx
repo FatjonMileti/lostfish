@@ -1,30 +1,37 @@
 import { styled } from '@mui/system';
 import React, { HTMLProps, MouseEventHandler } from 'react';
 
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import { Label } from '../../components/Label';
-import { Icon } from '../../components/Icon';
-import { Avatar } from '../../components/Avatar';
+import { Typography } from '../../../components/Typography';
+import { Button } from '../../../components/Button';
+import { Label } from '../../../components/Label';
+import { Icon } from '../../../components/Icon';
+import { Avatar } from '../../../components/Avatar';
 
-import { avatars } from '../HomeLoggedIn/avatars';
+import { avatars } from '../../HomeLoggedIn/avatars';
 
-import property from '../MyAccount/images/property.png';
+import property from '../../MyAccount/images/property.png';
+import { Slider } from './Slider';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;
   status: string;
   viewDetails: MouseEventHandler;
   image?: string;
+  images: string[];
 }
 
 export const Property = styled(
-  ({ className, name = 'Two bedroom apartment for rent', status, viewDetails, image }: PropertyProps) => {
+  ({
+    className,
+    name = 'Two bedroom apartment for rent',
+    status,
+    viewDetails,
+    image,
+    images
+  }: PropertyProps) => {
     return (
       <div className={`property ${className}`}>
-        <div>
-          <img className='property-background-image' alt='property-image' src={image || property} />
-        </div>
+        <Slider images={images.length ? images : [property]} />
 
         <div className='details'>
           <div>
@@ -96,16 +103,6 @@ export const Property = styled(
     position: relative;
 
     background: var(--monochrome-pure-white, #fff);
-
-    .property-background-image {
-      //position: absolute;
-      border-radius: 16px;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1.6 / 1;
-    }
 
     .property-title {
       margin-top: 24px;

@@ -18,7 +18,7 @@ export default {
   map_nearby_url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
   map_geocode_url: 'https://maps.googleapis.com/maps/api/geocode/json',
   google_key: process.env.GOOGLE_MAP_KEY,
-  node_env: process.env.NODE_ENV,
+  node_env: process.env.NODE_ENV ?? 'development',
   connection_string: process.env.DB_CONNECTION_STRING,
   offr_io_token: process.env.OFFR_IO_TOKEN,
   front_end_url: process.env.FRONTEND_URL,
@@ -36,5 +36,21 @@ export default {
     client_secret: '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',
     redirect_uris: ['http://localhost:4000/google/redirect'],
     javascript_origins: ['http://localhost:4000']
+  },
+  docusign: {
+    dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
+    appAccountId: process.env.APP_ACCOUNT_ID ?? '',
+    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
+    integrationKey: process.env.INTEGRATION_KEY ?? '',
+    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
+    dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
+    templateId: process.env.TEMPLATE_ID ?? '',
+    basePath: process.env.BASE_PATH ?? ''
+  },
+  aws: {
+    region: process.env.AWS_REGION ?? '',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
+    awsBucket: process.env.AWS_BACKET ?? ''
   }
 };

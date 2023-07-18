@@ -39,6 +39,7 @@ export const IconButton = styled(
     border-radius: 50%;
     cursor: pointer;
     border: none;
+    height: fit-content;
 
     &.no-background {
       background: none;

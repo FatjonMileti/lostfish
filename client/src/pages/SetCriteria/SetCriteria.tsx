@@ -214,7 +214,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
           />
         )}
       </Modal>
-      <Button style={{ marginTop: '24px' }} onClick={() => setShowModal(true)}>
+      <Button style={{ position: 'absolute', left: '280px', top: '26px' }} onClick={() => setShowModal(true)}>
         Set Criteria
       </Button>
     </>

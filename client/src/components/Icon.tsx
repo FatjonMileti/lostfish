@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 import { IconNames } from '../assets/icon';
 interface IconPropsSpecific extends Omit<IconProps, 'icon'> {
-  icon: string | IconNames;
+  icon: IconNames;
 }
 
 export const Icon = styled(({ size = 24, className = '', ...props }: IconPropsSpecific) => {

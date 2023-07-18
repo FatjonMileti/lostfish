@@ -287,10 +287,7 @@ export const NewPropertyStep2 = styled(
                               }}>
                               <Icon icon='minus' size={11} />
                             </IconButton>
-                            <img
-                              alt='property image'
-                              src={`${config.apiUrl}/api/asset/${propertyId}/image/${image.filename}`}
-                            />
+                            <img alt='property image' src={`${config.apiUrl}/api/s3/${image.key}`} />
                           </div>
                         ))}
 
