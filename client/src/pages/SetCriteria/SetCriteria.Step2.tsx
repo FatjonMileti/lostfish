@@ -17,7 +17,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
 export type Step2FormType = {
-  area: number;
+  area: number[];
   nrOfBedrooms: number;
   nrOfBathrooms: number;
   specificPropertyFeatures: {
@@ -35,7 +35,7 @@ export type Step2FormType = {
 };
 
 export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
-  area: yup.number().min(1).required('Property area is required'),
+  area: yup.array().required(),
   nrOfBedrooms: yup
     .number()
     .transform((value) => (isNaN(value) ? undefined : value))

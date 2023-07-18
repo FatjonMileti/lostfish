@@ -20,13 +20,13 @@ export type Step1FormType = {
   areaOfInterest: string;
   radius?: number;
   propertyType: {
-    detached: boolean;
-    semiDetached: boolean;
-    terraced: boolean;
-    flats: boolean;
-    bungalows: boolean;
-    farmsLand: boolean;
-    parkHomes: boolean;
+    Detached: boolean;
+    'Semi-Detached': boolean;
+    Terraced: boolean;
+    Flats: boolean;
+    Bungalows: boolean;
+    'Farms/Land': boolean;
+    'Park homes': boolean;
   };
   // propertyClass?: string;
   propertyClass?: {
@@ -39,26 +39,20 @@ export type Step1FormType = {
     'Public transport nearby': boolean;
     'Shopping centers nearby': boolean;
   };
-  // propertyFeatures: {
-  //   parksNearby: boolean;
-  //   publicTransportNearby: boolean;
-  //   shoppingCentersNearby: boolean;
-  // };
 };
 
 export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
   radius: yup.number().optional(),
   propertyType: yup.object().shape({
-    detached: yup.boolean().required(),
-    semiDetached: yup.boolean().required(),
-    terraced: yup.boolean().required(),
-    flats: yup.boolean().required(),
-    bungalows: yup.boolean().required(),
-    farmsLand: yup.boolean().required(),
-    parkHomes: yup.boolean().required()
+    Detached: yup.boolean().required(),
+    'Semi-Detached': yup.boolean().required(),
+    Terraced: yup.boolean().required(),
+    Flats: yup.boolean().required(),
+    Bungalows: yup.boolean().required(),
+    'Farms/Land': yup.boolean().required(),
+    'Park homes': yup.boolean().required()
   }),
-  // propertyClass: yup.string().required(),
   propertyClass: yup.object().shape({
     'New home': yup.boolean().required(),
     'Retirement home': yup.boolean().required(),
@@ -69,11 +63,6 @@ export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
     'Public transport nearby': yup.boolean().required(),
     'Shopping centers nearby': yup.boolean().required()
   })
-  // propertyFeatures: yup.object().shape({
-  //   parksNearby: yup.boolean().required(),
-  //   publicTransportNearby: yup.boolean().required(),
-  //   shoppingCentersNearby: yup.boolean().required()
-  // })
 });
 
 export interface SetCriteriaStep1 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
@@ -95,12 +84,6 @@ type PropertyClassType = {
   'Public transport nearby': boolean;
   'Shopping centers nearby': boolean;
 };
-
-// type feautersType = {
-//   'Parks nearby': boolean;
-//   'Public transport nearby': boolean;
-//   'Shopping centers nearby': boolean;
-// };
 
 export const SetCriteriaStep1 = styled(
   ({
@@ -126,8 +109,6 @@ export const SetCriteriaStep1 = styled(
       'Public transport nearby': true,
       'Shopping centers nearby': true
     });
-
-    ///////////Property class///////////
 
     const initialValue: PropertyClassType = {
       'New home': true,
@@ -158,13 +139,6 @@ export const SetCriteriaStep1 = styled(
     React.useEffect(() => {
       form.setValue('propertyClass', initialValue);
     }, []);
-    //////////////
-
-    // const [fActiveTab, setfActiveTab] = React.useState<feautersType>({
-    //   'Parks nearby': false,
-    //   'Public transport nearby': false,
-    //   'Shopping centers nearby': false
-    // });
 
     return (
       <div className={`set-criteria-step-1 ${className}`}>
@@ -230,12 +204,10 @@ export const SetCriteriaStep1 = styled(
                 {
                   name: 'Select the type of property you are looking for',
                   checked: Object.values(form.getValues('propertyType')).includes(true)
-                  // checked: !form.getValues('propertyType')
                 },
                 {
                   name: ' Include or exclude property class',
                   checked: Object.values(activeTab).some((value) => value)
-                  // checked: !!form.getValues('propertyClass')
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -290,8 +262,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.detached')}
-                      checked={!!form.getValues('propertyType').detached}
+                      {...form.register('propertyType.Detached')}
+                      checked={!!form.getValues('propertyType').Detached}
                     />
                     <label htmlFor={id}>Detached</label>
                   </div>
@@ -302,8 +274,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.semiDetached')}
-                      checked={!!form.getValues('propertyType').semiDetached}
+                      {...form.register('propertyType.Semi-Detached')}
+                      checked={!!form.getValues('propertyType')['Semi-Detached']}
                     />
                     <label htmlFor={id}>Semi-Detached</label>
                   </div>
@@ -314,8 +286,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.terraced')}
-                      checked={!!form.getValues('propertyType').terraced}
+                      {...form.register('propertyType.Terraced')}
+                      checked={!!form.getValues('propertyType').Terraced}
                     />
                     <label htmlFor={id}>Terraced</label>
                   </div>
@@ -326,8 +298,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.flats')}
-                      checked={!!form.getValues('propertyType').flats}
+                      {...form.register('propertyType.Flats')}
+                      checked={!!form.getValues('propertyType').Flats}
                     />
                     <label htmlFor={id}>Flats</label>
                   </div>
@@ -338,8 +310,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.bungalows')}
-                      checked={!!form.getValues('propertyType').bungalows}
+                      {...form.register('propertyType.Bungalows')}
+                      checked={!!form.getValues('propertyType').Bungalows}
                     />
                     <label htmlFor={id}>Bungalows</label>
                   </div>
@@ -350,8 +322,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.parkHomes')}
-                      checked={!!form.getValues('propertyType').parkHomes}
+                      {...form.register('propertyType.Park homes')}
+                      checked={!!form.getValues('propertyType')['Park homes']}
                     />
                     <label htmlFor={id}>Park homes</label>
                   </div>
@@ -362,8 +334,8 @@ export const SetCriteriaStep1 = styled(
                     <Switch
                       id={id}
                       size='small'
-                      {...form.register('propertyType.farmsLand')}
-                      checked={!!form.getValues('propertyType').farmsLand}
+                      {...form.register('propertyType.Farms/Land')}
+                      checked={!!form.getValues('propertyType')['Farms/Land']}
                     />
                     <label htmlFor={id}>Farms/Land</label>
                   </div>
@@ -377,33 +349,6 @@ export const SetCriteriaStep1 = styled(
               <div className='section-content'>
                 <Controller
                   render={({ field }) => (
-                    // <>
-                    //   {['New home', 'Retirement home', 'Shared ownership', 'Auction'].map(
-                    //     (propertyPreference: string, propertyPreferenceIndex) => (
-                    //       <div className='tabs-wrapper' key={propertyPreferenceIndex}>
-                    //         <label htmlFor={propertyPreference}>{propertyPreference}:</label>
-                    //         <Tabs
-                    //           value={activeTab[propertyPreference as keyof PropertyClassType] ? 0 : 1}
-                    //           onChange={(i: number) => {
-                    //             const updatedActiveTab = {
-                    //               ...activeTab,
-                    //               [propertyPreference]: i === 0
-                    //             };
-                    //             setActiveTab(updatedActiveTab);
-                    //             if (i === 1) {
-                    //               field.onChange(propertyPreference);
-                    //             } else {
-                    //               field.onChange('');
-                    //             }
-                    //           }}>
-                    //           <Tab label='Include' />
-                    //           <Tab label='Exclude' />
-                    //         </Tabs>
-                    //       </div>
-                    //     )
-                    //   )}
-                    // </>
-
                     <>
                       {['New home', 'Retirement home', 'Shared ownership', 'Auction'].map(
                         (propertyPreference: string, propertyPreferenceIndex) => (
@@ -443,10 +388,6 @@ export const SetCriteriaStep1 = styled(
                               <Tabs
                                 value={activeTab[propertyPreference as keyof PropertyClassType] ? 0 : 1}
                                 onChange={(i: number) =>
-                                  // setActiveTab((activeTab) => ({
-                                  //   ...activeTab,
-                                  //   [propertyPreference]: i === 0 ? false : true
-                                  // }))
                                   handleTabChange(propertyPreference as keyof PropertyClassType, i)
                                 }>
                                 <Tab label='Include' />

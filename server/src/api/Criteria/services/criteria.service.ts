@@ -70,6 +70,14 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.property_type = data.property_type;
     }
 
+    if (req.body.hasOwnProperty('deposit_amount')) {
+      criteria.deposit_amount = data.deposit_amount;
+    }
+
+    if (req.body.hasOwnProperty('contact_details')) {
+      criteria.contact_details = data.contact_details;
+    }
+
     if (data.hasOwnProperty('floor_size')) {
       criteria.floor_size = data.floor_size;
     }

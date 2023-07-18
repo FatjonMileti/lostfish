@@ -28,8 +28,6 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
 
   const { auth } = useUserStore();
 
-  console.log('auth', auth);
-
   const [state, setState] = React.useState<NewCriteriaStateType>({
     currentStep: criteriaId ? 1 : 0,
     loadingProperty: false,
@@ -49,13 +47,13 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
       areaOfInterest: 'E.g. Bristol or BA1 2LR',
       radius: undefined,
       propertyType: {
-        detached: false,
-        semiDetached: false,
-        terraced: false,
-        flats: false,
-        bungalows: false,
-        farmsLand: false,
-        parkHomes: false
+        Detached: false,
+        'Semi-Detached': false,
+        Terraced: false,
+        Flats: false,
+        Bungalows: false,
+        'Farms/Land': false,
+        'Park homes': false
       },
       propertyClass: {
         'New home': true,
@@ -74,7 +72,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
 
   const step2Form = useForm<Step2FormType>({
     defaultValues: {
-      area: 50,
+      area: [50, 100],
       nrOfBedrooms: undefined,
       nrOfBathrooms: undefined,
       specificPropertyFeatures: {
@@ -100,16 +98,14 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
       depositInformation: undefined,
       creditScore: 'Excellent',
       contractDetails: {
-        guarantor: false,
-        reviewedProperty: false,
-        energyCertificate: false
+        Guarantor: false,
+        'Reviewed Property': false,
+        'Energy Certificate': false
       }
     },
     resolver: yupResolver(step3Schema),
     mode: 'all'
   });
-
-  // console.log(step3Form.getValues());
 
   const handleSubmit = async () => {
     try {
@@ -120,7 +116,9 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         // step1
         area_of_interest: step1Form.getValues('areaOfInterest'),
         radius: step1Form.getValues('radius'),
-        property_type: step1Form.getValues('propertyType'),
+        property_type: Object.entries(step1Form.getValues('propertyType'))
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key),
         property_preference: [
           step1Form.getValues('propertyClass.New home') ? ['New home'] : [],
           step1Form.getValues('propertyClass.Retirement home') ? ['Retirement home'] : [],
@@ -133,7 +131,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         ].flat(),
 
         // step2
-        floor_size: step2Form.getValues('area'),
+        floor_size: `${step2Form.getValues('area')[0]} - ${step2Form.getValues('area')[1]}`,
         room_details: {
           number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
           number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
@@ -143,22 +141,22 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
           .map(([key, value]) => key),
 
         // step 3
-        budget: step3Form.getValues('idealBudget'),
-        depositInformation: step3Form.getValues('depositInformation'),
+        budget: `${step3Form.getValues('idealBudget')[0]} - ${step3Form.getValues('idealBudget')[1]}`,
+        deposit_amount: step3Form.getValues('depositInformation'),
         credit_score_requirements: step3Form.getValues('creditScore'),
         contact_details: Object.entries(step3Form.getValues('contractDetails'))
           .filter(([key, value]) => value)
-          .map(([key, value]) => key)
+          .map(([key, value]) => value)
       };
-      const { data } = await axios(auth.access_token).patch(`/api/criteria/${criteriaId}`, payload);
+
+      console.log('payload', payload);
+      const { data } = await axios(auth.access_token).patch(`/api/criteria`, payload);
 
       console.log('response.data: ', data);
     } catch (err) {
       throw err;
     }
   };
-
-  /////-------/////
 
   const setCurrentStep = (currentStep: number): void => {
     setState((state) => ({ ...state, currentStep }));

@@ -21,9 +21,9 @@ export type Step3FormType = {
   depositInformation: number;
   creditScore: string;
   contractDetails: {
-    guarantor: boolean;
-    reviewedProperty: boolean;
-    energyCertificate: boolean;
+    Guarantor: boolean;
+    'Reviewed Property': boolean;
+    'Energy Certificate': boolean;
   };
 };
 
@@ -32,13 +32,13 @@ export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   depositInformation: yup.number().required(),
   creditScore: yup.string().required(),
   contractDetails: yup.object().shape({
-    guarantor: yup.boolean().required(),
-    reviewedProperty: yup.boolean().required(),
-    energyCertificate: yup.boolean().required()
+    Guarantor: yup.boolean().required(),
+    'Reviewed Property': yup.boolean().required(),
+    'Energy Certificate': yup.boolean().required()
   })
 });
 
-type ButtonType = 'guarantor' | 'reviewedProperty' | 'energyCertificate';
+type ButtonType = 'Guarantor' | 'Reviewed Property' | 'Energy Certificate';
 
 //Slider
 function valuetext(value: number) {
@@ -241,24 +241,23 @@ export const SetCriteriaStep3 = styled(
                 Contract details
               </Typography>
               <div className='section-content'>
-                {/* {...form.register('contactDetails')} */}
                 <Button
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('guarantor') ? (
+                    selectedButtons.includes('Guarantor') ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('guarantor') ? 'active' : ''}`}
+                  className={`${selectedButtons.includes('Guarantor') ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('guarantor')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'guarantor'));
+                    if (selectedButtons.includes('Guarantor')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Guarantor'));
                     } else {
-                      setSelectedButtons([...selectedButtons, 'guarantor']);
+                      setSelectedButtons([...selectedButtons, 'Guarantor']);
                     }
                   }}>
                   Guarantor
@@ -267,19 +266,19 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('reviewedProperty') ? (
+                    selectedButtons.includes('Reviewed Property') ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('reviewedProperty') ? 'active' : ''}`}
+                  className={`${selectedButtons.includes('Reviewed Property') ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('reviewedProperty')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'reviewedProperty'));
+                    if (selectedButtons.includes('Reviewed Property')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Reviewed Property'));
                     } else {
-                      setSelectedButtons([...selectedButtons, 'reviewedProperty']);
+                      setSelectedButtons([...selectedButtons, 'Reviewed Property']);
                     }
                   }}>
                   Reviewed property
@@ -288,19 +287,19 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('energyCertificate') ? (
+                    selectedButtons.includes('Energy Certificate') ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('energyCertificate') ? 'active' : ''}`}
+                  className={`${selectedButtons.includes('Energy Certificate') ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('energyCertificate')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'energyCertificate'));
+                    if (selectedButtons.includes('Energy Certificate')) {
+                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Energy Certificate'));
                     } else {
-                      setSelectedButtons([...selectedButtons, 'energyCertificate']);
+                      setSelectedButtons([...selectedButtons, 'Energy Certificate']);
                     }
                   }}>
                   Energy certificate
