@@ -15,7 +15,7 @@ export interface CriteriaDocument extends Document {
     text: string;
   };
   radius: string;
-  property_type: string;
+  property_type: string[];
   property_preferences: string[];
   property_features: string[];
   floor_size: string;
@@ -25,6 +25,8 @@ export interface CriteriaDocument extends Document {
   };
   specific_property_features: string[];
   budget: string;
+  deposit_amount: string;
+  contact_details: string[];
   credit_score_requirements: string;
   transaction_type_string: string;
   floor_size_unit: string;
