@@ -23,6 +23,17 @@ import { useProfileStore } from '../../globalState/profile';
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 
+const submenus: any[] = [
+  { icon: 'dashboard', text: 'Dashboard', link: '' },
+  { icon: 'user', text: 'Profile details', link: '/profile-details' },
+  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
+  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
+  { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
+  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
+  { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
+  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
+];
+
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const profileStore = useProfileStore();
@@ -64,16 +75,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             </div>
           </div>
           <div className='menu-body'>
-            {[
-              { icon: 'dashboard', text: 'Dashboard', link: '' },
-              { icon: 'user', text: 'Profile details', link: '/profile-details' },
-              { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-              { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
-              { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
-              { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
-              { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-              { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
-            ].map(({ icon, text, link }, menuItemIndex) => (
+            {submenus.map(({ icon, text, link }, menuItemIndex) => (
               <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
                 {({ isActive }) => (
                   <motion.div whileTap={{ scale: 0.98 }} className={`menu-item ${isActive ? 'active' : ''}`}>

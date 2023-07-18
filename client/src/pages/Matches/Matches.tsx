@@ -14,23 +14,25 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
     <div className={`matches-page ${className}`}>
       <Header />
       <div className='page-body'>
-        {lookingFor === 'looking for a place' && <MatchesProperties />}
+        {/* {lookingFor === 'looking for a place' && <MatchesProperties />} */}
         <ImageGallery />
         <SetCriteria />
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 })`
   &.matches-page {
-    background: linear-gradient(90deg, #e8edf0 0%, #fce8ef 100%);
+    //background: linear-gradient(90deg, #e8edf0 0%, #fce8ef 100%);
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
     height: 100vh;
 
     display: grid;
-    grid-template-rows: min-content auto min-content;
+    grid-template-rows: min-content auto;
 
     .page-body {
-      padding: 36px;
+      padding: 24px 36px 36px 36px;
+      display: grid;
     }
   }
 `;
