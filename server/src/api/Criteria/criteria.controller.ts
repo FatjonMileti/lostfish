@@ -85,7 +85,9 @@ export class CriteriaController {
  *         "latitude": "",
  *         "longitude": ""
  *     },
- *     "property_type": "Detached",
+ *     "property_type": [ "Detached", "Semi-Detached" ],
+ *     "deposit_amount": "2",
+ *     "contact_details": [ "Guarantor", "Reviewed Property" ],
  *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
  *     "room_details": {
@@ -112,7 +114,9 @@ export class CriteriaController {
  *         "latitude": "",
  *         "longitude": ""
  *     },
- *     "property_type": "Detached",
+ *     "property_type": [ "Detached", "Semi-Detached" ],
+ *     "deposit_amount": "2",
+ *     "contact_details": [ "Guarantor", "Reviewed Property" ],
  *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
  *     "room_details": {
@@ -135,6 +139,8 @@ export class CriteriaController {
  * @apiBody {Number} asset_address.longitude
  * @apiBody {String} radius
  * @apiBody {String[]} property_type
+ * @apiBody {String} deposit_amount
+ * @apiBody {String[]} contact_details
  * @apiBody {String[]} property_class
  * @apiBody {String[]} property_features An array of property features.
  * @apiBody {Number} floor_size

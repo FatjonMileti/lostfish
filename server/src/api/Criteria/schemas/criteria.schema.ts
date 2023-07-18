@@ -20,7 +20,7 @@ const schema = new Schema<CriteriaDocument>({
     text: { type: String }
   },
   radius: String,
-  property_type: String,
+  property_type: [String],
   property_preferences: [String],
   property_features: [String],
   floor_size: String,
@@ -30,6 +30,8 @@ const schema = new Schema<CriteriaDocument>({
   },
   specific_property_features: [String],
   budget: String,
+  deposit_amount: String,
+  contact_details: [String],
   credit_score_requirements: String,
   transaction_type_string: {
     type: String,

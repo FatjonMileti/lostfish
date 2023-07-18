@@ -18,10 +18,10 @@ export class S3Controller {
   }
 
   /**
-   * @api {get} /api/s3/user-docs/:filename Get file of an user
+   * @api {get} /api/s3/:filename Get any file
    * @apiDescription Get file to s3
    * @apiGroup AWS
-   * @apiSampleRequest /api/s3/user-docs/:filename
+   * @apiSampleRequest /api/s3/:filename
    *
    */
   protected getFile = async (request: Request, response: Response) => {
@@ -36,10 +36,10 @@ export class S3Controller {
   };
 
   /**
-   * @api {get} /api/s3/property-images/:filename Get file for properties
+   * @api {get} /api/s3/user-docs/:filename Get file of an user
    * @apiDescription Get file to s3
    * @apiGroup AWS
-   * @apiSampleRequest /api/s3/property-images/:filename
+   * @apiSampleRequest /api/s3/user-docs/:filename
    *
    */
   protected getUserDocs = async (request: Request, response: Response) => {
@@ -54,10 +54,10 @@ export class S3Controller {
   };
 
   /**
-   * @api {get} /api/s3/:filename Get filename
+   * @api {get} /api/s3/property-images/:filename Get file for properties
    * @apiDescription Get file to s3
    * @apiGroup AWS
-   * @apiSampleRequest /api/s3/:filename
+   * @apiSampleRequest /api/s3/property-images/:filename
    *
    */
   protected getPropertyFiles = async (request: Request, response: Response) => {
