@@ -1,11 +1,12 @@
 import CriteriaModel from '../schemas/criteria.schema';
-import { CriteriaDocument } from '../criteria.interface';
+import { CriteriaDocument, LookingForEnum } from '../criteria.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
-import { getCurrentStatusForPost } from '../helpers';
 import googleMapService from '../../../external-services/google-map.service';
 import { CurrencyCode } from '../../Asset/asset.interface';
+import userService from '../../User/user.service';
+import { Role } from '../../User/user.interface';
 
 const createCriteria = async (req: Request, res: Response): Promise<any> => {
   const data: CriteriaDocument = req.body;
@@ -13,9 +14,9 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
   if (data.area_of_interest) {
-    const cordinates = await googleMapService.getCoordinates(data.area_of_interest);
-    if (cordinates.geometry) {
-      const { lat, lng } = cordinates.geometry.location;
+    const coordinates = await googleMapService.getCoordinates(data.area_of_interest);
+    if (coordinates.geometry) {
+      const { lat, lng } = coordinates.geometry.location;
       if (lat && lng) {
         const assetAddress = await googleMapService.getAddress(lat, lng);
 
@@ -27,6 +28,17 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
   }
 
   try {
+    const user = await userService.findOne({ _id: res.locals.user_id });
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'not found' });
+    }
+    if (data.looking_for === LookingForEnum.LOOKING_FOR_PLACE) {
+      user.role = Role.Client;
+    }
+    if (data.looking_for === LookingForEnum.OWN_A_PLACE) {
+      user.role = Role.Landlord;
+    }
+    await user.save();
     const criteria: CriteriaDocument = new CriteriaModel({ ...data });
     await criteria.save();
 

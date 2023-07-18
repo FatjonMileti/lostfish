@@ -60,7 +60,8 @@ export interface UserDocument extends ContactUser {
 export enum Role {
   Admin = 'Admin',
   Agent = 'Agent',
-  Client = 'Client',
+  Client = 'Tenant',
   Solicitor = 'Solicitor',
-  Landlord = 'Landlord'
+  Landlord = 'Landlord',
+  NeWUser = 'NewUser'
 }

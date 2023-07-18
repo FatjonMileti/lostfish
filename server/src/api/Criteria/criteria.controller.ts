@@ -15,9 +15,9 @@ export class CriteriaController {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, authorize(), this.getCriteria);
+    this.router.get('/', authorize(), this.getCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
-    this.router.post(this.path, authorize(), this.createCriteria);
+    this.router.post('/', authorize(), this.createCriteria);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);
   }
 

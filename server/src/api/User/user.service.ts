@@ -1,8 +1,7 @@
 import express, { Request, Response } from 'express';
 import UserModel from './user.schema';
-import { ContactType, UserDocument } from './user.interface';
+import { ContactType, Role, UserDocument } from './user.interface';
 import createError from 'http-errors';
-import { Role } from '../../enums';
 import mongoose from 'mongoose';
 import moment from 'moment';
 import httpStatus from 'http-status';
@@ -14,7 +13,6 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
-import offrIoService from '../../external-services/offr-io.service';
 
 const mailService = MailService.getInstance();
 
@@ -177,9 +175,9 @@ const updateUser = async (req: Request, res: Response) => {
 
 const findOne = async (query: any): Promise<UserDocument | null> => {
   try {
-    return UserModel.findOne({ ...query });
+    return await UserModel.findOne({ ...query });
   } catch (error: any) {
-    throw createError(400, { message: 'error_fetching_user' });
+    throw createError(httpStatus.BAD_REQUEST, { message: 'error_fetching_user' });
   }
 };
 
@@ -205,12 +203,13 @@ const createUser = async (req: Request, res: Response) => {
 
   user.confirmation_token = randomUUID();
   user.contact_type = ContactType.Client;
-  user.address = 'empty for now';
+  user.address = '';
+  user.role = Role.NeWUser;
   try {
-    const contactUser = await offrIoService.createContact(user);
-    if (contactUser) {
-      user.contact_id = contactUser.id;
-    }
+    // const contactUser = await offrIoService.createContact(user);
+    // if (contactUser) {
+    //   user.contact_id = contactUser.id;
+    // }
 
     const userDocument = new UserModel({
       ...user

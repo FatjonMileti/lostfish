@@ -6,9 +6,23 @@ import { ImageGallery } from './ImageGalery';
 import { SetCriteria } from '../SetCriteria/SetCriteria';
 
 import { MatchesProperties } from './MatchesProperties';
+import { useUser } from '../../context/UserProvider';
+import { useLocation } from 'react-router-dom';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const lookingFor = 'looking for a place';
+  const { state } = useLocation();
+
+  /* Since now we change role on first steps and we redirect here
+   * we make sure to get user ability with new role based on user selection
+   * */
+  const { getOne } = useUser();
+
+  React.useEffect(() => {
+    if (state && state.shouldGetUser) {
+      getOne();
+    }
+  }, [state]);
 
   return (
     <div className={`matches-page ${className}`}>

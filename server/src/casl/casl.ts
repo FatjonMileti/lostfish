@@ -11,9 +11,13 @@ function defineAbilitiesFor(role: string): PureAbility<[CASLAction, AppSubjects]
     can(CASLAction.Manage, 'all');
   } else if (role === Role.Client) {
     can(CASLAction.Manage, 'all');
-    // can(CASLAction.Read, 'all');
   } else if (role === Role.Agent) {
-    // can(CASLAction.Read, 'all');
+    can(CASLAction.Manage, 'all');
+  } else if (role === Role.Landlord) {
+    can(CASLAction.Manage, 'all');
+  } else if (role === Role.Client) {
+    can(CASLAction.Manage, 'all');
+  } else if (role === Role.NeWUser) {
     can(CASLAction.Manage, 'all');
   }
 
