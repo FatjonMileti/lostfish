@@ -10,6 +10,9 @@ uploads/
 # Compiled Java class files
 *.class
 
+# package manager lock files (at the repository root)
+package-lock.json
+
 # Compiled Python bytecode
 *.py[cod]
 
