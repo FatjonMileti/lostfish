@@ -1,16 +1,16 @@
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
-import { IconButton } from '../../components/IconButton';
-import { Icon } from '../../components/Icon';
+import { Typography } from '../../../components/Typography';
+import { IconButton } from '../../../components/IconButton';
+import { Icon } from '../../../components/Icon';
 
-import tenantImage from '../Home/tenant.png';
-import imLookingForPlace from '../Home/imLookingForPlace.png';
+import tenantImage from '../../Home/tenant.png';
+import imLookingForPlace from '../../Home/imLookingForPlace.png';
 import { keyframes } from '@emotion/react';
 import React from 'react';
-import { Button } from '../../components/Button';
+import { Button } from '../../../components/Button';
 import { motion } from 'framer-motion';
 
-import { avatars } from './avatars';
+import { avatars } from '../avatars';
 
 // Create the keyframes
 const scale = keyframes`

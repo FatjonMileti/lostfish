@@ -3,8 +3,8 @@ import { styled } from '@mui/system';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Header } from './Header';
-import { WhatAreYouLookingFor } from './WhatAreYouLookingFor';
-import { MinimumRequiredDetails } from './MinimumRequiredDetails';
+import { WhatAreYouLookingFor } from './FirstSetup/WhatAreYouLookingFor';
+import { MinimumRequiredDetails } from './FirstSetup/MinimumRequiredDetails';
 import { SelectAvatar } from '../WellcomeScreen/SelectAvatar';
 import { Backdrop } from '../../components/Backdrop';
 import axios from '../../utils/axios';

@@ -3,16 +3,16 @@ import React, { HTMLAttributes } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-import { Backdrop } from '../../components/Backdrop';
-import { Button } from '../../components/Button';
+import { Backdrop } from '../../../components/Backdrop';
+import { Button } from '../../../components/Button';
 
 import { TransactionType } from './Mrd.TransactionType';
 import { WhenDoYouWantToMove } from './Mrd.WhenDoYouWantToMove';
 import { AreaOfInterest } from './Mrd.AreaOfInterest';
 
-import { useCriteriaStore } from '../../globalState/criteria';
-import { useUserStore } from '../../globalState/user';
-import axios from '../../utils/axios';
+import { useCriteriaStore } from '../../../globalState/criteria';
+import { useUserStore } from '../../../globalState/user';
+import axios from '../../../utils/axios';
 
 type MinimumRequiredDataType = {
   transactionType?: string;

@@ -14,7 +14,7 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
     <div className={`matches-page ${className}`}>
       <Header />
       <div className='page-body'>
-        {/* {lookingFor === 'looking for a place' && <MatchesProperties />} */}
+        {lookingFor === 'looking for a place' && <MatchesProperties />}
         <ImageGallery />
         <SetCriteria />
       </div>

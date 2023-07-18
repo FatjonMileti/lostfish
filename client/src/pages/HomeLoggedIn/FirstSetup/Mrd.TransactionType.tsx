@@ -1,9 +1,9 @@
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../../components/Typography';
 import { motion } from 'framer-motion';
-import { IconButton } from '../../components/IconButton';
-import { Icon } from '../../components/Icon';
-import { Radio } from '../../components/Radio';
+import { IconButton } from '../../../components/IconButton';
+import { Icon } from '../../../components/Icon';
+import { Radio } from '../../../components/Radio';
 import React, { HTMLAttributes } from 'react';
 
 export interface TransactionTypeProps extends HTMLAttributes<HTMLDivElement> {

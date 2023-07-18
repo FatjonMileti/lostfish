@@ -1,9 +1,9 @@
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
-import { TextField } from '../../components/TextField';
+import { Typography } from '../../../components/Typography';
+import { TextField } from '../../../components/TextField';
 import React, { HTMLAttributes } from 'react';
-import axios from '../../utils/axios';
-import { useUserStore } from '../../globalState/user';
+import axios from '../../../utils/axios';
+import { useUserStore } from '../../../globalState/user';
 
 export interface AreaOfInterestProps extends HTMLAttributes<HTMLDivElement> {
   areaOfInterest?: string;
