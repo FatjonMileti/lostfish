@@ -11,7 +11,7 @@ export const createAssetSchemaValidation = joi.object({
   }),
   status_string: joi.string().required(),
   transaction_type_string: joi.string().required(),
-  property_type: joi.string().required(),
+  property_type: joi.string().optional(),
   asset_rent: joi.object({
     rental_amount: joi.number().allow(''),
     rental_frequency: joi.string().allow(''),

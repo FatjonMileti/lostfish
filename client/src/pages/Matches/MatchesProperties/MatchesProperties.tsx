@@ -54,7 +54,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   }, []);
 
   const getProperties = async () => {
-    const { data } = await axios(auth.access_token).get('/api/asset');
+    const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
 
     console.log('properties: ', data);
 

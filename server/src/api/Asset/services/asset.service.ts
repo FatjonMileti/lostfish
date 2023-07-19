@@ -159,7 +159,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (data.hasOwnProperty('status_string')) {
-      asset.status_string = getCurrentStatusForPost(req.body.status_string);
+      asset.status_string = data.status_string;
     }
 
     if (req.body.hasOwnProperty('transaction_type_string')) {

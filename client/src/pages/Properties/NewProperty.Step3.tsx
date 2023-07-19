@@ -59,6 +59,7 @@ export interface NewPropertyStep3props extends Omit<HTMLProps<HTMLDivElement>, '
   setCurrentStep: (currentStep: number) => void;
   propertyId?: string;
   onDeleteClick: () => void;
+  startMatching: () => void;
 }
 
 export const NewPropertyStep3 = styled(
@@ -70,7 +71,8 @@ export const NewPropertyStep3 = styled(
     lookingFor,
     setCurrentStep,
     propertyId,
-    onDeleteClick
+    onDeleteClick,
+    startMatching
   }: NewPropertyStep3props) => {
     React.useEffect(() => {
       form.watch();
@@ -301,7 +303,11 @@ export const NewPropertyStep3 = styled(
             onClick={() => setCurrentStep(2)}>
             back
           </Button>
-          <Button size='large' endIcon={<Icon icon='arrow-right-1' size={12} />} disabled>
+          <Button
+            size='large'
+            endIcon={<Icon icon='arrow-right-1' size={12} />}
+            disabled={!form.formState.isValid}
+            onClick={startMatching}>
             Start matching
           </Button>
         </div>
