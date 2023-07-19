@@ -1,7 +1,7 @@
 import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { CriteriaDocument } from '../criteria.interface';
+import { CriteriaDocument, LookingForEnum } from '../criteria.interface';
 
 const schema = new Schema<CriteriaDocument>({
   area_of_interest: String,
@@ -39,7 +39,7 @@ const schema = new Schema<CriteriaDocument>({
   },
   floor_size_unit: String,
   currency_code: String,
-  looking_for: String,
+  looking_for: { type: String, enum: LookingForEnum },
   moving_time: String,
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },

@@ -32,6 +32,7 @@ import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter
 import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
+import { Agreement } from './pages/Agreement/Agreement';
 
 registerStore(
   'notification',
@@ -103,6 +104,7 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path='/login' element={<Login />} />
+                  <Route path='/agreement' element={<Agreement />} />
                   <Route path='/components' element={<PreviewComponents />} />
                   <Route path='/about' element={<About />} />
                   <Route path='/mission' element={<Mission />} />

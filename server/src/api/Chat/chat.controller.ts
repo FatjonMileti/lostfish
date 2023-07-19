@@ -1,9 +1,6 @@
 import express, { Router } from 'express';
-import chatService from './chat.service';
 import roomService from './room.service';
 import { ChatDocument } from './chat.interface';
-import { Role } from '../../enums';
-import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
 import MessageModel from './schemas/message.schema';

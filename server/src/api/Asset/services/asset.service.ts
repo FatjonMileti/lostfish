@@ -52,11 +52,11 @@ const findAll = async (req: Request, res: Response) => {
       populate: [
         {
           path: 'created_by',
-          select: ['email', 'username', 'firstName', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name']
         },
         {
           path: 'edited_by',
-          select: ['email', 'username', 'firstName', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name']
         }
       ]
     });
@@ -332,7 +332,19 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   };
 
   try {
-    const response = await AssetModel.find(query, { property_images: 0 });
+    const response = await AssetModel.paginate(query, {
+      ...res.locals.paging_options,
+      populate: [
+        {
+          path: 'created_by',
+          select: ['email', 'username', 'first_name', 'last_name']
+        },
+        {
+          path: 'edited_by',
+          select: ['email', 'username', 'first_name', 'last_name']
+        }
+      ]
+    });
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {

@@ -21,11 +21,16 @@ export default class UploadService {
 
   private constructor() {}
 
-  static getInstance() {
+  static getInstance(): UploadService {
     if (!UploadService.instance) {
       UploadService.instance = new UploadService();
     }
     return UploadService.instance;
+  }
+
+  createLocalUploader(): Multer {
+    this.uploader = multer({ dest: 'uploads/asset-images' });
+    return this.uploader;
   }
 
   createPublicUploader(): Multer {

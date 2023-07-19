@@ -1,5 +1,10 @@
 import { Document, ObjectId } from 'mongoose';
 
+export type LookingForType = 'I’m looking for a place' | 'I own a place';
+export enum LookingForEnum {
+  LOOKING_FOR_PLACE = 'I’m looking for a place',
+  OWN_A_PLACE = 'I own a place'
+}
 export interface CriteriaDocument extends Document {
   area_of_interest: string;
   asset_address: {
@@ -31,7 +36,7 @@ export interface CriteriaDocument extends Document {
   transaction_type_string: string;
   floor_size_unit: string;
   currency_code: string;
-  looking_for: string;
+  looking_for: LookingForEnum;
   moving_time: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;

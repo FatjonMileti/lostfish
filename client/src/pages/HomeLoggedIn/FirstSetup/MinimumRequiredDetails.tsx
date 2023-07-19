@@ -78,7 +78,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setLoading(false);
     criteriaStore.set({ startedMatching: true });
 
-    navigate('/matches');
+    navigate('/matches', { state: { shouldGetUser: true } });
   };
 
   return (

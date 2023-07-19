@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { UserController } from './User/user.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
@@ -8,8 +8,6 @@ import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
 import { AccountController } from './Account/account.controller';
 import authorize from '../middleware/authorize';
-import { uploadDocs } from '../app';
-import config from '../config';
 import UploadService from '../utils/image';
 import { ProtectedApiController } from './Get/get-data.controller';
 import { CriteriaController } from './Criteria/criteria.controller';
