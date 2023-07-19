@@ -16,27 +16,61 @@ import { avatars } from '../HomeLoggedIn/avatars';
 
 import { Label } from '../../components/Label';
 import { Avatar } from '../../components/Avatar';
-import { Button } from '../../components/Button';
+import axios from '../../utils/axios';
+import { useUserStore } from '../../globalState/user';
+import { useCriteriaStore } from '../../globalState/criteria';
 
-const properties = [
-  { images: [propertyImage1], avatar: avatars[0].image },
-  { images: [propertyImage2], avatar: avatars[1].image },
-  { images: [propertyImage3], avatar: avatars[2].image },
-  { images: [propertyImage4], avatar: avatars[3].image }
-];
+// const properties = [
+//   { images: [propertyImage1], avatar: avatars[0].image },
+//   { images: [propertyImage2], avatar: avatars[1].image },
+//   { images: [propertyImage3], avatar: avatars[2].image },
+//   { images: [propertyImage4], avatar: avatars[3].image }
+// ];
+
+interface PropertyType {
+  property_images: any[];
+  area_of_interest: string;
+  room_details: {
+    number_of_bathrooms: string;
+    number_of_bedrooms: string;
+  };
+  asset_rent: {
+    rental_amount?: string;
+  };
+}
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
+  const [properties, setProperties] = React.useState<PropertyType[]>([]);
+
+  const { auth } = useUserStore();
+
+  const criteriaStore = useCriteriaStore();
+
+  React.useEffect(() => {
+    getProperties();
+  }, []);
+
+  const getProperties = async () => {
+    const { data } = await axios(auth.access_token).get('/api/asset');
+
+    console.log('properties: ', data);
+
+    setProperties(data.docs);
+  };
+
   const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % properties?.length));
-  const previous = () => setActiveSlide((activeSlide) => Math.abs((activeSlide - 1) % properties?.length));
+  const previous = () => {
+    activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
+  };
 
   return (
     <div className={`${className}`}>
       <div>
         <Typography>
-          Matching with <span className='matching-with'>buyers in Bristol +</span>
+          Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
         </Typography>
         <Typography variant='body5' className='sub-title'>
           Displaying 1240 matches. Enter more details to refine your search.
@@ -66,13 +100,14 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
             </Label>
           </div>
           <div className='slides-wrapper'>
-            {properties.map(({ images, avatar }, propertyIndex) => {
+            {properties.map((property, propertyIndex) => {
+              const property_images: any = property?.property_images;
               return (
                 <MatchedSlide
                   key={propertyIndex}
                   className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={images[0]}
-                  avatar={avatar}
+                  image={`${process.env.REACT_APP_BACK_END_URL}/api/s3/${property_images[0]?.key}`}
+                  avatar={''}
                   animate={{
                     x:
                       propertyIndex < activeSlide
@@ -83,27 +118,36 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                     opacity: propertyIndex === activeSlide ? 1 : 0.5
                   }}
                   transition={{ ease: 'easeOut', duration: 0.5 }}
+                  areaOfInterest={property.area_of_interest}
+                  numberOfBedrooms={property?.room_details?.number_of_bedrooms}
+                  rentingPrice={property.asset_rent?.rental_amount}
+                  numberOfBathrooms={property?.room_details?.number_of_bathrooms}
                 />
               );
             })}
           </div>
         </div>
         <div className='matches-slider-footer'>
-          <ArrowButton direction='left' hero onClick={previous} />
+          <ArrowButton
+            direction='left'
+            onClick={previous}
+            style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
+            size='large'
+          />
           <div className='match-actions'>
-            <IconButton>
-              <Icon icon='close' />
+            <IconButton className='remove-button' size='large'>
+              <Icon icon='close' size={28} />
             </IconButton>
 
-            <IconButton size='large' inverted>
-              <Icon icon='checked' />
+            <IconButton size='large' inverted className='check-button'>
+              <Icon icon='checked' size={28} />
             </IconButton>
 
-            <IconButton>
-              <Icon icon='star-solid' />
+            <IconButton className='star-button' size='large'>
+              <Icon icon='star-solid' size={28} />
             </IconButton>
           </div>
-          <ArrowButton direction='right' hero onClick={next} />
+          <ArrowButton direction='right' onClick={next} size='large' />
         </div>
       </div>
     </div>
@@ -168,12 +212,39 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       .matches-slider-footer {
         display: flex;
         justify-content: center;
-
+        align-items: center;
         column-gap: 84px;
+
         .match-actions {
           display: flex;
           column-gap: 24px;
           align-items: center;
+
+          .star-button {
+            padding: 16px;
+            border: 2px solid #0d2a38;
+            :hover {
+              border: 2px solid white;
+              background-color: white;
+            }
+          }
+
+          .remove-button {
+            padding: 16px;
+            border: 2px solid #0d2a38;
+            :hover {
+              border: 2px solid white;
+              background-color: white;
+            }
+          }
+
+          .check-button {
+            padding: 30px;
+            :hover {
+              background-color: #0d2a38;
+              color: white;
+            }
+          }
         }
       }
     }
@@ -192,47 +263,78 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   image: string;
   avatar: string;
+  areaOfInterest?: string;
+  numberOfBedrooms?: string;
+  numberOfBathrooms?: string;
+  rentingPrice?: string;
 }
 
-const MatchedSlide = styled(({ className, image, avatar, ...rest }: MatchedSlideProps) => {
-  return (
-    <motion.div className={`match-property-slide ${className}`} {...rest}>
-      <div className='slide-header'>
-        <Avatar image={avatar} />
-        <Typography variant='body4'>Nancy Jones • 34%</Typography>
-      </div>
-      <div className='slide-footer'>
-        <div className='left-part'>
-          <Typography className='property-name'>Two bedroom apartment for rent</Typography>
-          <div className='property-details'>
-            <div className='detail'>
-              <Icon icon='location' />
-              <Typography variant='body5'>Bristol, UK</Typography>
-            </div>
-            •
-            <div className='detail'>
-              <Icon icon='banknote' />
-              <Typography variant='body5'>£1,150 PCM</Typography>
-            </div>
-            •
-            <div className='detail'>
-              <Icon icon='double-bed' />
-              <Typography variant='body5'>2</Typography>
-            </div>
-            •
-            <div className='detail'>
-              <Icon icon='bathtub' />
-              <Typography variant='body5'>1</Typography>
+const MatchedSlide = styled(
+  ({
+    className,
+    image,
+    avatar,
+    areaOfInterest = '',
+    numberOfBedrooms = '',
+    numberOfBathrooms = '',
+    rentingPrice = '',
+    ...rest
+  }: MatchedSlideProps) => {
+    const numberOfBedroomsWord =
+      {
+        '1': 'One',
+        '2': 'Two',
+        '3': 'Three',
+        '4': 'Four',
+        '5': 'Five',
+        '6': 'Six',
+        '7': 'Seven',
+        '8': 'Eight',
+        '9': 'Nine',
+        '10': 'Ten'
+      }[numberOfBedrooms] || numberOfBedrooms;
+
+    return (
+      <motion.div className={`match-property-slide ${className}`} {...rest}>
+        <div className='slide-header'>
+          <Avatar image={avatar} />
+          <Typography variant='body4'>Nancy Jones • 34%</Typography>
+        </div>
+        <div className='slide-footer'>
+          <div className='left-part'>
+            <Typography className='property-name'>
+              {numberOfBedroomsWord} bedroom apartment for rent
+            </Typography>
+            <div className='property-details'>
+              <div className='detail'>
+                <Icon icon='location' />
+                <Typography variant='body5'>{areaOfInterest}</Typography>
+              </div>
+              •
+              <div className='detail'>
+                <Icon icon='banknote' />
+                <Typography variant='body5'>£{rentingPrice?.toLocaleString()} PCM</Typography>
+              </div>
+              •
+              <div className='detail'>
+                <Icon icon='double-bed' />
+                <Typography variant='body5'>{numberOfBedrooms}</Typography>
+              </div>
+              •
+              <div className='detail'>
+                <Icon icon='bathtub' />
+                <Typography variant='body5'>{numberOfBathrooms}</Typography>
+              </div>
             </div>
           </div>
+          <Label variant='secondary' inverted>
+            View property
+          </Label>
         </div>
-        <Label variant='secondary' inverted>
-          View property
-        </Label>
-      </div>
-    </motion.div>
-  );
-})`
+      </motion.div>
+    );
+  }
+)`
   &.match-property-slide {
     width: 672px;
     height: 452px;
