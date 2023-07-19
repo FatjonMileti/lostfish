@@ -44,7 +44,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
 
   const step1Form = useForm<Step1FormType>({
     defaultValues: {
-      areaOfInterest: 'E.g. Bristol or BA1 2LR',
+      areaOfInterest: '',
       radius: undefined,
       propertyType: {
         Detached: false,
@@ -107,6 +107,75 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
     mode: 'all'
   });
 
+  React.useEffect(() => {
+    loadCriteria();
+  }, []);
+  const loadCriteria = async () => {
+    try {
+      const { data } = await request(auth.access_token).get('/api/criteria');
+
+      console.log('criteria: ', data);
+
+      // step 0
+      step0Form.setValue('lookingFor', data.transaction_type_string);
+
+      // step 1
+      step1Form.setValue('areaOfInterest', data.area_of_interest);
+      step1Form.setValue('radius', data.radius);
+
+      data.property_type.map((type: keyof Step1FormType['propertyType']) => {
+        step1Form.setValue(`propertyType.${type}`, true);
+      });
+
+      let value = step1Form.getValues('propertyClass');
+
+      data.property_preference.map((type: keyof Step1FormType['propertyClass']) => {
+        value[type] = true;
+      });
+
+      step1Form.setValue('propertyClass', value);
+
+      // step1Form.setValue('propertyPreferences', data.property_preference);
+
+      // step1Form.setValue('propertyFeatures.parksNearby', data.property_features.includes('Parks Nearby'));
+      // step1Form.setValue(
+      //   'propertyFeatures.publicTransportNearby',
+      //   data.property_features.includes('Public transport nearby')
+      // );
+      // step1Form.setValue(
+      //   'propertyFeatures.shoppingCentersNearby',
+      //   data.property_features.includes('Shopping centers nearby')
+      // );
+
+      // step2
+      // step2Form.setValue('area', data.floor_size);
+      // step2Form.setValue('nrOfBedrooms', data.room_details.number_of_bedrooms);
+      // step2Form.setValue('nrOfBathrooms', data.room_details.number_of_bathrooms);
+      // step2Form.setValue(
+      //   'specificPropertyFeatures',
+      //   data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
+      //     acc[spf] = true;
+      //     return acc;
+      //   }, {})
+      // );
+      // step2Form.setValue('propertyImages', data.property_images);
+      // step 3
+      // step3Form.setValue('rentingPrice', data.asset_rent.rental_amount);
+      // step3Form.setValue('paymentFrequency', data.asset_rent.rental_frequency);
+      // step3Form.setValue('depositAmount', data.asset_rent.deposit_amount || undefined);
+      // step3Form.setValue('creditScoreRequirements', data.credit_score_requirements);
+      // step3Form.setValue(
+      //   'contractDetails',
+      //   data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+      //     acc[cd] = true;
+      //     return acc;
+      //   }, {})
+      // );
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const payload = {
@@ -162,10 +231,6 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
     setState((state) => ({ ...state, currentStep }));
   };
 
-  const onDeleteClick = () => {
-    setState((state) => ({ ...state, deletePropertyConfirmationModal: true }));
-  };
-
   return (
     <>
       <Modal
@@ -187,7 +252,6 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
             criteriaId={criteriaId}
-            onDeleteClick={onDeleteClick}
           />
         )}
 
@@ -198,7 +262,6 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
             criteriaId={criteriaId}
-            onDeleteClick={onDeleteClick}
           />
         )}
 
@@ -209,12 +272,14 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
             lookingFor={step0Form.getValues('lookingFor')}
             setCurrentStep={setCurrentStep}
             criteriaId={criteriaId}
-            onDeleteClick={onDeleteClick}
             handleSubmit={handleSubmit}
           />
         )}
       </Modal>
-      <Button style={{ position: 'absolute', left: '280px', top: '26px' }} onClick={() => setShowModal(true)}>
+      <Button
+        size='small'
+        style={{ position: 'absolute', left: '280px', top: '26px' }}
+        onClick={() => setShowModal(true)}>
         Set Criteria
       </Button>
     </>

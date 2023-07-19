@@ -70,19 +70,10 @@ export interface SetCriteriaStep2 extends Omit<HTMLProps<HTMLDivElement>, 'form'
   lookingFor: Step0FormType['lookingFor'];
   setCurrentStep: (currentStep: number) => void;
   criteriaId?: string;
-  onDeleteClick: () => void;
 }
 
 export const SetCriteriaStep2 = styled(
-  ({
-    className,
-    closeModal,
-    form,
-    lookingFor,
-    setCurrentStep,
-    criteriaId,
-    onDeleteClick
-  }: SetCriteriaStep2) => {
+  ({ className, closeModal, form, lookingFor, setCurrentStep, criteriaId }: SetCriteriaStep2) => {
     React.useEffect(() => {
       form.watch();
     }, []);
@@ -103,14 +94,6 @@ export const SetCriteriaStep2 = styled(
         <div className='header'>
           <Logo />
           <div className='right-side'>
-            {criteriaId && (
-              <Button
-                className='delete-button'
-                startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}>
-                Delete property
-              </Button>
-            )}
             <IconButton size='large' noBackground onClick={closeModal}>
               <Icon icon='close' size={12} />
             </IconButton>
@@ -296,14 +279,6 @@ export const SetCriteriaStep2 = styled(
       .right-side {
         display: flex;
         column-gap: 32px;
-        .delete-button {
-          color: #e5155a;
-          background-color: white;
-          border: none;
-          .icon {
-            color: #e5155a;
-          }
-        }
       }
     }
 

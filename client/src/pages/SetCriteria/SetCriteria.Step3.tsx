@@ -5,7 +5,7 @@ import { Logo } from '../../components/Logo';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
-import { Controller, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './SetCriteria.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
@@ -52,7 +52,6 @@ export interface SetCriteriaStep3 extends Omit<HTMLProps<HTMLDivElement>, 'form'
   lookingFor: Step0FormType['lookingFor'];
   setCurrentStep: (currentStep: number) => void;
   criteriaId?: string;
-  onDeleteClick: () => void;
   handleSubmit: () => void;
 }
 
@@ -64,7 +63,6 @@ export const SetCriteriaStep3 = styled(
     lookingFor,
     setCurrentStep,
     criteriaId,
-    onDeleteClick,
     handleSubmit
   }: SetCriteriaStep3) => {
     React.useEffect(() => {
@@ -94,14 +92,6 @@ export const SetCriteriaStep3 = styled(
         <div className='header'>
           <Logo />
           <div className='right-side'>
-            {criteriaId && (
-              <Button
-                className='delete-button'
-                startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}>
-                Delete property
-              </Button>
-            )}
             <IconButton size='large' noBackground onClick={closeModal}>
               <Icon icon='close' size={12} />
             </IconButton>
@@ -340,14 +330,6 @@ export const SetCriteriaStep3 = styled(
       .right-side {
         display: flex;
         column-gap: 32px;
-        .delete-button {
-          color: #e5155a;
-          background-color: white;
-          border: none;
-          .icon {
-            color: #e5155a;
-          }
-        }
       }
     }
 
