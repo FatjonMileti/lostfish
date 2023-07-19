@@ -1,17 +1,30 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
+import classNames from 'classnames';
 
 export interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   size?: 'small' | 'medium';
-  variant?: 'tertiary' | 'primary';
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  inverted?: boolean;
 }
 
 export const Label = styled(
-  ({ className, active, size = 'medium', children, variant = 'primary', ...otherProps }: LabelProps) => {
+  ({
+    className,
+    active,
+    size = 'medium',
+    children,
+    variant = 'primary',
+    inverted = false,
+    ...otherProps
+  }: LabelProps) => {
     return (
       <div
-        className={`label ${className} ${active ? 'active' : ''} size-${size} variant-${variant}`}
+        className={classNames([className, 'label', `size-${size}`, `variant-${variant}`], {
+          active,
+          inverted
+        })}
         {...otherProps}>
         {children}
       </div>
@@ -58,6 +71,26 @@ export const Label = styled(
 
       &.size-medium {
         height: 40px;
+      }
+    }
+
+    &.variant-secondary {
+      border: 2px solid #184d6d;
+      height: fit-content;
+      &.inverted {
+        border: 2px solid white;
+        color: white;
+        &:hover {
+          color: #0d2a38;
+          border-bottom: 2px solid white;
+          background-color: white;
+        }
+      }
+
+      &.size-medium {
+        padding: 12px 20px;
+        font-size: 14px;
+        line-height: 20px;
       }
     }
 

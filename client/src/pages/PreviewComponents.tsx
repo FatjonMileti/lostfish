@@ -48,6 +48,10 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Label variant='tertiary' size='small'>
             tertiary small
           </Label>
+
+          <Label inverted size='medium' variant='secondary'>
+            medium secondary inverted
+          </Label>
         </div>
         <div>
           <ArrowButton />

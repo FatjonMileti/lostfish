@@ -1,8 +1,8 @@
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../../components/Typography';
 import { HTMLAttributes } from 'react';
-import { Label } from '../../components/Label';
-import { Icon } from '../../components/Icon';
+import { Label } from '../../../components/Label';
+import { Icon } from '../../../components/Icon';
 
 export interface WhenDoYouWantToMoveProps extends HTMLAttributes<HTMLDivElement> {
   onWhenChange: (when: string) => void;

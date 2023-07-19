@@ -29,7 +29,7 @@ export type Step1FormType = {
     'Park homes': boolean;
   };
   // propertyClass?: string;
-  propertyClass?: {
+  propertyClass: {
     'New home': boolean;
     'Retirement home': boolean;
     'Shared ownership': boolean;
@@ -70,7 +70,6 @@ export interface SetCriteriaStep1 extends Omit<HTMLProps<HTMLDivElement>, 'form'
   form: UseFormReturn<Step1FormType>;
   lookingFor: Step0FormType['lookingFor'];
   setCurrentStep: (currentStep: number) => void;
-  onDeleteClick: () => void;
   criteriaId?: string;
 }
 
@@ -86,15 +85,7 @@ type PropertyClassType = {
 };
 
 export const SetCriteriaStep1 = styled(
-  ({
-    className,
-    closeModal,
-    form,
-    lookingFor,
-    setCurrentStep,
-    criteriaId,
-    onDeleteClick
-  }: SetCriteriaStep1) => {
+  ({ className, closeModal, form, lookingFor, setCurrentStep, criteriaId }: SetCriteriaStep1) => {
     React.useEffect(() => {
       form.watch();
     }, []);
@@ -145,14 +136,6 @@ export const SetCriteriaStep1 = styled(
         <div className='header'>
           <Logo />
           <div className='right-side'>
-            {criteriaId && (
-              <Button
-                className='delete-button'
-                startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}>
-                Delete property
-              </Button>
-            )}
             <IconButton size='large' noBackground onClick={closeModal}>
               <Icon icon='close' size={12} />
             </IconButton>
@@ -431,14 +414,6 @@ export const SetCriteriaStep1 = styled(
       .right-side {
         display: flex;
         column-gap: 32px;
-        .delete-button {
-          color: #e5155a;
-          background-color: white;
-          border: none;
-          .icon {
-            color: #e5155a;
-          }
-        }
       }
     }
 
