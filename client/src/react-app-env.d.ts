@@ -27,7 +27,7 @@ declare interface IGridState {
   selectedIds: string[];
   search?: string;
   filters?: { [key: string]: any };
-  totalDocsUnfiltered: number;
+  totalDocsUnfiltered?: number;
 }
 
 declare global {

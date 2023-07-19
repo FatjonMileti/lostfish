@@ -21,7 +21,7 @@ export default {
   node_env: process.env.NODE_ENV ?? 'development',
   connection_string: process.env.DB_CONNECTION_STRING,
   offr_io_token: process.env.OFFR_IO_TOKEN,
-  front_end_url: process.env.FRONTEND_URL,
+  front_end_url: process.env.FRONTEND_URL ?? '',
   behind_proxy: process.env.BEHIND_PROXY,
   offr_io_api: 'https://demoapi.offr.io/v1',
   pm2InstanceNum: process.env.NODE_APP_INSTANCE ?? '0',
