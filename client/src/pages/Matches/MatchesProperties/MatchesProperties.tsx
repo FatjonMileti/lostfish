@@ -2,23 +2,23 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { HTMLMotionProps, motion } from 'framer-motion';
 
-import { Typography } from '../../components/Typography';
-import { IconButton } from '../../components/IconButton';
-import { Icon } from '../../components/Icon';
-import { ArrowButton } from '../../components/ArrowButton';
+import { Typography } from '../../../components/Typography';
+import { IconButton } from '../../../components/IconButton';
+import { Icon } from '../../../components/Icon';
+import { ArrowButton } from '../../../components/ArrowButton';
 
-import propertyImage1 from './images/gallery1.png';
-import propertyImage2 from './images/gallery2.png';
-import propertyImage3 from './images/gallery3.png';
-import propertyImage4 from './images/gallery-4.png';
+import propertyImage1 from '../images/gallery1.png';
+import propertyImage2 from '../images/gallery2.png';
+import propertyImage3 from '../images/gallery3.png';
+import propertyImage4 from '../images/gallery-4.png';
 
-import { avatars } from '../HomeLoggedIn/avatars';
+import { avatars } from '../../HomeLoggedIn/avatars';
 
-import { Label } from '../../components/Label';
-import { Avatar } from '../../components/Avatar';
-import axios from '../../utils/axios';
-import { useUserStore } from '../../globalState/user';
-import { useCriteriaStore } from '../../globalState/criteria';
+import { Label } from '../../../components/Label';
+import { Avatar } from '../../../components/Avatar';
+import axios from '../../../utils/axios';
+import { useUserStore } from '../../../globalState/user';
+import { useCriteriaStore } from '../../../globalState/criteria';
 
 // const properties = [
 //   { images: [propertyImage1], avatar: avatars[0].image },
@@ -147,7 +147,12 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
               <Icon icon='star-solid' size={28} />
             </IconButton>
           </div>
-          <ArrowButton direction='right' onClick={next} size='large' />
+          <ArrowButton
+            direction='right'
+            onClick={next}
+            size='large'
+            style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
+          />
         </div>
       </div>
     </div>

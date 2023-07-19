@@ -5,7 +5,7 @@ import { Footer } from '../Home/Footer';
 import { ImageGallery } from './ImageGalery';
 import { SetCriteria } from '../SetCriteria/SetCriteria';
 
-import { MatchesProperties } from './MatchesProperties';
+import { MatchesProperties } from './MatchesProperties/MatchesProperties';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const lookingFor = 'looking for a place';
