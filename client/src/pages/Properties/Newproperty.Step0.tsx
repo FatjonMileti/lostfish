@@ -82,12 +82,20 @@ export const NewPropertyStep0 = styled(
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 1 }}
                       className={`looking-for-choice for-buyer ${field.value === 'Sale' ? 'active' : ''}`}
-                      onClick={() => field.onChange({ target: { value: 'Sale' } })}>
+                      onClick={() => {
+                        // field.onChange({ target: { value: 'Sale' } });
+                      }}>
                       <div className='indicators'>
                         <IconButton size='large' noBackground>
                           <Icon icon='credit-card' />
                         </IconButton>
-                        <Radio value='Sale' checked={field.value === 'Sale'} onChange={field.onChange} />
+                        <Radio
+                          value='Sale'
+                          checked={field.value === 'Sale'}
+                          onChange={() => {
+                            // field.onChange
+                          }}
+                        />
                       </div>
 
                       <Typography variant='body4' className='title'>
