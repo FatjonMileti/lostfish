@@ -69,9 +69,6 @@ export const SetCriteriaStep3 = styled(
       form.watch();
     }, []);
 
-    // credit Score
-    const creditScores = ['Excellent', 'Good', 'Fair'];
-    const [activeTab, setActiveTab] = React.useState(creditScores.indexOf(form.getValues('creditScore')));
     //---------//
 
     return (
@@ -194,11 +191,9 @@ export const SetCriteriaStep3 = styled(
               </Typography>
               <div className='tabs-wrapper'>
                 <Tabs
-                  value={activeTab}
+                  value={['Excellent', 'Good', 'Fair'].indexOf(form.getValues('creditScore'))}
                   onChange={(i: number) => {
-                    const creditScores = ['Excellent', 'Good', 'Fair'];
-                    form.setValue('creditScore', creditScores[i]);
-                    setActiveTab(i);
+                    form.setValue('creditScore', ['Excellent', 'Good', 'Fair'][i]);
                   }}>
                   <Tab label='Excellent' />
                   <Tab label='Good' />
