@@ -27,7 +27,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
   const getDocuments = () => {
     const { documents } = profileStore;
     if (documents?.length > 0) {
-      setFileUrl(`${config.apiUrl}/api/s3/${documents[0].value}`);
+      setFileUrl(`${config.apiUrl}/api/file/${documents[0].value}`);
     }
   };
 
@@ -47,7 +47,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
         const formData = new FormData();
 
         formData.append('images', selectedFile);
-        const response = await axios(auth.access_token).post('/api/upload-docs', formData, {
+        const response = await axios(auth.access_token).post('/api/upload/private-docs', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

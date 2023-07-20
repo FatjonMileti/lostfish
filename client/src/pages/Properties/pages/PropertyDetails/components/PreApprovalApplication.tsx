@@ -109,7 +109,7 @@ export const PreApprovalApplication = () => {
             <Typography variant='body5'>{document.type}</Typography>
             <UploadImages
               handleImagesUpload={handleImagesUpload}
-              url='/upload-docs'
+              url='/upload/private-docs'
               multiple={false}
               type={document}
             />

@@ -112,7 +112,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                 <MatchedSlide
                   key={propertyIndex}
                   className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${process.env.REACT_APP_BACK_END_URL}/api/s3/${property_images[0]?.key}`}
+                  image={`${process.env.REACT_APP_BACK_END_URL}/api/file/${property_images[0]?.key}`}
                   avatar={''}
                   animate={{
                     x:

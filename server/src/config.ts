@@ -2,6 +2,8 @@ import * as process from 'process';
 require('dotenv').config();
 
 export default {
+  isDevelopment: process.env.NODE_ENV === 'development',
+  isProduction: ['production', 'UAT'].includes(process.env.NODE_ENV as string),
   mongo: {
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,

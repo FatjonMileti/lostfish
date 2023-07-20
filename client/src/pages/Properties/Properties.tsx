@@ -141,13 +141,13 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   }}
                   image={
                     p?.property_images?.[0]
-                      ? `${process.env.REACT_APP_BACK_END_URL}/api/s3/${p.property_images[0]?.key}`
+                      ? `${process.env.REACT_APP_BACK_END_URL}/api/file/${p.property_images[0]?.key}`
                       : undefined
                   }
                   images={
                     p.property_images.length > 0
                       ? p.property_images.map(
-                          (image: any) => `${process.env.REACT_APP_BACK_END_URL}/api/s3/${image?.key}`
+                          (image: any) => `${process.env.REACT_APP_BACK_END_URL}/api/file/${image?.key}`
                         )
                       : []
                   }
