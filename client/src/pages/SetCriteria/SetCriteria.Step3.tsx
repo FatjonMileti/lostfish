@@ -69,23 +69,10 @@ export const SetCriteriaStep3 = styled(
       form.watch();
     }, []);
 
-    //Slider
-
-    const [value, setValue] = React.useState<number[]>([2000, 5200]);
-
-    const handleChange = (event: Event, newValue: number | number[]) => {
-      setValue(newValue as number[]);
-      form.setValue('idealBudget', value);
-    };
-
-    //--------//
-
-    const [activeTab, setActiveTab] = React.useState(0);
-    const [selectedButtons, setSelectedButtons] = React.useState<ButtonType[]>([]);
-
-    React.useEffect(() => {
-      form.setValue('contractDetails', selectedButtons);
-    }, [selectedButtons]);
+    // credit Score
+    const creditScores = ['Excellent', 'Good', 'Fair'];
+    const [activeTab, setActiveTab] = React.useState(creditScores.indexOf(form.getValues('creditScore')));
+    //---------//
 
     return (
       <div className={`set-criteria-step-3 ${className}`}>
@@ -149,7 +136,7 @@ export const SetCriteriaStep3 = styled(
                 },
                 {
                   name: 'Add more contact details',
-                  checked: selectedButtons.length > 0
+                  checked: !!form.getValues('contractDetails')
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -175,16 +162,16 @@ export const SetCriteriaStep3 = styled(
               </Typography>
               {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                <Box sx={{ width: 441 }}>
+                <div style={{ width: 441 }}>
                   <Slider
-                    value={value}
+                    value={form.getValues('idealBudget')}
                     min={100}
                     max={6000}
-                    onChange={handleChange}
+                    onChange={(_, value) => form.setValue('idealBudget', value)}
                     valueLabelDisplay='on'
                     valueLabelFormat={valuetext}
                   />
-                </Box>
+                </div>
               </div>
             </div>
             <div className='section rooms-details-section'>
@@ -235,20 +222,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Guarantor') ? (
+                    form.getValues('contractDetails').Guarantor ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Guarantor') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails').Guarantor ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Guarantor')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Guarantor'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Guarantor']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      Guarantor: !contractDetails.Guarantor
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Guarantor
                 </Button>
@@ -256,20 +246,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Reviewed Property') ? (
+                    form.getValues('contractDetails')['Reviewed Property'] ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Reviewed Property') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails')['Reviewed Property'] ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Reviewed Property')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Reviewed Property'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Reviewed Property']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      'Reviewed Property': !contractDetails['Reviewed Property']
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Reviewed property
                 </Button>
@@ -277,20 +270,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Energy Certificate') ? (
+                    form.getValues('contractDetails')['Energy Certificate'] ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Energy Certificate') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails')['Energy Certificate'] ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Energy Certificate')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Energy Certificate'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Energy Certificate']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      'Energy Certificate': !contractDetails['Energy Certificate']
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Energy certificate
                 </Button>

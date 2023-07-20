@@ -90,6 +90,10 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.property_features = data.property_features;
     }
 
+    if (data.hasOwnProperty('property_preferences')) {
+      criteria.property_preferences = data.property_preferences;
+    }
+
     if (data.hasOwnProperty('specific_property_features')) {
       criteria.specific_property_features = data.specific_property_features;
     }

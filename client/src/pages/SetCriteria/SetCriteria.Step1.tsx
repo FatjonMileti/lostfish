@@ -28,7 +28,6 @@ export type Step1FormType = {
     'Farms/Land': boolean;
     'Park homes': boolean;
   };
-  // propertyClass?: string;
   propertyClass: {
     'New home': boolean;
     'Retirement home': boolean;
@@ -90,17 +89,6 @@ export const SetCriteriaStep1 = styled(
       form.watch();
     }, []);
 
-    const [activeTab, setActiveTab] = React.useState<PropertyClassType>({
-      'New home': true,
-      'Retirement home': true,
-      'Shared ownership': true,
-      Auction: true,
-      /////////////// propertyFeatures///////////
-      'Parks nearby': true,
-      'Public transport nearby': true,
-      'Shopping centers nearby': true
-    });
-
     const initialValue: PropertyClassType = {
       'New home': true,
       'Retirement home': true,
@@ -111,25 +99,6 @@ export const SetCriteriaStep1 = styled(
       'Public transport nearby': true,
       'Shopping centers nearby': true
     };
-
-    const handleTabChange = (propertyPreference: keyof PropertyClassType, i: number) => {
-      const updatedActiveTab = {
-        ...activeTab,
-        [propertyPreference]: i === 0
-      };
-      setActiveTab(updatedActiveTab);
-
-      const updatedValue: PropertyClassType = {
-        ...activeTab,
-        [propertyPreference]: i === 0 ? true : false
-      };
-
-      form.setValue('propertyClass', updatedValue);
-    };
-
-    React.useEffect(() => {
-      form.setValue('propertyClass', initialValue);
-    }, []);
 
     return (
       <div className={`set-criteria-step-1 ${className}`}>
@@ -190,7 +159,7 @@ export const SetCriteriaStep1 = styled(
                 },
                 {
                   name: ' Include or exclude property class',
-                  checked: Object.values(activeTab).some((value) => value)
+                  checked: Object.values(form.getValues('propertyClass')).includes(true)
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -330,29 +299,34 @@ export const SetCriteriaStep1 = styled(
                 Property class
               </Typography>
               <div className='section-content'>
-                <Controller
-                  render={({ field }) => (
-                    <>
-                      {['New home', 'Retirement home', 'Shared ownership', 'Auction'].map(
-                        (propertyPreference: string, propertyPreferenceIndex) => (
+                {
+                  <>
+                    {['New home', 'Retirement home', 'Shared ownership', 'Auction'].map(
+                      (propertyPreference, propertyPreferenceIndex) =>
+                        ((id: string) => (
                           <div className='tabs-wrapper' key={propertyPreferenceIndex}>
                             <label htmlFor={propertyPreference}>{propertyPreference}:</label>
                             <Tabs
-                              value={activeTab[propertyPreference as keyof PropertyClassType] ? 0 : 1}
-                              onChange={(i: number) =>
-                                handleTabChange(propertyPreference as keyof PropertyClassType, i)
-                              }>
+                              id={id}
+                              value={
+                                form.getValues('propertyClass')[propertyPreference as keyof PropertyClassType]
+                                  ? 0
+                                  : 1
+                              }
+                              onChange={(i: number) => {
+                                form.setValue(
+                                  `propertyClass.${propertyPreference as keyof PropertyClassType}`,
+                                  !i
+                                );
+                              }}>
                               <Tab label='Include' />
                               <Tab label='Exclude' />
                             </Tabs>
                           </div>
-                        )
-                      )}
-                    </>
-                  )}
-                  name='propertyClass'
-                  control={form.control}
-                />
+                        ))(React.useId())
+                    )}
+                  </>
+                }
               </div>
             </div>
             <div className='section property-preferences-section'>
@@ -360,30 +334,34 @@ export const SetCriteriaStep1 = styled(
                 Features
               </Typography>
               <div className='section-content'>
-                <Controller
-                  render={({ field }) => (
-                    <>
-                      {['Parks nearby', 'Public transport nearby', 'Shopping centers nearby'].map(
-                        (propertyPreference: string, propertyPreferenceIndex) =>
-                          ((id: string) => (
-                            <div className='tabs-wrapper' key={propertyPreferenceIndex}>
-                              <label htmlFor={id}>{propertyPreference}:</label>
-                              <Tabs
-                                value={activeTab[propertyPreference as keyof PropertyClassType] ? 0 : 1}
-                                onChange={(i: number) =>
-                                  handleTabChange(propertyPreference as keyof PropertyClassType, i)
-                                }>
-                                <Tab label='Include' />
-                                <Tab label='Exclude' />
-                              </Tabs>
-                            </div>
-                          ))(React.useId())
-                      )}
-                    </>
-                  )}
-                  name='propertyClass'
-                  control={form.control}
-                />
+                {
+                  <>
+                    {['Parks nearby', 'Public transport nearby', 'Shopping centers nearby'].map(
+                      (propertyPreference, propertyPreferenceIndex) =>
+                        ((id: string) => (
+                          <div className='tabs-wrapper' key={propertyPreferenceIndex}>
+                            <label htmlFor={propertyPreference}>{propertyPreference}:</label>
+                            <Tabs
+                              id={id}
+                              value={
+                                form.getValues('propertyClass')[propertyPreference as keyof PropertyClassType]
+                                  ? 0
+                                  : 1
+                              }
+                              onChange={(i: number) => {
+                                form.setValue(
+                                  `propertyClass.${propertyPreference as keyof PropertyClassType}`,
+                                  !i
+                                );
+                              }}>
+                              <Tab label='Include' />
+                              <Tab label='Exclude' />
+                            </Tabs>
+                          </div>
+                        ))(React.useId())
+                    )}
+                  </>
+                }
               </div>
             </div>
           </div>
