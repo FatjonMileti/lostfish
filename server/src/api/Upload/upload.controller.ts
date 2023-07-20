@@ -28,8 +28,8 @@ const filesMapper = (files: any) => {
 export class UploadController {
   public router = router;
 
-  private publicUploader = config.isDevelopment ? localUploader : publics3Uploader;
-  private privateUploader = config.isDevelopment ? localUploader : protectedUploader;
+  private publicUploader = config.uses3Bucket ? publics3Uploader : localUploader;
+  private privateUploader = config.uses3Bucket ? protectedUploader : localUploader;
 
   constructor() {
     this.initializeRoutes();
