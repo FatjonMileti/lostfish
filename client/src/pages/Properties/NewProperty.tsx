@@ -18,6 +18,7 @@ import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 
 import { useUserStore } from '../../globalState/user';
+import { useNavigate } from 'react-router-dom';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -39,6 +40,8 @@ export const NewProperty = styled(
     const [modalVisibility, setModalVisibility] = showStore;
 
     const { auth } = useUserStore();
+
+    const navigate = useNavigate();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       currentStep: propertyId ? 1 : 0,
@@ -263,6 +266,73 @@ export const NewProperty = styled(
       }
     };
 
+    const startMatching = async () => {
+      try {
+        if (state.newImages.length > 0) {
+          const newImagesLinks = await uploadImages(state.newImages);
+          setNewImages([]);
+          step2Form.setValue('propertyImages', [...step2Form.getValues('propertyImages'), ...newImagesLinks]);
+        }
+
+        const payload = {
+          // step0
+          transaction_type_string: step0Form.getValues('lookingFor'),
+
+          // step1
+          area_of_interest: step1Form.getValues('areaOfInterest'),
+          asset_address: {
+            latitude: 51.5072178,
+            longitude: -0.1275862
+          },
+          radius: step1Form.getValues('radius'),
+          property_type: step1Form.getValues('propertyType'),
+          property_preference: step1Form.getValues('propertyPreferences'),
+          property_features: [
+            step1Form.getValues('propertyFeatures.parksNearby') ? ['Parks Nearby'] : [],
+            step1Form.getValues('propertyFeatures.publicTransportNearby') ? ['Public transport nearby'] : [],
+            step1Form.getValues('propertyFeatures.shoppingCentersNearby') ? ['Shopping centers nearby'] : []
+          ].flat(),
+
+          // step2
+          floor_size: step2Form.getValues('area'),
+          room_details: {
+            number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
+            number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
+          },
+          specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
+            .filter(([key, value]) => value)
+            .map(([key, value]) => key),
+          property_images: step2Form.getValues('propertyImages'),
+
+          // step 3
+          asset_rent: {
+            rental_amount: step3Form.getValues('rentingPrice'),
+            rental_frequency: step3Form.getValues('paymentFrequency'),
+            deposit_amount: step3Form.getValues('depositAmount')
+          },
+          credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
+          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+            .filter(([key, value]) => value)
+            .map(([key, value]) => key),
+          status_string: 'Live'
+        };
+
+        console.log('payload', payload);
+
+        const { data } = await (propertyId
+          ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
+          : axios(auth.access_token).post('/api/asset', payload));
+
+        if (!propertyId) {
+          setEditPropertyId(data._id);
+        }
+
+        console.log('response.data: ', data);
+      } catch (err) {
+        throw err;
+      }
+    };
+
     const deleteProperty = async () => {
       await axios(auth.access_token).delete(`/api/asset/${propertyId}`);
     };
@@ -355,6 +425,16 @@ export const NewProperty = styled(
             setCurrentStep={setCurrentStep}
             onDeleteClick={onDeleteClick}
             propertyId={propertyId}
+            startMatching={async () => {
+              setState((state) => ({ ...state, savingProperty: true }));
+              await startMatching();
+
+              await new Promise((resolve) => {
+                setTimeout(resolve, 1000);
+              });
+              setState((state) => ({ ...state, savingProperty: false }));
+              navigate('/matches');
+            }}
           />
         )}
 

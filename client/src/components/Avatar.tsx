@@ -1,11 +1,16 @@
 import { styled } from '@mui/system';
 import { HTMLMotionProps, motion } from 'framer-motion';
+import { Icon } from './Icon';
 
 export interface AvatarProps extends HTMLMotionProps<'div'> {
   image?: string;
 }
 export const Avatar = styled(({ className, ...rest }: AvatarProps) => {
-  return <motion.div className={`avatar ${className}`} {...rest}></motion.div>;
+  return (
+    <motion.div className={`avatar ${className}`} {...rest}>
+      {!rest.image && <Icon icon='user' />}
+    </motion.div>
+  );
 })`
   &.avatar {
     height: 45px;
@@ -17,5 +22,16 @@ export const Avatar = styled(({ className, ...rest }: AvatarProps) => {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    background-color: #f7f1e7;
+
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    .icon {
+      width: 50% !important;
+      height: 50% !important;
+    }
   }
 `;

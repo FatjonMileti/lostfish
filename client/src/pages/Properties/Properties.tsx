@@ -13,6 +13,7 @@ import axios from '../../utils/axios';
 import { Property } from './Property/Property';
 import { NewProperty } from './NewProperty';
 import { useUserStore } from '../../globalState/user';
+import { useLocation } from 'react-router-dom';
 
 const state: IGridState = {
   loading: true,
@@ -38,8 +39,13 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
   const { auth } = useUserStore();
 
+  const queryParams = new URLSearchParams(useLocation().search);
+
   React.useEffect(() => {
     getAssets();
+    if (queryParams.get('newProperty')) {
+      setShowNewPropertyModal(true);
+    }
   }, []);
 
   const getAssets = async () => {

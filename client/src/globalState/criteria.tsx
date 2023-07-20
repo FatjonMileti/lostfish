@@ -21,7 +21,7 @@ export interface CriteriaStoreType {
 
 const criteriaInitialState = {
   lookingFor: undefined,
-  transactionType: undefined,
+  transactionType: 'Rent',
   whenDoYouWantToMove: undefined,
   areaOfInterest: undefined,
   startedMatching: false
