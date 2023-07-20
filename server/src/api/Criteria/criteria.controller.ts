@@ -1,8 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import criteriaService from './services/criteria.service';
 import authorize from '../../middleware/authorize';
 
 import validateId from '../../middleware/object-id.validator';
+import CriteriaSchema from './schemas/criteria.schema';
 
 const router: Router = Router();
 
@@ -16,10 +17,48 @@ export class CriteriaController {
 
   private initializeRoutes() {
     this.router.get('/', authorize(), this.getCriteria);
-    this.router.get('/:id', authorize(), validateId, this.getById);
+
     this.router.post('/', authorize(), this.createCriteria);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);
+    this.router.get('/user-example-matches', authorize(), this.getMatchedUsers);
+    this.router.get('/:id', authorize(), validateId, this.getById);
   }
+
+  /**
+   * @api {get} /api/criteria/user-example-matches Get users matches (Example)
+   * @apiDescription Get user matches
+   * @apiGroup Criteria
+   * @apiSampleRequest /api/criteria/user-example-matches
+   *
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private getMatchedUsers = async (req: Request, res: Response) => {
+    const matchesUsers: any = await CriteriaSchema.paginate(
+      {},
+      {
+        ...res.locals.paging_options,
+        populate: [
+          {
+            path: 'created_by',
+            select: ['email', 'username', 'first_name', 'last_name', 'avatar']
+          }
+        ]
+      }
+    );
+
+    matchesUsers.docs = matchesUsers.docs.map((item: any) => {
+      const { created_by, ...rest } = item.toObject();
+      return {
+        ...created_by,
+        criteria: {
+          ...rest
+        }
+      };
+    });
+
+    res.status(200).send(matchesUsers);
+  };
 
   /**
    * @api {get} /api/criteria Get criteria associated with user
