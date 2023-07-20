@@ -5,6 +5,7 @@ export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
   onBackdropClick?: () => void;
   disableScrollLock?: boolean;
+  closeModal?: () => void;
 }
 
 export const Modal = styled(

@@ -19,6 +19,7 @@ import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useCriteriaStore } from '../../../globalState/criteria';
+import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 
 // const properties = [
 //   { images: [propertyImage1], avatar: avatars[0].image },
@@ -42,8 +43,8 @@ interface PropertyType {
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
-
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
+  const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
 
   const { auth } = useUserStore();
 
@@ -55,9 +56,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   const getProperties = async () => {
     const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
-
-    console.log('properties: ', data);
-
     setProperties(data.docs);
   };
 
@@ -68,6 +66,10 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   return (
     <div className={`${className}`}>
+      <ImproveTrustScoreModal
+        open={improveTrustScoreModalVisibility}
+        closeModal={() => setImproveTrustScoreModalVisibility(false)}
+      />
       <div>
         <Typography>
           Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
@@ -94,7 +96,11 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
               deal without maximum trust score.
             </Typography>
 
-            <Label variant='tertiary' size='medium' className='improve-link'>
+            <Label
+              variant='tertiary'
+              size='medium'
+              className='improve-link'
+              onClick={() => setImproveTrustScoreModalVisibility(true)}>
               Improve trust score
               <Icon icon='arrow-right-1' size={16} />
             </Label>

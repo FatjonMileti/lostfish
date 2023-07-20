@@ -4,33 +4,32 @@ import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { useGlobalState } from '../../globalState/globalState';
 import axios from '../../utils/axios';
 import config from '../../config';
-import { useUser } from '../../context/UserProvider';
 
 import { useUserStore } from '../../globalState/user';
+import { useProfileStore } from '../../globalState/profile';
+import { Backdrop } from '../../components/Backdrop';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [fileUrl, setFileUrl] = React.useState<string | null>(null);
 
-  const { user } = useUser();
+  const [loading, setLoading] = React.useState(false);
+
+  const { userDetails, auth } = useUserStore();
+  const profileStore = useProfileStore();
 
   React.useEffect(() => {
     getDocuments();
-  }, [user]);
+  }, [profileStore]);
 
   const getDocuments = () => {
-    if (user) {
-      const { documents } = user;
-      if (documents?.length > 0) {
-        setFileUrl(`${config.apiUrl}/api/s3/${documents[0].value}`);
-      }
+    const { documents } = profileStore;
+    if (documents?.length > 0) {
+      setFileUrl(`${config.apiUrl}/api/s3/${documents[0].value}`);
     }
   };
-
-  const { userDetails, auth } = useUserStore();
 
   const handleAddDocumentClick = () => {
     if (fileInputRef.current) {
@@ -39,43 +38,54 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files && event.target.files[0];
-    if (selectedFile) {
-      // Handle the selected file
-      const formData = new FormData();
+    try {
+      setLoading(true);
 
-      formData.append('images', selectedFile);
-      const response = await axios(auth.access_token).post('/api/upload-docs', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const selectedFile = event.target.files && event.target.files[0];
+      if (selectedFile) {
+        // Handle the selected file
+        const formData = new FormData();
 
-      if (response.status === 200) {
-        await updateUserDocs([
-          {
-            type: 'Proof of ID',
-            value: response.data[0].key,
-            approved: false
+        formData.append('images', selectedFile);
+        const response = await axios(auth.access_token).post('/api/upload-docs', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
-        ]);
-        const imagePreview = URL.createObjectURL(selectedFile);
-        setFileUrl(imagePreview);
+        });
+
+        if (response.status === 200) {
+          await updateUserDocs([
+            {
+              type: 'Proof of ID',
+              value: response.data[0].key,
+              approved: false
+            }
+          ]);
+          await profileStore.fetchProfile(auth.access_token);
+          const imagePreview = URL.createObjectURL(selectedFile);
+          setFileUrl(imagePreview);
+        }
       }
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateUserDocs = async (data: any[]) => {
-    const response = await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
-      documents: data
-    });
-    if (response.status === 200) {
-      alert('Updated with success!');
+    try {
+      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
+        documents: data
+      });
+    } catch (err) {
+      throw err;
     }
   };
 
   return (
     <div className={`transaction-agreement ${className}`}>
+      <Backdrop open={loading} />
       <div className='body-content'>
         <div className='section'>
           <Typography variant='body4' className='title'>

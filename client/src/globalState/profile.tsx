@@ -2,6 +2,10 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import axios from '../utils/axios';
 
+type DocumentType = {
+  type: string;
+  value: string;
+};
 export interface ProfileStoreType {
   avatar?: string;
   first_name: string;
@@ -9,6 +13,7 @@ export interface ProfileStoreType {
   email: string;
   phone: string;
   description: string;
+  documents: DocumentType[];
   set: (
     partial:
       | ProfileStoreType
@@ -26,7 +31,8 @@ const profileInitialState = {
   last_name: '',
   email: '',
   phone: '',
-  description: ''
+  description: '',
+  documents: []
 };
 
 export const useProfileStore = create<ProfileStoreType>()(
@@ -46,7 +52,8 @@ export const useProfileStore = create<ProfileStoreType>()(
               last_name: data.last_name,
               email: data.email,
               phone: data.phone,
-              description: data.description
+              description: data.description,
+              documents: data.documents || []
             }));
           } catch (err: any) {
             if (err.response.code === 404) {
