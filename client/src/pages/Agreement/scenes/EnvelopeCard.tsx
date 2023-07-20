@@ -1,0 +1,100 @@
+import React from 'react';
+import { Card, Grid, CardContent, Box, Typography } from '@mui/material';
+import config from '../../../config';
+import { Button } from '../../../components/Button';
+import { useUserStore } from '../../../globalState/user';
+import axios from '../../../utils/axios';
+import { useParams } from 'react-router-dom';
+export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
+  const { auth, userDetails } = useUserStore();
+
+  const {
+    envelope_id,
+    status,
+    status_date_time,
+    uri,
+    signed_by_landlord,
+    signed_by_tenant,
+    land_lord,
+    tenant,
+    sign_url_landlord,
+    sign_url_tenant,
+    created_at
+  } = envelope || {};
+
+  const isLandlord = userDetails.user_id.toString() === land_lord._id.toString();
+  const isTenant = userDetails.user_id.toString() === tenant._id.toString();
+
+  console.log({ isLandlord, isTenant });
+
+  const params = useParams<{ id: string }>();
+
+  const generateSignUrl = async () => {
+    const { data } = await axios(auth.access_token).patch(
+      `${config.apiUrl}/api/docusign/${params.id}/generate-url`
+    );
+  };
+
+  return (
+    <Box display='flex' justifyContent='center'>
+      <Card>
+        <CardContent>
+          <Typography color='textSecondary' gutterBottom>
+            Status: {status}
+          </Typography>
+          <Typography color='textSecondary' gutterBottom>
+            Status Date: {status_date_time}
+          </Typography>
+          <Typography color='textSecondary' gutterBottom>
+            Signed by Landlord: {signed_by_landlord ? 'Yes' : 'No'}
+          </Typography>
+          <Typography color='textSecondary' gutterBottom>
+            Signed by Tenant: {signed_by_tenant ? 'Yes' : 'No'}
+          </Typography>
+          <Typography color='textSecondary' gutterBottom>
+            Landlord: {land_lord.first_name} {land_lord.last_name}
+          </Typography>
+          <Typography color='textSecondary' gutterBottom>
+            Tenant: {tenant.first_name} {tenant.last_name}
+          </Typography>
+          {isLandlord && (
+            <Typography color='textSecondary' gutterBottom>
+              Sign URL (Landlord):{' '}
+              {!signed_by_landlord ? (
+                <a href={sign_url_landlord} target='_blank' rel='noopener noreferrer'>
+                  Sign
+                </a>
+              ) : (
+                'Signed'
+              )}
+            </Typography>
+          )}
+          {isTenant && (
+            <Typography color='textSecondary' gutterBottom>
+              Sign URL (Tenant):{' '}
+              {!signed_by_tenant ? (
+                <a href={sign_url_tenant} target='_blank' rel='noopener noreferrer'>
+                  Sign
+                </a>
+              ) : (
+                'Signed'
+              )}
+            </Typography>
+          )}
+          <Typography color='textSecondary' gutterBottom>
+            Created At: {created_at}
+          </Typography>
+
+          <Typography color='textSecondary' gutterBottom>
+            Download:{' '}
+            {signed_by_tenant && signed_by_landlord ? (
+              <a href={`${config.apiUrl}/api/docusign/envelope/${envelope_id}/download`}> Click here</a>
+            ) : (
+              <b>Both parties need to sign</b>
+            )}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+};

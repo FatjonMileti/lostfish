@@ -6,4 +6,12 @@ export enum CASLAction {
   Delete = 'delete'
 }
 
-export type AppSubjects = 'User' | 'Asset' | 'Chat' | 'all' | 'Agent' | 'Client';
+export type AppSubjects =
+  | 'User'
+  | 'Asset'
+  | 'Chat'
+  | 'all'
+  | 'Agent'
+  | 'Client'
+  | 'SignGenerator'
+  | 'SignURL';

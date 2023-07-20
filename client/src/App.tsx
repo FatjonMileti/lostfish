@@ -33,6 +33,7 @@ import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
 import { Agreement } from './pages/Agreement/Agreement';
+import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 
 registerStore(
   'notification',
@@ -105,6 +106,7 @@ function App() {
                 <Routes>
                   <Route path='/login' element={<Login />} />
                   <Route path='/agreement' element={<Agreement />} />
+                  <Route path='/agreement/:id' element={<AgreementDetails />} />
                   <Route path='/components' element={<PreviewComponents />} />
                   <Route path='/about' element={<About />} />
                   <Route path='/mission' element={<Mission />} />

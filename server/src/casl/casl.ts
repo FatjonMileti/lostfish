@@ -11,10 +11,15 @@ function defineAbilitiesFor(role: string): PureAbility<[CASLAction, AppSubjects]
     can(CASLAction.Manage, 'all');
   } else if (role === Role.Client) {
     can(CASLAction.Manage, 'all');
+    cannot(CASLAction.Create, 'SignGenerator');
+    cannot(CASLAction.Update, 'SignGenerator');
+    cannot(CASLAction.Delete, 'SignGenerator');
+    cannot(CASLAction.Read, 'SignGenerator');
   } else if (role === Role.Agent) {
     can(CASLAction.Manage, 'all');
   } else if (role === Role.Landlord) {
     can(CASLAction.Manage, 'all');
+    can(CASLAction.Manage, 'SignGenerator');
   } else if (role === Role.Client) {
     can(CASLAction.Manage, 'all');
   } else if (role === Role.NeWUser) {

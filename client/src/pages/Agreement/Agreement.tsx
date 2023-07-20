@@ -1,13 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/system';
-
-import { Header } from '../Home/Header';
+import Can from '../../components/Can';
+import { Header } from '../HomeLoggedIn/Header';
 import { TextField } from '../../components/TextField';
-import { IconButton } from '../../components/IconButton';
-import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
-import { Typography } from '../../components/Typography';
-import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -19,6 +15,7 @@ import { Box } from '@mui/material';
 import { useProfileStore } from '../../globalState/profile';
 import { useUserStore } from '../../globalState/user';
 import { Envelopes } from './scenes/Envelopes';
+import { CASLAction } from '../../utils/ability.util';
 const schema = yup.object().shape({
   fullName: yup.string().required('fullname is required'),
   tenant: yup.string().required('Tenant is required')
@@ -57,7 +54,7 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
     const { tenant } = data;
 
     try {
-      await axios(auth.access_token).post(`${config.apiUrl}/api/docusign/form`, {
+      await axios(auth.access_token).post(`${config.apiUrl}/api/docusign/create-envelope`, {
         tenant
       });
     } catch (err: AxiosError | any) {
@@ -82,39 +79,41 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
         <div className='content'>
           <Box ml='5rem'>
             <Grid container spacing={2}>
-              <Grid item xs={5}>
-                <form className='content' onSubmit={handleSubmit(onSubmit)}>
-                  <div className='form-fields'>
-                    <TextField
-                      label='Your fullname'
-                      className='first-name-input'
-                      required
-                      {...register('fullName')}
-                      error={!!errors.fullName}
-                      helperText={errors.fullName?.message?.toString()}
-                      placeholder='Your name'
-                      disabled
-                    />
-                    <TextField
-                      label='Tenant'
-                      className='last-name-input'
-                      required
-                      {...register('tenant')}
-                      error={!!errors.tenant}
-                      helperText={errors.tenant?.message?.toString()}
-                      placeholder='Enter tenant id'
-                    />
-                  </div>
-                  <Button
-                    className='login-button'
-                    type='submit'
-                    disabled={!isValid}
-                    size='large'
-                    style={{ marginTop: '2rem' }}>
-                    Generate agreement
-                  </Button>
-                </form>
-              </Grid>
+              <Can do={CASLAction.Create} on='SignGenerator'>
+                <Grid item xs={5}>
+                  <form className='content' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='form-fields'>
+                      <TextField
+                        label='Your fullname'
+                        className='first-name-input'
+                        required
+                        {...register('fullName')}
+                        error={!!errors.fullName}
+                        helperText={errors.fullName?.message?.toString()}
+                        placeholder='Your name'
+                        disabled
+                      />
+                      <TextField
+                        label='Tenant'
+                        className='last-name-input'
+                        required
+                        {...register('tenant')}
+                        error={!!errors.tenant}
+                        helperText={errors.tenant?.message?.toString()}
+                        placeholder='Enter tenant id'
+                      />
+                    </div>
+                    <Button
+                      className='login-button'
+                      type='submit'
+                      disabled={!isValid}
+                      size='large'
+                      style={{ marginTop: '2rem' }}>
+                      Generate agreement
+                    </Button>
+                  </form>
+                </Grid>
+              </Can>
               <Grid item xs={5}>
                 <Envelopes />
               </Grid>

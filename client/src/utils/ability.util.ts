@@ -8,7 +8,16 @@ export enum CASLAction {
   Delete = 'delete'
 }
 
-export type AppSubjects = 'User' | 'Asset' | 'Chat' | 'all' | 'Menu' | 'Client' | 'Agent';
+export type AppSubjects =
+  | 'User'
+  | 'Asset'
+  | 'Chat'
+  | 'all'
+  | 'Menu'
+  | 'Client'
+  | 'Agent'
+  | 'SignGenerator'
+  | 'SignURL';
 
 export enum Role {
   Admin = 'Admin',

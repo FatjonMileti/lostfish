@@ -9,18 +9,6 @@ import attributeService from '../api/Attribute/services/attribute.service';
 
 const cronName: string = 'offerIo-data.synchronization';
 
-const syncConditions = async () => {
-  try {
-    console.info(`starting conditions sync`);
-    const response: mongo.BulkWriteResult | undefined = await conditionService.syncConditionsFromOfferIo();
-    if (response) {
-      console.info(`synced conditions successfully`);
-    }
-  } catch (error: any) {
-    console.error(`conditions sync error: ${error.message}`);
-  }
-};
-
 const syncAttributes = async () => {
   try {
     console.info(`starting attributes sync`);
@@ -39,7 +27,7 @@ const tick = async () => {
     const timer = moment();
     console.log(`synchronization tick ${timer.toISOString()}`);
 
-    await Promise.all([syncConditions(), syncAttributes()]);
+    await Promise.all([syncAttributes()]);
 
     console.log(`synchronization tick took: ${moment().diff(timer, 'seconds')}s`);
   } catch (error: any) {
