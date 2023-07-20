@@ -2,18 +2,20 @@ import { Router, Request, Response } from 'express';
 import docusignService from './services/docusign.service';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
-import Envelope from './schemas/envelope';
+import Envelope, { IEnvelope } from './schemas/envelope';
 import httpStatus from 'http-status';
 import config from '../../config';
 import createError from 'http-errors';
 import { Role } from '../User/user.interface';
 import userService from '../User/user.service';
 import fs from 'fs';
+import docusignLocalService from './services/docusign.local.service';
 const router: Router = Router();
 
 export class DocusignController {
   public router = router;
   public docusignService = docusignService;
+  public docusignLocalService = docusignLocalService;
 
   constructor() {
     this.initializeRoutes();
@@ -24,19 +26,24 @@ export class DocusignController {
     this.router.get('/consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
-    this.router.get('/:id/update-url', authorize(), this.updateUrl);
+    this.router.get('/:id/update-url', authorize(), this.generateNewSignUrls);
+    this.router.patch('/:id/generate-url', authorize(), this.updateUrlForLoggedInUser);
     this.router.get(
       '/envelope',
       authorize(),
       paging({ sort: { status_date_time: -1 } }),
       this.getEnvelopeList
     );
-    this.router.get('/download', this.downloadDocument);
+
+    this.router.get('/envelope/:id/download', this.downloadDocument);
+    this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
   }
+
+  private getEnvelopeById = this.docusignLocalService.getEnvelopeById;
 
   private downloadDocument = async (req: Request, res: Response) => {
     try {
-      const file = await this.docusignService.getSingleDocument('2a573eba-f8ba-4663-82d6-c33f9134e476', {});
+      const file = await this.docusignService.getSingleDocument(req.params.id, {});
       // Send the file as a download
       res.download(file, 'signed_document.pdf', (err) => {
         if (err) {
@@ -66,11 +73,20 @@ export class DocusignController {
    *
    * @apiUse bearer
    */
-  private updateUrl = async (req: Request, res: Response) => {
-    const envelope = await this.docusignService.updateUrl(req, res);
+  private generateNewSignUrls = async (req: Request, res: Response) => {
+    const envelope: IEnvelope = await this.docusignService.updateUrl(req, res);
     res.send(envelope);
   };
 
+  /**
+   * @api {patch} /api/docusign/:id/generate-url Update url
+   * @apiDescription UPdate urls
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/:id/generate-url
+   *
+   * @apiUse bearer
+   */
+  private updateUrlForLoggedInUser = this.docusignService.updateUrlForLoggedInUser;
   /**
    * @api {post} /api/docusign/form Create ne wenvelope
    * @apiDescription Add a new envelope as draft
@@ -118,7 +134,7 @@ export class DocusignController {
         return res.redirect(`${config.front_end_url}?event=signing_complete`);
       }
       if (event && event === 'ttl_expired') {
-        return res.redirect(`${config.front_end_url}?event=link_exipired`);
+        return res.redirect(`${config.front_end_url}/agreement?event=link_exipired`);
       }
       res.redirect(`${config.front_end_url}`);
     } catch (error: any) {
