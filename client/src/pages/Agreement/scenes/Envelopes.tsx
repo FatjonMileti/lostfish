@@ -66,8 +66,6 @@ export const Envelopes = () => {
     }));
   };
 
-  console.log({ list });
-
   return (
     <div style={{ height: 350, width: '100%' }}>
       <DataGrid rows={list.rows} columns={columns} />

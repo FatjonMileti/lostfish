@@ -1,4 +1,4 @@
-import { Router, Response, Request } from 'express';
+import { Router } from 'express';
 import assetService from './services/asset.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
@@ -8,9 +8,6 @@ import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
-import httpStatus from 'http-status';
-const fs = require('fs');
-const path = require('path');
 
 const router: Router = Router();
 
@@ -32,7 +29,6 @@ export class AssetController {
       this.findAll
     );
     this.router.get('/matches-example', authorize(), this.gePublishedApplications);
-    this.router.get('/sync', this.syncAll);
     this.router.get('/:id/images', authorize(), validateId, this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
     this.router.get('/:id/application', authorize(), validateId, this.getOneAssetApplication);
@@ -79,18 +75,6 @@ export class AssetController {
    * @apiUse paging
    */
   private findAll = this.assetService.findAll;
-
-  /**
-   * @api {get} /api/asset/sync Temporary asset syncing from offr.io
-   * @apiDescription Get all assets
-   * @apiGroup Asset
-   * @apiSampleRequest /api/asset/sync
-   *
-   * @apiPermission authorize
-   * @apiUse bearer
-   * @apiUse paging
-   */
-  private syncAll = this.assetService.syncAll;
 
   /**
    * @api {get} /api/asset/:id/applications Get asset applications

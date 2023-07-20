@@ -1,4 +1,4 @@
-import { Header } from '../../Home/Header';
+import { Header } from '../../HomeLoggedIn/Header';
 import React from 'react';
 import { styled } from '@mui/system';
 import axios from '../../../utils/axios';

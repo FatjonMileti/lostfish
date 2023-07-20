@@ -1,10 +1,13 @@
 import Envelope, { IEnvelope } from '../schemas/envelope';
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
-import { Role, UserDocument } from '../../User/user.interface';
+import { Role } from '../../User/user.interface';
 import docusignService from './docusign.service';
+import fs from 'fs';
+import userService from '../../User/user.service';
+import config from '../../../config';
 
 type SignUrl = string | undefined;
 
@@ -61,7 +64,6 @@ const getEnvelopeById = async (req: Request, res: Response) => {
         user: envelope.land_lord
       });
       await updateEnvelopeById(req.params.id, newEnvelope);
-      console.log('landlord');
     }
 
     if (res.locals.role === Role.Client && !envelope.signed_by_tenant) {
@@ -70,7 +72,6 @@ const getEnvelopeById = async (req: Request, res: Response) => {
         user: envelope.tenant
       });
       await updateEnvelopeById(req.params.id, newEnvelope);
-      console.log('Tenant');
     }
 
     res.send(envelope);
@@ -79,8 +80,94 @@ const getEnvelopeById = async (req: Request, res: Response) => {
   }
 };
 
+const downloadDocument = async (req: Request, res: Response) => {
+  try {
+    const file = await docusignService.getSingleDocument(req.params.id, {});
+    // Send the file as a download
+    res.download(file, 'signed_document.pdf', (err) => {
+      if (err) {
+        console.error('Error sending the file:', err);
+      } else {
+        // Clean up the temporary file after it is sent
+        fs.unlink(file, (error: any) => {
+          if (error) {
+            console.error('Error deleting the temporary file:', error);
+          } else {
+            console.log('Temporary file deleted.');
+          }
+        });
+      }
+    });
+  } catch (error) {
+    // Handle error response
+    res.status(500).send('Error retrieving the signed document.');
+  }
+};
+
+const generateNewSignUrls = async (req: Request, res: Response) => {
+  const envelope: IEnvelope = await docusignService.updateUrl(req, res);
+  res.send(envelope);
+};
+
+const successSignRedirect = async (req: Request, res: Response) => {
+  const { userId, userType, envelopeId, event } = req.query;
+  try {
+    if (userId) {
+      const user = await userService.findOne({ _id: userId });
+      if (!user) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'user_not_found' });
+      }
+    }
+    if (event && event === 'signing_complete') {
+      const existingEnvelope = await Envelope.findOne({ envelope_id: envelopeId });
+      if (!existingEnvelope) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
+      }
+      if (userType && userType === Role.Client) {
+        existingEnvelope.signed_by_tenant = true;
+      }
+      if (userType && userType === Role.Landlord) {
+        existingEnvelope.signed_by_landlord = true;
+      }
+      await existingEnvelope.save();
+      return res.redirect(`${config.front_end_url}?event=signing_complete`);
+    }
+    if (event && event === 'ttl_expired') {
+      return res.redirect(`${config.front_end_url}/agreement?event=link_exipired`);
+    }
+    res.redirect(`${config.front_end_url}`);
+  } catch (error: any) {
+    return res.status(httpStatus.BAD_REQUEST).send({ message: 'error ' });
+  }
+};
+
+const getEnvelopeList = async (req: Request, res: Response) => {
+  const query: any = {
+    $or: [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }]
+  };
+
+  const response = await Envelope.paginate(query, {
+    ...res.locals.paging_options,
+    populate: [
+      { path: 'land_lord', select: ['first_name', 'last_name', '_id'] },
+      { path: 'tenant', select: ['first_name', 'last_name', '_id'] }
+    ]
+  });
+  return res.status(httpStatus.OK).send(response);
+};
+
+const generateConsentUrl = async (req: Request, res: Response) => {
+  const redirectUri = docusignService.getConsent();
+  res.redirect(redirectUri);
+};
+
 export default {
   createEnvelopeDoc,
   setSignUrlForUsers,
-  getEnvelopeById
+  getEnvelopeById,
+  downloadDocument,
+  generateNewSignUrls,
+  successSignRedirect,
+  getEnvelopeList,
+  generateConsentUrl
 };

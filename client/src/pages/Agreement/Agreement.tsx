@@ -3,11 +3,7 @@ import { styled } from '@mui/system';
 import Can from '../../components/Can';
 import { Header } from '../HomeLoggedIn/Header';
 import { TextField } from '../../components/TextField';
-import { IconButton } from '../../components/IconButton';
-import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
-import { Typography } from '../../components/Typography';
-import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -58,7 +54,7 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
     const { tenant } = data;
 
     try {
-      await axios(auth.access_token).post(`${config.apiUrl}/api/docusign/form`, {
+      await axios(auth.access_token).post(`${config.apiUrl}/api/docusign/create-envelope`, {
         tenant
       });
     } catch (err: AxiosError | any) {

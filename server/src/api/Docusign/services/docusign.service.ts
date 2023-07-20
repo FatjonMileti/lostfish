@@ -289,13 +289,13 @@ const updateUrlForLoggedInUser = async (request: Request, response: Response) =>
 
     await existingEnvelope.save();
 
-    return existingEnvelope;
+    response.send(existingEnvelope);
   } catch (error: any) {
     response.status(httpStatus.BAD_REQUEST).send({ ...error });
   }
 };
 
-const sendEnvelope = async (request: Request, response: Response) => {
+const createEnvelope = async (request: Request, response: Response) => {
   try {
     const envelopesApi = await getEnvelopesApi();
 
@@ -439,7 +439,7 @@ export default {
   makeRecipientViewRequest,
   getEnvelopesApi,
   makeEnvelope,
-  sendEnvelope,
+  createEnvelope,
   updateUrl,
   getSingleDocument,
   updateUrlForLoggedInUser,

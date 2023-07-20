@@ -2,14 +2,9 @@ import { Router, Request, Response } from 'express';
 import docusignService from './services/docusign.service';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
-import Envelope, { IEnvelope } from './schemas/envelope';
-import httpStatus from 'http-status';
-import config from '../../config';
-import createError from 'http-errors';
-import { Role } from '../User/user.interface';
-import userService from '../User/user.service';
-import fs from 'fs';
+
 import docusignLocalService from './services/docusign.local.service';
+import config from '../../config';
 const router: Router = Router();
 
 export class DocusignController {
@@ -22,8 +17,8 @@ export class DocusignController {
   }
 
   private initializeRoutes() {
-    this.router.post('/form', authorize(), this.sendForm);
-    this.router.get('/consent', this.getConsent);
+    this.router.post('/create-envelope', authorize(), this.createEnvelope);
+    this.router.get('/get-consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
     this.router.get('/:id/update-url', authorize(), this.generateNewSignUrls);
@@ -35,58 +30,10 @@ export class DocusignController {
       this.getEnvelopeList
     );
 
-    this.router.get('/envelope/:id/download', this.downloadDocument);
+    this.router.get('/envelope/:id/download', authorize(), this.downloadDocument);
     this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
   }
 
-  private getEnvelopeById = this.docusignLocalService.getEnvelopeById;
-
-  private downloadDocument = async (req: Request, res: Response) => {
-    try {
-      const file = await this.docusignService.getSingleDocument(req.params.id, {});
-      // Send the file as a download
-      res.download(file, 'signed_document.pdf', (err) => {
-        if (err) {
-          console.error('Error sending the file:', err);
-        } else {
-          // Clean up the temporary file after it is sent
-          fs.unlink(file, (error: any) => {
-            if (error) {
-              console.error('Error deleting the temporary file:', error);
-            } else {
-              console.log('Temporary file deleted.');
-            }
-          });
-        }
-      });
-    } catch (error) {
-      // Handle error response
-      res.status(500).send('Error retrieving the signed document.');
-    }
-  };
-
-  /**
-   * @api {get} /api/docusign/:id/update-url Update url
-   * @apiDescription UPdate urls
-   * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/:id/update-url
-   *
-   * @apiUse bearer
-   */
-  private generateNewSignUrls = async (req: Request, res: Response) => {
-    const envelope: IEnvelope = await this.docusignService.updateUrl(req, res);
-    res.send(envelope);
-  };
-
-  /**
-   * @api {patch} /api/docusign/:id/generate-url Update url
-   * @apiDescription UPdate urls
-   * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/:id/generate-url
-   *
-   * @apiUse bearer
-   */
-  private updateUrlForLoggedInUser = this.docusignService.updateUrlForLoggedInUser;
   /**
    * @api {post} /api/docusign/form Create ne wenvelope
    * @apiDescription Add a new envelope as draft
@@ -98,64 +45,75 @@ export class DocusignController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private sendForm = this.docusignService.sendEnvelope;
+  private createEnvelope = this.docusignService.createEnvelope;
 
-  private getConsent = async (req: Request, res: Response) => {
-    const redirectUri = await docusignService.getConsent();
-    res.redirect(redirectUri);
-  };
+  /**
+   * @api {get} /api/docusign/:id Update url
+   * @apiDescription Get envelope details
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/:id
+   *
+   * @apiUse bearer
+   */
+  private getEnvelopeById = this.docusignLocalService.getEnvelopeById;
 
+  /**
+   * @api {get} /api/docusign/:id/download Download signed document
+   * @apiDescription Download document after is signed
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/:id/download
+   *
+   * @apiUse bearer
+   */
+  private downloadDocument = this.docusignLocalService.downloadDocument;
+
+  /**
+   * @api {get} /api/docusign/:id/update-url Update url's for both signers
+   * @apiDescription Update url's for both signers
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/:id/update-url
+   *
+   * @apiUse bearer
+   */
+  private generateNewSignUrls = this.docusignLocalService.generateNewSignUrls;
+
+  /**
+   * @api {patch} /api/docusign/:id/generate-url Generate new url for logged in user
+   * @apiDescription Generate new url for an user
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/:id/generate-url
+   *
+   * @apiUse bearer
+   */
+  private updateUrlForLoggedInUser = this.docusignService.updateUrlForLoggedInUser;
+
+  /**
+   * @api {get} /api/docusign/get-consent Generate consent
+   * @apiDescription Generate an application consent url
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/get-consent
+   *
+   * @apiUse bearer
+   */
+  private getConsent = this.docusignLocalService.generateConsentUrl;
+
+  /**
+   * This is used by docusign to redirect after consent
+   */
   private redirectCallback = async (req: Request, res: Response) => {
-    res.send('authorization granted');
+    res.redirect(config.front_end_url);
   };
 
-  /*http://localhost:3000/api/docusign/success?userId=64b6979619963c3c1bbbda9f&userType=Tenant&envelopeId=2a573eba-f8ba-4663-82d6-c33f9134e476&event=signing_complete*/
-  private successSign = async (req: Request, res: Response) => {
-    const { userId, userType, envelopeId, event } = req.query;
-    try {
-      if (userId) {
-        const user = await userService.findOne({ _id: userId });
-        if (!user) {
-          throw createError(httpStatus.NOT_FOUND, { message: 'user_not_found' });
-        }
-      }
-      if (event && event === 'signing_complete') {
-        const existingEnvelope = await Envelope.findOne({ envelope_id: envelopeId });
-        if (!existingEnvelope) {
-          throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
-        }
-        if (userType && userType === Role.Client) {
-          existingEnvelope.signed_by_tenant = true;
-        }
-        if (userType && userType === Role.Landlord) {
-          existingEnvelope.signed_by_landlord = true;
-        }
-        await existingEnvelope.save();
-        return res.redirect(`${config.front_end_url}?event=signing_complete`);
-      }
-      if (event && event === 'ttl_expired') {
-        return res.redirect(`${config.front_end_url}/agreement?event=link_exipired`);
-      }
-      res.redirect(`${config.front_end_url}`);
-    } catch (error: any) {
-      return res.status(httpStatus.BAD_REQUEST).send({ message: 'error ' });
-    }
-  };
+  /**
+   * This is used by docusign to redirect signin with success
+   */
+  private successSign = this.docusignLocalService.successSignRedirect;
 
-  private getEnvelopeList = async (req: Request, res: Response) => {
-    const query: any = {
-      $or: [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }]
-    };
-
-    const response = await Envelope.paginate(query, {
-      ...res.locals.paging_options,
-      populate: [
-        { path: 'land_lord', select: ['first_name', 'last_name', '_id'] },
-        { path: 'tenant', select: ['first_name', 'last_name', '_id'] }
-      ]
-    });
-    return res.status(httpStatus.OK).send(response);
-  };
+  /**
+   * This is used us to fetch all envelopes
+   * TODO will we create a script to sync them from docusign?
+   */
+  private getEnvelopeList = this.docusignLocalService.getEnvelopeList;
 }
 
 /**

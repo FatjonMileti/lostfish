@@ -206,11 +206,6 @@ const createUser = async (req: Request, res: Response) => {
   user.address = '';
   user.role = Role.NeWUser;
   try {
-    // const contactUser = await offrIoService.createContact(user);
-    // if (contactUser) {
-    //   user.contact_id = contactUser.id;
-    // }
-
     const userDocument = new UserModel({
       ...user
     });
