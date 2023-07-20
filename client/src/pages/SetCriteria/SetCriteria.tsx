@@ -127,50 +127,41 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         step1Form.setValue(`propertyType.${type}`, true);
       });
 
-      let value = step1Form.getValues('propertyClass');
+      (Object.keys(step1Form.getValues('propertyClass')) as [keyof Step1FormType['propertyClass']]).forEach(
+        (key) => {
+          step1Form.setValue(`propertyClass.${key}`, data.property_preferences.includes(key));
+        }
+      );
 
-      data.property_preference.map((type: keyof Step1FormType['propertyClass']) => {
-        value[type] = true;
-      });
+      (Object.keys(step1Form.getValues('propertyClass')) as [keyof Step1FormType['propertyClass']]).forEach(
+        (key) => {
+          step1Form.setValue(`propertyClass.${key}`, data.property_features.includes(key));
+        }
+      );
 
-      step1Form.setValue('propertyClass', value);
+      // step 2
 
-      // step1Form.setValue('propertyPreferences', data.property_preference);
-
-      // step1Form.setValue('propertyFeatures.parksNearby', data.property_features.includes('Parks Nearby'));
-      // step1Form.setValue(
-      //   'propertyFeatures.publicTransportNearby',
-      //   data.property_features.includes('Public transport nearby')
-      // );
-      // step1Form.setValue(
-      //   'propertyFeatures.shoppingCentersNearby',
-      //   data.property_features.includes('Shopping centers nearby')
-      // );
-
-      // step2
-      // step2Form.setValue('area', data.floor_size);
-      // step2Form.setValue('nrOfBedrooms', data.room_details.number_of_bedrooms);
-      // step2Form.setValue('nrOfBathrooms', data.room_details.number_of_bathrooms);
-      // step2Form.setValue(
-      //   'specificPropertyFeatures',
-      //   data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
-      //     acc[spf] = true;
-      //     return acc;
-      //   }, {})
-      // );
-      // step2Form.setValue('propertyImages', data.property_images);
+      step2Form.setValue('area', data.floor_size.split('-'));
+      step2Form.setValue('nrOfBedrooms', data.room_details.number_of_bedrooms);
+      step2Form.setValue('nrOfBathrooms', data.room_details.number_of_bathrooms);
+      step2Form.setValue(
+        'specificPropertyFeatures',
+        data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
+          acc[spf] = true;
+          return acc;
+        }, {})
+      );
       // step 3
-      // step3Form.setValue('rentingPrice', data.asset_rent.rental_amount);
-      // step3Form.setValue('paymentFrequency', data.asset_rent.rental_frequency);
-      // step3Form.setValue('depositAmount', data.asset_rent.deposit_amount || undefined);
-      // step3Form.setValue('creditScoreRequirements', data.credit_score_requirements);
-      // step3Form.setValue(
-      //   'contractDetails',
-      //   data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
-      //     acc[cd] = true;
-      //     return acc;
-      //   }, {})
-      // );
+      step3Form.setValue('idealBudget', data.budget.split('-'));
+      step3Form.setValue('depositInformation', data.deposit_amount);
+      step3Form.setValue('creditScore', data.credit_score_requirements);
+      step3Form.setValue(
+        'contractDetails',
+        data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+          acc[cd] = true;
+          return acc;
+        }, {})
+      );
     } catch (err) {
       throw err;
     }
@@ -188,10 +179,11 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         property_type: Object.entries(step1Form.getValues('propertyType'))
           .filter(([key, value]) => value)
           .map(([key, value]) => key),
-        property_preference: [
+        property_preferences: [
           step1Form.getValues('propertyClass.New home') ? ['New home'] : [],
           step1Form.getValues('propertyClass.Retirement home') ? ['Retirement home'] : [],
-          step1Form.getValues('propertyClass.Shared ownership') ? ['Shared ownership'] : []
+          step1Form.getValues('propertyClass.Shared ownership') ? ['Shared ownership'] : [],
+          step1Form.getValues('propertyClass.Shared ownership') ? ['Auction'] : []
         ].flat(),
         property_features: [
           step1Form.getValues('propertyClass.Parks nearby') ? ['Parks nearby'] : [],
@@ -200,7 +192,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         ].flat(),
 
         // step2
-        floor_size: `${step2Form.getValues('area')[0]} - ${step2Form.getValues('area')[1]}`,
+        floor_size: `${step2Form.getValues('area')[0]}-${step2Form.getValues('area')[1]}`,
         room_details: {
           number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
           number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
@@ -215,7 +207,7 @@ export const SetCriteria = styled(({ className, criteriaId }: SetCriteriaProps) 
         credit_score_requirements: step3Form.getValues('creditScore'),
         contact_details: Object.entries(step3Form.getValues('contractDetails'))
           .filter(([key, value]) => value)
-          .map(([key, value]) => value)
+          .map(([key, value]) => key)
       };
 
       console.log('payload', payload);
