@@ -148,7 +148,7 @@ const updateUser = async (req: Request, res: Response) => {
     user.phone = userBody.phone;
   }
 
-  if (userBody.description) {
+  if (req.body.hasOwnProperty('description')) {
     user.description = userBody.description;
   }
 
