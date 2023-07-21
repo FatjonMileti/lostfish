@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
+
 import { UserController } from './User/user.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
@@ -13,6 +15,10 @@ import { CriteriaController } from './Criteria/criteria.controller';
 import { DocusignController } from './Docusign/docusign-test.controller';
 import { UploadController } from './Upload/upload.controller';
 import { FileController } from './File/file.controller';
+import { MatchController } from './Match/match.controller';
+import MatchService from './Match/match.service';
+import MatchModel from './Match/match.schema';
+
 const router: Router = Router();
 /**
  * @apiDefine anonymous Anonymous access
@@ -41,6 +47,9 @@ const router: Router = Router();
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
+// Create the service and controller instances
+const matchService = new MatchService(MatchModel);
+const matchController = new MatchController(matchService);
 const protectedController = new ProtectedApiController();
 const uploadController = new UploadController();
 const criteriaController = new CriteriaController();
@@ -56,6 +65,7 @@ const docusignController = new DocusignController();
 const fileController = new FileController();
 
 router.use('/v1', protectedController.router);
+router.use('/match', matchController.router);
 router.use('/upload', uploadController.router);
 router.use('/file', fileController.router);
 router.use('/docusign', docusignController.router);

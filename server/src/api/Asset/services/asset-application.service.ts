@@ -154,7 +154,7 @@ const approveAssetApplication = async (req: Request, res: Response) => {
     if (applicant) {
       asset.buyers.push({
         client: {
-          id: applicant?.user_id,
+          id: applicant._id,
           first_name: applicant.first_name,
           surname: applicant.last_name,
           email: applicant.email,

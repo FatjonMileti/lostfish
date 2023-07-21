@@ -3,17 +3,14 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
   Access,
-  AssetAtribute,
   AssetDocument,
   AssetTypeString,
   CountryCode,
   CurrencyCode,
   MasterAssetTypeSring,
-  RentalFrequency,
   StatusString,
   TabName,
   TransactionTypeString,
-  IOffer,
   RentStatusString
 } from '../asset.interface';
 
@@ -178,6 +175,3 @@ const schema = new Schema<AssetDocument>({
 schema.plugin(mongoosePaginate);
 
 export default model<AssetDocument, PaginateModel<AssetDocument>>('asset', schema);
-
-//making offer is not duable
-//

@@ -202,7 +202,6 @@ const createUser = async (req: Request, res: Response) => {
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = randomUUID();
-  user.contact_type = ContactType.Client;
   user.address = '';
   user.role = Role.NeWUser;
   try {

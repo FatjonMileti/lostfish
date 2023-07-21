@@ -1,0 +1,317 @@
+import { Request, Response, Router } from 'express';
+import { MatchDocument, MatchingType } from './match.interface';
+import MatchService from './match.service';
+import authorize from '../../middleware/authorize';
+import paging, { IPagingOptions } from '../../middleware/paging';
+import { IMatchQueryParams } from './match.schema';
+import { Role } from '../User/user.interface';
+
+const router: Router = Router();
+
+export class MatchController {
+  private matchService: MatchService;
+  public router = router;
+  constructor(matchService: MatchService) {
+    this.matchService = matchService;
+    this.initializeRoutes();
+  }
+
+  private initializeRoutes() {
+    router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
+    router.get('/:id', authorize(), this.getMatchById);
+    router.post('/property', authorize(), this.createMatchProperty);
+    router.post('/tenant', authorize(), this.createMatchTenant);
+    router.put('/:id', authorize(), this.updateMatch);
+    router.delete('/:id', authorize(), this.deleteMatch);
+  }
+
+  /**
+   * @api {post} /api/match/property Create a new match (as Landlord)
+   * @apiDescription Create a new match (Landlord)
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/property
+   * @apiBody {Boolean} [chosen=false] Whether the match is chosen
+   * @apiBody {Boolean} [starred=false] Whether the match is starred
+   * @apiBody {String} tenant Tenant Id
+   * @apiUse CreateMatchLandlord
+   * @apiSuccess {Object} match Created match object
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 201 Created
+   *     {
+   *       "_id": "6145f7433c2f33aabc9de4aa",
+   *       "tenant": "6145f7433c2f33aabc9de4bb",
+   *       "chosen": false,
+   *       "starred": false,
+   *       "type": "Property",
+   *       "property": "6145f7433c2f33aabc9de4cc",
+   *       "edited_by": "6145f7433c2f33aabc9de4dd",
+   *       "created_by": "6145f7433c2f33aabc9de4ee",
+   *       "created_at": "2021-09-18T12:34:56.789Z",
+   *       "updated_at": "2021-09-18T12:34:56.789Z"
+   *     }
+   * @apiUse bearer
+   */
+
+  private createMatchProperty = async (req: Request, res: Response) => {
+    try {
+      const matchData: Partial<MatchDocument> = req.body;
+      const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+      const match = await this.matchService.createMatch({
+        ...matchData,
+        type,
+        created_by: res.locals.user_id
+      });
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
+
+  /**
+   * @api {post} /api/match/tenant Create a new match ( as Tenant)
+   * @apiDescription Create a new match (Tenant)
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/tenant
+   * @apiBody {Boolean} [chosen=false] Whether the match is chosen
+   * @apiBody {Boolean} [starred=false] Whether the match is starred
+   * @apiBody {String} property Property Id
+   * @apiUse CreateMatchTenant
+   * @apiSuccess {Object} match Created match object
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 201 Created
+   *     {
+   *       "_id": "6145f7433c2f33aabc9de4aa",
+   *       "tenant": "6145f7433c2f33aabc9de4bb",
+   *       "chosen": false,
+   *       "starred": false,
+   *       "type": "Property",
+   *       "property": "6145f7433c2f33aabc9de4cc",
+   *       "edited_by": "6145f7433c2f33aabc9de4dd",
+   *       "created_by": "6145f7433c2f33aabc9de4ee",
+   *       "created_at": "2021-09-18T12:34:56.789Z",
+   *       "updated_at": "2021-09-18T12:34:56.789Z"
+   *     }
+   * @apiUse bearer
+   */
+
+  private createMatchTenant = async (req: Request, res: Response) => {
+    try {
+      const matchData: Partial<MatchDocument> = req.body;
+      const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+      const match = await this.matchService.createMatch({
+        ...matchData,
+        type,
+        created_by: res.locals.user_id
+      });
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
+
+  /**
+   * @api {get} /api/match Get all matches
+   * @apiDescription Get all matches
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match
+   * @apiUse bearer
+   * @apiSuccess {Object[]} matches List of match objects
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 200 OK
+   *     [
+   *       {
+   *         "_id": "6145f7433c2f33aabc9de4aa",
+   *         "tenant": "6145f7433c2f33aabc9de4bb",
+   *         "chosen": false,
+   *         "starred": false,
+   *         "type": "type1",
+   *         "property": "6145f7433c2f33aabc9de4cc",
+   *         "edited_by": "6145f7433c2f33aabc9de4dd",
+   *         "created_by": "6145f7433c2f33aabc9de4ee",
+   *         "created_at": "2021-09-18T12:34:56.789Z",
+   *         "updated_at": "2021-09-18T12:34:56.789Z"
+   *       },
+   *       // Other match objects...
+   *     ]
+   * @apiQuery {string} [starred] Starred
+   * @apiPermission authorize
+   * @apiUse bearer
+   * @apiUse paging
+   */
+  private getAllMatches = async (req: Request, res: Response) => {
+    const { starred } = req.query;
+
+    const query: IMatchQueryParams = {
+      type: res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY,
+      created_by: res.locals.user_id
+    };
+
+    if (starred) {
+      query.starred = starred === 'true';
+    }
+
+    try {
+      const matches = await this.matchService.getAllMatches(
+        query,
+        res.locals.paging_options as IPagingOptions
+      );
+      return res.status(200).json(matches);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to fetch matches.' });
+    }
+  };
+
+  /**
+   * @api {get} /api/match/:id Get a single match by ID
+   * @apiDescription Get a single match by ID
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/:id
+   * @apiUse bearer
+   * @apiSuccess {Object} match Match object
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *       "_id": "6145f7433c2f33aabc9de4aa",
+   *       "tenant": "6145f7433c2f33aabc9de4bb",
+   *       "chosen": false,
+   *       "starred": false,
+   *       "type": "Property",
+   *       "property": "6145f7433c2f33aabc9de4cc",
+   *       "edited_by": "6145f7433c2f33aabc9de4dd",
+   *       "created_by": "6145f7433c2f33aabc9de4ee",
+   *       "created_at": "2021-09-18T12:34:56.789Z",
+   *       "updated_at": "2021-09-18T12:34:56.789Z"
+   *     }
+   * @apiUse MatchNotFoundError
+   */
+  private getMatchById = async (req: Request, res: Response) => {
+    const matchId: string = req.params.id;
+
+    const query: IMatchQueryParams = {
+      type: res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY,
+      _id: matchId,
+      created_by: res.locals.user_id
+    };
+    try {
+      const match = await this.matchService.getMatchByQuery(query);
+      if (!match) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
+      return res.status(200).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to fetch the match.' });
+    }
+  };
+
+  /**
+   * @api {put} /api/match/:id Update match
+   * @apiDescription Update match by id
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/:id
+   * @apiUse bearer
+   * @apiBody {Boolean} [chosen=false] Whether the match is chosen
+   * @apiBody {Boolean} [starred=false] Whether the match is starred
+   * @apiBody {String} type Matching type (enum: 'Property', 'User')
+   * @apiBody {String} property Property ID associated with the match
+   * @apiBody {String} tenant TenantID associated with the match
+   * @apiSuccess {Object} match Created match object
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 200 Updated
+   *     {
+   *       "_id": "6145f7433c2f33aabc9de4aa",
+   *       "tenant": "6145f7433c2f33aabc9de4bb",
+   *       "chosen": false,
+   *       "starred": false,
+   *       "type": "type1",
+   *       "property": "6145f7433c2f33aabc9de4cc",
+   *       "edited_by": "6145f7433c2f33aabc9de4dd",
+   *       "created_by": "6145f7433c2f33aabc9de4ee",
+   *       "created_at": "2021-09-18T12:34:56.789Z",
+   *       "updated_at": "2021-09-18T12:34:56.789Z"
+   *     }
+   */
+  private updateMatch = async (req: Request, res: Response) => {
+    const matchId: string = req.params.id;
+    const matchData: Partial<MatchDocument> = req.body;
+    const newData = { ...matchData, edited_at: new Date(), edited_by: res.locals.user_id };
+    try {
+      const updatedMatch = await this.matchService.updateMatch(matchId, newData);
+      if (!updatedMatch) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
+      return res.status(200).json(updatedMatch);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to update the match.' });
+    }
+  };
+
+  /**
+   * @api {delete} /api/match/:id Delete a match by ID
+   * @apiDescription Delete a match by ID
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/:id
+   * @apiParam {String} id Match ID
+   * @apiSuccess {Object} match Deleted match object
+   * @apiUse bearer
+   * @apiSuccessExample Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *       "_id": "6145f7433c2f33aabc9de4aa",
+   *       "tenant": "6145f7433c2f33aabc9de4bb",
+   *       "chosen": false,
+   *       "starred": false,
+   *       "type": "Property",
+   *       "property": "6145f7433c2f33aabc9de4cc",
+   *       "edited_by": "6145f7433c2f33aabc9de4dd",
+   *       "created_by": "6145f7433c2f33aabc9de4ee"
+   *     }
+   * @apiError MatchDeleteError Unable to delete the match.
+   * @apiErrorExample MatchDeleteError:
+   *     HTTP/1.1 500 Internal Server Error
+   *     {
+   *       "error": "Unable to delete the match."
+   *     }
+   */
+  private deleteMatch = async (req: Request, res: Response) => {
+    const matchId: string = req.params.id;
+    try {
+      const deletedMatch = await this.matchService.deleteMatch(matchId);
+      if (!deletedMatch) {
+        return res.status(404).json({ error: 'Match not found.' });
+      }
+      return res.status(200).json(deletedMatch);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to delete the match.' });
+    }
+  };
+}
+
+/**
+ * @apiDefine MatchNotFoundError
+ * @apiError MatchNotFound The match with the given ID was not found.
+ * @apiErrorExample MatchNotFound:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "Match not found."
+ *     }
+ */
+
+/**
+ * @apiDefine CreateMatchLandlord
+ * @apiExample {json} Example request body:
+ *    {
+ *       "chosen": false,
+ *       "starred": false,
+ *       "tenant": "6145f7433c2f33aabc9de4cc"
+ *    }
+ */
+
+/**
+ * @apiDefine CreateMatchTenant
+ * @apiExample {json} Example request body:
+ *    {
+ *       "chosen": false,
+ *       "starred": false,
+ *       "property": "6145f7433c2f33aabc9de4cc"
+ *    }
+ */
