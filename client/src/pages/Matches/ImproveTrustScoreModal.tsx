@@ -8,159 +8,175 @@ import React from 'react';
 import { Label } from '../../components/Label';
 import { useProfileStore } from '../../globalState/profile';
 import { useNavigate } from 'react-router-dom';
+import { useCriteriaStore } from '../../globalState/criteria';
 
-export const ImproveTrustScoreModal = styled(({ closeModal, ...rest }: ModalProps) => {
-  const profileStore = useProfileStore();
-  const navigate = useNavigate();
+interface ImproveTrustScoreModalProps extends ModalProps {
+  refineYourSearchClick?: () => void;
+}
 
-  return (
-    <Modal {...rest}>
-      <div className='modal-header'>
-        <div className='left-texts'>
-          <Typography variant='body2'>Improve trust score</Typography>
-          <Typography variant='body2'>•</Typography>
-          <Typography variant='body2' className='percentage'>
-            45%
-          </Typography>
+export const ImproveTrustScoreModal = styled(
+  ({ closeModal, refineYourSearchClick = () => {}, ...rest }: ImproveTrustScoreModalProps) => {
+    const profileStore = useProfileStore();
+    const navigate = useNavigate();
+    const criteriaStore = useCriteriaStore();
+
+    return (
+      <Modal {...rest}>
+        <div className='modal-header'>
+          <div className='left-texts'>
+            <Typography variant='body2'>Improve trust score</Typography>
+            <Typography variant='body2'>•</Typography>
+            <Typography variant='body2' className='percentage'>
+              45%
+            </Typography>
+          </div>
+          <IconButton size='large' onClick={closeModal}>
+            <Icon icon='close' size={12} />
+          </IconButton>
         </div>
-        <IconButton size='large' onClick={closeModal}>
-          <Icon icon='close' size={12} />
-        </IconButton>
-      </div>
-      <div className='modal-body'>
-        <div className='card'>
-          <Typography variant='body4' className='card-title'>
-            Add a description about yourself
-          </Typography>
 
-          <Typography variant='body4' className='card-description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore.
-          </Typography>
+        <div className='modal-body'>
+          <div className='card'>
+            <Typography variant='body4' className='card-title'>
+              Add a description about yourself
+            </Typography>
 
-          {!profileStore.description ? (
-            <Label
-              variant='tertiary'
-              size='medium'
-              className='improve-link'
-              onClick={() => navigate('/my-account/profile-details')}>
-              Add a description
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
-          ) : (
-            <div className='completed'>
-              <div className='completed-indicator'>
-                <Icon icon='checked' size={10} />
+            <Typography variant='body4' className='card-description'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+              labore et dolore.
+            </Typography>
+
+            {!profileStore.description ? (
+              <Label
+                variant='tertiary'
+                size='medium'
+                className='improve-link'
+                onClick={() => navigate('/my-account/profile-details')}>
+                Add a description
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
+            ) : (
+              <div className='completed'>
+                <div className='completed-indicator'>
+                  <Icon icon='checked' size={10} />
+                </div>
+                <Typography variant='body4'>Completed</Typography>
               </div>
-              <Typography variant='body4'>Completed</Typography>
+            )}
+          </div>
+
+          {criteriaStore.lookingFor === 'I’m looking for a place' && (
+            <div className='card'>
+              <Typography variant='body4' className='card-title'>
+                Add more details to your search
+              </Typography>
+
+              <Typography variant='body4' className='card-description'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                labore et dolore.
+              </Typography>
+
+              <Label
+                variant='tertiary'
+                size='medium'
+                className='improve-link'
+                onClick={refineYourSearchClick}>
+                Refine search
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
             </div>
           )}
-        </div>
-        <div className='card'>
-          <Typography variant='body4' className='card-title'>
-            Add more details to your search
-          </Typography>
 
-          <Typography variant='body4' className='card-description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore.
-          </Typography>
-
-          <Label variant='tertiary' size='medium' className='improve-link'>
-            Refine search
-            <Icon icon='arrow-right-1' size={16} />
-          </Label>
-        </div>
-
-        <div className='card'>
-          <Typography variant='body4' className='card-title'>
-            Add a description
-          </Typography>
-
-          <Typography variant='body4' className='card-description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore.
-          </Typography>
-
-          {!profileStore.description ? (
-            <Label
-              variant='tertiary'
-              size='medium'
-              className='improve-link'
-              onClick={() => navigate('/my-account/profile-details')}>
+          <div className='card'>
+            <Typography variant='body4' className='card-title'>
               Add a description
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
-          ) : (
-            <div className='completed'>
-              <div className='completed-indicator'>
-                <Icon icon='checked' size={10} />
+            </Typography>
+
+            <Typography variant='body4' className='card-description'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+              labore et dolore.
+            </Typography>
+
+            {!profileStore.description ? (
+              <Label
+                variant='tertiary'
+                size='medium'
+                className='improve-link'
+                onClick={() => navigate('/my-account/profile-details')}>
+                Add a description
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
+            ) : (
+              <div className='completed'>
+                <div className='completed-indicator'>
+                  <Icon icon='checked' size={10} />
+                </div>
+                <Typography variant='body4'>Completed</Typography>
               </div>
-              <Typography variant='body4'>Completed</Typography>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className='card'>
-          <Typography variant='body4' className='card-title'>
-            Select avatar
-          </Typography>
-
-          <Typography variant='body4' className='card-description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore.
-          </Typography>
-
-          {!profileStore.avatar ? (
-            <Label
-              variant='tertiary'
-              size='medium'
-              className='improve-link'
-              onClick={() => navigate('/my-account/profile-details')}>
+          <div className='card'>
+            <Typography variant='body4' className='card-title'>
               Select avatar
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
-          ) : (
-            <div className='completed'>
-              <div className='completed-indicator'>
-                <Icon icon='checked' size={10} />
-              </div>
-              <Typography variant='body4'>Completed</Typography>
-            </div>
-          )}
-        </div>
+            </Typography>
 
-        <div className='card'>
-          <Typography variant='body4' className='card-title'>
-            Get your account verified
-          </Typography>
+            <Typography variant='body4' className='card-description'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+              labore et dolore.
+            </Typography>
 
-          <Typography variant='body4' className='card-description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore.
-          </Typography>
-          {!profileStore.documents.find((doc) => doc.type === 'Proof of ID') ? (
-            <Label
-              variant='tertiary'
-              size='medium'
-              className='improve-link'
-              onClick={() => navigate('/my-account/transaction-agreement')}>
-              Verify
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
-          ) : (
-            <div className='completed'>
-              <div className='completed-indicator'>
-                <Icon icon='checked' size={10} />
+            {!profileStore.avatar ? (
+              <Label
+                variant='tertiary'
+                size='medium'
+                className='improve-link'
+                onClick={() => navigate('/my-account/profile-details')}>
+                Select avatar
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
+            ) : (
+              <div className='completed'>
+                <div className='completed-indicator'>
+                  <Icon icon='checked' size={10} />
+                </div>
+                <Typography variant='body4'>Completed</Typography>
               </div>
-              <Typography variant='body4'>Completed</Typography>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div className='card'>
+            <Typography variant='body4' className='card-title'>
+              Get your account verified
+            </Typography>
+
+            <Typography variant='body4' className='card-description'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+              labore et dolore.
+            </Typography>
+            {!profileStore.documents.find((doc) => doc.type === 'Proof of ID') ? (
+              <Label
+                variant='tertiary'
+                size='medium'
+                className='improve-link'
+                onClick={() => navigate('/my-account/transaction-agreement')}>
+                Verify
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
+            ) : (
+              <div className='completed'>
+                <div className='completed-indicator'>
+                  <Icon icon='checked' size={10} />
+                </div>
+                <Typography variant='body4'>Completed</Typography>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </Modal>
-  );
-})`
+      </Modal>
+    );
+  }
+)`
   & {
     overflow-y: auto;
     max-height: 100vh;

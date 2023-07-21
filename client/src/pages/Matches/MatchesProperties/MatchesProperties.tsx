@@ -7,26 +7,13 @@ import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
 
-import propertyImage1 from '../images/gallery1.png';
-import propertyImage2 from '../images/gallery2.png';
-import propertyImage3 from '../images/gallery3.png';
-import propertyImage4 from '../images/gallery-4.png';
-
-import { avatars } from '../../HomeLoggedIn/avatars';
-
 import { Label } from '../../../components/Label';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
-
-// const properties = [
-//   { images: [propertyImage1], avatar: avatars[0].image },
-//   { images: [propertyImage2], avatar: avatars[1].image },
-//   { images: [propertyImage3], avatar: avatars[2].image },
-//   { images: [propertyImage4], avatar: avatars[3].image }
-// ];
+import { SetCriteria } from '../../SetCriteria/SetCriteria';
 
 interface PropertyType {
   property_images: any[];
@@ -45,6 +32,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
+  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
 
   const { auth } = useUserStore();
 
@@ -69,10 +57,24 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       <ImproveTrustScoreModal
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
+        refineYourSearchClick={() => {
+          setImproveTrustScoreModalVisibility(false);
+          setCriteriaModalVisibility(true);
+        }}
       />
+      {criteriaModalVisibility && (
+        <SetCriteria
+          setShowModal={setCriteriaModalVisibility}
+          afterRefineSearch={() => {
+            setCriteriaModalVisibility(false);
+            getProperties();
+          }}
+        />
+      )}
+
       <div>
         <Typography>
-          Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
+          Matching with <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
         </Typography>
         <Typography variant='body5' className='sub-title'>
           Displaying 1240 matches. Enter more details to refine your search.

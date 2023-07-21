@@ -62,7 +62,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
             <div>
               <Typography variant='body3' className='name'>
-                John Doe
+                {`${profileStore.first_name} ${profileStore.last_name}`}
               </Typography>
               <div className='trust-score'>
                 <Typography variant='body4' className='trust-score-title'>

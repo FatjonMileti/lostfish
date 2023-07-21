@@ -15,7 +15,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
-import { AreaOfInterest } from './NewPropery.AreaOfInterest';
+import { AreaOfInterest } from './AreaOfInterest';
 
 export type Step1FormType = {
   areaOfInterest: string;
