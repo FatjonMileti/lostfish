@@ -72,7 +72,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       />
       <div>
         <Typography>
-          Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
+          Matching with <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
         </Typography>
         <Typography variant='body5' className='sub-title'>
           Displaying 1240 matches. Enter more details to refine your search.

@@ -1,16 +1,17 @@
 import { styled } from '@mui/system';
 import { Header } from '../HomeLoggedIn/Header';
 import React, { HTMLAttributes } from 'react';
-import { Footer } from '../Home/Footer';
 import { ImageGallery } from './ImageGalery';
 import { SetCriteria } from '../SetCriteria/SetCriteria';
 
 import { useUser } from '../../context/UserProvider';
 import { useLocation } from 'react-router-dom';
 import { MatchesProperties } from './MatchesProperties/MatchesProperties';
+import { MatchesTenants } from './MatchesTenants/MatchesTenants';
+import { useCriteriaStore } from '../../globalState/criteria';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const lookingFor = 'looking for a place';
+  const criteriaStore = useCriteriaStore();
   const { state } = useLocation();
 
   /* Since now we change role on first steps and we redirect here
@@ -28,7 +29,8 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
     <div className={`matches-page ${className}`}>
       <Header />
       <div className='page-body'>
-        {lookingFor === 'looking for a place' && <MatchesProperties />}
+        {criteriaStore.lookingFor === 'I’m looking for a place' && <MatchesProperties />}
+        {criteriaStore.lookingFor === 'I own a place' && <MatchesTenants />}
         <ImageGallery />
         <SetCriteria />
       </div>
