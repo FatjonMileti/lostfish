@@ -6,6 +6,7 @@ export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   onBackdropClick?: () => void;
   disableScrollLock?: boolean;
   closeModal?: () => void;
+  preMount?: boolean;
 }
 
 export const Modal = styled(
@@ -15,7 +16,8 @@ export const Modal = styled(
     onClose = () => {},
     className,
     onBackdropClick = () => {},
-    disableScrollLock = false
+    disableScrollLock = false,
+    preMount = false
   }: ModalProps) => {
     React.useEffect(() => {
       if (disableScrollLock) return;
@@ -30,19 +32,23 @@ export const Modal = styled(
     }, [open]);
 
     return (
-      <div
-        onClick={onBackdropClick}
-        style={{
-          display: open ? 'initial' : 'none',
-          position: 'fixed',
-          inset: 0,
-          zIndex: '99',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)'
-        }}>
-        <div className={`modal ${className}`} onClick={(e) => e.stopPropagation()}>
-          <div className='modal-container'>{children}</div>
-        </div>
-      </div>
+      <>
+        {(open || preMount) && (
+          <div
+            onClick={onBackdropClick}
+            style={{
+              display: open ? 'initial' : 'none',
+              position: 'fixed',
+              inset: 0,
+              zIndex: '99',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)'
+            }}>
+            <div className={`modal ${className}`} onClick={(e) => e.stopPropagation()}>
+              <div className='modal-container'>{children}</div>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 )`

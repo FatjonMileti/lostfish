@@ -15,6 +15,7 @@ import { TextField } from '../../components/TextField';
 import { Select } from '../../components/Select/Select';
 import { Switch } from '../../components/Switch';
 import { Tabs, Tab } from '../../components/Tab';
+import { AreaOfInterest } from '../Properties/AreaOfInterest';
 
 export type Step1FormType = {
   areaOfInterest: string;
@@ -184,7 +185,7 @@ export const SetCriteriaStep1 = styled(
                 Where do you want to rent?
               </Typography>
               <div className='section-content'>
-                <TextField
+                <AreaOfInterest
                   startAdornment={
                     <span style={{ padding: '13px 0 13px 13px' }}>
                       <Icon icon='search' size={20} color='#CFD5D5' />
@@ -192,9 +193,9 @@ export const SetCriteriaStep1 = styled(
                   }
                   placeholder='E.g. Bristol or BA1 2LR'
                   label='Area of interest'
-                  {...form.register('areaOfInterest')}
+                  areaOfInterest={form.getValues('areaOfInterest')}
+                  onAreaChange={(newValue) => form.setValue('areaOfInterest', newValue)}
                 />
-
                 <Select label='Radius' {...form.register('radius')}>
                   <option></option>
                   <option value='1'>1 mi</option>

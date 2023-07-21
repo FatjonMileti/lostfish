@@ -32,7 +32,6 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
         {criteriaStore.lookingFor === 'I’m looking for a place' && <MatchesProperties />}
         {criteriaStore.lookingFor === 'I own a place' && <MatchesTenants />}
         <ImageGallery />
-        <SetCriteria />
       </div>
       {/* <Footer /> */}
     </div>
