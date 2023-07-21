@@ -69,8 +69,6 @@ export const SetCriteriaStep3 = styled(
       form.watch();
     }, []);
 
-    //---------//
-
     return (
       <div className={`set-criteria-step-3 ${className}`}>
         <div className='header'>
