@@ -166,6 +166,7 @@ export const SetCriteriaStep2 = styled(
                     value={form.getValues('area')}
                     min={10}
                     max={150}
+                    step={10}
                     onChange={(_, value) => form.setValue('area', value)}
                     valueLabelDisplay='on'
                     valueLabelFormat={valuetext}

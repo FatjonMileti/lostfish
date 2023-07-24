@@ -41,7 +41,8 @@ export const Modal = styled(
               position: 'fixed',
               inset: 0,
               zIndex: '99',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)'
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(2px)'
             }}>
             <div className={`modal ${className}`} onClick={(e) => e.stopPropagation()}>
               <div className='modal-container'>{children}</div>

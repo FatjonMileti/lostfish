@@ -34,7 +34,9 @@ export type Step1FormType = {
     'Retirement home': boolean;
     'Shared ownership': boolean;
     Auction: boolean;
-    //////////////// propertyFeatures////////////
+  };
+
+  propertyFeatures: {
     'Parks nearby': boolean;
     'Public transport nearby': boolean;
     'Shopping centers nearby': boolean;
@@ -57,8 +59,9 @@ export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
     'New home': yup.boolean().required(),
     'Retirement home': yup.boolean().required(),
     'Shared ownership': yup.boolean().required(),
-    Auction: yup.boolean().required(),
-    /////////////// propertyFeatures///////////
+    Auction: yup.boolean().required()
+  }),
+  propertyFeatures: yup.object().shape({
     'Parks nearby': yup.boolean().required(),
     'Public transport nearby': yup.boolean().required(),
     'Shopping centers nearby': yup.boolean().required()
@@ -78,7 +81,9 @@ type PropertyClassType = {
   'Retirement home': boolean;
   'Shared ownership': boolean;
   Auction: boolean;
-  /////////////// propertyFeatures///////////
+};
+
+type PropertyFeaturesType = {
   'Parks nearby': boolean;
   'Public transport nearby': boolean;
   'Shopping centers nearby': boolean;
@@ -89,17 +94,6 @@ export const SetCriteriaStep1 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
-    const initialValue: PropertyClassType = {
-      'New home': true,
-      'Retirement home': true,
-      'Shared ownership': true,
-      Auction: true,
-      /////////////// propertyFeatures///////////
-      'Parks nearby': true,
-      'Public transport nearby': true,
-      'Shopping centers nearby': true
-    };
 
     return (
       <div className={`set-criteria-step-1 ${className}`}>
@@ -345,13 +339,15 @@ export const SetCriteriaStep1 = styled(
                             <Tabs
                               id={id}
                               value={
-                                form.getValues('propertyClass')[propertyPreference as keyof PropertyClassType]
+                                form.getValues('propertyFeatures')[
+                                  propertyPreference as keyof PropertyFeaturesType
+                                ]
                                   ? 0
                                   : 1
                               }
                               onChange={(i: number) => {
                                 form.setValue(
-                                  `propertyClass.${propertyPreference as keyof PropertyClassType}`,
+                                  `propertyFeatures.${propertyPreference as keyof PropertyFeaturesType}`,
                                   !i
                                 );
                               }}>

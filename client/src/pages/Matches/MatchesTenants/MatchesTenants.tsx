@@ -17,23 +17,22 @@ import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { Backdrop } from '../../../components/Backdrop';
 import { Button } from '../../../components/Button';
-
-interface PropertyType {
-  property_images: any[];
-  area_of_interest: string;
-  room_details: {
-    number_of_bathrooms: string;
-    number_of_bedrooms: string;
-  };
-  asset_rent: {
-    rental_amount?: string;
-  };
-}
+import { ViewProfile } from './ViewProfile';
 
 interface TenantType {
   avatar?: string;
   firstName: string;
   lastName: string;
+  propertyType: string[];
+  propertyPreferences: string[];
+  areaOfInterest: string;
+  radius: string;
+  moveIn: string;
+  budget: string;
+  nrOfBedrooms: string;
+  nrOfBathrooms: string;
+  specificPropertyFeatures: string[];
+  depositAmount: string;
 }
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
@@ -42,6 +41,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [tenants, setTenants] = React.useState<TenantType[]>([]);
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
+  const [viewProfileVisibility, setViewProfileVisibility] = React.useState(false);
 
   const { auth } = useUserStore();
 
@@ -60,7 +60,20 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
         data.docs.map((doc: any) => ({
           avatar: doc.avatar,
           firstName: doc.first_name,
-          lastName: doc.last_name
+          lastName: doc.last_name,
+          propertyType: doc?.criteria?.property_type || [],
+          propertyPreferences: doc?.criteria?.property_preferences || [],
+          areaOfInterest: doc?.criteria?.area_of_interest || '',
+          radius: doc?.criteria?.radius ? `${doc?.criteria?.radius} mi` : '',
+          moveIn: doc?.criteria?.moving_time || '',
+          budget: (doc?.criteria?.budget || '')
+            .split(' - ')
+            .map((v: string) => (!isNaN(parseInt(v)) ? `£${parseInt(v).toLocaleString()}` : ''))
+            .join(' - '),
+          nrOfBedrooms: doc?.criteria?.room_details?.number_of_bedrooms || '',
+          nrOfBathrooms: doc?.criteria?.room_details?.number_of_bathrooms || '',
+          specificPropertyFeatures: doc?.criteria?.specific_property_features || [],
+          depositAmount: doc?.criteria?.deposit_amount || ''
         }))
       );
     } catch (err) {
@@ -75,6 +88,8 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
+  const tenant = tenants[activeSlide];
+
   return (
     <div className={`${className}`}>
       <Backdrop open={loadingTenants}></Backdrop>
@@ -82,6 +97,23 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
       />
+      {viewProfileVisibility && (
+        <ViewProfile
+          avatar={avatars[parseInt(tenant.avatar || '')].image}
+          closeViewProfile={() => setViewProfileVisibility(false)}
+          name={`${tenant.firstName} ${tenant.lastName}`}
+          propertyType={tenant.propertyType.join(', ')}
+          propertyPreferences={tenant.propertyPreferences.join(', ')}
+          areaOfInterest={tenant.areaOfInterest}
+          radius={tenant.radius}
+          moveIn={tenant.moveIn}
+          budget={tenant.budget}
+          nrOfBedrooms={tenant.nrOfBedrooms}
+          nrOfBathrooms={tenant.nrOfBathrooms}
+          parkingNeeded={tenant.specificPropertyFeatures.includes('Parking spot') ? 'Yes' : 'No'}
+          depositAmount={!isNaN(parseInt(tenant.depositAmount)) ? `£${parseInt(tenant.depositAmount)}` : ''}
+        />
+      )}
       <div>
         <Typography>
           Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
@@ -141,6 +173,10 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
                   }}
                   transition={{ ease: 'easeOut', duration: 0.5 }}
                   active={tenantIndex === activeSlide}
+                  onViewProfileClick={() => {
+                    setViewProfileVisibility(true);
+                  }}
+                  setActiveSlide={() => setActiveSlide(tenantIndex)}
                 />
               );
             })}
@@ -289,35 +325,39 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
 interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   avatar?: string;
   active?: boolean;
+  onViewProfileClick: () => void;
+  setActiveSlide: () => void;
 }
 
-const MatchedSlide = styled(({ className, avatar, active = false, ...rest }: MatchedSlideProps) => {
-  return (
-    <motion.div className={`match-property-slide ${className}`} {...rest}>
-      <Avatar image={avatar} className={`${active ? 'active' : ''}`} />
+const MatchedSlide = styled(
+  ({ className, avatar, active = false, onViewProfileClick, setActiveSlide, ...rest }: MatchedSlideProps) => {
+    return (
+      <motion.div className={`match-property-slide ${className}`} {...rest}>
+        <Avatar image={avatar} className={`${active ? 'active' : ''}`} onClick={setActiveSlide} />
 
-      <motion.div
-        className='action-buttons'
-        animate={{ opacity: active ? 1 : 0 }}
-        transition={{ ease: 'easeOut', duration: 0.5 }}>
-        <div className='tenant-details'>
-          <Typography variant='body4' className='tenant-name'>
-            Nancy Jones
-          </Typography>
-          <Typography variant='body4' className='tenant-dot'>
-            •
-          </Typography>
-          <Typography variant='body4' className='tenant-match-percentage'>
-            34%
-          </Typography>
-        </div>
-        <Button size='small' variant='secondary'>
-          View profile
-        </Button>
+        <motion.div
+          className='action-buttons'
+          animate={{ opacity: active ? 1 : 0 }}
+          transition={{ ease: 'easeOut', duration: 0.5 }}>
+          <div className='tenant-details'>
+            <Typography variant='body4' className='tenant-name'>
+              Nancy Jones
+            </Typography>
+            <Typography variant='body4' className='tenant-dot'>
+              •
+            </Typography>
+            <Typography variant='body4' className='tenant-match-percentage'>
+              34%
+            </Typography>
+          </div>
+          <Button size='small' variant='secondary' onClick={onViewProfileClick}>
+            View profile
+          </Button>
+        </motion.div>
       </motion.div>
-    </motion.div>
-  );
-})`
+    );
+  }
+)`
   &.match-property-slide {
     display: grid;
     row-gap: 16px;
