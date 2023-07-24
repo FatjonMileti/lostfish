@@ -2,6 +2,9 @@ import * as process from 'process';
 require('dotenv').config();
 
 export default {
+  isDevelopment: process.env.NODE_ENV === 'development',
+  isProduction: ['production', 'UAT'].includes(process.env.NODE_ENV as string),
+  uses3Bucket: process.env.USE_S3_BACKET === 'true',
   mongo: {
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
@@ -44,7 +47,7 @@ export default {
     integrationKey: process.env.INTEGRATION_KEY ?? '',
     privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
     dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
-    templateId: process.env.TEMPLATE_ID ?? '',
+    rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
     basePath: process.env.BASE_PATH ?? ''
   },
   aws: {

@@ -2,8 +2,7 @@ import { model, PaginateModel, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { UserDocument, Role } from './user.interface';
 
-const schema = new Schema<UserDocument>({
-  user_id: Number,
+const schema: Schema<UserDocument> = new Schema<UserDocument>({
   hash: { type: String, default: null },
   role: {
     type: String,

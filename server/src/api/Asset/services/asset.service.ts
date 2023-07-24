@@ -5,15 +5,9 @@ import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
-import offrIoService from '../../../external-services/offr-io.service';
 
 import { Types } from 'mongoose';
-import {
-  getCurrentPropertyTypeForPost,
-  getCurrentStatusForGet,
-  getCurrentStatusForPost,
-  validateToSendToOffrIo
-} from '../helpers';
+import { getCurrentStatusForGet } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import fileService from '../../../external-services/file.service';
@@ -69,23 +63,6 @@ const findAll = async (req: Request, res: Response) => {
   }
 };
 
-const syncAll = async (req: Request, res: Response) => {
-  const response = await offrIoService.getAssets();
-  // const dataToUpdate = response.map((data: any) => {
-  //   return {
-  //     updateOne: {
-  //       filter: { name: data.name },
-  //       update: {
-  //         ...data
-  //       },
-  //       upsert: true
-  //     }
-  //   };
-  // });
-  // await AssetModel.bulkWrite(dataToUpdate, { ordered: false });
-  res.status(httpStatus.OK).send(response);
-};
-
 const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: AssetDocument = req.body;
   data.created_by = res.locals.user_id;
@@ -105,24 +82,6 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   }
 
   try {
-    if (validateToSendToOffrIo(data)) {
-      const response = await offrIoService.createAsset(data);
-      if (response.status === httpStatus.CREATED) {
-        data.asset_id = response.id;
-        data.asset_attribute = response.asset_attribute;
-
-        if (data.hasOwnProperty('property_images') && data.property_images.length > 0) {
-          const responseImages = await offrIoService.addAssetDocument(
-            req.body.property_images,
-            data.asset_id
-          );
-          if (responseImages && responseImages.length > 0) {
-            data.asset_files = [...responseImages];
-          }
-        }
-      }
-    }
-
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
 
@@ -168,7 +127,6 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     if (req.body.hasOwnProperty('property_type')) {
       asset.property_type = data.property_type;
-      asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
     }
 
     if (data.hasOwnProperty('asset_rent')) {
@@ -203,22 +161,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.contact_details = data.contact_details;
     }
 
-    if (asset.asset_id) {
-      if (req.body.hasOwnProperty('property_images') && data.property_images.length > 0) {
-        const responseImages = await offrIoService.addAssetDocument(req.body.property_images, asset.asset_id);
-        if (responseImages && responseImages.length > 0) {
-          asset.asset_files = [...asset.asset_files, ...responseImages];
-        }
-      }
-
-      const response = await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
-      if (response.status === 200) {
-        asset.asset_attribute = response.data.asset_attribute;
-      }
-    } else {
-      if (req.body.hasOwnProperty('property_images')) {
-        asset.property_images = data.property_images;
-      }
+    if (req.body.hasOwnProperty('property_images')) {
+      asset.property_images = data.property_images;
     }
 
     await asset.save();
@@ -357,7 +301,6 @@ export default {
   getById,
   createAsset,
   deleteAsset,
-  syncAll,
   updateAsset,
   findById,
   sendAssetInvitation,

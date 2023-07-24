@@ -15,13 +15,10 @@ interface ContactUser extends Document {
   address: string;
 }
 
-export interface UserDocument extends ContactUser {
-  user_id: number;
-  hash: string;
-  role: Role;
-  email: string;
+export interface UserDocument extends Document {
   first_name: string;
   last_name: string;
+  email: string;
   is_disabled: boolean;
   google: {
     username: string;
@@ -48,9 +45,13 @@ export interface UserDocument extends ContactUser {
     text_when_someone_accept_my_match: boolean;
   };
   documents: any[];
+  address: string;
+
+  role: Role;
+  hash: string;
+  last_login: Date;
   confirmation_token?: string;
   rules?: any;
-  last_login: Date;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

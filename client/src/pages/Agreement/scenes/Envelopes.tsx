@@ -3,6 +3,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
+import { Link } from 'react-router-dom';
 
 const state: IGridState = {
   loading: true,
@@ -36,27 +37,11 @@ const columns: GridColDef[] = [
       `${params.row.tenant.first_name || ''} ${params.row.tenant.last_name || ''}`
   },
   {
-    field: 'sign_url_landlord',
-    headerName: 'Signt (Landlord)',
+    field: 'details',
+    headerName: 'Details',
     width: 130,
     renderCell: (params: any) => {
-      return (
-        <a href={params.row.sign_url_landlord} target='_blank'>
-          Sign
-        </a>
-      );
-    }
-  },
-  {
-    field: 'sign_url_tenant',
-    headerName: 'Signt (Tenant)',
-    width: 130,
-    renderCell: (params: any) => {
-      return (
-        <a href={params.row.sign_url_tenant} target='_blank'>
-          Sign
-        </a>
-      );
+      return <Link to={`/agreement/${params.row.id}`}>Details</Link>;
     }
   }
 ];
@@ -80,8 +65,6 @@ export const Envelopes = () => {
       loading: false
     }));
   };
-
-  console.log({ list });
 
   return (
     <div style={{ height: 350, width: '100%' }}>

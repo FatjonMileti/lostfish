@@ -7,25 +7,13 @@ import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
 
-import propertyImage1 from '../images/gallery1.png';
-import propertyImage2 from '../images/gallery2.png';
-import propertyImage3 from '../images/gallery3.png';
-import propertyImage4 from '../images/gallery-4.png';
-
-import { avatars } from '../../HomeLoggedIn/avatars';
-
 import { Label } from '../../../components/Label';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useCriteriaStore } from '../../../globalState/criteria';
-
-// const properties = [
-//   { images: [propertyImage1], avatar: avatars[0].image },
-//   { images: [propertyImage2], avatar: avatars[1].image },
-//   { images: [propertyImage3], avatar: avatars[2].image },
-//   { images: [propertyImage4], avatar: avatars[3].image }
-// ];
+import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
+import { SetCriteria } from '../../SetCriteria/SetCriteria';
 
 interface PropertyType {
   property_images: any[];
@@ -37,13 +25,19 @@ interface PropertyType {
   asset_rent: {
     rental_amount?: string;
   };
+
+  id: string;
+  matchId?: string;
+  chosen: boolean;
+  starred: boolean;
 }
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
-
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
+  const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
+  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
 
   const { auth } = useUserStore();
 
@@ -53,12 +47,16 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     getProperties();
   }, []);
 
+  const property = properties[activeSlide];
   const getProperties = async () => {
     const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
+    setProperties(data.docs.map((doc: any) => ({ ...doc, chosen: false, starred: false, id: doc._id })));
 
-    console.log('properties: ', data);
-
-    setProperties(data.docs);
+    await Promise.all(
+      data.docs.map(async (d: any) => {
+        await isPropertyChosen(d._id);
+      })
+    );
   };
 
   const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % properties?.length));
@@ -66,11 +64,102 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
+  const isPropertyChosen = async (propertyId: string): Promise<void> => {
+    try {
+      const {
+        data: { chosen, starred, _id }
+      } = await axios(auth.access_token).get(`/api/match/check?tenant=${propertyId}`);
+
+      const match = {
+        chosen,
+        starred,
+        matchId: _id
+      };
+
+      setProperties((properties) => {
+        const propertiesCopy = [...properties];
+
+        const property = propertiesCopy.find((p: any) => p.id === propertyId);
+        if (property) {
+          const tenantIndex = propertiesCopy.indexOf(property);
+          propertiesCopy[tenantIndex].chosen = match.chosen;
+          propertiesCopy[tenantIndex].starred = match.starred;
+          propertiesCopy[tenantIndex].matchId = match.matchId;
+        }
+
+        return propertiesCopy;
+      });
+    } catch (err: any) {
+      if (err?.response?.status === 404) {
+        setProperties((properties) => {
+          const propertiesCopy = [...properties];
+
+          const property = propertiesCopy.find((p: any) => p.id === propertyId);
+          if (property) {
+            const tenantIndex = propertiesCopy.indexOf(property);
+            propertiesCopy[tenantIndex].chosen = false;
+            propertiesCopy[tenantIndex].starred = false;
+            propertiesCopy[tenantIndex].matchId = undefined;
+          }
+          return propertiesCopy;
+        });
+
+        return;
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const addOrUpdateTenantMatch = async (
+    tenantId: string,
+    chosen: boolean = false,
+    starred: boolean = false
+  ) => {
+    const matchId = properties.find((p) => p.id === tenantId)?.matchId || false;
+
+    if (matchId) {
+      await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred });
+    } else {
+      await axios(auth.access_token).post('/api/match/property', { tenant: tenantId, chosen, starred });
+    }
+
+    isPropertyChosen(property?.id);
+  };
+
+  const removeTenantMatch = async (matchId: string) => {
+    try {
+      await axios(auth.access_token).delete(`/api/match/${matchId}`);
+      isPropertyChosen(property.id);
+    } catch (err) {
+      throw err;
+    } finally {
+    }
+  };
+
   return (
     <div className={`${className}`}>
+      <ImproveTrustScoreModal
+        open={improveTrustScoreModalVisibility}
+        closeModal={() => setImproveTrustScoreModalVisibility(false)}
+        refineYourSearchClick={() => {
+          setImproveTrustScoreModalVisibility(false);
+          setCriteriaModalVisibility(true);
+        }}
+      />
+      {criteriaModalVisibility && (
+        <SetCriteria
+          setShowModal={setCriteriaModalVisibility}
+          afterRefineSearch={() => {
+            setCriteriaModalVisibility(false);
+            getProperties();
+          }}
+        />
+      )}
+
       <div>
         <Typography>
-          Matching with <span className='matching-with'>renters in {criteriaStore.areaOfInterest} +</span>
+          Matching with <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
         </Typography>
         <Typography variant='body5' className='sub-title'>
           Displaying 1240 matches. Enter more details to refine your search.
@@ -94,7 +183,11 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
               deal without maximum trust score.
             </Typography>
 
-            <Label variant='tertiary' size='medium' className='improve-link'>
+            <Label
+              variant='tertiary'
+              size='medium'
+              className='improve-link'
+              onClick={() => setImproveTrustScoreModalVisibility(true)}>
               Improve trust score
               <Icon icon='arrow-right-1' size={16} />
             </Label>
@@ -106,7 +199,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                 <MatchedSlide
                   key={propertyIndex}
                   className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${process.env.REACT_APP_BACK_END_URL}/api/s3/${property_images[0]?.key}`}
+                  image={`${process.env.REACT_APP_BACK_END_URL}/api/file/${property_images[0]?.key}`}
                   avatar={''}
                   animate={{
                     x:
@@ -135,15 +228,34 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
             size='large'
           />
           <div className='match-actions'>
-            <IconButton className='remove-button' size='large'>
+            <IconButton
+              className='remove-button'
+              size='large'
+              onClick={() => {
+                if (property?.matchId) {
+                  removeTenantMatch(property?.matchId);
+                }
+              }}
+              disabled={!property?.matchId}>
               <Icon icon='close' size={28} />
             </IconButton>
 
-            <IconButton size='large' inverted className='check-button'>
+            <IconButton
+              size='large'
+              inverted
+              className={`check-button ${property?.chosen ? 'active' : ''}`}
+              onClick={() => {
+                addOrUpdateTenantMatch(property.id, true, property?.starred);
+              }}>
               <Icon icon='checked' size={28} />
             </IconButton>
 
-            <IconButton className='star-button' size='large'>
+            <IconButton
+              size='large'
+              className={`star-button ${property?.starred ? 'active' : ''}`}
+              onClick={() => {
+                addOrUpdateTenantMatch(property.id, property?.chosen, true);
+              }}>
               <Icon icon='star-solid' size={28} />
             </IconButton>
           </div>
@@ -228,6 +340,18 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           .star-button {
             padding: 16px;
             border: 2px solid #0d2a38;
+
+            &.active {
+              border: 2px solid #184d6d;
+              background: #184d6d;
+              color: white;
+
+              :hover {
+                border: 2px solid #0d2a38;
+                background: #0d2a38;
+              }
+            }
+
             :hover {
               border: 2px solid white;
               background-color: white;
@@ -236,18 +360,31 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
           .remove-button {
             padding: 16px;
-            border: 2px solid #0d2a38;
+            border: 2px solid #b4263b;
+            color: #b4263b;
+
             :hover {
               border: 2px solid white;
               background-color: white;
+            }
+
+            &:disabled {
+              border: 2px solid #a7a7a7;
+              color: #a7a7a7;
             }
           }
 
           .check-button {
             padding: 30px;
+            border: 2px solid #184d6d;
             :hover {
               background-color: #0d2a38;
               color: white;
+            }
+
+            &.active {
+              border: 2px solid #408140;
+              background: #408140;
             }
           }
         }

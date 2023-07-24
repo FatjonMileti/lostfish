@@ -1,4 +1,6 @@
 export type IconNames = 
+  | "right-arrow"
+  | "close"
   | "star-solid"
   | "bathtub"
   | "double-bed"
@@ -31,7 +33,6 @@ export type IconNames =
   | "arrow-left-1"
   | "facebook"
   | "arrow-left"
-  | "close"
   | "plus"
   | "eye-invisible"
   | "eye"

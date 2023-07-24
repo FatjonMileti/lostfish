@@ -31,7 +31,7 @@ const schema = new Schema<CriteriaDocument>({
   specific_property_features: [String],
   budget: String,
   deposit_amount: String,
-  contact_details: [String],
+  contract_details: [String],
   credit_score_requirements: String,
   transaction_type_string: {
     type: String,

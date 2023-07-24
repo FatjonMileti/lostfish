@@ -10,7 +10,6 @@ import userService from '../../User/user.service';
 import sendApplicationTemplate from '../../../utils/templates/sendApplicationTemplate';
 import { RentStatusString } from '../asset.interface';
 import generalTemplate from '../../../utils/templates/generalTemplate';
-import offrIoService from '../../../external-services/offr-io.service';
 import { getCurrentStatusForPost } from '../helpers';
 import MailService from '../../../utils/email';
 import httpStatus from 'http-status';
@@ -106,7 +105,7 @@ const updateAssetApplication = async (req: Request, res: Response) => {
       const asset = await assetService.findById(application.asset.toString());
       /* TODO This is to be updated. Right now we make property completed when client makes payment, but need to be done when agent confirm it */
       asset.status_string = 'Completed';
-      await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
+
       await asset.save();
     }
 
@@ -148,7 +147,6 @@ const approveAssetApplication = async (req: Request, res: Response) => {
 
     asset.status_string = getCurrentStatusForPost(RentStatusString.LetAgreed);
 
-    await offrIoService.updateAssetByAssetId(asset.asset_id, asset);
     if (!asset.buyers) {
       asset.buyers = [];
     }
@@ -156,7 +154,7 @@ const approveAssetApplication = async (req: Request, res: Response) => {
     if (applicant) {
       asset.buyers.push({
         client: {
-          id: applicant?.user_id,
+          id: applicant._id,
           first_name: applicant.first_name,
           surname: applicant.last_name,
           email: applicant.email,

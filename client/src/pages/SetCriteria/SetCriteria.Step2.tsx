@@ -13,7 +13,6 @@ import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
 import { Switch } from '../../components/Switch';
 import { Select } from '../../components/Select/Select';
-import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
 export type Step2FormType = {
@@ -77,17 +76,6 @@ export const SetCriteriaStep2 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
-    //Slider
-
-    const [value, setValue] = React.useState<number[]>([80, 130]);
-
-    const handleChange = (event: Event, newValue: number | number[]) => {
-      setValue(newValue as number[]);
-      form.setValue('area', value);
-    };
-
-    //--------//
 
     return (
       <div className={`set-criteria-step-2 ${className}`}>
@@ -173,16 +161,17 @@ export const SetCriteriaStep2 = styled(
               </Typography>
               {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                <Box sx={{ width: 441 }}>
+                <div style={{ width: 441 }}>
                   <Slider
-                    value={value}
+                    value={form.getValues('area')}
                     min={10}
                     max={150}
-                    onChange={handleChange}
+                    step={10}
+                    onChange={(_, value) => form.setValue('area', value)}
                     valueLabelDisplay='on'
                     valueLabelFormat={valuetext}
                   />
-                </Box>
+                </div>
               </div>
             </div>
             <div className='section rooms-details-section'>

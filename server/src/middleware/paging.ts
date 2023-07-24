@@ -1,14 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 
+export interface IPagingOptions {
+  pagination: boolean;
+  lean: boolean;
+  sort: any;
+  page?: number;
+  limit?: number;
+}
+
 export default (defaultOptions: object = {}) =>
   (req: Request, res: Response, next: NextFunction) => {
     const { page, pageSize, sort, asc } = req.query;
 
     //default page
-    let options: object = {
+    let options: IPagingOptions = {
       pagination: false,
       lean: true,
-      sort: { createdAt: -1 },
+      sort: { created_at: -1 },
       ...defaultOptions
     };
     if (page && pageSize) {

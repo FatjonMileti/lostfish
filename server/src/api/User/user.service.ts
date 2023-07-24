@@ -148,7 +148,7 @@ const updateUser = async (req: Request, res: Response) => {
     user.phone = userBody.phone;
   }
 
-  if (userBody.description) {
+  if (req.body.hasOwnProperty('description')) {
     user.description = userBody.description;
   }
 
@@ -202,15 +202,9 @@ const createUser = async (req: Request, res: Response) => {
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = randomUUID();
-  user.contact_type = ContactType.Client;
   user.address = '';
   user.role = Role.NeWUser;
   try {
-    // const contactUser = await offrIoService.createContact(user);
-    // if (contactUser) {
-    //   user.contact_id = contactUser.id;
-    // }
-
     const userDocument = new UserModel({
       ...user
     });
@@ -315,7 +309,7 @@ const getUserPublicData = async (req: Request, res: Response) => {
     role: any;
   } = {
     is_disabled: false,
-    role: { $in: [Role.Client, Role.Agent] }
+    role: { $in: [Role.Client, Role.Agent, Role.Landlord] }
   };
 
   const users = await UserModel.aggregate([

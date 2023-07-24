@@ -11,14 +11,13 @@ import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
-import { Select } from '../../components/Select/Select';
+import { TextField } from '../../components/TextField';
 import { Tabs, Tab } from '../../components/Tab';
-import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
 export type Step3FormType = {
   idealBudget: number[];
-  depositInformation: number;
+  depositAmount?: number;
   creditScore: string;
   contractDetails: {
     Guarantor: boolean;
@@ -29,7 +28,10 @@ export type Step3FormType = {
 
 export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   idealBudget: yup.array().required(),
-  depositInformation: yup.number().required(),
+  depositAmount: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .optional(),
   creditScore: yup.string().required(),
   contractDetails: yup.object().shape({
     Guarantor: yup.boolean().required(),
@@ -68,24 +70,6 @@ export const SetCriteriaStep3 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
-    //Slider
-
-    const [value, setValue] = React.useState<number[]>([2000, 5200]);
-
-    const handleChange = (event: Event, newValue: number | number[]) => {
-      setValue(newValue as number[]);
-      form.setValue('idealBudget', value);
-    };
-
-    //--------//
-
-    const [activeTab, setActiveTab] = React.useState(0);
-    const [selectedButtons, setSelectedButtons] = React.useState<ButtonType[]>([]);
-
-    React.useEffect(() => {
-      form.setValue('contractDetails', selectedButtons);
-    }, [selectedButtons]);
 
     return (
       <div className={`set-criteria-step-3 ${className}`}>
@@ -141,7 +125,7 @@ export const SetCriteriaStep3 = styled(
                 },
                 {
                   name: 'Add deposit information',
-                  checked: !!form.getValues('depositInformation')
+                  checked: !!form.getValues('depositAmount')
                 },
                 {
                   name: 'Add parameters bellow your ideal credit score',
@@ -149,7 +133,7 @@ export const SetCriteriaStep3 = styled(
                 },
                 {
                   name: 'Add more contact details',
-                  checked: selectedButtons.length > 0
+                  checked: !!form.getValues('contractDetails')
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
@@ -175,30 +159,30 @@ export const SetCriteriaStep3 = styled(
               </Typography>
               {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                <Box sx={{ width: 441 }}>
+                <div style={{ width: 441 }}>
                   <Slider
-                    value={value}
+                    value={form.getValues('idealBudget')}
                     min={100}
                     max={6000}
-                    onChange={handleChange}
+                    step={100}
+                    onChange={(_, value) => form.setValue('idealBudget', value)}
                     valueLabelDisplay='on'
                     valueLabelFormat={valuetext}
                   />
-                </Box>
+                </div>
               </div>
             </div>
             <div className='section rooms-details-section'>
               <Typography className='section-title' variant='body4'>
-                Deposit information
+                Deposit details
               </Typography>
               <div className='section-content'>
-                <Select label='Months payed in advance' {...form.register('depositInformation')}>
-                  <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='5'>5</option>
-                  <option value='10'>10</option>
-                </Select>
+                <TextField
+                  label='Deposit amount'
+                  startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                  type='number'
+                  {...form.register('depositAmount')}
+                />
               </div>
             </div>
             <div className='section credit-score'>
@@ -207,11 +191,9 @@ export const SetCriteriaStep3 = styled(
               </Typography>
               <div className='tabs-wrapper'>
                 <Tabs
-                  value={activeTab}
+                  value={['Excellent', 'Good', 'Fair'].indexOf(form.getValues('creditScore'))}
                   onChange={(i: number) => {
-                    const creditScores = ['Excellent', 'Good', 'Fair'];
-                    form.setValue('creditScore', creditScores[i]);
-                    setActiveTab(i);
+                    form.setValue('creditScore', ['Excellent', 'Good', 'Fair'][i]);
                   }}>
                   <Tab label='Excellent' />
                   <Tab label='Good' />
@@ -235,20 +217,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Guarantor') ? (
+                    form.getValues('contractDetails').Guarantor ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Guarantor') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails').Guarantor ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Guarantor')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Guarantor'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Guarantor']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      Guarantor: !contractDetails.Guarantor
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Guarantor
                 </Button>
@@ -256,20 +241,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Reviewed Property') ? (
+                    form.getValues('contractDetails')['Reviewed Property'] ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Reviewed Property') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails')['Reviewed Property'] ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Reviewed Property')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Reviewed Property'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Reviewed Property']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      'Reviewed Property': !contractDetails['Reviewed Property']
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Reviewed property
                 </Button>
@@ -277,20 +265,23 @@ export const SetCriteriaStep3 = styled(
                   size='large'
                   variant='primary'
                   endIcon={
-                    selectedButtons.includes('Energy Certificate') ? (
+                    form.getValues('contractDetails')['Energy Certificate'] ? (
                       <Icon icon='close' size={16} />
                     ) : (
                       <Icon icon='plus' size={16} />
                     )
                   }
                   inverted
-                  className={`${selectedButtons.includes('Energy Certificate') ? 'active' : ''}`}
+                  className={`${form.getValues('contractDetails')['Energy Certificate'] ? 'active' : ''}`}
                   onClick={() => {
-                    if (selectedButtons.includes('Energy Certificate')) {
-                      setSelectedButtons(selectedButtons.filter((btn) => btn !== 'Energy Certificate'));
-                    } else {
-                      setSelectedButtons([...selectedButtons, 'Energy Certificate']);
-                    }
+                    const contractDetails = form.getValues(
+                      'contractDetails'
+                    ) as Step3FormType['contractDetails'];
+                    const updatedContractDetails = {
+                      ...contractDetails,
+                      'Energy Certificate': !contractDetails['Energy Certificate']
+                    };
+                    form.setValue('contractDetails', updatedContractDetails);
                   }}>
                   Energy certificate
                 </Button>
@@ -470,11 +461,10 @@ export const SetCriteriaStep3 = styled(
 
           &.rooms-details-section {
             .section-content {
-              display: flex;
-              width: 208px;
-              flex-direction: column;
-              align-items: flex-start;
-              row-gap: 4px;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr 1fr;
+              column-gap: 24px;
+              row-gap: 24px;
             }
           }
           

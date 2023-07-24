@@ -230,7 +230,7 @@ export interface AssetDocument extends Document {
     enable_downward_bidding: boolean;
     downward_bidding_allowed_percentage: number;
   };
-  asset_rent?: {
+  asset_rent: {
     rental_amount: number;
     rental_frequency: RentalFrequency;
     deposit_amount: number;

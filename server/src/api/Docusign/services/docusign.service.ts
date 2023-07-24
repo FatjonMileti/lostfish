@@ -1,17 +1,21 @@
-import docusign, { EnvelopeDefinition } from 'docusign-esign';
+import docusign, { EnvelopeDefinition, ErrorDetails } from 'docusign-esign';
 import config from '../../../config';
-const jwtConfig = config.docusign;
 import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import DocusignToken from '../../../data/docusign.token';
-import Envelope from '../schemas/envelope';
+import Envelope, { IEnvelope } from '../schemas/envelope';
 import httpStatus from 'http-status';
 import userService from '../../User/user.service';
 import createError from 'http-errors';
-import { UserDocument, Role } from '../../User/user.interface';
+import { Role, UserDocument } from '../../User/user.interface';
 import util from 'util';
 import docusignLocalService from './docusign.local.service';
+import assetService from '../../Asset/services/asset.service';
+import { AssetDocument } from '../../Asset/asset.interface';
+import moment from 'moment';
+
+const jwtConfig = config.docusign;
 
 const SCOPES = ['signature', 'impersonation'];
 const dsApiClient = new docusign.ApiClient();
@@ -21,6 +25,39 @@ interface IViewRequestSigners {
   tenant: UserDocument;
   envelopeId: string;
 }
+
+const createUserSignUrl = async ({
+  envelopeId,
+  envelopesApi,
+  viewRequest
+}: {
+  envelopeId: string;
+  envelopesApi: any;
+  viewRequest: any;
+}): Promise<string> => {
+  const result = await envelopesApi.createRecipientView(jwtConfig.appAccountId, envelopeId, {
+    recipientViewRequest: viewRequest
+  });
+
+  return result.url ?? '';
+};
+
+const createSingleRequestForLoggedInUser = async ({
+  user,
+  envelopeId
+}: {
+  user: UserDocument;
+  envelopeId: string;
+}): Promise<{ viewRequest: any }> => {
+  const viewRequest = await makeRecipientViewRequest({
+    user,
+    envelopId: envelopeId
+  });
+
+  return {
+    viewRequest
+  };
+};
 
 const createViewRequestForSigners = async ({
   landlord,
@@ -71,7 +108,7 @@ const getToken = async () => {
       jwtConfig.dsJWTClientId,
       jwtConfig.impersonatedUserGuid,
       ['signature'],
-      fs.readFileSync(path.join(__dirname, '../../../', 'private.key')),
+      fs.readFileSync(path.join(__dirname, '../../../../', 'private.key')),
       3600
     );
 
@@ -94,27 +131,57 @@ const getEnvelopesApi = async () => {
   return new docusign.EnvelopesApi(dsApiClient);
 };
 
-const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, company: string) => {
+const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: AssetDocument) => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
-  env.templateId = jwtConfig.templateId;
+  env.templateId = jwtConfig.rentingTemplateId;
   // @ts-ignore
-  const text = docusign.Text.constructFromObject({
-    tabLabel: 'company_name',
-    value: company
+  const propertyAddress = docusign.Text.constructFromObject({
+    tabLabel: 'property_address',
+    value: property.asset_address.text ?? ''
+  });
+  // @ts-ignore
+  const documentSendingDate = docusign.Text.constructFromObject({
+    tabLabel: 'document_sending_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+
+  // @ts-ignore
+  const nrOfMonths = docusign.Text.constructFromObject({
+    tabLabel: 'nr_of_months',
+    value: 12
+  });
+  // @ts-ignore
+  const startingFromDate = docusign.Text.constructFromObject({
+    tabLabel: 'starting_from_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+  console.log({ rent: property.asset_rent.rental_amount });
+
+  // @ts-ignore
+  const rentingPrice = docusign.Text.constructFromObject({
+    tabLabel: 'renting_price',
+    value: property.asset_rent.rental_amount
+  });
+  // @ts-ignore
+  const depositValue = docusign.Text.constructFromObject({
+    tabLabel: 'deposit_value',
+    value: property.asset_rent.deposit_amount
   });
 
   // Pull together the existing and new tabs in a Tabs object:
   // @ts-ignore
-  const tabs = docusign.Tabs.constructFromObject({
-    textTabs: [text]
+  const tabsLandlord = docusign.Tabs.constructFromObject({
+    textTabs: [propertyAddress, documentSendingDate, nrOfMonths, startingFromDate, rentingPrice, depositValue]
   });
+
+  console.log({ tabsLandlord: tabsLandlord.textTabs[4] });
 
   // @ts-ignore
   const signer1 = docusign.TemplateRole.constructFromObject({
     email: landlord.email,
     name: `${landlord.first_name} ${landlord.last_name}`,
-    tabs,
+    tabs: tabsLandlord,
     clientUserId: landlord._id.toString(),
     roleName: Role.Landlord
   });
@@ -123,7 +190,6 @@ const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, company: str
   const signer2 = docusign.TemplateRole.constructFromObject({
     email: tenant.email,
     name: `${tenant.first_name} ${tenant.last_name}`,
-    tabs,
     clientUserId: tenant._id.toString(),
     roleName: Role.Client
   });
@@ -194,17 +260,94 @@ const updateUrl = async (request: Request, response: Response) => {
   return existingEnvelope;
 };
 
-const sendEnvelope = async (request: Request, response: Response) => {
+const generateNewUrlForLoggedInUser = async ({
+  envelope,
+  user
+}: {
+  envelope: IEnvelope;
+  user: UserDocument;
+}) => {
+  const envelopesApi = await getEnvelopesApi();
+
+  const { viewRequest } = await createSingleRequestForLoggedInUser({
+    user,
+    envelopeId: envelope.envelope_id
+  });
+
+  const userResults = await envelopesApi.createRecipientView(jwtConfig.appAccountId, envelope.envelope_id, {
+    recipientViewRequest: viewRequest
+  });
+
+  if (user.role === Role.Landlord) {
+    envelope.sign_url_landlord = userResults.url ?? '';
+  } else if (user.role === Role.Client) {
+    envelope.sign_url_tenant = userResults.url ?? '';
+  }
+
+  return envelope;
+};
+
+const updateUrlForLoggedInUser = async (request: Request, response: Response) => {
+  const existingEnvelope = await Envelope.findOne({ _id: request.params.id });
+  if (!existingEnvelope) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
+  }
+  const user: UserDocument | null = await userService.findOne({ _id: response.locals.user_id });
+  if (!user) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'User not found' });
+  }
+
   try {
     const envelopesApi = await getEnvelopesApi();
 
-    const landlord = await userService.findOne({ _id: response.locals.user_id });
-    const tenant = await userService.findOne({ _id: request.body.tenant });
-    if (!landlord || !tenant) {
+    const { viewRequest } = await createSingleRequestForLoggedInUser({
+      user,
+      envelopeId: existingEnvelope.envelope_id
+    });
+
+    const userResults = await envelopesApi.createRecipientView(
+      jwtConfig.appAccountId,
+      existingEnvelope.envelope_id,
+      {
+        recipientViewRequest: viewRequest
+      }
+    );
+
+    if (user.role === Role.Landlord) {
+      existingEnvelope.sign_url_landlord = userResults.url ?? '';
+    } else if (user.role === Role.Client) {
+      existingEnvelope.sign_url_tenant = userResults.url ?? '';
+    }
+
+    await existingEnvelope.save();
+
+    response.send(existingEnvelope);
+  } catch (error: any) {
+    response.status(httpStatus.BAD_REQUEST).send({ ...error });
+  }
+};
+
+const createEnvelope = async (request: Request, response: Response) => {
+  const { tenant, property_id } = request.body;
+  try {
+    const envelopesApi = await getEnvelopesApi();
+
+    const [landlord, tenantUser, property] = await Promise.all([
+      userService.findOne({ _id: response.locals.user_id }),
+      userService.findOne({ _id: request.body.tenant }),
+      assetService.findById(property_id)
+    ]);
+    if (!landlord || !tenantUser) {
       throw createError(httpStatus.NOT_FOUND, { message: 'User not found' });
     }
 
-    const envelope = makeEnvelope(landlord, tenant, 'Lostfish');
+    if (!property) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'Property not found' });
+    }
+
+    const envelope = makeEnvelope(landlord, tenantUser, property);
+
+    // return response.json(envelope);
 
     const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
       envelopeDefinition: envelope
@@ -215,36 +358,28 @@ const sendEnvelope = async (request: Request, response: Response) => {
     }
 
     if (results && results.envelopeId) {
-      const viewRequestLandlord = makeRecipientViewRequest({
-        user: landlord,
-        envelopId: results.envelopeId
+      const { viewRequestLandlord, viewRequestTenant } = await createViewRequestForSigners({
+        landlord,
+        tenant: tenantUser,
+        envelopeId: results.envelopeId
       });
 
-      const viewRequestTenant = makeRecipientViewRequest({
-        user: tenant,
-        envelopId: results.envelopeId
+      const landlordUrl = await createUserSignUrl({
+        envelopeId: results.envelopeId,
+        envelopesApi,
+        viewRequest: viewRequestLandlord
       });
 
-      const landlordResults = await envelopesApi.createRecipientView(
-        jwtConfig.appAccountId,
-        results.envelopeId,
-        {
-          recipientViewRequest: viewRequestLandlord
-        }
-      );
-
-      const tenantResults = await envelopesApi.createRecipientView(
-        jwtConfig.appAccountId,
-        results.envelopeId,
-        {
-          recipientViewRequest: viewRequestTenant
-        }
-      );
+      const tenantUrl = await createUserSignUrl({
+        envelopeId: results.envelopeId,
+        envelopesApi,
+        viewRequest: viewRequestTenant
+      });
 
       const existingEnvelope = await docusignLocalService.setSignUrlForUsers(
         results.envelopeId,
-        landlordResults.url,
-        tenantResults.url
+        landlordUrl,
+        tenantUrl
       );
 
       return response.send(existingEnvelope);
@@ -252,6 +387,7 @@ const sendEnvelope = async (request: Request, response: Response) => {
       response.status(httpStatus.BAD_REQUEST).send({ message: '' });
     }
   } catch (error: any) {
+    console.log({ error });
     return response.status(httpStatus.BAD_REQUEST).send({ ...error?.response?.body });
   }
 };
@@ -265,9 +401,11 @@ const retrieveSignedDocuments = async (envelopeId: string) => {
     console.log({ documentsResponse: JSON.stringify(documentsResponse) });
 
     if (documentsResponse) {
-      documentsResponse.envelopeDocuments?.forEach((doc: any) => {
-        getSingleDocument(envelopeId, doc);
-      });
+      documentsResponse.envelopeDocuments
+        ?.filter((item: any) => item.type === 'content')
+        .forEach((doc: any) => {
+          getSingleDocument(envelopeId, doc);
+        });
     }
 
     // if(documentsResponse){
@@ -304,12 +442,14 @@ const getSingleDocument = async (envelopeId: string, doc: any) => {
 
 const fetchAllEnvelopes = async () => {
   try {
-    const envelopesApi = new docusign.EnvelopesApi();
+    const envelopesApi = await getEnvelopesApi();
 
     // Set the criteria for fetching envelopes
     const options = {
       count: '100', // Maximum number of envelopes to retrieve in one call (adjust as needed)
-      status: 'completed' // Optional: specify the status of the envelopes to filter
+      status: 'completed', // Optional: specify the status of the envelopes to filter,
+      fromDate: '2023-01-01',
+      toDate: '2023-12-31'
     };
 
     // Fetch the envelopes using the specified criteria
@@ -323,6 +463,7 @@ const fetchAllEnvelopes = async () => {
       envelopes.forEach((envelope) => {
         console.log(`Envelope ID: ${envelope.envelopeId}, Status: ${envelope.status}`);
         // Add your code to perform any necessary operations on each envelope
+        console.log({ envelope });
       });
 
       console.log('Envelopes fetched successfully.');
@@ -332,7 +473,8 @@ const fetchAllEnvelopes = async () => {
   }
 };
 
-// retrieveSignedDocuments('2a573eba-f8ba-4663-82d6-c33f9134e476');
+//retrieveSignedDocuments('2a573eba-f8ba-4663-82d6-c33f9134e476');
+//fetchAllEnvelopes();
 
 export default {
   getConsent,
@@ -340,9 +482,11 @@ export default {
   makeRecipientViewRequest,
   getEnvelopesApi,
   makeEnvelope,
-  sendEnvelope,
+  createEnvelope,
   updateUrl,
-  getSingleDocument
+  getSingleDocument,
+  updateUrlForLoggedInUser,
+  generateNewUrlForLoggedInUser
 };
 
 const test = {
