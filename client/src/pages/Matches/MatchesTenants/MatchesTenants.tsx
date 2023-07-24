@@ -36,6 +36,7 @@ interface TenantType {
   depositAmount: string;
   chosen: boolean;
   starred: boolean;
+  matchId?: string;
 }
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
@@ -54,16 +55,51 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     getTenants();
   }, []);
 
-  React.useEffect(() => {
-    if (tenants[activeSlide]) {
-      isTenantChosen(tenants[activeSlide].id);
+  const isTenantChosen = async (tenantId: string): Promise<void> => {
+    try {
+      const {
+        data: { chosen, starred, _id }
+      } = await axios(auth.access_token).get(`/api/match/check?tenant=${tenantId}`);
+
+      const match = {
+        chosen,
+        starred,
+        matchId: _id
+      };
+
+      setTenants((tenants) => {
+        const tenantsCopy = [...tenants];
+
+        const tenant = tenantsCopy.find((t) => t.id === tenantId);
+        if (tenant) {
+          const tenantIndex = tenantsCopy.indexOf(tenant);
+          tenantsCopy[tenantIndex].chosen = match.chosen;
+          tenantsCopy[tenantIndex].starred = match.starred;
+          tenantsCopy[tenantIndex].matchId = match.matchId;
+        }
+
+        return tenantsCopy;
+      });
+    } catch (err: any) {
+      if (err?.response?.status === 404) {
+        setTenants((tenants) => {
+          const tenantsCopy = [...tenants];
+
+          const tenant = tenantsCopy.find((t) => t.id === tenantId);
+          if (tenant) {
+            const tenantIndex = tenantsCopy.indexOf(tenant);
+            tenantsCopy[tenantIndex].chosen = false;
+            tenantsCopy[tenantIndex].starred = false;
+            tenantsCopy[tenantIndex].matchId = undefined;
+          }
+          return tenantsCopy;
+        });
+
+        return;
+      } else {
+        throw err;
+      }
     }
-  }, [activeSlide]);
-
-  const isTenantChosen = async (tenantId: string) => {
-    const { data } = await axios(auth.access_token).get(`/api/match/check?tenant=${tenantId}`);
-
-    console.log('isChosen: ', data);
   };
 
   const getTenants = async () => {
@@ -94,6 +130,12 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
           starred: false
         }))
       );
+
+      await Promise.all(
+        data.docs.map(async (d: any) => {
+          await isTenantChosen(d._id);
+        })
+      );
     } catch (err) {
       throw err;
     } finally {
@@ -108,9 +150,26 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
 
   const tenant = tenants[activeSlide];
 
-  const addTenantMatch = async (tenantId: string) => {
+  const addOrUpdateTenantMatch = async (
+    tenantId: string,
+    chosen: boolean = false,
+    starred: boolean = false
+  ) => {
+    const matchId = tenants.find((t) => t.id === tenantId)?.matchId || false;
+
+    if (matchId) {
+      await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred });
+    } else {
+      await axios(auth.access_token).post('/api/match/tenant', { tenant: tenantId, chosen, starred });
+    }
+
+    isTenantChosen(tenant.id);
+  };
+
+  const removeTenantMatch = async (matchId: string) => {
     try {
-      await axios(auth.access_token).post('/api/match/tenant', { tenant: tenantId, chosen: true });
+      await axios(auth.access_token).delete(`/api/match/${matchId}`);
+      isTenantChosen(tenant.id);
     } catch (err) {
       throw err;
     } finally {
@@ -204,6 +263,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
                     setViewProfileVisibility(true);
                   }}
                   setActiveSlide={() => setActiveSlide(tenantIndex)}
+                  name={`${tenant.firstName} ${tenant.lastName}`}
                 />
               );
             })}
@@ -217,21 +277,36 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
             size='large'
           />
           <div className='match-actions'>
-            <IconButton className='remove-button' size='large'>
+            <IconButton
+              className='remove-button'
+              size='large'
+              disabled={!tenant?.matchId}
+              onClick={() => {
+                if (tenant?.matchId) {
+                  removeTenantMatch(tenant?.matchId);
+                }
+              }}>
               <Icon icon='close' size={28} />
             </IconButton>
 
             <IconButton
               size='large'
               inverted
-              className='check-button'
+              className={`check-button ${tenant?.chosen ? 'active' : ''}`}
               onClick={() => {
-                addTenantMatch(tenant.id);
+                addOrUpdateTenantMatch(tenant.id, true, tenant?.starred);
+                // addTenantMatch(tenant.id);
               }}>
               <Icon icon='checked' size={28} />
             </IconButton>
 
-            <IconButton className='star-button' size='large'>
+            <IconButton
+              className={`star-button ${tenant?.starred ? 'active' : ''}`}
+              size='large'
+              onClick={() => {
+                // starTenantMatch(tenant.id);
+                addOrUpdateTenantMatch(tenant.id, tenant?.chosen, true);
+              }}>
               <Icon icon='star-solid' size={28} />
             </IconButton>
           </div>
@@ -294,12 +369,9 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
         .slides-wrapper {
           display: flex;
           overflow-x: hidden;
-
           margin-right: -36px;
           padding-right: 36px;
-
           padding-left: calc(32px + 32px);
-
           padding-bottom: 24px;
         }
       }
@@ -318,6 +390,18 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
           .star-button {
             padding: 16px;
             border: 2px solid #0d2a38;
+
+            &.active {
+              border: 2px solid #184d6d;
+              background: #184d6d;
+              color: white;
+
+              :hover {
+                border: 2px solid #0d2a38;
+                background: #0d2a38;
+              }
+            }
+
             :hover {
               border: 2px solid white;
               background-color: white;
@@ -326,18 +410,31 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
 
           .remove-button {
             padding: 16px;
-            border: 2px solid #0d2a38;
+            border: 2px solid #b4263b;
+            color: #b4263b;
+
             :hover {
               border: 2px solid white;
               background-color: white;
+            }
+
+            &:disabled {
+              border: 2px solid #a7a7a7;
+              color: #a7a7a7;
             }
           }
 
           .check-button {
             padding: 30px;
+            border: 2px solid #184d6d;
             :hover {
               background-color: #0d2a38;
               color: white;
+            }
+
+            &.active {
+              border: 2px solid #408140;
+              background: #408140;
             }
           }
         }
@@ -360,10 +457,19 @@ interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   active?: boolean;
   onViewProfileClick: () => void;
   setActiveSlide: () => void;
+  name: string;
 }
 
 const MatchedSlide = styled(
-  ({ className, avatar, active = false, onViewProfileClick, setActiveSlide, ...rest }: MatchedSlideProps) => {
+  ({
+    className,
+    avatar,
+    active = false,
+    onViewProfileClick,
+    setActiveSlide,
+    name,
+    ...rest
+  }: MatchedSlideProps) => {
     return (
       <motion.div className={`match-property-slide ${className}`} {...rest}>
         <Avatar image={avatar} className={`${active ? 'active' : ''}`} onClick={setActiveSlide} />
@@ -374,7 +480,7 @@ const MatchedSlide = styled(
           transition={{ ease: 'easeOut', duration: 0.5 }}>
           <div className='tenant-details'>
             <Typography variant='body4' className='tenant-name'>
-              Nancy Jones
+              {name}
             </Typography>
             <Typography variant='body4' className='tenant-dot'>
               •
