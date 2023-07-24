@@ -59,8 +59,10 @@ export const SetCriteria = styled(
           'New home': true,
           'Retirement home': true,
           'Shared ownership': true,
-          Auction: true,
-          ////////// propertyFeatures////////////
+          Auction: true
+        },
+
+        propertyFeatures: {
           'Parks nearby': true,
           'Public transport nearby': true,
           'Shopping centers nearby': true
@@ -95,7 +97,7 @@ export const SetCriteria = styled(
     const step3Form = useForm<Step3FormType>({
       defaultValues: {
         idealBudget: [1000, 5000],
-        depositInformation: undefined,
+        depositAmount: undefined,
         creditScore: 'Excellent',
         contractDetails: {
           Guarantor: false,
@@ -119,7 +121,6 @@ export const SetCriteria = styled(
         // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         console.log('criteria: ', data);
-
         // step 0
         step0Form.setValue('lookingFor', data.transaction_type_string);
 
@@ -137,17 +138,20 @@ export const SetCriteria = styled(
           }
         );
 
-        (Object.keys(step1Form.getValues('propertyClass')) as [keyof Step1FormType['propertyClass']]).forEach(
-          (key) => {
-            step1Form.setValue(`propertyClass.${key}`, data.property_features.includes(key));
-          }
-        );
+        (
+          Object.keys(step1Form.getValues('propertyFeatures')) as [keyof Step1FormType['propertyFeatures']]
+        ).forEach((key) => {
+          step1Form.setValue(`propertyFeatures.${key}`, data.property_features.includes(key));
+        });
 
         // step 2
 
-        step2Form.setValue('area', data.floor_size.split('-'));
-        step2Form.setValue('nrOfBedrooms', data.room_details.number_of_bedrooms);
-        step2Form.setValue('nrOfBathrooms', data.room_details.number_of_bathrooms);
+        step2Form.setValue('area', [
+          parseInt(data.floor_size.split('-')[0]),
+          parseInt(data.floor_size.split('-')[1])
+        ]);
+        step2Form.setValue('nrOfBedrooms', data.room_details?.number_of_bedrooms);
+        step2Form.setValue('nrOfBathrooms', data.room_details?.number_of_bathrooms);
         step2Form.setValue(
           'specificPropertyFeatures',
           data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
@@ -156,12 +160,15 @@ export const SetCriteria = styled(
           }, {})
         );
         // step 3
-        step3Form.setValue('idealBudget', data.budget.split('-'));
-        step3Form.setValue('depositInformation', data.deposit_amount);
+        step3Form.setValue('idealBudget', [
+          parseInt(data.budget.split('-')[0]),
+          parseInt(data.budget.split('-')[1])
+        ]);
+        step3Form.setValue('depositAmount', data.deposit_amount);
         step3Form.setValue('creditScore', data.credit_score_requirements);
         step3Form.setValue(
           'contractDetails',
-          data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+          data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
             acc[cd] = true;
             return acc;
           }, {})
@@ -193,9 +200,11 @@ export const SetCriteria = styled(
             step1Form.getValues('propertyClass.Shared ownership') ? ['Auction'] : []
           ].flat(),
           property_features: [
-            step1Form.getValues('propertyClass.Parks nearby') ? ['Parks nearby'] : [],
-            step1Form.getValues('propertyClass.Public transport nearby') ? ['Public transport nearby'] : [],
-            step1Form.getValues('propertyClass.Shopping centers nearby') ? ['Shopping centers nearby'] : []
+            step1Form.getValues('propertyFeatures.Parks nearby') ? ['Parks nearby'] : [],
+            step1Form.getValues('propertyFeatures.Public transport nearby')
+              ? ['Public transport nearby']
+              : [],
+            step1Form.getValues('propertyFeatures.Shopping centers nearby') ? ['Shopping centers nearby'] : []
           ].flat(),
 
           // step2
@@ -210,9 +219,9 @@ export const SetCriteria = styled(
 
           // step 3
           budget: `${step3Form.getValues('idealBudget')[0]} - ${step3Form.getValues('idealBudget')[1]}`,
-          deposit_amount: step3Form.getValues('depositInformation'),
+          deposit_amount: step3Form.getValues('depositAmount'),
           credit_score_requirements: step3Form.getValues('creditScore'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key)
         };

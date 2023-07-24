@@ -11,14 +11,13 @@ import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
-import { Select } from '../../components/Select/Select';
+import { TextField } from '../../components/TextField';
 import { Tabs, Tab } from '../../components/Tab';
-import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 
 export type Step3FormType = {
   idealBudget: number[];
-  depositInformation: number;
+  depositAmount?: number;
   creditScore: string;
   contractDetails: {
     Guarantor: boolean;
@@ -29,7 +28,10 @@ export type Step3FormType = {
 
 export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   idealBudget: yup.array().required(),
-  depositInformation: yup.number().required(),
+  depositAmount: yup
+    .number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .optional(),
   creditScore: yup.string().required(),
   contractDetails: yup.object().shape({
     Guarantor: yup.boolean().required(),
@@ -68,8 +70,6 @@ export const SetCriteriaStep3 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
-    //---------//
 
     return (
       <div className={`set-criteria-step-3 ${className}`}>
@@ -125,7 +125,7 @@ export const SetCriteriaStep3 = styled(
                 },
                 {
                   name: 'Add deposit information',
-                  checked: !!form.getValues('depositInformation')
+                  checked: !!form.getValues('depositAmount')
                 },
                 {
                   name: 'Add parameters bellow your ideal credit score',
@@ -164,6 +164,7 @@ export const SetCriteriaStep3 = styled(
                     value={form.getValues('idealBudget')}
                     min={100}
                     max={6000}
+                    step={100}
                     onChange={(_, value) => form.setValue('idealBudget', value)}
                     valueLabelDisplay='on'
                     valueLabelFormat={valuetext}
@@ -173,16 +174,15 @@ export const SetCriteriaStep3 = styled(
             </div>
             <div className='section rooms-details-section'>
               <Typography className='section-title' variant='body4'>
-                Deposit information
+                Deposit details
               </Typography>
               <div className='section-content'>
-                <Select label='Months payed in advance' {...form.register('depositInformation')}>
-                  <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='5'>5</option>
-                  <option value='10'>10</option>
-                </Select>
+                <TextField
+                  label='Deposit amount'
+                  startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
+                  type='number'
+                  {...form.register('depositAmount')}
+                />
               </div>
             </div>
             <div className='section credit-score'>
@@ -461,11 +461,10 @@ export const SetCriteriaStep3 = styled(
 
           &.rooms-details-section {
             .section-content {
-              display: flex;
-              width: 208px;
-              flex-direction: column;
-              align-items: flex-start;
-              row-gap: 4px;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr 1fr;
+              column-gap: 24px;
+              row-gap: 24px;
             }
           }
           
