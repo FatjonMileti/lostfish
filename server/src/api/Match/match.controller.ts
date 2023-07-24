@@ -3,8 +3,9 @@ import { MatchDocument, MatchingType } from './match.interface';
 import MatchService from './match.service';
 import authorize from '../../middleware/authorize';
 import paging, { IPagingOptions } from '../../middleware/paging';
-import { IMatchQueryParams } from './match.schema';
+import MatchSchema, { IMatchQueryParams } from './match.schema';
 import { Role } from '../User/user.interface';
+import httpStatus from 'http-status';
 
 const router: Router = Router();
 
@@ -18,6 +19,7 @@ export class MatchController {
 
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
+    router.get('/check', authorize(), this.getMatchByUserOrPropertyId);
     router.get('/:id', authorize(), this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
@@ -159,6 +161,35 @@ export class MatchController {
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch matches.' });
     }
+  };
+
+  /**
+   * @api {get} /api/match/check Check if a match exist
+   * @apiDescription  Get match by tenant or property
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/check
+   * @apiQuery {String} [tenant] Tenant id
+   * @apiQuery {String} [property] Property id
+   * @apiUse bearer
+   */
+  private getMatchByUserOrPropertyId = async (req: Request, res: Response) => {
+    const { tenant, property } = req.query;
+
+    if (tenant) {
+      const getMatch = await MatchSchema.findOne({ created_by: res.locals.user_id, tenant });
+      if (!getMatch) {
+        return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+      }
+    }
+
+    if (property) {
+      const getPropMatch = await MatchSchema.findOne({ created_by: res.locals.user_id, property });
+      if (!getPropMatch) {
+        return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+      }
+    }
+
+    res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
   };
 
   /**
