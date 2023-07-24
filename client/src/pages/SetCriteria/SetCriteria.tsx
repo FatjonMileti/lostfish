@@ -97,7 +97,7 @@ export const SetCriteria = styled(
     const step3Form = useForm<Step3FormType>({
       defaultValues: {
         idealBudget: [1000, 5000],
-        depositInformation: undefined,
+        depositAmount: undefined,
         creditScore: 'Excellent',
         contractDetails: {
           Guarantor: false,
@@ -164,11 +164,11 @@ export const SetCriteria = styled(
           parseInt(data.budget.split('-')[0]),
           parseInt(data.budget.split('-')[1])
         ]);
-        step3Form.setValue('depositInformation', data.deposit_amount);
+        step3Form.setValue('depositAmount', data.deposit_amount);
         step3Form.setValue('creditScore', data.credit_score_requirements);
         step3Form.setValue(
           'contractDetails',
-          data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+          data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
             acc[cd] = true;
             return acc;
           }, {})
@@ -219,9 +219,9 @@ export const SetCriteria = styled(
 
           // step 3
           budget: `${step3Form.getValues('idealBudget')[0]} - ${step3Form.getValues('idealBudget')[1]}`,
-          deposit_amount: step3Form.getValues('depositInformation'),
+          deposit_amount: step3Form.getValues('depositAmount'),
           credit_score_requirements: step3Form.getValues('creditScore'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key)
         };
