@@ -20,6 +20,7 @@ import { Button } from '../../../components/Button';
 import { ViewProfile } from './ViewProfile';
 
 interface TenantType {
+  id: string;
   avatar?: string;
   firstName: string;
   lastName: string;
@@ -33,6 +34,8 @@ interface TenantType {
   nrOfBathrooms: string;
   specificPropertyFeatures: string[];
   depositAmount: string;
+  chosen: boolean;
+  starred: boolean;
 }
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
@@ -51,6 +54,18 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     getTenants();
   }, []);
 
+  React.useEffect(() => {
+    if (tenants[activeSlide]) {
+      isTenantChosen(tenants[activeSlide].id);
+    }
+  }, [activeSlide]);
+
+  const isTenantChosen = async (tenantId: string) => {
+    const { data } = await axios(auth.access_token).get(`/api/match/check?tenant=${tenantId}`);
+
+    console.log('isChosen: ', data);
+  };
+
   const getTenants = async () => {
     try {
       setLoadingTenants(true);
@@ -58,6 +73,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
 
       setTenants(
         data.docs.map((doc: any) => ({
+          id: doc._id,
           avatar: doc.avatar,
           firstName: doc.first_name,
           lastName: doc.last_name,
@@ -73,7 +89,9 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
           nrOfBedrooms: doc?.criteria?.room_details?.number_of_bedrooms || '',
           nrOfBathrooms: doc?.criteria?.room_details?.number_of_bathrooms || '',
           specificPropertyFeatures: doc?.criteria?.specific_property_features || [],
-          depositAmount: doc?.criteria?.deposit_amount || ''
+          depositAmount: doc?.criteria?.deposit_amount || '',
+          chosen: false,
+          starred: false
         }))
       );
     } catch (err) {
@@ -89,6 +107,15 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   };
 
   const tenant = tenants[activeSlide];
+
+  const addTenantMatch = async (tenantId: string) => {
+    try {
+      await axios(auth.access_token).post('/api/match/tenant', { tenant: tenantId, chosen: true });
+    } catch (err) {
+      throw err;
+    } finally {
+    }
+  };
 
   return (
     <div className={`${className}`}>
@@ -194,7 +221,13 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
               <Icon icon='close' size={28} />
             </IconButton>
 
-            <IconButton size='large' inverted className='check-button'>
+            <IconButton
+              size='large'
+              inverted
+              className='check-button'
+              onClick={() => {
+                addTenantMatch(tenant.id);
+              }}>
               <Icon icon='checked' size={28} />
             </IconButton>
 
