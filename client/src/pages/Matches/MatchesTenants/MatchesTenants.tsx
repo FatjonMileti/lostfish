@@ -295,7 +295,6 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
               className={`check-button ${tenant?.chosen ? 'active' : ''}`}
               onClick={() => {
                 addOrUpdateTenantMatch(tenant.id, true, tenant?.starred);
-                // addTenantMatch(tenant.id);
               }}>
               <Icon icon='checked' size={28} />
             </IconButton>
@@ -304,7 +303,6 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
               className={`star-button ${tenant?.starred ? 'active' : ''}`}
               size='large'
               onClick={() => {
-                // starTenantMatch(tenant.id);
                 addOrUpdateTenantMatch(tenant.id, tenant?.chosen, true);
               }}>
               <Icon icon='star-solid' size={28} />
