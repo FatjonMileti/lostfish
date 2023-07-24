@@ -180,6 +180,7 @@ export class MatchController {
       if (!getMatch) {
         return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
       }
+      return res.send(getMatch);
     }
 
     if (property) {
@@ -187,6 +188,7 @@ export class MatchController {
       if (!getPropMatch) {
         return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
       }
+      return res.send(getPropMatch);
     }
 
     res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
