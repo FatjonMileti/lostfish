@@ -309,7 +309,7 @@ const getUserPublicData = async (req: Request, res: Response) => {
     role: any;
   } = {
     is_disabled: false,
-    role: { $in: [Role.Client, Role.Agent] }
+    role: { $in: [Role.Client, Role.Agent, Role.Landlord] }
   };
 
   const users = await UserModel.aggregate([

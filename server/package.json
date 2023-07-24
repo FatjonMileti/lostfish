@@ -6,6 +6,7 @@
     "cli": "ts-node ./cli.ts",
     "start": "nodemon --inspect ./src/bin/www.ts",
     "dev": "ts-node ./src/bin/www.ts",
+    "seed": "ts-node ./src/seeders/index.ts",
     "dev-brk": "nodemon --inspect-brk ./src/bin/www.ts",
     "docs": "npx apidoc -i ./src/api -o ./docs",
     "build": "tsc -p tsconfig.json",
@@ -29,6 +30,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.358.0",
     "@casl/ability": "^6.5.0",
+    "@faker-js/faker": "^8.0.2",
     "@socket.io/redis-adapter": "^8.1.0",
     "@typegoose/typegoose": "^11.0.0",
     "@types/docusign-esign": "^5.19.0",
