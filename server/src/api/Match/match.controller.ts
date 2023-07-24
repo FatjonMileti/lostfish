@@ -19,17 +19,17 @@ export class MatchController {
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
     router.get('/:id', authorize(), this.getMatchById);
-    router.post('/property', authorize(), this.createMatchProperty);
-    router.post('/tenant', authorize(), this.createMatchTenant);
+    router.post('/tenant', authorize(), this.createMatchProperty);
+    router.post('/property', authorize(), this.createMatchTenant);
     router.put('/:id', authorize(), this.updateMatch);
     router.delete('/:id', authorize(), this.deleteMatch);
   }
 
   /**
-   * @api {post} /api/match/property Create a new match (as Landlord)
+   * @api {post} /api/match/tenant Create a new match (as Landlord)
    * @apiDescription Create a new match (Landlord)
    * @apiGroup Matches
-   * @apiSampleRequest /api/match/property
+   * @apiSampleRequest /api/match/tenant
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
    * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} tenant Tenant Id
@@ -68,10 +68,10 @@ export class MatchController {
   };
 
   /**
-   * @api {post} /api/match/tenant Create a new match ( as Tenant)
+   * @api {post} /api/match/property Create a new match ( as Tenant)
    * @apiDescription Create a new match (Tenant)
    * @apiGroup Matches
-   * @apiSampleRequest /api/match/tenant
+   * @apiSampleRequest /api/match/property
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
    * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} property Property Id
