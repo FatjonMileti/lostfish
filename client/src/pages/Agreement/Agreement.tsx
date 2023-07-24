@@ -18,7 +18,8 @@ import { Envelopes } from './scenes/Envelopes';
 import { CASLAction } from '../../utils/ability.util';
 const schema = yup.object().shape({
   fullName: yup.string().required('fullname is required'),
-  tenant: yup.string().required('Tenant is required')
+  tenant: yup.string().required('Tenant is required'),
+  property_id: yup.string().required('Property is required')
 });
 
 export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -37,7 +38,8 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
   } = useForm({
     defaultValues: {
       fullName: '',
-      tenant: ''
+      tenant: '',
+      property_id: ''
     },
     resolver: yupResolver(schema),
     mode: 'all'
@@ -51,11 +53,12 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    const { tenant } = data;
+    const { tenant, property_id } = data;
 
     try {
       await axios(auth.access_token).post(`${config.apiUrl}/api/docusign/create-envelope`, {
-        tenant
+        tenant,
+        property_id
       });
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
@@ -101,6 +104,15 @@ export const Agreement = styled(({ className }: React.HTMLAttributes<HTMLDivElem
                         error={!!errors.tenant}
                         helperText={errors.tenant?.message?.toString()}
                         placeholder='Enter tenant id'
+                      />
+                      <TextField
+                        label='Property'
+                        className='last-name-input'
+                        required
+                        {...register('property_id')}
+                        error={!!errors.property_id}
+                        helperText={errors.property_id?.message?.toString()}
+                        placeholder='Enter property id'
                       />
                     </div>
                     <Button

@@ -30,7 +30,7 @@ export class DocusignController {
       this.getEnvelopeList
     );
 
-    this.router.get('/envelope/:id/download', authorize(), this.downloadDocument);
+    this.router.get('/envelope/:id/download', this.downloadDocument);
     this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
   }
 
@@ -120,12 +120,13 @@ export class DocusignController {
  * @apiDefine CreateDocusignFormExample
  * @apiExample {json} Example request body:
  *    {
- *     "tenant": "gikbjkjb3tl3ntlk4lk"
+ *     "tenant": "gikbjkjb3tl3ntlk4lk",
+ *     "property_id": "12344"
  * }
  */
 
 /**
  * @apiDefine CreateDocusignForm
  * @apiBody {String} tenant
- *
+ * @apiBody {String} property_id
  */

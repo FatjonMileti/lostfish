@@ -110,7 +110,8 @@ const generateNewSignUrls = async (req: Request, res: Response) => {
 };
 
 const successSignRedirect = async (req: Request, res: Response) => {
-  const { userId, userType, envelopeId, event } = req.query;
+  const { userId, userType, envelopId, event } = req.query;
+  console.log(req.query);
   try {
     if (userId) {
       const user = await userService.findOne({ _id: userId });
@@ -119,10 +120,12 @@ const successSignRedirect = async (req: Request, res: Response) => {
       }
     }
     if (event && event === 'signing_complete') {
-      const existingEnvelope = await Envelope.findOne({ envelope_id: envelopeId });
+      const existingEnvelope = await Envelope.findOne({ envelope_id: envelopId });
+
       if (!existingEnvelope) {
         throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
       }
+
       if (userType && userType === Role.Client) {
         existingEnvelope.signed_by_tenant = true;
       }
@@ -137,7 +140,7 @@ const successSignRedirect = async (req: Request, res: Response) => {
     }
     res.redirect(`${config.front_end_url}`);
   } catch (error: any) {
-    return res.status(httpStatus.BAD_REQUEST).send({ message: 'error ' });
+    return res.status(httpStatus.BAD_REQUEST).send({ ...error });
   }
 };
 

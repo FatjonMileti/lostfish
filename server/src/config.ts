@@ -47,7 +47,7 @@ export default {
     integrationKey: process.env.INTEGRATION_KEY ?? '',
     privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
     dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
-    templateId: process.env.TEMPLATE_ID ?? '',
+    rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
     basePath: process.env.BASE_PATH ?? ''
   },
   aws: {

@@ -11,6 +11,9 @@ import createError from 'http-errors';
 import { Role, UserDocument } from '../../User/user.interface';
 import util from 'util';
 import docusignLocalService from './docusign.local.service';
+import assetService from '../../Asset/services/asset.service';
+import { AssetDocument } from '../../Asset/asset.interface';
+import moment from 'moment';
 
 const jwtConfig = config.docusign;
 
@@ -128,27 +131,57 @@ const getEnvelopesApi = async () => {
   return new docusign.EnvelopesApi(dsApiClient);
 };
 
-const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, company: string) => {
+const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: AssetDocument) => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
-  env.templateId = jwtConfig.templateId;
+  env.templateId = jwtConfig.rentingTemplateId;
   // @ts-ignore
-  const text = docusign.Text.constructFromObject({
-    tabLabel: 'company_name',
-    value: company
+  const propertyAddress = docusign.Text.constructFromObject({
+    tabLabel: 'property_address',
+    value: property.asset_address.text ?? ''
+  });
+  // @ts-ignore
+  const documentSendingDate = docusign.Text.constructFromObject({
+    tabLabel: 'document_sending_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+
+  // @ts-ignore
+  const nrOfMonths = docusign.Text.constructFromObject({
+    tabLabel: 'nr_of_months',
+    value: 12
+  });
+  // @ts-ignore
+  const startingFromDate = docusign.Text.constructFromObject({
+    tabLabel: 'starting_from_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+  console.log({ rent: property.asset_rent.rental_amount });
+
+  // @ts-ignore
+  const rentingPrice = docusign.Text.constructFromObject({
+    tabLabel: 'renting_price',
+    value: property.asset_rent.rental_amount
+  });
+  // @ts-ignore
+  const depositValue = docusign.Text.constructFromObject({
+    tabLabel: 'deposit_value',
+    value: property.asset_rent.deposit_amount
   });
 
   // Pull together the existing and new tabs in a Tabs object:
   // @ts-ignore
-  const tabs = docusign.Tabs.constructFromObject({
-    textTabs: [text]
+  const tabsLandlord = docusign.Tabs.constructFromObject({
+    textTabs: [propertyAddress, documentSendingDate, nrOfMonths, startingFromDate, rentingPrice, depositValue]
   });
+
+  console.log({ tabsLandlord: tabsLandlord.textTabs[4] });
 
   // @ts-ignore
   const signer1 = docusign.TemplateRole.constructFromObject({
     email: landlord.email,
     name: `${landlord.first_name} ${landlord.last_name}`,
-    tabs,
+    tabs: tabsLandlord,
     clientUserId: landlord._id.toString(),
     roleName: Role.Landlord
   });
@@ -157,7 +190,6 @@ const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, company: str
   const signer2 = docusign.TemplateRole.constructFromObject({
     email: tenant.email,
     name: `${tenant.first_name} ${tenant.last_name}`,
-    tabs,
     clientUserId: tenant._id.toString(),
     roleName: Role.Client
   });
@@ -296,16 +328,26 @@ const updateUrlForLoggedInUser = async (request: Request, response: Response) =>
 };
 
 const createEnvelope = async (request: Request, response: Response) => {
+  const { tenant, property_id } = request.body;
   try {
     const envelopesApi = await getEnvelopesApi();
 
-    const landlord = await userService.findOne({ _id: response.locals.user_id });
-    const tenant = await userService.findOne({ _id: request.body.tenant });
-    if (!landlord || !tenant) {
+    const [landlord, tenantUser, property] = await Promise.all([
+      userService.findOne({ _id: response.locals.user_id }),
+      userService.findOne({ _id: request.body.tenant }),
+      assetService.findById(property_id)
+    ]);
+    if (!landlord || !tenantUser) {
       throw createError(httpStatus.NOT_FOUND, { message: 'User not found' });
     }
 
-    const envelope = makeEnvelope(landlord, tenant, 'Lostfish');
+    if (!property) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'Property not found' });
+    }
+
+    const envelope = makeEnvelope(landlord, tenantUser, property);
+
+    // return response.json(envelope);
 
     const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
       envelopeDefinition: envelope
@@ -318,7 +360,7 @@ const createEnvelope = async (request: Request, response: Response) => {
     if (results && results.envelopeId) {
       const { viewRequestLandlord, viewRequestTenant } = await createViewRequestForSigners({
         landlord,
-        tenant,
+        tenant: tenantUser,
         envelopeId: results.envelopeId
       });
 
@@ -345,6 +387,7 @@ const createEnvelope = async (request: Request, response: Response) => {
       response.status(httpStatus.BAD_REQUEST).send({ message: '' });
     }
   } catch (error: any) {
+    console.log({ error });
     return response.status(httpStatus.BAD_REQUEST).send({ ...error?.response?.body });
   }
 };
