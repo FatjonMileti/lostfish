@@ -14,7 +14,8 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Step0FormType } from './Newproperty.Step0';
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
-import config from '../../config';
+import axios from '../../utils/axios';
+import { useUserStore } from '../../globalState/user';
 
 export type Step2FormType = {
   area: number;
@@ -87,8 +88,17 @@ export const NewPropertyStep2 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
+    const { auth } = useUserStore();
     console.log('step2 form: ', form.getValues());
+
+    const deleteImage = async (img: any) => {
+      await axios(auth.access_token).delete(`/api/file`, {
+        params: {
+          propertyId,
+          fileId: img
+        }
+      });
+    };
 
     return (
       <div className={`new-property-step-2 ${className}`}>
@@ -280,14 +290,15 @@ export const NewPropertyStep2 = styled(
                             <IconButton
                               size='large'
                               className='remove-button'
-                              onClick={() => {
+                              onClick={async () => {
+                                await deleteImage(image);
                                 onChange({
                                   target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
                                 });
                               }}>
                               <Icon icon='minus' size={11} />
                             </IconButton>
-                            <img alt='property image' src={`${image.key}`} />
+                            <img alt='property image' src={`${image}`} />
                           </div>
                         ))}
 

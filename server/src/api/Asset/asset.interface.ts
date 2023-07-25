@@ -52,6 +52,19 @@ export enum PropertyFeatures {
   ShoppingCentersNearby = 'Shopping centers nearby'
 }
 
+export enum SpecificPropertyFeatures {
+  PARKING_SPOT = 'Parking spot',
+  GARDEV = 'Garden',
+  TERRACE = 'Terrace',
+  FULLY_FURNISHED = 'Fully furnished',
+  PARTIALLY_FURNISHED = 'Partially furnished',
+  UNFURNISHED = 'Unfurnished',
+  DOUBLE_GLAZING = 'Double glazing',
+  ALLOWS_SMOKING = 'Allows smoking',
+  ALLOW_PETS = 'Allows pets',
+  CLOSE_PUBLIC_TRANSPORT = 'Close to public transport'
+}
+
 export enum StatusString {
   Draft = 'Draft',
   Live = 'Live',
@@ -134,9 +147,9 @@ export enum CreditScoreRequirement {
 }
 
 export enum ContractDetails {
-  Guarantor = 'Guarantor',
-  ReviewedProperty = 'Reviewed property',
-  EnergyCertificate = 'Energy certificate'
+  guarantor = 'guarantor',
+  reviewedProperty = 'reviewedProperty',
+  energyCertificate = 'energyCertificate'
 }
 
 export interface AssetDocument extends Document {
@@ -186,7 +199,7 @@ export interface AssetDocument extends Document {
   };
   statistics: any;
   buyers: [object];
-  specific_property_features: string[];
+  specific_property_features: SpecificPropertyFeatures[];
   property_images: object[];
   credit_score_requirements: CreditScoreRequirement;
   contract_details: ContractDetails[];

@@ -29,7 +29,7 @@ export const createAssetSchemaValidation = joi.object({
   specific_property_features: joi.array().items(joi.string()),
   property_images: joi.array(),
   credit_score_requirements: joi.string(),
-  contact_details: joi.array().items(joi.string())
+  contract_details: joi.array().items(joi.string())
 });
 
 export const createAssetSchemaValidationDraft = joi.object({
@@ -61,5 +61,5 @@ export const createAssetSchemaValidationDraft = joi.object({
   specific_property_features: joi.array().items(joi.string()),
   property_images: joi.array(),
   credit_score_requirements: joi.string().allow(''),
-  contact_details: joi.array().items(joi.string())
+  contract_details: joi.array().items(joi.string())
 });

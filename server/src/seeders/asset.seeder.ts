@@ -3,10 +3,13 @@ import { faker } from '@faker-js/faker';
 import {
   ContractDetails,
   CountryCode,
+  CreditScoreRequirement,
   CurrencyCode,
+  PropertyFeatures,
   PropertyPreferences,
   PropertyType,
   RentalFrequency,
+  SpecificPropertyFeatures,
   TransactionTypeString
 } from '../api/Asset/asset.interface';
 import userService from '../api/User/user.service';
@@ -40,9 +43,10 @@ const generateAsset = async () => {
     floor_size_unit: 'Meter Squared',
     master_asset_type_string: 'Residential',
     property_type: faker.helpers.arrayElement(Object.values(PropertyType)),
-    property_features: faker.helpers.arrayElement(['Parks Nearby']),
-    specific_property_features: ['Parking spot', 'Partially furnished'],
+    property_features: faker.helpers.arrayElements(Object.values(PropertyFeatures)),
+    specific_property_features: faker.helpers.arrayElements(Object.values(SpecificPropertyFeatures)),
     property_preference: faker.helpers.arrayElement(Object.values(PropertyPreferences)),
+    credit_score_requirements: faker.helpers.arrayElement(Object.values(CreditScoreRequirement)),
     room_details: {
       number_of_bathrooms: faker.number.int({ min: 1, max: 3 }),
       number_of_bedrooms: faker.number.int({ min: 1, max: 5 })

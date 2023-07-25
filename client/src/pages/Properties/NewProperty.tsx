@@ -268,13 +268,7 @@ export const NewProperty = styled(
 
     const startMatching = async () => {
       try {
-        if (state.newImages.length > 0) {
-          const newImagesLinks = await uploadImages(state.newImages);
-          setNewImages([]);
-          step2Form.setValue('propertyImages', [...step2Form.getValues('propertyImages'), ...newImagesLinks]);
-        }
-
-        const payload = {
+        const payload: any = {
           // step0
           transaction_type_string: step0Form.getValues('lookingFor'),
 
@@ -302,7 +296,6 @@ export const NewProperty = styled(
           specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
-          property_images: step2Form.getValues('propertyImages'),
 
           // step 3
           asset_rent: {
@@ -316,6 +309,13 @@ export const NewProperty = styled(
             .map(([key, value]) => key),
           status_string: 'Live'
         };
+
+        if (state.newImages.length > 0) {
+          const newImagesLinks = await uploadImages(state.newImages);
+          setNewImages([]);
+          step2Form.setValue('propertyImages', [...newImagesLinks]);
+          payload.property_images = [...newImagesLinks];
+        }
 
         console.log('payload', payload);
 

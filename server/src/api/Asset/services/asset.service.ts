@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
 import { Types } from 'mongoose';
-import { generateLinksForImages, generateLinksForOneAsset, getCurrentStatusForGet } from '../helpers';
+import { generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import fileService from '../../../external-services/file.service';
@@ -161,7 +161,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (req.body.hasOwnProperty('property_images')) {
-      asset.property_images = data.property_images;
+      asset.property_images = [...asset.property_images, ...data.property_images];
     }
 
     await asset.save();
@@ -181,7 +181,7 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
     throw createError(404, 'The item does not exist');
   }
 
-  // asset.property_images = generateLinksForOneAsset(asset.property_images);
+  asset.property_images = generateLinksForOneAsset(asset.property_images);
 
   res.status(httpStatus.OK).send(asset);
 };
@@ -288,6 +288,8 @@ const findPublishedProperties = async (req: Request, res: Response) => {
         }
       ]
     });
+
+    response.docs = generateLinksForImages(response.docs);
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {

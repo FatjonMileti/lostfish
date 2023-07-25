@@ -48,7 +48,7 @@ export const generateLinksForImages = (docs: any[]) => {
 
 export const generateLinksForOneAsset = (propertyImages: any[]) => {
   return propertyImages.map((img: any) => {
-    if (!img.key.startsWith('https://')) {
+    if (!img?.key?.startsWith('https://')) {
       return `${config.api_url}/api/file/${img?.key}`;
     }
     return img.key || img.filename;

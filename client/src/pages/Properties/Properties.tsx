@@ -20,7 +20,7 @@ const state: IGridState = {
   rows: [],
   totalRows: 0,
   rowsPerPageOptions: [10, 20, 50],
-  pageSize: 9,
+  pageSize: 20,
   page: 1,
   rowCount: 0,
   sort: 'updated_at',
@@ -55,7 +55,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       const { data } = await axios(auth.access_token).get('/api/asset', {
         params: {
           page: page || undefined,
-          pageSize: 9,
+          pageSize: pageSize,
           sort: sort || undefined,
           asc: asc.toString() || undefined,
           status: search || undefined
