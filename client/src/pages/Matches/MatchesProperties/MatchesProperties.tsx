@@ -14,6 +14,7 @@ import { useUserStore } from '../../../globalState/user';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 import { SetCriteria } from '../../SetCriteria/SetCriteria';
+import { ViewProperty } from './ViewProperty';
 
 interface PropertyType {
   property_images: any[];
@@ -436,44 +437,55 @@ const MatchedSlide = styled(
         '10': 'Ten'
       }[numberOfBedrooms] || numberOfBedrooms;
 
+    const [ViewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(true);
+
     return (
-      <motion.div className={`match-property-slide ${className}`} {...rest}>
-        <div className='slide-header'>
-          <Avatar image={avatar} />
-          <Typography variant='body4'>Nancy Jones • 34%</Typography>
-        </div>
-        <div className='slide-footer'>
-          <div className='left-part'>
-            <Typography className='property-name'>
-              {numberOfBedroomsWord} bedroom apartment for rent
-            </Typography>
-            <div className='property-details'>
-              <div className='detail'>
-                <Icon icon='location' />
-                <Typography variant='body5'>{areaOfInterest}</Typography>
-              </div>
-              •
-              <div className='detail'>
-                <Icon icon='banknote' />
-                <Typography variant='body5'>£{rentingPrice?.toLocaleString()} PCM</Typography>
-              </div>
-              •
-              <div className='detail'>
-                <Icon icon='double-bed' />
-                <Typography variant='body5'>{numberOfBedrooms}</Typography>
-              </div>
-              •
-              <div className='detail'>
-                <Icon icon='bathtub' />
-                <Typography variant='body5'>{numberOfBathrooms}</Typography>
+      <>
+        <ViewProperty
+          open={ViewPropertyModalVisibility}
+          closeModal={() => setViewPropertyModalVisibility(false)}
+          refineYourSearchClick={() => {
+            setViewPropertyModalVisibility(false);
+          }}
+        />
+        <motion.div className={`match-property-slide ${className}`} {...rest}>
+          <div className='slide-header'>
+            <Avatar image={avatar} />
+            <Typography variant='body4'>Nancy Jones • 34%</Typography>
+          </div>
+          <div className='slide-footer'>
+            <div className='left-part'>
+              <Typography className='property-name'>
+                {numberOfBedroomsWord} bedroom apartment for rent
+              </Typography>
+              <div className='property-details'>
+                <div className='detail'>
+                  <Icon icon='location' />
+                  <Typography variant='body5'>{areaOfInterest}</Typography>
+                </div>
+                •
+                <div className='detail'>
+                  <Icon icon='banknote' />
+                  <Typography variant='body5'>£{rentingPrice?.toLocaleString()} PCM</Typography>
+                </div>
+                •
+                <div className='detail'>
+                  <Icon icon='double-bed' />
+                  <Typography variant='body5'>{numberOfBedrooms}</Typography>
+                </div>
+                •
+                <div className='detail'>
+                  <Icon icon='bathtub' />
+                  <Typography variant='body5'>{numberOfBathrooms}</Typography>
+                </div>
               </div>
             </div>
+            <Label variant='secondary' inverted onClick={() => setViewPropertyModalVisibility(true)}>
+              View property
+            </Label>
           </div>
-          <Label variant='secondary' inverted>
-            View property
-          </Label>
-        </div>
-      </motion.div>
+        </motion.div>
+      </>
     );
   }
 )`
