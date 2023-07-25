@@ -191,7 +191,7 @@ export const NewProperty = styled(
         step3Form.setValue('creditScoreRequirements', data.credit_score_requirements);
         step3Form.setValue(
           'contractDetails',
-          data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+          data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
             acc[cd] = true;
             return acc;
           }, {})
@@ -246,7 +246,7 @@ export const NewProperty = styled(
             deposit_amount: step3Form.getValues('depositAmount')
           },
           credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key)
         };
@@ -311,7 +311,7 @@ export const NewProperty = styled(
             deposit_amount: step3Form.getValues('depositAmount')
           },
           credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
           status_string: 'Live'

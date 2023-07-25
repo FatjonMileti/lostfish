@@ -287,7 +287,7 @@ export const NewPropertyStep2 = styled(
                               }}>
                               <Icon icon='minus' size={11} />
                             </IconButton>
-                            <img alt='property image' src={`${config.apiUrl}/api/file/${image.key}`} />
+                            <img alt='property image' src={`${image.key}`} />
                           </div>
                         ))}
 

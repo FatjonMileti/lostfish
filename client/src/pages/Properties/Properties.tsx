@@ -139,18 +139,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     setEditPropertyId(p._id);
                     setShowNewPropertyModal(true);
                   }}
-                  image={
-                    p?.property_images?.[0]
-                      ? `${process.env.REACT_APP_BACK_END_URL}/api/file/${p.property_images[0]?.key}`
-                      : undefined
-                  }
-                  images={
-                    p.property_images.length > 0
-                      ? p.property_images.map(
-                          (image: any) => `${process.env.REACT_APP_BACK_END_URL}/api/file/${image?.key}`
-                        )
-                      : []
-                  }
+                  image={p?.property_images?.[0]}
+                  images={p.property_images.length > 0 ? p.property_images : []}
                 />
               ))}
             </div>
