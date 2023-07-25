@@ -158,6 +158,7 @@ export class MatchController {
         query,
         res.locals.paging_options as IPagingOptions
       );
+
       return res.status(200).json(matches);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch matches.' });

@@ -59,10 +59,8 @@ export interface UserDocument extends Document {
 }
 
 export enum Role {
-  Admin = 'Admin',
   Agent = 'Agent',
   Client = 'Tenant',
-  Solicitor = 'Solicitor',
   Landlord = 'Landlord',
   NeWUser = 'NewUser'
 }

@@ -4,23 +4,7 @@ import { hashPassword } from '../api/User/user.helpers';
 import { Role, UserDocument } from '../api/User/user.interface';
 const password = 'Lostfish1234';
 
-const generateAdminUser = async () => {
-  const hash = <string>await hashPassword(password);
-  const ADMIN_USER_SEEDER = <Partial<UserDocument>>{
-    _id: '507f1f77bcf86cd799439011',
-    first_name: 'Lostfish',
-    last_name: 'Admin',
-    email: 'admin@lostfish.com',
-    role: Role.Admin,
-    is_disabled: false,
-    phone: faker.phone.number(),
-    avatar: '0',
-    hash
-  };
-  return ADMIN_USER_SEEDER;
-};
-
-const remainingRoles = Object.values(Role).filter((e) => e !== Role.Admin);
+const remainingRoles = Object.values(Role);
 
 const generateDefaultUsers = async () => {
   const hash = <string>await hashPassword(password);
@@ -66,9 +50,8 @@ export const seedUsers = async (numUsers: number): Promise<void> => {
 
     const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));
     const defaultUsers = await generateDefaultUsers();
-    const adminUser = await generateAdminUser();
 
-    await UserSchema.insertMany([adminUser, ...defaultUsers, ...users]);
+    await UserSchema.insertMany([...defaultUsers, ...users]);
 
     console.log(`${numUsers} users seeded successfully.`);
   } catch (error) {
