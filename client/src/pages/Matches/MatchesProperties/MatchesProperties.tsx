@@ -53,7 +53,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   const getProperties = async () => {
     const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
     setProperties(data.docs.map((doc: any) => ({ ...doc, chosen: false, starred: false, id: doc._id })));
-
     await Promise.all(
       data.docs.map(async (d: any) => {
         await isPropertyChosen(d._id);
@@ -441,7 +440,7 @@ const MatchedSlide = styled(
         '10': 'Ten'
       }[numberOfBedrooms] || numberOfBedrooms;
 
-    const [ViewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(true);
+    const [ViewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
 
     return (
       <>

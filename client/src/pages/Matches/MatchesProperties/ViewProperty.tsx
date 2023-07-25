@@ -66,9 +66,60 @@ export const ViewProperty = styled(
             <div className='title'>
               <Typography variant='body2'>Two bedroom apartment for rent</Typography>
               <IconButton size='large'>
-                <Icon icon='close' size={12} />
+                <Icon icon='star' size={12} />
               </IconButton>
             </div>
+            <div className='property-details'>
+              <div className='detail'>
+                <Icon icon='location' />
+                <Typography variant='body5'>Bristol, UK</Typography>
+              </div>
+              <Typography variant='body4' className='dot'>
+                •
+              </Typography>
+              <div className='detail'>
+                <Icon icon='banknote' />
+                <Typography variant='body5'>£1,150 PCM</Typography>
+              </div>
+              <Typography variant='body4' className='dot'>
+                •
+              </Typography>
+              <div className='detail'>
+                <Icon icon='double-bed' />
+                <Typography variant='body5'>2</Typography>
+              </div>
+              <Typography variant='body4' className='dot'>
+                •
+              </Typography>
+              <div className='detail'>
+                <Icon icon='bathtub' />
+                <Typography variant='body5'>1</Typography>
+              </div>
+            </div>
+          </div>
+          <div className='section'>
+            <Typography variant='body4' className='label'>
+              Description
+            </Typography>
+            <Typography variant='body4' className='section-description'>
+              One bed room large FF Flat available to rent, situated 7 minutes walk to Hainault tube station,
+              the property is fully furnished. Having a separate large reception, the property comes with one
+              allocated parking.
+            </Typography>
+          </div>
+          <div className='section'>
+            <Typography variant='body4' className='label'>
+              Location details
+            </Typography>
+            <Typography variant='body4' className='section-description'>
+              Sitting midway between Battersea Park and Clapham Junction, The Set offers an enviable variety
+              of entertainment, dining, drinking and shopping opportunities alongside excellent schools and
+              first rate transport connections.Battersea is an intimate residential area, with great
+              restaurants and bars, all close by. Just down the road is Battersea Square. Its unique setting
+              and continental style dining add a laid-back, village feel to this very special area of London.
+              Battersea itself is a veritable cultural haven, home to the Pump House Gallery and the Battersea
+              Arts Centre, a celebrated fringe venue.
+            </Typography>
           </div>
         </div>
       </Modal>
@@ -183,6 +234,42 @@ export const ViewProperty = styled(
               font-weight: 400;
               line-height: 40px;
             }
+          }
+
+          .property-details {
+            color: #000;
+            font-weight: 700;
+            display: flex;
+            column-gap: 8px;
+            align-items: center;
+
+            .detail {
+              display: flex;
+              column-gap: 4px;
+              align-items: center;
+            }
+
+            .dot {
+              color: #a7a7a7;
+            }
+          }
+        }
+
+        .section {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          align-self: stretch;
+
+          .label {
+            color: #0d2a38;
+            font-weight: 700;
+          }
+
+          .section-description {
+            align-self: stretch;
+            font-weight: 400;
           }
         }
       }
