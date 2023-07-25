@@ -14,6 +14,33 @@ const readFile = (imageId: string) => {
   });
 };
 
+const removeFile = (imageId: string, propertyId: string = '', userId: string = '') => {
+  let filePathString = '../../uploads/';
+  if (propertyId) {
+    filePathString = filePathString + `asset-images/`;
+  }
+  if (userId) {
+    filePathString = filePathString + `user-docs/`;
+  }
+
+  const filePath = path.join(__dirname, filePathString, imageId);
+
+  try {
+    return new Promise((resolve, reject) => {
+      fs.unlink(filePath, (error: any) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  } catch (error) {
+    return false;
+  }
+};
+
 export default {
-  readFile
+  readFile,
+  removeFile
 };

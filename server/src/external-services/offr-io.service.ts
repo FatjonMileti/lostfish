@@ -11,8 +11,8 @@ const createContact = async (contact: UserDocument) => {
     legal_name: `${contact.first_name} ${contact.last_name}`,
     email: contact.email,
     phone: '0693189373',
-    company: contact.company,
-    contact_type: contact.contact_type,
+    // company: contact.company,
+    // contact_type: contact.contact_type,
     address: contact.address
   };
   const response = await offrIoRequest.post('/contact/post', postData);
@@ -33,7 +33,7 @@ const updateAssetByAssetId = async (assetId: number, body: AssetDocument) => {
     status_string: data.status_string,
     transaction_type_string: data.transaction_type_string,
     master_asset_type_string: data.master_asset_type_string,
-    asset_type_string: data.asset_type_string,
+    // asset_type_string: data.asset_type_string,
     asset_attribute: data.asset_attribute
     // client_id: 861,
     // client: {
@@ -57,7 +57,7 @@ const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
     { name: 'floor_size_unit', type: 'Select', value: asset.floor_size_unit }
   ];
   asset.master_asset_type_string = MasterAssetTypeSring.Residential;
-  asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
+  // asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
 
   return asset;
 };

@@ -351,6 +351,10 @@ const getUserPublicData = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send(users);
 };
 
+const findByQuery = (query: any) => {
+  return UserModel.find(query).lean();
+};
+
 export default {
   getAll,
   getById,
@@ -360,5 +364,6 @@ export default {
   deleteUser,
   resetUserPassword,
   sendResetPasswordInstructions,
-  getUserPublicData
+  getUserPublicData,
+  findByQuery
 };

@@ -2,16 +2,14 @@ import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
-  Access,
   AssetDocument,
-  AssetTypeString,
   CountryCode,
   CurrencyCode,
   MasterAssetTypeSring,
   StatusString,
-  TabName,
   TransactionTypeString,
-  RentStatusString
+  RentStatusString,
+  ContractDetails
 } from '../asset.interface';
 
 const Contact = {
@@ -84,10 +82,6 @@ const schema = new Schema<AssetDocument>({
     type: String,
     enum: Object.values(MasterAssetTypeSring)
   },
-  asset_type_string: {
-    type: String,
-    enum: Object.values(AssetTypeString)
-  },
   property_type: {
     type: String
   },
@@ -113,7 +107,7 @@ const schema = new Schema<AssetDocument>({
   property_features: [String],
   specific_property_features: [String],
   credit_score_requirements: String,
-  contact_details: [String],
+  contract_details: [String],
   property_preference: String,
   asset_sale: { type: AssetSale, default: null },
   asset_rent: {
@@ -123,47 +117,12 @@ const schema = new Schema<AssetDocument>({
     interest_by: Date,
     available_from: Date
   },
-  asset_auction: {
-    guide_price: Number,
-    reserve_price: Number,
-    starting_bid: Number,
-    bidding_increments: { type: Number, default: 1000 },
-    start_time: Date,
-    end_time: Date,
-    bidding_extension: Number,
-    deposit_due_date: Date,
-    completion_date: Date
-  },
   client_id: { type: Number, default: null },
   client: { type: Contact, default: null },
   solicitor_id: { type: Number, default: null },
   solicitor: { type: Contact, default: null },
   statistics: { type: Object, default: {} },
-  offers: [{ type: Object }],
-
   property_images: [{ type: Object }],
-  permission: {
-    administrator_names: [String],
-    display_administrator_names: [String],
-    branch_administrator_names: [String],
-    access: {
-      type: String,
-      enum: Object.values(Access),
-      default: Access.flexible,
-      _id: false
-    },
-    tabs: [
-      {
-        name: {
-          type: String,
-          enum: Object.keys(TabName),
-          default: null
-        },
-        roles: [String],
-        _id: false
-      }
-    ]
-  },
   settings: { type: Object, default: {} },
   preferences: String,
   edited_at: Date,

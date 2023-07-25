@@ -28,6 +28,7 @@ interface PropertyType {
   };
 
   id: string;
+  created_by: any;
   matchId?: string;
   chosen: boolean;
   starred: boolean;
@@ -69,7 +70,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     try {
       const {
         data: { chosen, starred, _id }
-      } = await axios(auth.access_token).get(`/api/match/check?tenant=${propertyId}`);
+      } = await axios(auth.access_token).get(`/api/match/check?property=${propertyId}`);
 
       const match = {
         chosen,
@@ -122,7 +123,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     if (matchId) {
       await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred });
     } else {
-      await axios(auth.access_token).post('/api/match/property', { tenant: tenantId, chosen, starred });
+      await axios(auth.access_token).post('/api/match/property', { property: tenantId, chosen, starred });
     }
 
     isPropertyChosen(property?.id);
@@ -200,7 +201,8 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                 <MatchedSlide
                   key={propertyIndex}
                   className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${process.env.REACT_APP_BACK_END_URL}/api/file/${property_images[0]?.key}`}
+                  image={`${property_images?.[0]}`}
+                  propertyOwnerName={`${property.created_by.first_name} ${property.created_by.last_name}`}
                   avatar={''}
                   animate={{
                     x:
@@ -406,6 +408,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   image: string;
   avatar: string;
+  propertyOwnerName: string;
   areaOfInterest?: string;
   numberOfBedrooms?: string;
   numberOfBathrooms?: string;
@@ -421,6 +424,7 @@ const MatchedSlide = styled(
     numberOfBedrooms = '',
     numberOfBathrooms = '',
     rentingPrice = '',
+    propertyOwnerName = '',
     ...rest
   }: MatchedSlideProps) => {
     const numberOfBedroomsWord =
@@ -451,7 +455,7 @@ const MatchedSlide = styled(
         <motion.div className={`match-property-slide ${className}`} {...rest}>
           <div className='slide-header'>
             <Avatar image={avatar} />
-            <Typography variant='body4'>Nancy Jones • 34%</Typography>
+            <Typography variant='body4'>{propertyOwnerName} • 34%</Typography>
           </div>
           <div className='slide-footer'>
             <div className='left-part'>

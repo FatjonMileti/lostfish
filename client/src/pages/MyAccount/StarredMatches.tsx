@@ -12,6 +12,8 @@ import property1 from './images/property1.png';
 
 import { avatars } from '../HomeLoggedIn/avatars';
 import { Avatar } from '../../components/Avatar';
+import { useUserStore } from '../../globalState/user';
+import axios from '../../utils/axios';
 
 const starredTenants = [
   {
@@ -43,6 +45,15 @@ const starredTenants = [
 
 export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [activeTab, setActiveTab] = React.useState(0);
+  const { auth } = useUserStore();
+  React.useEffect(() => {
+    getMatches();
+  }, []);
+
+  const getMatches = async () => {
+    const { data } = await axios(auth.access_token).get('/api/match');
+    console.log({ data });
+  };
 
   return (
     <div className={`starred-matches ${className}`}>

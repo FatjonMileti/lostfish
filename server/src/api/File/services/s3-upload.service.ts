@@ -3,6 +3,7 @@ import { Request } from 'express';
 import multer, { Multer } from 'multer';
 import multerS3 from 'multer-s3';
 import config from '../../../config';
+import fs from 'fs';
 
 const AWS = require('aws-sdk');
 const s3AWS = new AWS.S3();
@@ -76,5 +77,20 @@ export default class S3UploadService {
         return resolve(url);
       });
     });
+  }
+
+  deleteImage(img: any) {
+    try {
+      // Clean up the temporary file after it is sent
+      fs.unlink(img, (error: any) => {
+        if (error) {
+          console.error('Error deleting the temporary file:', error);
+        } else {
+          console.log('Temporary file deleted.');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

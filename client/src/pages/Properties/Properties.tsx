@@ -20,7 +20,7 @@ const state: IGridState = {
   rows: [],
   totalRows: 0,
   rowsPerPageOptions: [10, 20, 50],
-  pageSize: 9,
+  pageSize: 20,
   page: 1,
   rowCount: 0,
   sort: 'updated_at',
@@ -55,7 +55,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       const { data } = await axios(auth.access_token).get('/api/asset', {
         params: {
           page: page || undefined,
-          pageSize: 9,
+          pageSize: pageSize,
           sort: sort || undefined,
           asc: asc.toString() || undefined,
           status: search || undefined
@@ -139,18 +139,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     setEditPropertyId(p._id);
                     setShowNewPropertyModal(true);
                   }}
-                  image={
-                    p?.property_images?.[0]
-                      ? `${process.env.REACT_APP_BACK_END_URL}/api/file/${p.property_images[0]?.key}`
-                      : undefined
-                  }
-                  images={
-                    p.property_images.length > 0
-                      ? p.property_images.map(
-                          (image: any) => `${process.env.REACT_APP_BACK_END_URL}/api/file/${image?.key}`
-                        )
-                      : []
-                  }
+                  image={p?.property_images?.[0]}
+                  images={p.property_images.length > 0 ? p.property_images : []}
                 />
               ))}
             </div>

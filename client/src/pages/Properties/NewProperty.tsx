@@ -191,7 +191,7 @@ export const NewProperty = styled(
         step3Form.setValue('creditScoreRequirements', data.credit_score_requirements);
         step3Form.setValue(
           'contractDetails',
-          data.contact_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+          data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
             acc[cd] = true;
             return acc;
           }, {})
@@ -246,7 +246,7 @@ export const NewProperty = styled(
             deposit_amount: step3Form.getValues('depositAmount')
           },
           credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key)
         };
@@ -268,13 +268,7 @@ export const NewProperty = styled(
 
     const startMatching = async () => {
       try {
-        if (state.newImages.length > 0) {
-          const newImagesLinks = await uploadImages(state.newImages);
-          setNewImages([]);
-          step2Form.setValue('propertyImages', [...step2Form.getValues('propertyImages'), ...newImagesLinks]);
-        }
-
-        const payload = {
+        const payload: any = {
           // step0
           transaction_type_string: step0Form.getValues('lookingFor'),
 
@@ -302,7 +296,6 @@ export const NewProperty = styled(
           specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
-          property_images: step2Form.getValues('propertyImages'),
 
           // step 3
           asset_rent: {
@@ -311,11 +304,18 @@ export const NewProperty = styled(
             deposit_amount: step3Form.getValues('depositAmount')
           },
           credit_score_requirements: step3Form.getValues('creditScoreRequirements'),
-          contact_details: Object.entries(step3Form.getValues('contractDetails'))
+          contract_details: Object.entries(step3Form.getValues('contractDetails'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
           status_string: 'Live'
         };
+
+        if (state.newImages.length > 0) {
+          const newImagesLinks = await uploadImages(state.newImages);
+          setNewImages([]);
+          step2Form.setValue('propertyImages', [...newImagesLinks]);
+          payload.property_images = [...newImagesLinks];
+        }
 
         console.log('payload', payload);
 

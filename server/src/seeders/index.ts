@@ -1,12 +1,22 @@
 import { seedUsers } from './user.seeder';
+import { seedAssets } from './asset.seeder';
+import { seedCriteria } from './criteria.seeder';
 import chalk from 'chalk';
+import mongoose from 'mongoose';
+import config from '../config';
+const dbConnect = require('../data');
+dbConnect(config.connection_string);
 
-const init = () => {
+const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));
   try {
-    seedUsers(10).then(() => console.log(chalk.bold.green('User seeder: success')));
+    await seedUsers(10).then(() => console.log(chalk.bold.green('User seeder: success')));
+    await seedAssets(10).then(() => console.log(chalk.bold.green('Asset seeder: success')));
+    await seedCriteria(5);
   } catch (error) {
     console.log(chalk.bold.red('failed to seed'));
+  } finally {
+    await mongoose.disconnect();
   }
 };
 

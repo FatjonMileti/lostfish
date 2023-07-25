@@ -1,18 +1,15 @@
 import AssetModel from '../schemas/asset.schema';
-import { AssetDocument, CurrencyCode, IOffer, MasterAssetTypeSring } from '../asset.interface';
+import { AssetDocument, CurrencyCode, MasterAssetTypeSring } from '../asset.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
-
 import { Types } from 'mongoose';
-import { getCurrentStatusForGet } from '../helpers';
+import { generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import fileService from '../../../external-services/file.service';
-const fs = require('fs');
-const path = require('path');
 
 const mailService = MailService.getInstance();
 
@@ -56,9 +53,11 @@ const findAll = async (req: Request, res: Response) => {
     });
 
     response.totalDocsUnfiltered = count;
+    response.docs = generateLinksForImages(response.docs);
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
+    console.log(error);
     return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
   }
 };
@@ -157,12 +156,12 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.credit_score_requirements = data.credit_score_requirements;
     }
 
-    if (data.hasOwnProperty('contact_details')) {
-      asset.contact_details = data.contact_details;
+    if (data.hasOwnProperty('contract_details')) {
+      asset.contract_details = data.contract_details;
     }
 
     if (req.body.hasOwnProperty('property_images')) {
-      asset.property_images = data.property_images;
+      asset.property_images = [...asset.property_images, ...data.property_images];
     }
 
     await asset.save();
@@ -182,7 +181,7 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
     throw createError(404, 'The item does not exist');
   }
 
-  asset.status_string = getCurrentStatusForGet(asset.status_string);
+  asset.property_images = generateLinksForOneAsset(asset.property_images);
 
   res.status(httpStatus.OK).send(asset);
 };
@@ -289,6 +288,8 @@ const findPublishedProperties = async (req: Request, res: Response) => {
         }
       ]
     });
+
+    response.docs = generateLinksForImages(response.docs);
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {

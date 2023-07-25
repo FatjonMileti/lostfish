@@ -35,7 +35,9 @@ export class CriteriaController {
    */
   private getMatchedUsers = async (req: Request, res: Response) => {
     const matchesUsers: any = await CriteriaSchema.paginate(
-      {},
+      {
+        created_by: { $ne: res.locals.user_id }
+      },
       {
         ...res.locals.paging_options,
         populate: [

@@ -6,6 +6,7 @@ import paging, { IPagingOptions } from '../../middleware/paging';
 import MatchSchema, { IMatchQueryParams } from './match.schema';
 import { Role } from '../User/user.interface';
 import httpStatus from 'http-status';
+import createError from 'http-errors';
 
 const router: Router = Router();
 
@@ -157,6 +158,7 @@ export class MatchController {
         query,
         res.locals.paging_options as IPagingOptions
       );
+
       return res.status(200).json(matches);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch matches.' });
@@ -175,23 +177,26 @@ export class MatchController {
   private getMatchByUserOrPropertyId = async (req: Request, res: Response) => {
     const { tenant, property } = req.query;
 
-    if (tenant) {
-      const getMatch = await MatchSchema.findOne({ created_by: res.locals.user_id, tenant });
-      if (!getMatch) {
-        return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+    try {
+      let response: any = null;
+      if (tenant) {
+        response = await MatchSchema.findOne({ created_by: res.locals.user_id, tenant });
+        if (!response) {
+          throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+        }
       }
-      return res.send(getMatch);
-    }
 
-    if (property) {
-      const getPropMatch = await MatchSchema.findOne({ created_by: res.locals.user_id, property });
-      if (!getPropMatch) {
-        return res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+      if (property) {
+        response = await MatchSchema.findOne({ created_by: res.locals.user_id, property });
+        if (!response) {
+          throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+        }
       }
-      return res.send(getPropMatch);
-    }
 
-    res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+      return res.send(response);
+    } catch (error) {
+      res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
+    }
   };
 
   /**
