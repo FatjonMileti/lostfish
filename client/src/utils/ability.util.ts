@@ -17,13 +17,15 @@ export type AppSubjects =
   | 'Client'
   | 'Agent'
   | 'SignGenerator'
-  | 'SignURL';
+  | 'SignURL'
+  | 'StarredProperties'
+  | 'StarredTenants';
 
 export enum Role {
-  Admin = 'Admin',
   Agent = 'Agent',
-  Client = 'Client',
-  Solicitor = 'Solicitor'
+  Client = 'Tenant',
+  Landlord = 'Landlord',
+  NewUser = 'NewUser'
 }
 
 export type AppAbilityType = PureAbility<[CASLAction, AppSubjects]>;
@@ -32,13 +34,17 @@ export const AppAbility = PureAbility as AbilityClass<AppAbilityType>;
 export default function defineRulesFor(role: string) {
   const { can, rules, cannot } = new AbilityBuilder(AppAbility);
 
-  if (role === Role.Admin) {
+  if (role === Role.Landlord) {
     can(CASLAction.Manage, 'Menu');
     can(CASLAction.Manage, 'Agent');
+    // can(CASLAction.Read, 'StarredTenants');
   } else if (role === Role.Client) {
     can(CASLAction.Manage, 'Client');
+    // can(CASLAction.Read, 'StarredProperties');
   } else if (role === Role.Agent) {
     can(CASLAction.Manage, 'Agent');
+  } else if (role === Role.NewUser) {
+    can(CASLAction.Manage, 'all');
   }
 
   return rules;

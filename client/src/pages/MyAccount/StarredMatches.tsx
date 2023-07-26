@@ -1,125 +1,84 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
-
+import React, { HTMLAttributes, useState } from 'react';
 import { Typography } from '../../components/Typography';
-import { Link } from '../../components/Link';
-import { Tabs, Tab } from '../../components/Tab';
-import { Button } from '../../components/Button';
-
-import verified from './images/verified.svg';
-import property from './images/property.png';
-import property1 from './images/property1.png';
-
-import { avatars } from '../HomeLoggedIn/avatars';
-import { Avatar } from '../../components/Avatar';
 import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
+import Can from '../../components/Can';
+import { CASLAction } from '../../utils/ability.util';
+import { TenantProfile } from './components/TenantProfile';
+import { PropertyView } from './components/PropertyView';
 
-const starredTenants = [
-  {
-    image: avatars[0].image,
-    backgroundColor: '#F7AC75',
-    name: 'Nancy Jones'
-  },
-  {
-    image: avatars[1].image,
-    backgroundColor: '#FDDF44',
-    name: 'Nick Young'
-  },
-  {
-    image: avatars[2].image,
-    backgroundColor: '#3DE2E2',
-    name: 'Nick Young'
-  },
-  {
-    image: avatars[3].image,
-    backgroundColor: '#184D6D',
-    name: 'Toby Anderson'
-  },
-  {
-    image: avatars[4].image,
-    backgroundColor: '#408140',
-    name: 'Mark Williamson'
-  }
-];
+const state: IGridState = {
+  loading: true,
+  rows: [],
+  totalRows: 0,
+  rowsPerPageOptions: [5],
+  pageSize: 5,
+  page: 1,
+  rowCount: 0,
+  sort: 'created_at',
+  asc: true,
+  selectedIds: [],
+  search: '',
+  totalDocsUnfiltered: 0
+};
 
 export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const [list, setList] = useState<IGridState>({
+    ...state
+  });
   const { auth } = useUserStore();
+
   React.useEffect(() => {
     getMatches();
   }, []);
 
   const getMatches = async () => {
-    const { data } = await axios(auth.access_token).get('/api/match');
-    console.log({ data });
+    const { search, asc, sort, pageSize, page } = list;
+    const { data } = await axios(auth.access_token).get('/api/match?starred=true', {
+      params: {
+        page: page || undefined,
+        pageSize: pageSize,
+        sort: sort || undefined,
+        asc: asc.toString() || undefined,
+        status: search || undefined
+      }
+    });
+    setList((prevList: IGridState) => ({
+      ...prevList,
+      rows: data.docs,
+      totalRows: data.totalDocs,
+      loading: false
+    }));
   };
 
   return (
     <div className={`starred-matches ${className}`}>
-      <Tabs value={activeTab} onChange={(i: any) => setActiveTab(i)} variant='secondary'>
-        <Tab label='Tenants' />
-        <Tab label='Properties' />
-      </Tabs>
-      {activeTab === 0 && (
+      <Typography variant='body1'>Starred matches</Typography>
+
+      <Can do={CASLAction.Read} on='StarredTenants'>
         <div className='tenants-tab'>
           <Typography variant='body5'>You will only see starred matches from your current search.</Typography>
           <div className='tenants'>
-            {starredTenants.map(({ image, backgroundColor }, tenantIndex) => {
-              return (
-                <div className='tenant'>
-                  <Avatar image={image} className='profile-image' />
-                  <Typography className='tenant-name' variant='body4'>
-                    Nancy Jones
-                    <img src={verified} alt='verified' />
-                  </Typography>
-                  <Link>View profile</Link>
-                </div>
-              );
+            {list.rows.map((match: any, tenantIndex) => {
+              const { tenant } = match;
+              return tenant ? <TenantProfile tenant={tenant} key={tenantIndex} /> : null;
             })}
           </div>
         </div>
-      )}
-      {activeTab === 1 && (
+      </Can>
+
+      <Can do={CASLAction.Read} on='StarredProperties'>
         <div className='properties-tab'>
           <Typography variant='body5'>You will only see starred matches from your current search.</Typography>
           <div className='properties'>
-            <div className='starred-property'>
-              <img className='property-background-image' alt='property-image' src={property} />
-              <div className='property-footer'>
-                <Typography className='property-title' variant='body4'>
-                  Two bed flat with terrace
-                </Typography>
-                <div className='details'>
-                  <div className='match-percentage'>
-                    <Typography variant='body5'>100%</Typography>
-                  </div>
-                  <Button size='small' variant='secondary' inverted className='details-button'>
-                    Property details
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className='starred-property'>
-              <img className='property-background-image' alt='property-image' src={property1} />
-              <div className='property-footer'>
-                <Typography className='property-title' variant='body4'>
-                  Two bedroom apartment for rent
-                </Typography>
-                <div className='details'>
-                  <div className='match-percentage'>
-                    <Typography variant='body5'>96%</Typography>
-                  </div>
-                  <Button size='small' variant='secondary' inverted className='details-button'>
-                    Property details
-                  </Button>
-                </div>
-              </div>
-            </div>
+            {list.rows.map((match: any, idx) => {
+              const { property } = match;
+              return property ? <PropertyView property={property} key={idx} /> : null;
+            })}
           </div>
         </div>
-      )}
+      </Can>
     </div>
   );
 })`

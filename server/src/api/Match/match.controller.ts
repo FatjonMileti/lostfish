@@ -7,6 +7,7 @@ import MatchSchema, { IMatchQueryParams } from './match.schema';
 import { Role } from '../User/user.interface';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
+import { generateLinksForMatchesImages } from './match.helper';
 
 const router: Router = Router();
 
@@ -159,8 +160,11 @@ export class MatchController {
         res.locals.paging_options as IPagingOptions
       );
 
+      matches.docs = generateLinksForMatchesImages(matches.docs);
+
       return res.status(200).json(matches);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'Unable to fetch matches.' });
     }
   };
