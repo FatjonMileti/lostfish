@@ -13,34 +13,42 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary
 }));
 
-export const DashboardNavbar = () => {
+interface IDashboardNavbar {
+  activeTab: number;
+  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export const DashboardNavbar = ({ activeTab, setActiveTab }: IDashboardNavbar) => {
   const location = useLocation();
 
   return (
     <Item>
       <List>
         <ListItem
-          component={Link}
-          to='/dashboard'
-          style={{ backgroundColor: location.pathname === '/dashboard' ? '#B2ADAC' : '' }}>
+          style={{ backgroundColor: activeTab === 0 ? '#B2ADAC' : '', cursor: 'pointer' }}
+          onClick={() => {
+            setActiveTab(0);
+          }}>
           <ListItemIcon>
             <AnalyticsIcon />
           </ListItemIcon>
           <ListItemText primary='Active sessions' />
         </ListItem>
         <ListItem
-          component={Link}
-          to='/property-log'
-          style={{ backgroundColor: location.pathname === '/property-log' ? '#B2ADAC' : '' }}>
+          style={{ backgroundColor: activeTab === 1 ? '#B2ADAC' : '', cursor: 'pointer' }}
+          onClick={() => {
+            setActiveTab(1);
+          }}>
           <ListItemIcon>
             <HomeWorkIcon />
           </ListItemIcon>
           <ListItemText primary='Property logs' />
         </ListItem>
         <ListItem
-          component={Link}
-          to='/matches-log'
-          style={{ backgroundColor: location.pathname === '/matches-log' ? '#B2ADAC' : '' }}>
+          style={{ backgroundColor: activeTab === 2 ? '#B2ADAC' : '', cursor: 'pointer' }}
+          onClick={() => {
+            setActiveTab(2);
+          }}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>

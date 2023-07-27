@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { Box, Paper, Grid } from '@mui/material';
 import { Sessions } from './pages/Sessions';
@@ -18,15 +18,17 @@ const ItemContent = styled(Paper)(({ theme }) => ({
 export const AgentDashboard = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const location = useLocation();
 
+  const [activeTab, setActiveTab] = useState<number>(0);
+
   const getRequestedComponent = () => {
-    if (location.pathname === '/dashboard') {
+    if (activeTab === 0) {
       return <Sessions />;
     }
-    if (location.pathname === '/property-log') {
+    if (activeTab === 1) {
       return <PropertyLogs />;
     }
 
-    if (location.pathname === '/matches-log') {
+    if (activeTab === 2) {
       return <MatchesLogs />;
     }
 
@@ -41,7 +43,7 @@ export const AgentDashboard = styled(({ className }: React.HTMLAttributes<HTMLDi
         <Box sx={{ flexGrow: 1, margin: '10px 25px 10px 25px' }}>
           <Grid container spacing={2}>
             <Grid item xs={2}>
-              <DashboardNavbar />
+              <DashboardNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
             </Grid>
             <Grid item xs={10}>
               <ItemContent>

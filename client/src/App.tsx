@@ -119,8 +119,6 @@ function App() {
 
                   <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
                   <Route path='/dashboard' element={<AgentDashboard />} />
-                  <Route path='/property-log' element={<AgentDashboard />} />
-                  <Route path='/matches-log' element={<AgentDashboard />} />
                   <Route path='/contracts' element={<Agreement />} />
                   <Route path='/agent-property' element={<div>Property list</div>} />
                   <Route path='/agent-matches' element={<div>Matches list</div>} />
