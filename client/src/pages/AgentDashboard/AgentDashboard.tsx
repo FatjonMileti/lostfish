@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { Box, Paper, Grid } from '@mui/material';
 import { Sessions } from './pages/Sessions';
-import { useLocation } from 'react-router-dom';
 import { PropertyLogs } from './pages/PropertyLogs';
 import { DashboardNavbar } from './components/DashboardNavbar';
 import { MatchesLogs } from './pages/MatchesLogs';
@@ -11,13 +10,11 @@ import { Header } from '../HomeLoggedIn/Header';
 const ItemContent = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   padding: theme.spacing(1),
-  height: '100%',
+  height: 'fit-content',
   color: theme.palette.text.secondary
 }));
 
 export const AgentDashboard = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const location = useLocation();
-
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const getRequestedComponent = () => {

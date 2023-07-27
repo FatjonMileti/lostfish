@@ -35,6 +35,7 @@ export const LogsTable = (props: any) => {
 
   return (
     <DataGrid
+      autoHeight={true}
       sortingMode='server'
       sortingOrder={['asc', 'desc']}
       page={list.page}

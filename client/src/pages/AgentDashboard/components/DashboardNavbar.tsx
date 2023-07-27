@@ -1,6 +1,5 @@
 import React from 'react';
 import { List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
-import { Link, useLocation } from 'react-router-dom';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import PeopleIcon from '@mui/icons-material/People';
@@ -9,7 +8,7 @@ import { styled } from '@mui/system';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   padding: theme.spacing(1),
-  height: '100%',
+  height: 'fit-content',
   color: theme.palette.text.secondary
 }));
 
@@ -19,8 +18,6 @@ interface IDashboardNavbar {
 }
 
 export const DashboardNavbar = ({ activeTab, setActiveTab }: IDashboardNavbar) => {
-  const location = useLocation();
-
   return (
     <Item>
       <List>

@@ -8,6 +8,7 @@ import { LoginLogAction } from '../agent.interface';
 import { useLogs } from '../hooks/useLogs';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Typography } from '../../../components/Typography';
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 100, sortable: false },
   {
@@ -65,7 +66,7 @@ export const Sessions = () => {
   const { list, setList } = useLogs({ url: 'session' });
   const [openModal, setOpenModal] = useState<boolean>(false);
   return (
-    <div style={{ height: '600px' }}>
+    <div>
       <Search
         search={(value) => {
           setList((prev) => ({ ...prev, search: value }));

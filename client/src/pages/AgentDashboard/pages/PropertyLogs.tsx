@@ -58,7 +58,7 @@ export const PropertyLogs = () => {
   const { list, setList } = useLogs({ url: 'property' });
 
   return (
-    <div style={{ height: '600px' }}>
+    <div>
       <Search
         search={(value) => {
           setList((prev) => ({ ...prev, search: value }));
