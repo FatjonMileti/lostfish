@@ -195,7 +195,7 @@ const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: As
   });
 
   env.templateRoles = [signer1, signer2];
-  env.status = 'sent';
+  env.status = 'Sent';
 
   return env;
 };
