@@ -9,6 +9,7 @@ const getWeekNumber = (d: any) => {
 export const getFilters = (req: any) => {
   const search = req.query.search as string;
   const filters = req.query.type as string;
+  const action = req.query.action;
   // Get the current date
   const currentDate = new Date();
 
@@ -16,14 +17,19 @@ export const getFilters = (req: any) => {
   const query: {
     $or?: { [key: string]: RegExp }[];
     date?: any;
+    action?: any;
     $where?: any;
   } = {};
 
   if (search) {
     query.$or = [
-      { first_name: new RegExp(<string>search, 'i') },
-      { last_name: new RegExp(<string>search, 'i') }
+      { 'user.first_name': new RegExp(<string>search, 'i') },
+      { 'user.last_name': new RegExp(<string>search, 'i') }
     ];
+  }
+
+  if (action) {
+    query.action = { $eq: action };
   }
 
   if (filters === 'lastmonth') {

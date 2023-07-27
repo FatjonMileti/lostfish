@@ -1,0 +1,71 @@
+import { useUserStore } from '../../../globalState/user';
+import React from 'react';
+import axios from '../../../utils/axios';
+import config from '../../../config';
+
+const state: IGridState = {
+  loading: true,
+  rows: [],
+  totalRows: 0,
+  rowsPerPageOptions: [50, 100, 200],
+  pageSize: 50,
+  page: 0,
+  rowCount: 0,
+  sort: 'date',
+  asc: false,
+  selectedIds: [],
+  search: '',
+  filters: {
+    type: 'all'
+  }
+};
+
+interface ILogs {
+  url: string;
+}
+
+export const useLogs = (props: ILogs) => {
+  const { auth } = useUserStore();
+
+  const [list, setList] = React.useState<IGridState>({
+    ...state
+  });
+
+  const { url } = props;
+
+  React.useEffect(() => {
+    getData();
+  }, [list.sort, list.search, list.asc, list.page, list.pageSize, list.filters]);
+
+  const getData = async () => {
+    const { page, pageSize, asc, search, sort } = list;
+    const params: any = {
+      page: page + 1,
+      pageSize: pageSize,
+      sort: sort || undefined,
+      asc: asc.toString() || undefined,
+      status: search || undefined
+    };
+
+    if (list.filters?.type) {
+      params.type = list.filters.type;
+    }
+
+    if (list.filters?.action) {
+      params.action = list.filters.action;
+    }
+
+    const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/admin/${url}`, {
+      params
+    });
+    setList((prevList: any) => ({
+      ...prevList,
+      rows: data.docs,
+      totalRows: data.totalDocs,
+      rowCount: data.totalDocs,
+      loading: false
+    }));
+  };
+
+  return { list, setList };
+};

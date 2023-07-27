@@ -328,12 +328,12 @@ const updateUrlForLoggedInUser = async (request: Request, response: Response) =>
 };
 
 const createEnvelope = async (request: Request, response: Response) => {
-  const { tenant, property_id } = request.body;
+  const { property_id } = request.body;
   try {
     const envelopesApi = await getEnvelopesApi();
 
     const [landlord, tenantUser, property] = await Promise.all([
-      userService.findOne({ _id: response.locals.user_id }),
+      userService.findOne({ _id: request.body.landlord }),
       userService.findOne({ _id: request.body.tenant }),
       assetService.findById(property_id)
     ]);
@@ -347,14 +347,12 @@ const createEnvelope = async (request: Request, response: Response) => {
 
     const envelope = makeEnvelope(landlord, tenantUser, property);
 
-    // return response.json(envelope);
-
     const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
       envelopeDefinition: envelope
     });
 
     if (results) {
-      await docusignLocalService.createEnvelopeDoc(results, response.locals.user_id, request.body.tenant);
+      await docusignLocalService.createEnvelopeDoc(results, request.body.landlord, request.body.tenant);
     }
 
     if (results && results.envelopeId) {

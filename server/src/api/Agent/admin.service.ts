@@ -5,9 +5,15 @@ import { ILog, ILoginLog } from '../../data/logs';
 export default class AdminService {
   private userLogModel: PaginateModel<ILoginLog>;
   private assetLogModel: PaginateModel<ILog>;
-  constructor(userLogModel: PaginateModel<ILoginLog>, assetLogModel: PaginateModel<ILog>) {
+  private matchLogModel: PaginateModel<ILog>;
+  constructor(
+    userLogModel: PaginateModel<ILoginLog>,
+    assetLogModel: PaginateModel<ILog>,
+    matchLogModel: PaginateModel<ILog>
+  ) {
     this.userLogModel = userLogModel;
     this.assetLogModel = assetLogModel;
+    this.matchLogModel = matchLogModel;
   }
 
   public async getAllSessions(query: any, paginateOptions: IPagingOptions): Promise<any> {
@@ -22,8 +28,20 @@ export default class AdminService {
     });
   }
 
-  public async getAllPropertyLogsILogs(query: any, paginateOptions: IPagingOptions): Promise<any> {
+  public async getAllPropertyLogs(query: any, paginateOptions: IPagingOptions): Promise<any> {
     return this.assetLogModel.paginate(query, {
+      populate: [
+        {
+          path: 'user',
+          select: ['first_name', 'last_name', '_id', 'avatar']
+        }
+      ],
+      ...paginateOptions
+    });
+  }
+
+  public async getAllMatchesLogs(query: any, paginateOptions: IPagingOptions): Promise<any> {
+    return this.matchLogModel.paginate(query, {
       populate: [
         {
           path: 'user',

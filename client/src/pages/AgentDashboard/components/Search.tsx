@@ -8,15 +8,24 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface ISearchProps {
   search: (value: string) => void;
   filter: (value: any) => void;
+  actionValues: string[];
 }
 
 export const Search = (props: ISearchProps) => {
   const [searchTimeout, setSearchTimeout] = useState<any | null>(null);
   const [radioValue, setRadioValue] = React.useState('all');
+  const [action, setAction] = React.useState('');
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setAction(event.target.value as string);
+    props.filter({ action: event.target.value as string });
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue((event.target as HTMLInputElement).value);
@@ -42,6 +51,10 @@ export const Search = (props: ISearchProps) => {
     };
   }, [searchTimeout]);
 
+  const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
     <Box sx={{ pb: '15px' }} style={{ display: 'flex' }}>
       <Grid container spacing={2}>
@@ -56,7 +69,7 @@ export const Search = (props: ISearchProps) => {
             }}
           />
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <FormControl>
             <FormLabel id='demo-row-radio-buttons-group-label'>Filter</FormLabel>
             <RadioGroup
@@ -72,7 +85,29 @@ export const Search = (props: ISearchProps) => {
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={4}></Grid>
+        <Grid item xs={5}>
+          <Grid item xs={6}>
+            <FormControl fullWidth>
+              <FormLabel id='demo-simple-select-label'>Action</FormLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={action}
+                label='Age'
+                size='small'
+                onChange={handleSelectChange}>
+                {props.actionValues.map((action: string) => {
+                  return (
+                    <MenuItem value={action} key={action}>
+                      {capitalizeFirstLetter(action)}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}></Grid>
+        </Grid>
       </Grid>
     </Box>
   );

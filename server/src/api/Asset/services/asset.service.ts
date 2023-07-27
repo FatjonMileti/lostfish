@@ -10,6 +10,7 @@ import { generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import fileService from '../../../external-services/file.service';
+import { Role } from '../../User/user.interface';
 
 const mailService = MailService.getInstance();
 
@@ -17,11 +18,12 @@ const findAll = async (req: Request, res: Response) => {
   const { status } = req.query;
 
   const query: {
-    created_by: any;
+    created_by?: any;
     status_string?: any;
-  } = {
-    created_by: res.locals.user_id
-  };
+  } = {};
+  if ([Role.Client, Role.Landlord].includes(res.locals.role)) {
+    query.created_by = res.locals.user_id;
+  }
 
   if (status) {
     let filteredStatus: string[] = [];

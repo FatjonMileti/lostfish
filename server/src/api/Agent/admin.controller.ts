@@ -17,6 +17,7 @@ export class AdminController {
   private initializeRoutes() {
     router.get('/session', authorize(), paging({ sort: { date: -1 } }), this.getAllSessions);
     router.get('/property', authorize(), paging({ sort: { date: -1 } }), this.getAllPropertyInteractions);
+    router.get('/match', authorize(), paging({ sort: { date: -1 } }), this.getAllMatchesInteractions);
     router.get('/:id', authorize(), this.getMatchById);
   }
 
@@ -57,7 +58,31 @@ export class AdminController {
     const { query } = getFilters(req);
 
     try {
-      const sessions = await this.adminService.getAllPropertyLogsILogs(
+      const sessions = await this.adminService.getAllPropertyLogs(
+        query,
+        res.locals.paging_options as IPagingOptions
+      );
+
+      return res.status(200).json(sessions);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to fetch sessions.' });
+    }
+  };
+
+  /**
+   * @api {get} /api/admin/match Get all property interactions
+   * @apiDescription Get all property interactions
+   * @apiGroup Admin
+   * @apiSampleRequest /api/admin/match
+   * @apiUse bearer
+   * @apiPermission authorize
+   * @apiUse paging
+   */
+  private getAllMatchesInteractions = async (req: Request, res: Response) => {
+    const { query } = getFilters(req);
+
+    try {
+      const sessions = await this.adminService.getAllMatchesLogs(
         query,
         res.locals.paging_options as IPagingOptions
       );

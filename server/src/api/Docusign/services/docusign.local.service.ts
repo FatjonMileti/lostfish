@@ -145,9 +145,10 @@ const successSignRedirect = async (req: Request, res: Response) => {
 };
 
 const getEnvelopeList = async (req: Request, res: Response) => {
-  const query: any = {
-    $or: [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }]
-  };
+  const query: { $or?: any } = {};
+  if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
+    query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
+  }
 
   const response = await Envelope.paginate(query, {
     ...res.locals.paging_options,

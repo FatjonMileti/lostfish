@@ -20,7 +20,7 @@ import { AdminController } from './Agent/admin.controller';
 /* SERVICES */
 import MatchService from './Match/match.service';
 import MatchModel from './Match/match.schema';
-import { LoginLog, AssetLog } from '../data/logs';
+import { LoginLog, AssetLog, MatchLog } from '../data/logs';
 import AdminService from './Agent/admin.service';
 
 const router: Router = Router();
@@ -53,7 +53,7 @@ const router: Router = Router();
 
 // Create services instances
 const matchService = new MatchService(MatchModel);
-const adminService = new AdminService(LoginLog, AssetLog);
+const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
 
 // Create controller instances
 const adminController = new AdminController(adminService);

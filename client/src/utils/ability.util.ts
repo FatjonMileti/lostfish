@@ -14,6 +14,7 @@ export type AppSubjects =
   | 'Chat'
   | 'all'
   | 'Menu'
+  | 'AdminMenu'
   | 'Client'
   | 'Agent'
   | 'SignGenerator'
@@ -35,16 +36,20 @@ export default function defineRulesFor(role: string) {
   const { can, rules, cannot } = new AbilityBuilder(AppAbility);
 
   if (role === Role.Landlord) {
-    can(CASLAction.Manage, 'Menu');
+    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'Agent');
-    // can(CASLAction.Read, 'StarredTenants');
+    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Client) {
+    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'Client');
-    // can(CASLAction.Read, 'StarredProperties');
-  } else if (role === Role.Agent) {
-    can(CASLAction.Manage, 'Agent');
+    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.NewUser) {
+    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'all');
+    cannot(CASLAction.Read, 'AdminMenu');
+  } else if (role === Role.Agent) {
+    can(CASLAction.Read, 'AdminMenu');
+    cannot(CASLAction.Read, 'Menu');
   }
 
   return rules;
