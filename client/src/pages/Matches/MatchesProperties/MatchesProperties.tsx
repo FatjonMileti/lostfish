@@ -23,6 +23,7 @@ interface PropertyType {
     number_of_bathrooms: string;
     number_of_bedrooms: string;
   };
+
   asset_rent: {
     rental_amount?: string;
   };
@@ -32,6 +33,7 @@ interface PropertyType {
   matchId?: string;
   chosen: boolean;
   starred: boolean;
+  asset_address: any;
 }
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
@@ -195,6 +197,9 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           </div>
           <div className='slides-wrapper'>
             {properties.map((property, propertyIndex) => {
+              ///////
+              // console.log('property: ', property);
+              /////////
               const property_images: any = property?.property_images;
               return (
                 <MatchedSlide
@@ -217,6 +222,10 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                   numberOfBedrooms={property?.room_details?.number_of_bedrooms}
                   rentingPrice={property.asset_rent?.rental_amount}
                   numberOfBathrooms={property?.room_details?.number_of_bathrooms}
+                  address={{
+                    lat: property.asset_address.latitude,
+                    lng: property.asset_address.longitude
+                  }}
                 />
               );
             })}
@@ -412,6 +421,7 @@ interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   numberOfBedrooms?: string;
   numberOfBathrooms?: string;
   rentingPrice?: string;
+  address: any;
 }
 
 const MatchedSlide = styled(
@@ -423,6 +433,7 @@ const MatchedSlide = styled(
     numberOfBedrooms = '',
     numberOfBathrooms = '',
     rentingPrice = '',
+    address = { lat: 0, lng: 0 },
     propertyOwnerName = '',
     ...rest
   }: MatchedSlideProps) => {
@@ -447,6 +458,14 @@ const MatchedSlide = styled(
         <ViewProperty
           open={ViewPropertyModalVisibility}
           closeModal={() => setViewPropertyModalVisibility(false)}
+          image={image}
+          avatar={avatar}
+          areaOfInterest={areaOfInterest}
+          numberOfBedrooms={numberOfBedrooms}
+          numberOfBathrooms={numberOfBathrooms}
+          rentingPrice={rentingPrice}
+          propertyOwnerName={propertyOwnerName}
+          address={address}
           refineYourSearchClick={() => {
             setViewPropertyModalVisibility(false);
           }}
