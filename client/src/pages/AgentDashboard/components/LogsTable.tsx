@@ -7,7 +7,7 @@ interface ITableLog {
   columns: GridColDef[];
 }
 
-export const LogsTable = (props: any) => {
+export const LogsTable = (props: ITableLog) => {
   const { list, setList, columns } = props;
   const onSortModelChange = (d: any) => {
     const selectedSort = d[0] || undefined;

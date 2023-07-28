@@ -52,10 +52,25 @@ export default class AdminService {
     });
   }
 
-  public async getSessionByQuery(query: any): Promise<any | null> {
-    return this.userLogModel
-      .findOne(query)
+  public async getMatchLogById(id: string): Promise<any | null> {
+    return this.matchLogModel
+      .findById(id)
       .populate('user', ['_id', 'first_name', 'last_name', 'avatar', 'email'])
+      .lean();
+  }
+
+  public async getPropertyLogById(id: string): Promise<any | null> {
+    return this.assetLogModel
+      .findById(id)
+      .populate('user', ['_id', 'first_name', 'last_name', 'avatar'])
+      .populate('ref')
+      .lean();
+  }
+
+  public async getSessionLogById(id: string): Promise<any | null> {
+    return this.userLogModel
+      .findById(id)
+      .populate('user', ['_id', 'first_name', 'last_name', 'avatar'])
       .lean();
   }
 

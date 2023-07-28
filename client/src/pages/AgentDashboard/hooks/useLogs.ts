@@ -67,5 +67,9 @@ export const useLogs = (props: ILogs) => {
     }));
   };
 
-  return { list, setList };
+  const clearFilters = () => {
+    setList(state);
+  };
+
+  return { list, setList, clearFilters };
 };

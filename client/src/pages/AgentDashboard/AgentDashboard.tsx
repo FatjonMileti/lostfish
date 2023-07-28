@@ -5,7 +5,8 @@ import { Sessions } from './pages/Sessions';
 import { PropertyLogs } from './pages/PropertyLogs';
 import { DashboardNavbar } from './components/DashboardNavbar';
 import { MatchesLogs } from './pages/MatchesLogs';
-import { Header } from '../HomeLoggedIn/Header';
+import { DashboardHeader } from './components/DashboardHeader';
+import { SystemUsers } from './pages/SystemUsers';
 
 const ItemContent = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,13 +29,20 @@ export const AgentDashboard = styled(({ className }: React.HTMLAttributes<HTMLDi
     if (activeTab === 2) {
       return <MatchesLogs />;
     }
+    if (activeTab === 3) {
+      return <SystemUsers user_type='Landlord' />;
+    }
+
+    if (activeTab === 4) {
+      return <SystemUsers user_type='Tenant' />;
+    }
 
     return <div></div>;
   };
 
   return (
     <div className={`home-page ${className}`}>
-      <Header />
+      <DashboardHeader />
 
       <div className='container'>
         <Box sx={{ flexGrow: 1, margin: '10px 25px 10px 25px' }}>

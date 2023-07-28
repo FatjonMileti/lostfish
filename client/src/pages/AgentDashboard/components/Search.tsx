@@ -10,11 +10,13 @@ import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Button } from '../../../components/Button';
 
 interface ISearchProps {
   search: (value: string) => void;
   filter: (value: any) => void;
   actionValues: string[];
+  clearFilters: () => void;
 }
 
 export const Search = (props: ISearchProps) => {
@@ -55,6 +57,13 @@ export const Search = (props: ISearchProps) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const clearAllFilters = () => {
+    props.clearFilters();
+    setSearchTimeout(null);
+    setRadioValue('all');
+    setAction('');
+  };
+
   return (
     <Box sx={{ pb: '15px' }} style={{ display: 'flex' }}>
       <Grid container spacing={2}>
@@ -85,7 +94,7 @@ export const Search = (props: ISearchProps) => {
             </RadioGroup>
           </FormControl>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={5} style={{ display: 'flex' }}>
           <Grid item xs={6}>
             <FormControl fullWidth>
               <FormLabel id='demo-simple-select-label'>Action</FormLabel>
@@ -106,7 +115,14 @@ export const Search = (props: ISearchProps) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            <FormControl style={{ marginLeft: '10px' }}>
+              <FormLabel id='demo-row-radio-buttons-group-label'>Clear</FormLabel>
+              <Button size='small' onClick={() => clearAllFilters()} style={{ height: '40px' }}>
+                Clear
+              </Button>
+            </FormControl>
+          </Grid>
         </Grid>
       </Grid>
     </Box>
