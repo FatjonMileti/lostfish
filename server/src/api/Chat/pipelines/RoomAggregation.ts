@@ -81,17 +81,17 @@ const PaginationPipeline: PaginationPipelineFunc = (
     {
       $addFields: {
         last_message: {
-          $ifNull: [
-            {
-              $arrayElemAt: [
-                '$messages',
-                {
-                  $indexOfArray: ['$messages', { $max: '$messages.created_at' }]
-                }
-              ]
-            },
-            null
-          ]
+          $reduce: {
+            input: '$messages',
+            initialValue: null,
+            in: {
+              $cond: {
+                if: { $gt: ['$$this.created_at', '$$value.created_at'] },
+                then: '$$this',
+                else: '$$value'
+              }
+            }
+          }
         },
         unseen_messages: {
           $size: {
@@ -108,7 +108,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
     },
     {
       $project: {
-        last_message: { message: 1, seen: 1, sender: 1 },
+        last_message: 1,
         author: { first_name: 1, last_name: 1, _id: 1 },
         participant: { first_name: 1, last_name: 1, _id: 1 },
         unseen_messages: 1
