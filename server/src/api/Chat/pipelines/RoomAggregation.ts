@@ -136,7 +136,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
         docs: {
           $slice: ['$docs', skip, limit]
         },
-        totalDocs: 1,
+        totalDocs: '$totalDocs',
         limit: {
           $literal: limit
         },
@@ -144,9 +144,12 @@ const PaginationPipeline: PaginationPipelineFunc = (
           $literal: page
         },
         totalPages: {
-          $ceil: {
-            $divide: ['$totalDocs', limit]
-          }
+          $add: [
+            { $divide: ['$totalDocs', limit] },
+            {
+              $cond: [{ $gt: [{ $mod: ['$totalDocs', limit] }, 0] }, 1, 0]
+            }
+          ]
         }
       }
     }
