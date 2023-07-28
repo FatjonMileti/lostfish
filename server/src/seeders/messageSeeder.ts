@@ -7,6 +7,7 @@ export const seedRoom = async (): Promise<void> => {
     const tenant = await userService.findOne({ email: 'Tenant@lostfish.com' });
 
     if (landlord && tenant) {
+      await RoomSchema.deleteMany({});
       await RoomSchema.create({ author: landlord._id, participant: tenant._id });
       console.log(` Room seeded successfully.`);
     }
