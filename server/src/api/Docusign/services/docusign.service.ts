@@ -84,7 +84,7 @@ const getConsent = () => {
   const urlScopes = SCOPES.join('+');
 
   // const redirectUri = 'https://developers.docusign.com/platform/auth/consent';
-  const redirectUri = 'http://localhost:3000/api/docusign/callback';
+  const redirectUri = `${config.api_url}/api/docusign/callback`;
   const consentUrl =
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
     `scope=${urlScopes}&client_id=${jwtConfig.dsJWTClientId}&` +
