@@ -125,7 +125,7 @@ function App() {
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
                   <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-                  <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
                   <Route path='/dashboard/*' element={!!user.auth ? <MyDashboard /> : <Login />} />
                   <Route path='*' element={<NotFound />} />
                 </Routes>
