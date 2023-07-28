@@ -33,14 +33,8 @@ import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
 
-/* --Agent pages-- */
-import { Agreement } from './pages/Agreement/Agreement';
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
-import { AgentDashboard } from './pages/AgentDashboard/AgentDashboard';
-import { Matches as SystemMatches } from './pages/AgentDashboard/Matches';
-import { AllProperties } from './pages/AgentDashboard/AllProperties';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
-/* --End Agent pages -- */
 
 registerStore(
   'notification',
@@ -50,17 +44,6 @@ registerStore(
   },
   { persist: true }
 );
-
-const AgentDashboardRoutes = () => {
-  return (
-    <Routes>
-      <Route path='/dashboard' element={<AgentDashboard />} />
-      <Route path='/contracts' element={<Agreement />} />
-      <Route path='/agent-property' element={<AllProperties />} />
-      <Route path='/agent-matches' element={<SystemMatches />} />
-    </Routes>
-  );
-};
 
 function App() {
   const user = useUserStore();
