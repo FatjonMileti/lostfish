@@ -121,37 +121,22 @@ const PaginationPipeline: PaginationPipelineFunc = (
       }
     },
     {
-      $facet: {
-        total: [
-          {
-            $count: 'created_at'
-          }
-        ],
-        data: [
-          {
-            $addFields: {
-              _id: '$_id'
-            }
-          }
-        ]
+      $group: {
+        _id: null,
+        docs: {
+          $push: '$$ROOT'
+        },
+        totalDocs: {
+          $sum: 1
+        }
       }
-    },
-    {
-      $unwind: '$total'
     },
     {
       $project: {
         docs: {
-          $slice: [
-            '$data',
-            skip,
-            {
-              $ifNull: [limit, '$total.created_at']
-            }
-          ]
+          $slice: ['$docs', skip, limit]
         },
-
-        totalDocs: '$total.created_at',
+        totalDocs: 1,
         limit: {
           $literal: limit
         },
@@ -160,7 +145,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
         },
         totalPages: {
           $ceil: {
-            $divide: ['$total.created_at', limit]
+            $divide: ['$totalDocs', limit]
           }
         }
       }
