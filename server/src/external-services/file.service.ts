@@ -14,7 +14,11 @@ const readFile = (imageId: string) => {
   });
 };
 
-const removeFile = (imageId: string, propertyId: string = '', userId: string = '') => {
+const removeFile = async (
+  imageId: string,
+  propertyId: string = '',
+  userId: string = ''
+): Promise<boolean> => {
   let filePathString = '../../uploads/';
   if (propertyId) {
     filePathString = filePathString + `asset-images/`;
@@ -26,10 +30,10 @@ const removeFile = (imageId: string, propertyId: string = '', userId: string = '
   const filePath = path.join(__dirname, filePathString, imageId);
 
   try {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       fs.unlink(filePath, (error: any) => {
         if (error) {
-          reject(error);
+          reject(false);
         } else {
           resolve(true);
         }
