@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 const router: Router = Router();
 import config from '../../config';
-import S3UploadService from '../File/services/s3-upload.service';
+import S3UploadService from '../File/services/s3-file.service';
 import LocalUploadService from '../File/services/local-uploader.service';
 import internalFileService from '../File/services/file.service';
 import authorize from '../../middleware/authorize';

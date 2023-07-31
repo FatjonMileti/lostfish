@@ -29,13 +29,11 @@ export class AssetController {
       this.findAll
     );
     this.router.get('/matches-example', authorize(), this.gePublishedApplications);
-    this.router.get('/:id/images', authorize(), validateId, this.getImages);
     this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
     this.router.get('/:id/application', authorize(), validateId, this.getOneAssetApplication);
     this.router.post('/:id/send-application', authorize(), validateId, this.sendApplication);
     this.router.patch('/:id/approve-application', authorize(), validateId, this.approveApplication);
     this.router.patch('/:id/update-application', authorize(), validateId, this.updateApplication);
-    this.router.get('/:id/image/:imageId', validateId, this.getSingleImage);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
     this.router.post(
@@ -54,14 +52,6 @@ export class AssetController {
     );
     this.router.delete('/:id', authorize(), validateId, this.delete);
   }
-
-  /**
-   * @api {get} /api/asset/:id/image/:imageId Get asset image
-   * @apiDescription Get single image
-   * @apiGroup Asset
-   * @apiSampleRequest /api/asset/:id/image/:imageId
-   */
-  private getSingleImage = this.assetService.getSingleImage;
 
   /**
    * @api {get} /api/asset Get asset
@@ -143,18 +133,6 @@ export class AssetController {
    * @apiUse bearer
    */
   private getById = this.assetService.getById;
-
-  /**
-   * @api {get} /api/asset/:id/images Get asset images
-   * @apiDescription Get asset images
-   * @apiGroup Asset
-   * @apiSampleRequest /api/asset/:id/images
-   *
-   * @apiParam id asset id
-   * @apiPermission authorize
-   * @apiUse bearer
-   */
-  private getImages = this.assetService.getAssetImages;
 
   /**
    * @api {post} /api/asset Post
