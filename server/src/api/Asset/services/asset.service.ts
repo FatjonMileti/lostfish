@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
 import { Types } from 'mongoose';
-import { generateLinksForImages, generateLinksForOneAsset } from '../helpers';
+import { handlePropertyImages, generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import fileService from '../../../external-services/file.service';
@@ -163,7 +163,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (req.body.hasOwnProperty('property_images')) {
-      asset.property_images = [...asset.property_images, ...data.property_images];
+      asset.property_images = handlePropertyImages(asset.property_images, data.property_images, asset._id);
     }
 
     await asset.save();

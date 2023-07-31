@@ -4,7 +4,7 @@ import { HTMLMotionProps, motion } from 'framer-motion';
 import { Icon } from '../../../components/Icon';
 
 interface SliderProps extends HTMLAttributes<HTMLDivElement> {
-  images?: string[];
+  images?: any[];
 }
 export const Slider = styled(({ className, images = [] }: SliderProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
@@ -19,7 +19,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
           return (
             <Slide
               key={imageIndex}
-              image={image}
+              image={image?.link}
               className='image-holder'
               animate={{ x: `${-100 * activeSlide}%` }}
               transition={{ ease: 'easeOut', duration: 0.5 }}

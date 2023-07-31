@@ -56,8 +56,8 @@ const generateAsset = async () => {
     contract_details: faker.helpers.arrayElements(Object.values(ContractDetails)),
     property_images: [
       {
-        filename: imageUrl,
-        key: imageUrl
+        key: imageUrl,
+        link: imageUrl
       }
     ]
   };

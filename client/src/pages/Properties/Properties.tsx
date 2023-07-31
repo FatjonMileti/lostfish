@@ -139,7 +139,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     setEditPropertyId(p._id);
                     setShowNewPropertyModal(true);
                   }}
-                  image={p?.property_images?.[0]}
+                  image={p?.property_images?.[0]?.link}
                   images={p.property_images.length > 0 ? p.property_images : []}
                 />
               ))}
