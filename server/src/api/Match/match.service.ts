@@ -42,6 +42,10 @@ export default class MatchService {
         {
           path: 'tenant',
           select: ['first_name', 'last_name', '_id', 'avatar']
+        },
+        {
+          path: 'landlord',
+          select: ['first_name', 'last_name', '_id', 'avatar']
         }
       ]
     });

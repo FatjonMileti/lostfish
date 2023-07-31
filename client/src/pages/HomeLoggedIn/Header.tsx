@@ -66,21 +66,21 @@ export const Header = styled(({ className }: HeaderProps) => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/agent-matches'>
+            <NavLink to='/dashboard/agent-matches'>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Matches
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/agent-property'>
+            <NavLink to='/dashboard/agent-property'>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Properties
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/contracts'>
+            <NavLink to='/dashboard/contracts'>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Contract

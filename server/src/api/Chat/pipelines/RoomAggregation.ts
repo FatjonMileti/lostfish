@@ -81,17 +81,17 @@ const PaginationPipeline: PaginationPipelineFunc = (
     {
       $addFields: {
         last_message: {
-          $ifNull: [
-            {
-              $arrayElemAt: [
-                '$messages',
-                {
-                  $indexOfArray: ['$messages', { $max: '$messages.created_at' }]
-                }
-              ]
-            },
-            null
-          ]
+          $reduce: {
+            input: '$messages',
+            initialValue: null,
+            in: {
+              $cond: {
+                if: { $gt: ['$$this.created_at', '$$value.created_at'] },
+                then: '$$this',
+                else: '$$value'
+              }
+            }
+          }
         },
         unseen_messages: {
           $size: {
@@ -108,7 +108,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
     },
     {
       $project: {
-        last_message: { message: 1, seen: 1, sender: 1 },
+        last_message: 1,
         author: { first_name: 1, last_name: 1, _id: 1 },
         participant: { first_name: 1, last_name: 1, _id: 1 },
         unseen_messages: 1
@@ -121,37 +121,22 @@ const PaginationPipeline: PaginationPipelineFunc = (
       }
     },
     {
-      $facet: {
-        total: [
-          {
-            $count: 'created_at'
-          }
-        ],
-        data: [
-          {
-            $addFields: {
-              _id: '$_id'
-            }
-          }
-        ]
+      $group: {
+        _id: null,
+        docs: {
+          $push: '$$ROOT'
+        },
+        totalDocs: {
+          $sum: 1
+        }
       }
-    },
-    {
-      $unwind: '$total'
     },
     {
       $project: {
         docs: {
-          $slice: [
-            '$data',
-            skip,
-            {
-              $ifNull: [limit, '$total.created_at']
-            }
-          ]
+          $slice: ['$docs', skip, limit]
         },
-
-        totalDocs: '$total.created_at',
+        totalDocs: '$totalDocs',
         limit: {
           $literal: limit
         },
@@ -159,9 +144,12 @@ const PaginationPipeline: PaginationPipelineFunc = (
           $literal: page
         },
         totalPages: {
-          $ceil: {
-            $divide: ['$total.created_at', limit]
-          }
+          $add: [
+            { $divide: ['$totalDocs', limit] },
+            {
+              $cond: [{ $gt: [{ $mod: ['$totalDocs', limit] }, 0] }, 1, 0]
+            }
+          ]
         }
       }
     }
@@ -234,37 +222,22 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
       }
     },
     {
-      $facet: {
-        total: [
-          {
-            $count: 'created_at'
-          }
-        ],
-        data: [
-          {
-            $addFields: {
-              _id: '$_id'
-            }
-          }
-        ]
+      $group: {
+        _id: null,
+        docs: {
+          $push: '$$ROOT'
+        },
+        totalDocs: {
+          $sum: 1
+        }
       }
-    },
-    {
-      $unwind: '$total'
     },
     {
       $project: {
         docs: {
-          $slice: [
-            '$data',
-            skip,
-            {
-              $ifNull: [limit, '$total.created_at']
-            }
-          ]
+          $slice: ['$docs', skip, limit]
         },
-
-        totalDocs: '$total.created_at',
+        totalDocs: '$totalDocs',
         limit: {
           $literal: limit
         },
@@ -272,9 +245,12 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
           $literal: page
         },
         totalPages: {
-          $ceil: {
-            $divide: ['$total.created_at', limit]
-          }
+          $add: [
+            { $divide: ['$totalDocs', limit] },
+            {
+              $cond: [{ $gt: [{ $mod: ['$totalDocs', limit] }, 0] }, 1, 0]
+            }
+          ]
         }
       }
     }

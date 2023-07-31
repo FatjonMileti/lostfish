@@ -32,9 +32,9 @@ import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter
 import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
-import { Agreement } from './pages/Agreement/Agreement';
+
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
-import { AgentDashboard } from './pages/AgentDashboard/AgentDashboard';
+import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 
 registerStore(
   'notification',
@@ -116,12 +116,8 @@ function App() {
                   <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                   <Route path='/activate-account/:token' element={<VerifyAccount />} />
                   <Route path='/reset-password/:token' element={<ResetPassword />} />
-
                   <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-                  <Route path='/dashboard' element={<AgentDashboard />} />
-                  <Route path='/contracts' element={<Agreement />} />
-                  <Route path='/agent-property' element={<div>Property list</div>} />
-                  <Route path='/agent-matches' element={<div>Matches list</div>} />
+
                   <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
                   <Route path='/messages' element={<ChatPage />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />
@@ -129,21 +125,9 @@ function App() {
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
                   <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-                  <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/dashboard/*' element={!!user.auth ? <MyDashboard /> : <Login />} />
                   <Route path='*' element={<NotFound />} />
-
-                  {/* <Route */}
-                  {/*   path='/*' */}
-                  {/*   element={ */}
-                  {/*     <PrivateRoute> */}
-                  {/*       <Layout> */}
-                  {/*         <Routes> */}
-                  {/*           <Route path='*' element={<NotFound />} /> */}
-                  {/*         </Routes> */}
-                  {/*       </Layout> */}
-                  {/*     </PrivateRoute> */}
-                  {/*   } */}
-                  {/* /> */}
                 </Routes>
               </BrowserRouter>
             </UIProvider>

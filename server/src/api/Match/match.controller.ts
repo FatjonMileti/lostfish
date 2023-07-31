@@ -8,6 +8,7 @@ import { Role } from '../User/user.interface';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
 import { generateLinksForMatchesImages } from './match.helper';
+import assetService from '../Asset/services/asset.service';
 
 const router: Router = Router();
 
@@ -63,6 +64,7 @@ export class MatchController {
       const match = await this.matchService.createMatch({
         ...matchData,
         type,
+        landlord: res.locals.user_id,
         created_by: res.locals.user_id
       });
       return res.status(201).json(match);
@@ -101,10 +103,19 @@ export class MatchController {
   private createMatchTenant = async (req: Request, res: Response) => {
     try {
       const matchData: Partial<MatchDocument> = req.body;
+
+      const property = await assetService.findById(matchData.property as string);
+
+      if (!property) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+      }
       const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+
       const match = await this.matchService.createMatch({
         ...matchData,
+        landlord: property.created_by.toString(),
         type,
+        tenant: res.locals.user_id,
         created_by: res.locals.user_id
       });
       return res.status(201).json(match);
@@ -145,10 +156,11 @@ export class MatchController {
   private getAllMatches = async (req: Request, res: Response) => {
     const { starred } = req.query;
 
-    const query: IMatchQueryParams = {
-      type: res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY,
-      created_by: res.locals.user_id
-    };
+    const query: IMatchQueryParams = {};
+    if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
+      query.created_by = res.locals.user_id;
+      query.type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+    }
 
     if (starred) {
       query.starred = starred === 'true';
@@ -164,7 +176,6 @@ export class MatchController {
 
       return res.status(200).json(matches);
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: 'Unable to fetch matches.' });
     }
   };

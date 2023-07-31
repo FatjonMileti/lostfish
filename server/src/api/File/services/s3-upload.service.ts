@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Request } from 'express';
 import multer, { Multer } from 'multer';
 import multerS3 from 'multer-s3';
@@ -79,18 +79,17 @@ export default class S3UploadService {
     });
   }
 
-  deleteImage(img: any) {
+  async deleteImage(imgKey: any) {
     try {
-      // Clean up the temporary file after it is sent
-      fs.unlink(img, (error: any) => {
-        if (error) {
-          console.error('Error deleting the temporary file:', error);
-        } else {
-          console.log('Temporary file deleted.');
-        }
-      });
-    } catch (error) {
-      console.log(error);
+      const params = {
+        Bucket: config.aws.awsBucket,
+        Key: imgKey
+      };
+      const command = new DeleteObjectCommand({ Bucket: config.aws.awsBucket, Key: imgKey });
+      await s3.send(command);
+      console.log('File deleted successfully.');
+    } catch (err) {
+      console.error('Error deleting file:', err);
     }
   }
 }

@@ -4,7 +4,8 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import PeopleIcon from '@mui/icons-material/People';
 import { styled } from '@mui/system';
-
+import { Typography } from '../../../components/Typography';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   padding: theme.spacing(1),
@@ -20,6 +21,8 @@ interface IDashboardNavbar {
 export const DashboardNavbar = ({ activeTab, setActiveTab }: IDashboardNavbar) => {
   return (
     <Item>
+      <Typography variant='body4'>Logs</Typography>
+      <hr />
       <List>
         <ListItem
           style={{ backgroundColor: activeTab === 0 ? '#B2ADAC' : '', cursor: 'pointer' }}
@@ -47,9 +50,34 @@ export const DashboardNavbar = ({ activeTab, setActiveTab }: IDashboardNavbar) =
             setActiveTab(2);
           }}>
           <ListItemIcon>
-            <PeopleIcon />
+            <SyncAltIcon />
           </ListItemIcon>
           <ListItemText primary='Matches logs' />
+        </ListItem>
+      </List>
+      <hr />
+      <Typography variant='body4'>Users</Typography>
+      <hr />
+      <List>
+        <ListItem
+          style={{ backgroundColor: activeTab === 3 ? '#B2ADAC' : '', cursor: 'pointer' }}
+          onClick={() => {
+            setActiveTab(3);
+          }}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary='Landlords' />
+        </ListItem>
+        <ListItem
+          style={{ backgroundColor: activeTab === 4 ? '#B2ADAC' : '', cursor: 'pointer' }}
+          onClick={() => {
+            setActiveTab(4);
+          }}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary='Tenants' />
         </ListItem>
       </List>
     </Item>

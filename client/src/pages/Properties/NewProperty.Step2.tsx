@@ -291,14 +291,13 @@ export const NewPropertyStep2 = styled(
                               size='large'
                               className='remove-button'
                               onClick={async () => {
-                                await deleteImage(image);
                                 onChange({
                                   target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
                                 });
                               }}>
                               <Icon icon='minus' size={11} />
                             </IconButton>
-                            <img alt='property image' src={`${image}`} />
+                            <img alt='property image' src={`${image?.link}`} />
                           </div>
                         ))}
 

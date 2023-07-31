@@ -1,5 +1,7 @@
 import config from '../../config';
-
+import fileService from '../../external-services/file.service';
+import S3UploadService from '../File/services/s3-upload.service';
+const s3UploaderService = S3UploadService.getInstance();
 export const getCurrentPropertyTypeForPost = (type: string) => {
   const propertyTypes: any = {
     Detached: 'Detached House',
@@ -48,9 +50,72 @@ export const generateLinksForImages = (docs: any[]) => {
 
 export const generateLinksForOneAsset = (propertyImages: any[]) => {
   return propertyImages.map((img: any) => {
-    if (!img?.key?.startsWith('https://')) {
-      return `${config.api_url}/api/file/${img?.key}`;
-    }
-    return img.key || img.filename;
+    return {
+      key: img.key,
+      link: img.link
+    };
   });
+};
+
+interface AnyObject {
+  [key: string]: any;
+}
+
+export const areArraysOfObjectsIdentical = (arr1: AnyObject[], arr2: AnyObject[]): boolean => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    const obj1 = arr1[i];
+    const obj2 = arr2[i];
+
+    if (!isObjectEqual(obj1, obj2)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+function isObjectEqual(obj1: AnyObject, obj2: AnyObject): boolean {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (const key of keys1) {
+    if (obj1[key] !== obj2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const handlePropertyImages = (existingImages: any[], incomingImages: any[], assetId: string) => {
+  const oldImages = incomingImages.filter((img: any) => Object.keys(img).length < 3);
+  if (areArraysOfObjectsIdentical(existingImages, oldImages)) {
+    return [...incomingImages];
+  } else {
+    const imagesToDelete = existingImages.filter(
+      (img: any) => !incomingImages.some((newImg: any) => newImg.key === img.key)
+    );
+
+    if (imagesToDelete.length > 0) {
+      if (config.uses3Bucket) {
+        imagesToDelete.forEach((img: any) => {
+          s3UploaderService.deleteImage(img.key);
+        });
+      } else {
+        imagesToDelete.forEach((img: any) => {
+          fileService.removeFile(img.key, assetId, '');
+        });
+      }
+    }
+
+    return incomingImages;
+  }
 };
