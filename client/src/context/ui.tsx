@@ -1,11 +1,11 @@
-import { AlertColor } from "@mui/material";
-import React, { Dispatch, useContext, useEffect, useReducer } from "react";
+import { AlertColor } from '@mui/material';
+import React, { Dispatch, useContext, useEffect, useReducer } from 'react';
 
 export enum UIActionType {
   SHOW_MESSAGE,
   HIDE_MESSAGE,
   SHOW_LOADING,
-  HIDE_LOADING,
+  HIDE_LOADING
 }
 export interface IUIAction {
   type: UIActionType;
@@ -19,10 +19,10 @@ export interface IUIState {
 }
 
 const initialState: IUIState = {
-  message: "",
-  severity: "info",
+  message: '',
+  severity: 'info',
   isSnackbarOpen: false,
-  isLoading: false,
+  isLoading: false
 };
 
 const reducer = (state: IUIState, action: IUIAction): IUIState => {
@@ -34,26 +34,26 @@ const reducer = (state: IUIState, action: IUIAction): IUIState => {
       return {
         ...state,
         message: payload.message,
-        severity: payload.severity || "info",
-        isSnackbarOpen: true,
+        severity: payload.severity || 'info',
+        isSnackbarOpen: true
       };
     }
     case UIActionType.HIDE_MESSAGE: {
       return {
         ...state,
-        isSnackbarOpen: false,
+        isSnackbarOpen: false
       };
     }
     case UIActionType.SHOW_LOADING: {
       return {
         ...state,
-        isLoading: true,
+        isLoading: true
       };
     }
     case UIActionType.HIDE_LOADING: {
       return {
         ...state,
-        isLoading: false,
+        isLoading: false
       };
     }
     default: {
@@ -71,10 +71,6 @@ const Context = React.createContext<IUIContext | undefined>(undefined);
 export const UIProvider = (props: any) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  return (
-    <Context.Provider value={{ state, dispatch }}>
-      {props.children}
-    </Context.Provider>
-  );
+  return <Context.Provider value={{ state, dispatch }}>{props.children}</Context.Provider>;
 };
 export const useUI = () => useContext(Context);

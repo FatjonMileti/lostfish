@@ -7,6 +7,7 @@ type DocumentType = {
   value: string;
 };
 export interface ProfileStoreType {
+  id: string;
   avatar?: string;
   first_name: string;
   last_name: string;
@@ -26,6 +27,7 @@ export interface ProfileStoreType {
 }
 
 const profileInitialState = {
+  id: '',
   avatar: undefined,
   first_name: '',
   last_name: '',
@@ -47,6 +49,7 @@ export const useProfileStore = create<ProfileStoreType>()(
             const { data } = await axios(access_token).get('/api/account/me');
             set((profile) => ({
               ...profile,
+              id: data._id,
               avatar: data.avatar,
               first_name: data.first_name,
               last_name: data.last_name,

@@ -34,6 +34,7 @@ import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
 import { Agreement } from './pages/Agreement/Agreement';
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
+import { AgentDashboard } from './pages/AgentDashboard/AgentDashboard';
 
 registerStore(
   'notification',
@@ -105,7 +106,6 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path='/login' element={<Login />} />
-                  <Route path='/agreement' element={<Agreement />} />
                   <Route path='/agreement/:id' element={<AgreementDetails />} />
                   <Route path='/components' element={<PreviewComponents />} />
                   <Route path='/about' element={<About />} />
@@ -118,7 +118,10 @@ function App() {
                   <Route path='/reset-password/:token' element={<ResetPassword />} />
 
                   <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
-
+                  <Route path='/dashboard' element={<AgentDashboard />} />
+                  <Route path='/contracts' element={<Agreement />} />
+                  <Route path='/agent-property' element={<div>Property list</div>} />
+                  <Route path='/agent-matches' element={<div>Matches list</div>} />
                   <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
                   <Route path='/messages' element={<ChatPage />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />

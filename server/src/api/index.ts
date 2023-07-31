@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
-
+import authorize from '../middleware/authorize';
+/* CONTROLLERS */
 import { UserController } from './User/user.controller';
 import { AssetController } from './Asset/asset.controller';
 import { ChatController } from './Chat/chat.controller';
@@ -9,15 +9,19 @@ import { NotificationController } from './Notification/notification.controller';
 import { AttributeController } from './Attribute/attribute.controller';
 import { ConditionController } from './Condition/condition.controller';
 import { AccountController } from './Account/account.controller';
-import authorize from '../middleware/authorize';
 import { ProtectedApiController } from './Get/get-data.controller';
 import { CriteriaController } from './Criteria/criteria.controller';
 import { DocusignController } from './Docusign/docusign-test.controller';
 import { UploadController } from './Upload/upload.controller';
 import { FileController } from './File/file.controller';
 import { MatchController } from './Match/match.controller';
+import { AdminController } from './Agent/admin.controller';
+
+/* SERVICES */
 import MatchService from './Match/match.service';
 import MatchModel from './Match/match.schema';
+import { LoginLog, AssetLog, MatchLog } from '../data/logs';
+import AdminService from './Agent/admin.service';
 
 const router: Router = Router();
 /**
@@ -47,14 +51,18 @@ const router: Router = Router();
  * @apiQuery {boolean} [asc=false] sort direction
  */
 
-// Create the service and controller instances
+// Create services instances
 const matchService = new MatchService(MatchModel);
+const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
+
+// Create controller instances
+const adminController = new AdminController(adminService);
 const matchController = new MatchController(matchService);
 const protectedController = new ProtectedApiController();
 const uploadController = new UploadController();
 const criteriaController = new CriteriaController();
 const accountController = new AccountController();
-const offerController = new AssetController();
+const assetController = new AssetController();
 const userController = new UserController();
 const chatController = new ChatController();
 const mapController = new MapController();
@@ -65,6 +73,7 @@ const docusignController = new DocusignController();
 const fileController = new FileController();
 
 router.use('/v1', protectedController.router);
+router.use('/admin', adminController.router);
 router.use('/match', matchController.router);
 router.use('/upload', uploadController.router);
 router.use('/file', fileController.router);
@@ -72,7 +81,7 @@ router.use('/docusign', docusignController.router);
 router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);
 router.use('/user', authorize(), userController.router);
-router.use('/asset', offerController.router);
+router.use('/asset', assetController.router);
 router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/attribute', authorize(), attributeController.router);

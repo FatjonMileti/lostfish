@@ -24,6 +24,7 @@ import { buildAbilityFor } from '../../utils/ability.util';
 import config from '../../config';
 import loginIllustration from './loginIllustration.png';
 import { useUserStore } from '../../globalState/user';
+import { Role } from '../../enums';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('email is required'),
@@ -46,7 +47,7 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!!user.auth) navigate('/');
+    if (!!user.auth) navigate(user.userDetails.role === Role.Agent ? '/dashboard' : '/');
   }, [user.auth]);
 
   const onSubmit = async (data: any) => {

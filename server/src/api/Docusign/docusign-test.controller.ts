@@ -1,10 +1,13 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import docusignService from './services/docusign.service';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 
 import docusignLocalService from './services/docusign.local.service';
 import config from '../../config';
+import abilityMiddleware from '../../middleware/ability.middleware';
+import { CASLAction } from '../../casl/casl.interface';
+
 const router: Router = Router();
 
 export class DocusignController {
@@ -17,7 +20,12 @@ export class DocusignController {
   }
 
   private initializeRoutes() {
-    this.router.post('/create-envelope', authorize(), this.createEnvelope);
+    this.router.post(
+      '/create-envelope',
+      authorize(),
+      abilityMiddleware(CASLAction.Create, 'SignGenerator'),
+      this.createEnvelope
+    );
     this.router.get('/get-consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
@@ -27,6 +35,7 @@ export class DocusignController {
       '/envelope',
       authorize(),
       paging({ sort: { status_date_time: -1 } }),
+      abilityMiddleware(CASLAction.Read, 'SignGenerator'),
       this.getEnvelopeList
     );
 
