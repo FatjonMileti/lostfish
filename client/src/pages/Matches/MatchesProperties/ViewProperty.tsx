@@ -5,52 +5,60 @@ import { Modal, ModalProps } from '../../../components/Modal';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import React, { useState } from 'react';
-import { useProfileStore } from '../../../globalState/profile';
-import apartament from '../images/gallery-4.png';
-import apartament1 from '../images/gallery-1.png';
-import apartament2 from '../images/gallery-2.png';
-import apartament3 from '../images/gallery-3.png';
-import apartament5 from '../images/gallery-5.png';
 import { Avatar } from '../../../components/Avatar';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { Map } from '../../Properties/pages/PropertyDetails/components/Map';
+import { Map } from './ViewProperty.Map';
 import { NearestPlaces } from '../../Properties/pages/PropertyDetails/components/NearestPlaces';
 import { NearestSchools } from '../../Properties/pages/PropertyDetails/components/NearestSchools';
 import { NearestImportantPlaces } from '../../Properties/pages/PropertyDetails/components/NearestImportantPlaces';
 import { Button } from '../../../components/Button';
 import Underground from './Underground.svg';
 import { motion } from 'framer-motion';
+import classNames from 'classnames';
+import { Carousel } from './MatchesProperties.Carousel';
 
 interface ViewPropertyModalProps extends ModalProps {
   refineYourSearchClick?: () => void;
-  image: string;
+  images: string[];
   avatar: string;
   propertyOwnerName: string;
   areaOfInterest?: string;
   numberOfBedrooms?: string;
   numberOfBathrooms?: string;
+  propertyType: string;
+  propertyArea: string;
   rentingPrice?: string;
+  parkingSpot: boolean;
+  energyCertificate?: boolean;
   address: any;
+  starProperty: () => void;
+  isPropertyStarred: boolean;
 }
 
 export const ViewProperty = styled(
   ({
+    className,
     closeModal,
-    image,
+    images,
     avatar,
     propertyOwnerName,
     numberOfBedrooms,
     numberOfBathrooms,
     rentingPrice,
     areaOfInterest,
+    propertyType,
+    propertyArea,
+    parkingSpot,
+    energyCertificate,
     address,
     refineYourSearchClick = () => {},
+    starProperty,
+    isPropertyStarred,
     ...rest
   }: ViewPropertyModalProps) => {
     const [selectedButton, setSelectedButton] = useState('stations');
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-    const images = [image, apartament, apartament1, apartament2, apartament3, apartament5, apartament];
     const previous = () => {
       activeImageIndex > 0
         ? setActiveImageIndex(activeImageIndex - 1)
@@ -64,46 +72,32 @@ export const ViewProperty = styled(
     };
 
     return (
-      <Modal {...rest}>
-        <div className='img' style={{ backgroundImage: `url(${images[activeImageIndex]})` }}>
-          <div className='content'>
-            <div className='header'>
-              <div className='avatar-wrapper'>
-                <Avatar image={avatar} />
-                <Typography variant='body4'>{propertyOwnerName}</Typography>
-                <Typography variant='body4' className='dot'>
-                  •
-                </Typography>
-                <Typography variant='body4'>34%</Typography>
-              </div>
-              <IconButton size='large' onClick={closeModal}>
-                <Icon icon='close' size={12} />
-              </IconButton>
-            </div>
-            <div className='footer'>
-              <ArrowButton direction='left' hero onClick={previous} />
-              <div className='images'>
-                {images.map((image, index) => (
-                  <motion.img
-                    key={index}
-                    src={image}
-                    className={index === activeImageIndex ? 'active' : ''}
-                    onClick={() => setActiveImageIndex(index)}
-                    whileHover={{ scale: 1.5 }}
-                    whileTap={{ scale: 1 }}
-                  />
-                ))}
-              </div>
-              <ArrowButton direction='right' hero onClick={next} />
-            </div>
+      <Modal className={classNames('view-property-modal', className)} {...rest}>
+        <div className='modal-header'>
+          <div className='avatar-wrapper'>
+            <Avatar image={avatar} />
+            <Typography variant='body4'>{propertyOwnerName}</Typography>
+            <Typography variant='body4' className='dot'>
+              •
+            </Typography>
+            <Typography variant='body4'>34%</Typography>
           </div>
+          <IconButton className='close-modal-button' size='large' onClick={closeModal}>
+            <Icon icon='close' size={18} />
+          </IconButton>
         </div>
+
+        <Carousel indexStore={[activeImageIndex, setActiveImageIndex]} images={images}></Carousel>
+
         <div className='description'>
           <div className='description-header'>
             <div className='title'>
               <Typography variant='body2'>Two bedroom apartment for rent</Typography>
-              <IconButton size='large'>
-                <Icon icon='star' size={14} />
+              <IconButton
+                size='large'
+                className={classNames('stared-button', { active: isPropertyStarred })}
+                onClick={starProperty}>
+                <Icon icon='star' size={20} />
               </IconButton>
             </div>
             <div className='property-details'>
@@ -132,35 +126,44 @@ export const ViewProperty = styled(
                 <Icon icon='bathtub' />
                 <Typography variant='body5'>{numberOfBathrooms}</Typography>
               </div>
-              {/* /////// */}
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
-                <Icon icon='banknote' />
-                <Typography variant='body5'>Apartament</Typography>
+                <Icon icon='building' />
+                <Typography variant='body5'>{propertyType}</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
                 <Icon icon='ruler' />
-                <Typography variant='body5'>796 sqft/74 sqm</Typography>
+                <Typography variant='body5'>
+                  {!isNaN(parseInt(propertyArea || '')) ? parseInt(propertyArea || '') * 10.76 : ''} sqft/
+                  {propertyArea} sqm
+                </Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
-              <div className='detail'>
-                <Icon icon='banknote' />
-                <Typography variant='body5'>1 Parking Spot</Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='banknote' />
-                <Typography variant='body5'>EPC Rating: C*</Typography>
-              </div>
+              {parkingSpot && (
+                <>
+                  <div className='detail'>
+                    <Icon icon='car' />
+                    <Typography variant='body5'>Parking Spot</Typography>
+                  </div>
+                  <Typography variant='body4' className='dot'>
+                    •
+                  </Typography>
+                </>
+              )}
+
+              {energyCertificate && (
+                <div className='detail'>
+                  <Icon icon='temperature' />
+                  <Typography variant='body5'>EPC Rating: C*</Typography>
+                </div>
+              )}
             </div>
           </div>
           <div className='section'>
@@ -188,177 +191,140 @@ export const ViewProperty = styled(
             </Typography>
           </div>
           <Map address={address} className='map' />
-          <div className='nearest-locations-wrapper'>
-            <div className='buttons-wrapper'>
-              <Button
-                variant='primary'
-                inverted
-                size='large'
-                onClick={() => setSelectedButton('stations')}
-                active={selectedButton === 'stations'}>
-                Nearest stations
-              </Button>
-              <Button
-                variant='primary'
-                inverted
-                size='large'
-                onClick={() => setSelectedButton('Schools')}
-                active={selectedButton === 'Schools'}>
-                Nearest schools
-              </Button>
-              <Button
-                variant='primary'
-                inverted
-                size='large'
-                onClick={() => setSelectedButton('ImportantPlaces')}
-                active={selectedButton === 'ImportantPlaces'}>
-                Important places
-              </Button>
-            </div>
-            <div className='nearest-locations'>
-              {selectedButton === 'stations' ? (
-                <NearestPlaces location={address} />
-              ) : selectedButton === 'Schools' ? (
-                <NearestSchools location={address} />
-              ) : selectedButton === 'ImportantPlaces' ? (
-                <NearestImportantPlaces location={address} />
-              ) : null}
-            </div>
-          </div>
-          <div className='facilities-wrapper'>
-            <Typography variant='body4' className='label'>
-              Facilities
-            </Typography>
-            <div className='facilities'>
-              <Typography variant='body4'>
-                <ul>
-                  <li>Open plan reception/dining room</li>
-                  <li>Modern kitchen with Siemens appliances</li>
-                  <li> Two double bedrooms</li>
-                </ul>
-              </Typography>
-              <Typography variant='body4'>
-                <ul>
-                  <li>Two bathrooms (en-suite)</li>
-                  <li>Private patio garden</li>
-                  <li> Duplex apartment</li>
-                </ul>
-              </Typography>
-            </div>
-          </div>
+          {/*   <div className='nearest-locations-wrapper'> */}
+          {/*     <div className='buttons-wrapper'> */}
+          {/*       <Button */}
+          {/*         variant='primary' */}
+          {/*         inverted */}
+          {/*         size='large' */}
+          {/*         onClick={() => setSelectedButton('stations')} */}
+          {/*         active={selectedButton === 'stations'}> */}
+          {/*         Nearest stations */}
+          {/*       </Button> */}
+          {/*       <Button */}
+          {/*         variant='primary' */}
+          {/*         inverted */}
+          {/*         size='large' */}
+          {/*         onClick={() => setSelectedButton('Schools')} */}
+          {/*         active={selectedButton === 'Schools'}> */}
+          {/*         Nearest schools */}
+          {/*       </Button> */}
+          {/*       <Button */}
+          {/*         variant='primary' */}
+          {/*         inverted */}
+          {/*         size='large' */}
+          {/*         onClick={() => setSelectedButton('ImportantPlaces')} */}
+          {/*         active={selectedButton === 'ImportantPlaces'}> */}
+          {/*         Important places */}
+          {/*       </Button> */}
+          {/*     </div> */}
+          {/*     <div className='nearest-locations'> */}
+          {/*       {selectedButton === 'stations' ? ( */}
+          {/*         <NearestPlaces location={address} /> */}
+          {/*       ) : selectedButton === 'Schools' ? ( */}
+          {/*         <NearestSchools location={address} /> */}
+          {/*       ) : selectedButton === 'ImportantPlaces' ? ( */}
+          {/*         <NearestImportantPlaces location={address} /> */}
+          {/*       ) : null} */}
+          {/*     </div> */}
+          {/*   </div> */}
+          {/*   <div className='facilities-wrapper'> */}
+          {/*     <Typography variant='body4' className='label'> */}
+          {/*       Facilities */}
+          {/*     </Typography> */}
+          {/*     <div className='facilities'> */}
+          {/*       <ul> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'>Open plan reception/dining room</Typography> */}
+          {/*         </li> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography> */}
+          {/*         </li> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'> Two double bedrooms</Typography> */}
+          {/*         </li> */}
+          {/*       </ul> */}
+
+          {/*       <ul> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'>Two bathrooms (en-suite) </Typography> */}
+          {/*         </li> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'>Private patio garden</Typography> */}
+          {/*         </li> */}
+          {/*         <li> */}
+          {/*           <Typography variant='body4'>Private patio garden</Typography> */}
+          {/*         </li> */}
+          {/*       </ul> */}
+          {/*     </div> */}
+          {/*   </div> */}
         </div>
       </Modal>
     );
   }
 )`
-  & {
+  &.view-property-modal {
     overflow-y: auto;
-    max-height: 100vh;
-    max-width: 100vw !important;
+    max-height: calc(100vh - 80px);
+    height: max-content;
     width: 1020px;
+
+    && {
+      border-radius: 0;
+      max-width: 100vw;
+      top: calc(50% + 40px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
 
     .modal-container {
       padding: 0 !important;
       display: inline-flex;
       flex-direction: column;
       align-items: flex-start;
+      position: relative;
 
-      .img {
-        // background-image: url(${(props) => props.image});
+      .modal-header {
+        position: absolute;
+        top: 0;
+        z-index: 2;
 
-        background-repeat: no-repeat;
-        background-size: cover;
-        width: 1020px;
-        height: 574px;
-        box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.04);
+        display: flex;
+        width: 100%;
+        padding: 32px;
+        justify-content: space-between;
+        align-items: flex-start;
+        box-sizing: border-box;
 
-        display: grid;
+        background: linear-gradient(180deg, rgba(38, 38, 38, 0.7) 0%, rgba(38, 38, 38, 0) 100%);
 
-        .content {
+        .avatar-wrapper {
           display: flex;
-          height: 574px;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: flex-start;
+          align-items: center;
+          gap: 8px;
+          border-radius: 244px;
 
-          .header {
-            display: flex;
-            width: 1020px;
-            padding: 32px;
-            justify-content: space-between;
-            align-items: flex-start;
-            box-sizing: border-box;
-
-            background: linear-gradient(180deg, rgba(38, 38, 38, 0.7) 0%, rgba(38, 38, 38, 0) 100%);
-
-            .avatar-wrapper {
-              display: flex;
-              align-items: center;
-              gap: 8px;
-              border-radius: 244px;
-
-              .typography {
-                color: #fff;
-                font-size: 18px;
-                font-weight: 700;
-              }
-
-              .dot {
-                color: #cfd5d5;
-              }
-            }
-
-            .icon-button {
-              &:hover {
-                background: #184d6d;
-                color: #fff;
-              }
-            }
+          .typography {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
           }
-          .footer {
-            display: flex;
-            padding: 32px;
-            justify-content: space-between;
-            align-items: center;
-            align-self: stretch;
 
-            background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 100%);
+          .dot {
+            color: #cfd5d5;
+          }
+        }
 
-            .arrow-button: hover {
-              border-color: #fff;
-            }
-
-            .icon {
-              color: #fff;
-            }
-
-            .images {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              gap: 8px;
-
-              img {
-                width: 92px;
-                height: 61px;
-                border-radius: 4px;
-                opacity: 0.7;
-
-                :hover {
-                  border: 2px solid #f7f1e7;
-                  opacity: 1;
-                  z-index: 1;
-                }
-              }
-
-              .active {
-                border: 2px solid #f7f1e7;
-                opacity: 1;
-              }
-            }
+        .close-modal-button {
+          padding: 15px;
+          z-index: 1;
+          &:hover {
+            background: #184d6d;
+            color: #fff;
           }
         }
       }
+
       .description {
         display: flex;
         padding: 32px;
@@ -387,10 +353,17 @@ export const ViewProperty = styled(
               line-height: 40px;
             }
 
-            .icon-button {
+            .stared-button {
+              padding: 12px;
               border: 2px solid #184d6d;
 
               &:hover {
+                border: 2px solid #fff;
+                background: #184d6d;
+                color: #fff;
+              }
+
+              &.active {
                 border: 2px solid #fff;
                 background: #184d6d;
                 color: #fff;

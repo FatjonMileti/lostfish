@@ -1,4 +1,9 @@
 export type IconNames = 
+  | "temperature"
+  | "car"
+  | "building"
+  | "exclude"
+  | "dashboard"
   | "right-arrow"
   | "close"
   | "star-solid"
@@ -28,7 +33,6 @@ export type IconNames =
   | "user"
   | "chevron-left"
   | "chevron-right"
-  | "dashboard"
   | "arrow-up"
   | "arrow-left-1"
   | "facebook"

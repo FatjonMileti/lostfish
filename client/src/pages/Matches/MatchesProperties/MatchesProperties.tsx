@@ -15,10 +15,15 @@ import { useCriteriaStore } from '../../../globalState/criteria';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 import { SetCriteria } from '../../SetCriteria/SetCriteria';
 import { ViewProperty } from './ViewProperty';
+import { avatars } from '../../HomeLoggedIn/avatars';
 
 interface PropertyType {
   property_images: any[];
   area_of_interest: string;
+  property_type?: string;
+  floor_size: string;
+  specific_property_features?: string[];
+  contract_details?: string[];
   room_details: {
     number_of_bathrooms: string;
     number_of_bedrooms: string;
@@ -29,11 +34,17 @@ interface PropertyType {
   };
 
   id: string;
-  created_by: any;
   matchId?: string;
   chosen: boolean;
   starred: boolean;
   asset_address: any;
+
+  created_by: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    avatar: string;
+  };
 }
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
@@ -42,6 +53,8 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
   const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
+
+  const [viewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
 
   const { auth } = useUserStore();
 
@@ -130,6 +143,10 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     isPropertyChosen(property?.id);
   };
 
+  const starProperty = async () => {
+    await addOrUpdateTenantMatch(property.id, property?.chosen, true);
+  };
+
   const removeTenantMatch = async (matchId: string) => {
     try {
       await axios(auth.access_token).delete(`/api/match/${matchId}`);
@@ -142,6 +159,35 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   return (
     <div className={`${className}`}>
+      <ViewProperty
+        open={viewPropertyModalVisibility}
+        closeModal={() => setViewPropertyModalVisibility(false)}
+        onBackdropClick={() => setViewPropertyModalVisibility(false)}
+        images={property?.property_images || []}
+        avatar={
+          !isNaN(parseInt(property?.created_by?.avatar || ''))
+            ? avatars[parseInt(property?.created_by?.avatar || '')]?.image
+            : ''
+        }
+        areaOfInterest={property?.area_of_interest || ''}
+        numberOfBedrooms={property?.room_details?.number_of_bedrooms}
+        rentingPrice={property?.asset_rent?.rental_amount}
+        numberOfBathrooms={property?.room_details?.number_of_bathrooms}
+        propertyOwnerName={`${property?.created_by?.first_name} ${property?.created_by?.last_name}`}
+        propertyType={property?.property_type || ''}
+        propertyArea={property?.floor_size}
+        parkingSpot={(property?.specific_property_features || []).includes('Parking spot')}
+        energyCertificate={(property?.contract_details || []).includes('energyCertificate')}
+        address={{
+          lat: property?.asset_address?.latitude,
+          lng: property?.asset_address?.longitude
+        }}
+        refineYourSearchClick={() => {
+          setViewPropertyModalVisibility(false);
+        }}
+        starProperty={starProperty}
+        isPropertyStarred={!!property?.starred}
+      />
       <ImproveTrustScoreModal
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
@@ -197,9 +243,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           </div>
           <div className='slides-wrapper'>
             {properties.map((property, propertyIndex) => {
-              ///////
-              // console.log('property: ', property);
-              /////////
               const property_images: any = property?.property_images;
               return (
                 <MatchedSlide
@@ -207,7 +250,11 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                   className={`${propertyIndex === activeSlide ? 'active' : ''}`}
                   image={`${property_images?.[0]}`}
                   propertyOwnerName={`${property.created_by.first_name} ${property.created_by.last_name}`}
-                  avatar={''}
+                  avatar={
+                    !isNaN(parseInt(property.created_by.avatar || ''))
+                      ? avatars[parseInt(property.created_by.avatar || '')]?.image
+                      : ''
+                  }
                   animate={{
                     x:
                       propertyIndex < activeSlide
@@ -222,10 +269,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
                   numberOfBedrooms={property?.room_details?.number_of_bedrooms}
                   rentingPrice={property.asset_rent?.rental_amount}
                   numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-                  address={{
-                    lat: property.asset_address.latitude,
-                    lng: property.asset_address.longitude
-                  }}
+                  viewProperty={() => setViewPropertyModalVisibility(true)}
                 />
               );
             })}
@@ -421,7 +465,7 @@ interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   numberOfBedrooms?: string;
   numberOfBathrooms?: string;
   rentingPrice?: string;
-  address: any;
+  viewProperty: () => void;
 }
 
 const MatchedSlide = styled(
@@ -433,8 +477,8 @@ const MatchedSlide = styled(
     numberOfBedrooms = '',
     numberOfBathrooms = '',
     rentingPrice = '',
-    address = { lat: 0, lng: 0 },
     propertyOwnerName = '',
+    viewProperty,
     ...rest
   }: MatchedSlideProps) => {
     const numberOfBedroomsWord =
@@ -451,25 +495,8 @@ const MatchedSlide = styled(
         '10': 'Ten'
       }[numberOfBedrooms] || numberOfBedrooms;
 
-    const [ViewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
-
     return (
       <>
-        <ViewProperty
-          open={ViewPropertyModalVisibility}
-          closeModal={() => setViewPropertyModalVisibility(false)}
-          image={image}
-          avatar={avatar}
-          areaOfInterest={areaOfInterest}
-          numberOfBedrooms={numberOfBedrooms}
-          numberOfBathrooms={numberOfBathrooms}
-          rentingPrice={rentingPrice}
-          propertyOwnerName={propertyOwnerName}
-          address={address}
-          refineYourSearchClick={() => {
-            setViewPropertyModalVisibility(false);
-          }}
-        />
         <motion.div className={`match-property-slide ${className}`} {...rest}>
           <div className='slide-header'>
             <Avatar image={avatar} />
@@ -502,7 +529,7 @@ const MatchedSlide = styled(
                 </div>
               </div>
             </div>
-            <Label variant='secondary' inverted onClick={() => setViewPropertyModalVisibility(true)}>
+            <Label variant='secondary' inverted onClick={viewProperty}>
               View property
             </Label>
           </div>

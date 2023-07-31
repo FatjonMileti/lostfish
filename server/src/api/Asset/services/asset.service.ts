@@ -280,11 +280,11 @@ const findPublishedProperties = async (req: Request, res: Response) => {
       populate: [
         {
           path: 'created_by',
-          select: ['email', 'username', 'first_name', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         },
         {
           path: 'edited_by',
-          select: ['email', 'username', 'first_name', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         }
       ]
     });
