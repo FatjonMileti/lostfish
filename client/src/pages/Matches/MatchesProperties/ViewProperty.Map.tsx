@@ -6,15 +6,18 @@ const containerStyle = {
   height: '240px'
 };
 
-export const Map = React.memo((props: any) => {
-  const { address } = props;
-
+interface MapProps {
+  address: {
+    lat: number;
+    lng: number;
+  };
+  zoom?: number;
+}
+export const Map = React.memo(({ address, zoom }: MapProps) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyCQxF8nCU-lhv4Wn6THabdieN_m1EAk9tQ'
   });
-
-  console.log('address: ', address);
 
   const [map, setMap] = React.useState(null);
 
@@ -34,7 +37,7 @@ export const Map = React.memo((props: any) => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={address}
-      zoom={8}
+      zoom={zoom || 8}
       onLoad={onLoad}
       onUnmount={onUnmount}>
       {/* Child components, such as markers, info windows, etc. */}

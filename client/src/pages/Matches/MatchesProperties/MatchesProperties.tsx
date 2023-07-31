@@ -18,7 +18,7 @@ import { ViewProperty } from './ViewProperty';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
 interface PropertyType {
-  property_images: any[];
+  property_images: { link: string }[];
   area_of_interest: string;
   property_type?: string;
   floor_size: string;
@@ -163,7 +163,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
         open={viewPropertyModalVisibility}
         closeModal={() => setViewPropertyModalVisibility(false)}
         onBackdropClick={() => setViewPropertyModalVisibility(false)}
-        images={property?.property_images || []}
+        images={property?.property_images.map(({ link }) => link) || []}
         avatar={
           !isNaN(parseInt(property?.created_by?.avatar || ''))
             ? avatars[parseInt(property?.created_by?.avatar || '')]?.image
@@ -243,7 +243,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           </div>
           <div className='slides-wrapper'>
             {properties.map((property, propertyIndex) => {
-              const property_images: any = property?.property_images;
+              const property_images: any = property?.property_images.map(({ link }) => link);
               return (
                 <MatchedSlide
                   key={propertyIndex}

@@ -1,21 +1,14 @@
 import { styled } from '@mui/system';
 import { Typography } from '../../../components/Typography';
-
 import { Modal, ModalProps } from '../../../components/Modal';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import React, { useState } from 'react';
 import { Avatar } from '../../../components/Avatar';
-import { ArrowButton } from '../../../components/ArrowButton';
 import { Map } from './ViewProperty.Map';
-import { NearestPlaces } from '../../Properties/pages/PropertyDetails/components/NearestPlaces';
-import { NearestSchools } from '../../Properties/pages/PropertyDetails/components/NearestSchools';
-import { NearestImportantPlaces } from '../../Properties/pages/PropertyDetails/components/NearestImportantPlaces';
-import { Button } from '../../../components/Button';
-import Underground from './Underground.svg';
-import { motion } from 'framer-motion';
 import classNames from 'classnames';
 import { Carousel } from './MatchesProperties.Carousel';
+import { NearestThings } from './ViewProperty.NearestThings';
 
 interface ViewPropertyModalProps extends ModalProps {
   refineYourSearchClick?: () => void;
@@ -190,74 +183,40 @@ export const ViewProperty = styled(
               Arts Centre, a celebrated fringe venue.
             </Typography>
           </div>
-          <Map address={address} className='map' />
-          {/*   <div className='nearest-locations-wrapper'> */}
-          {/*     <div className='buttons-wrapper'> */}
-          {/*       <Button */}
-          {/*         variant='primary' */}
-          {/*         inverted */}
-          {/*         size='large' */}
-          {/*         onClick={() => setSelectedButton('stations')} */}
-          {/*         active={selectedButton === 'stations'}> */}
-          {/*         Nearest stations */}
-          {/*       </Button> */}
-          {/*       <Button */}
-          {/*         variant='primary' */}
-          {/*         inverted */}
-          {/*         size='large' */}
-          {/*         onClick={() => setSelectedButton('Schools')} */}
-          {/*         active={selectedButton === 'Schools'}> */}
-          {/*         Nearest schools */}
-          {/*       </Button> */}
-          {/*       <Button */}
-          {/*         variant='primary' */}
-          {/*         inverted */}
-          {/*         size='large' */}
-          {/*         onClick={() => setSelectedButton('ImportantPlaces')} */}
-          {/*         active={selectedButton === 'ImportantPlaces'}> */}
-          {/*         Important places */}
-          {/*       </Button> */}
-          {/*     </div> */}
-          {/*     <div className='nearest-locations'> */}
-          {/*       {selectedButton === 'stations' ? ( */}
-          {/*         <NearestPlaces location={address} /> */}
-          {/*       ) : selectedButton === 'Schools' ? ( */}
-          {/*         <NearestSchools location={address} /> */}
-          {/*       ) : selectedButton === 'ImportantPlaces' ? ( */}
-          {/*         <NearestImportantPlaces location={address} /> */}
-          {/*       ) : null} */}
-          {/*     </div> */}
-          {/*   </div> */}
-          {/*   <div className='facilities-wrapper'> */}
-          {/*     <Typography variant='body4' className='label'> */}
-          {/*       Facilities */}
-          {/*     </Typography> */}
-          {/*     <div className='facilities'> */}
-          {/*       <ul> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'>Open plan reception/dining room</Typography> */}
-          {/*         </li> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography> */}
-          {/*         </li> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'> Two double bedrooms</Typography> */}
-          {/*         </li> */}
-          {/*       </ul> */}
+          <Map address={address} />
 
-          {/*       <ul> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'>Two bathrooms (en-suite) </Typography> */}
-          {/*         </li> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'>Private patio garden</Typography> */}
-          {/*         </li> */}
-          {/*         <li> */}
-          {/*           <Typography variant='body4'>Private patio garden</Typography> */}
-          {/*         </li> */}
-          {/*       </ul> */}
-          {/*     </div> */}
-          {/*   </div> */}
+          <NearestThings location={address} />
+
+          <div className='facilities-wrapper'>
+            <Typography variant='body4' className='label'>
+              Facilities
+            </Typography>
+            <div className='facilities'>
+              <ul>
+                <li>
+                  <Typography variant='body4'>Open plan reception/dining room</Typography>
+                </li>
+                <li>
+                  <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography>
+                </li>
+                <li>
+                  <Typography variant='body4'> Two double bedrooms</Typography>
+                </li>
+              </ul>
+
+              <ul>
+                <li>
+                  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>
+                </li>
+                <li>
+                  <Typography variant='body4'>Private patio garden</Typography>
+                </li>
+                <li>
+                  <Typography variant='body4'>Private patio garden</Typography>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </Modal>
     );
@@ -275,14 +234,19 @@ export const ViewProperty = styled(
       top: calc(50% + 40px);
       left: 50%;
       transform: translate(-50%, -50%);
+      background: none;
     }
 
     .modal-container {
+      border-radius: 12px;
+      overflow: hidden;
       padding: 0 !important;
       display: inline-flex;
       flex-direction: column;
       align-items: flex-start;
       position: relative;
+
+      background-color: white;
 
       .modal-header {
         position: absolute;
@@ -411,64 +375,7 @@ export const ViewProperty = styled(
           height: 240px;
           align-self: stretch;
         }
-        .nearest-locations-wrapper {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 24px;
 
-          .buttons-wrapper {
-            display: flex;
-            padding: 4px;
-            align-items: flex-start;
-            border-radius: 2500px;
-            border: 1px solid #e7e7e7;
-
-            .active {
-              background: #eee0d3;
-              font-weight: 600;
-            }
-
-            button {
-              font-weight: 400;
-              font-size: 16px;
-            }
-
-            button:hover {
-              background: #eee0d3;
-            }
-          }
-
-          .nearest-locations {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-
-            li {
-              .MuiTypography-root {
-                color: #000;
-                font-family: Roobert;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 700;
-                line-height: 24px;
-              }
-            }
-
-            li::before {
-              content: url(${Underground});
-              padding-right: 8px;
-            }
-
-            li::after {
-              content: ' | 0.4mi.';
-              padding-left: 8px;
-              font-weight: 700;
-              color: #184d6d;
-            }
-          }
-        }
         .facilities-wrapper {
           display: flex;
           flex-direction: column;

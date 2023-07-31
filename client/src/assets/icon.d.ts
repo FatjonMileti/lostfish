@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "bus"
   | "temperature"
   | "car"
   | "building"
