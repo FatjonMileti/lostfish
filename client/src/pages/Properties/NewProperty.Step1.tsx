@@ -5,7 +5,6 @@ import { Logo } from '../../components/Logo';
 import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
-import { TextField } from '../../components/TextField';
 import { Select } from '../../components/Select/Select';
 import { Switch } from '../../components/Switch';
 import { Link } from '../../components/Link';
@@ -19,6 +18,10 @@ import { AreaOfInterest } from './AreaOfInterest';
 
 export type Step1FormType = {
   areaOfInterest: string;
+  location: {
+    latitude?: number;
+    longitude?: number;
+  };
   radius?: number;
   propertyType?: string;
   propertyPreferences?: string;
@@ -31,6 +34,10 @@ export type Step1FormType = {
 
 export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
+  location: yup.object().shape({
+    latitude: yup.number().optional(),
+    longitude: yup.number().optional()
+  }),
   radius: yup.number().optional(),
   propertyType: yup.string().optional(),
   propertyPreferences: yup.string().optional(),
@@ -64,8 +71,6 @@ export const NewPropertyStep1 = styled(
     React.useEffect(() => {
       form.watch();
     }, []);
-
-    console.log('step1 form values: ', form.getValues());
 
     return (
       <div className={`new-property-step-1 ${className}`}>
@@ -178,7 +183,10 @@ export const NewPropertyStep1 = styled(
                   placeholder='E.g. Bristol or BA1 2LR'
                   label='Area of interest'
                   areaOfInterest={form.getValues('areaOfInterest')}
-                  onAreaChange={(newValue) => form.setValue('areaOfInterest', newValue)}
+                  onAreaChange={({ formattedAddress, location }) => {
+                    form.setValue('areaOfInterest', formattedAddress);
+                    form.setValue('location', location);
+                  }}
                 />
                 <Select label='Radius' {...form.register('radius')}>
                   <option></option>
