@@ -45,6 +45,7 @@ export const SetCriteria = styled(
     const step1Form = useForm<Step1FormType>({
       defaultValues: {
         areaOfInterest: '',
+        location: {},
         radius: undefined,
         propertyType: {
           Detached: false,
@@ -126,6 +127,12 @@ export const SetCriteria = styled(
 
         // step 1
         step1Form.setValue('areaOfInterest', data.area_of_interest);
+
+        step1Form.setValue('location', {
+          latitude: data?.asset_address?.latitude,
+          longitude: data?.asset_address?.longitude
+        });
+
         step1Form.setValue('radius', data.radius);
 
         data.property_type.map((type: keyof Step1FormType['propertyType']) => {
@@ -189,6 +196,8 @@ export const SetCriteria = styled(
 
           // step1
           area_of_interest: step1Form.getValues('areaOfInterest'),
+          asset_address: step1Form.getValues('location'),
+
           radius: step1Form.getValues('radius'),
           property_type: Object.entries(step1Form.getValues('propertyType'))
             .filter(([key, value]) => value)

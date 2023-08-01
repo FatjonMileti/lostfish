@@ -7,7 +7,6 @@ import { NewPropertyStep1, Step1FormType, step1Schema } from './NewProperty.Step
 import { NewPropertyStep2, Step2FormType, step2Schema } from './NewProperty.Step2';
 import { NewPropertyStep3, Step3FormType, step3Schema } from './NewProperty.Step3';
 import axios from '../../utils/axios';
-import { useGlobalState } from '../../globalState/globalState';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import request from '../../utils/axios';
@@ -62,6 +61,7 @@ export const NewProperty = styled(
     const step1Form = useForm<Step1FormType>({
       defaultValues: {
         areaOfInterest: '',
+        location: {},
         radius: undefined,
         propertyType: undefined,
         propertyPreferences: undefined,
@@ -155,10 +155,12 @@ export const NewProperty = styled(
 
         // step 1
         step1Form.setValue('areaOfInterest', data.area_of_interest);
-        //   asset_address: {
-        //   latitude: 51.5072178,
-        //     longitude: -0.1275862
-        // },
+
+        step1Form.setValue('location', {
+          latitude: data?.asset_address?.latitude,
+          longitude: data?.asset_address?.longitude
+        });
+
         step1Form.setValue('radius', data.radius);
         step1Form.setValue('propertyType', data.property_type);
         step1Form.setValue('propertyPreferences', data.property_preference);
@@ -215,10 +217,9 @@ export const NewProperty = styled(
 
           // step1
           area_of_interest: step1Form.getValues('areaOfInterest'),
-          asset_address: {
-            latitude: 51.5072178,
-            longitude: -0.1275862
-          },
+
+          asset_address: step1Form.getValues('location'),
+
           radius: step1Form.getValues('radius'),
           property_type: step1Form.getValues('propertyType'),
           property_preference: step1Form.getValues('propertyPreferences'),
@@ -251,7 +252,6 @@ export const NewProperty = styled(
             .map(([key, value]) => key)
         };
 
-        console.log('payload', payload);
         const { data } = await (propertyId
           ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
           : axios(auth.access_token).post('/api/asset/draft', payload));
@@ -259,8 +259,6 @@ export const NewProperty = styled(
         if (!propertyId) {
           setEditPropertyId(data._id);
         }
-
-        console.log('response.data: ', data);
       } catch (err) {
         throw err;
       }
@@ -280,10 +278,13 @@ export const NewProperty = styled(
 
           // step1
           area_of_interest: step1Form.getValues('areaOfInterest'),
-          asset_address: {
-            latitude: 51.5072178,
-            longitude: -0.1275862
-          },
+          // asset_address: {
+          //   latitude: 51.5072178,
+          //   longitude: -0.1275862
+          // },
+
+          asset_address: step1Form.getValues('location'),
+
           radius: step1Form.getValues('radius'),
           property_type: step1Form.getValues('propertyType'),
           property_preference: step1Form.getValues('propertyPreferences'),

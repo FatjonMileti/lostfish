@@ -5,7 +5,10 @@ import { useUserStore } from '../../globalState/user';
 
 export interface AreaOfInterestProps extends TextFieldProps {
   areaOfInterest?: string;
-  onAreaChange: (newValue: string) => void;
+  onAreaChange: (newValue: {
+    formattedAddress: string;
+    location: { latitude?: number; longitude?: number };
+  }) => void;
 }
 
 export const AreaOfInterest = ({ className, areaOfInterest, onAreaChange, ...rest }: AreaOfInterestProps) => {
@@ -31,16 +34,28 @@ export const AreaOfInterest = ({ className, areaOfInterest, onAreaChange, ...res
   const onSearchChange = async (newAreaOfInterest: string) => {
     try {
       setSearchValue(newAreaOfInterest);
-      onAreaChange('');
+      onAreaChange({
+        formattedAddress: '',
+        location: {}
+      });
 
       debounce(async () => {
         try {
           const { data } = await axios(auth.access_token).get(`/api/map/address/${newAreaOfInterest}`);
           if (data?.formatted_address) {
-            onAreaChange(data?.formatted_address);
+            onAreaChange({
+              formattedAddress: data?.formatted_address,
+              location: {
+                latitude: data?.geometry?.location?.lat,
+                longitude: data?.geometry?.location?.lng
+              }
+            });
             setSearchValue(data?.formatted_address);
           } else {
-            onAreaChange('');
+            onAreaChange({
+              formattedAddress: '',
+              location: {}
+            });
           }
         } catch (err) {
           throw err;
