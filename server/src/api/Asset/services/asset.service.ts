@@ -9,7 +9,6 @@ import { Types } from 'mongoose';
 import { handlePropertyImages, generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
-import fileService from '../../../external-services/file.service';
 import { Role } from '../../User/user.interface';
 
 const mailService = MailService.getInstance();
@@ -230,47 +229,6 @@ const sendAssetInvitation = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send({ message: 'invitation_send' });
 };
 
-const getAssetImages = async (req: Request, res: Response) => {
-  const id = req.params.id;
-
-  const asset = await findById(id);
-
-  try {
-    const imageUrls = asset.property_images.map(
-      (image: any) => `${req.protocol}://${req.get('host')}/url-to-file/${image.filename}`
-    );
-
-    res.json(imageUrls);
-  } catch (error) {
-    res.status(500).send('Server error');
-  }
-};
-
-const getSingleImage = async (req: Request, res: Response) => {
-  const { id, imageId } = req.params;
-  try {
-    const asset = await findById(id);
-    const { property_images } = asset;
-
-    const getImage = property_images.find((propImage: any) => propImage.filename === imageId);
-    if (!getImage) {
-      res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
-    }
-
-    return fileService
-      .readFile(imageId)
-      .then((response) => {
-        res.setHeader('Content-Type', getImage.mimetype || 'application/octet-stream');
-        res.send(response);
-      })
-      .catch((error: any) => {
-        res.status(httpStatus.BAD_REQUEST).send(error);
-      });
-  } catch (error) {
-    res.status(httpStatus.BAD_REQUEST).send(error);
-  }
-};
-
 const findPublishedProperties = async (req: Request, res: Response) => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
@@ -307,7 +265,5 @@ export default {
   updateAsset,
   findById,
   sendAssetInvitation,
-  getAssetImages,
-  getSingleImage,
   findPublishedProperties
 };

@@ -16,18 +16,18 @@ const s3 = new S3Client({
   }
 });
 
-export default class S3UploadService {
-  private static instance: S3UploadService;
+export default class S3FileService {
+  private static instance: S3FileService;
   private uploader!: Multer;
   private s3service = s3AWS;
 
   private constructor() {}
 
-  static getInstance(): S3UploadService {
-    if (!S3UploadService.instance) {
-      S3UploadService.instance = new S3UploadService();
+  static getInstance(): S3FileService {
+    if (!S3FileService.instance) {
+      S3FileService.instance = new S3FileService();
     }
-    return S3UploadService.instance;
+    return S3FileService.instance;
   }
 
   createPublicUploader(): Multer {

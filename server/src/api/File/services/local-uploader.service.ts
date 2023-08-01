@@ -1,6 +1,6 @@
 import multer, { Multer } from 'multer';
 import * as process from 'process';
-import internalFileService from '../../../external-services/file.service';
+import internalFileService from '../services/file.service';
 
 const fs = require('fs');
 const path = require('path');
