@@ -149,12 +149,13 @@ export class MatchController {
    *       // Other match objects...
    *     ]
    * @apiQuery {string} [starred] Starred
+   * @apiQuery {string} [chosen] Choosed
    * @apiPermission authorize
    * @apiUse bearer
    * @apiUse paging
    */
   private getAllMatches = async (req: Request, res: Response) => {
-    const { starred } = req.query;
+    const { starred, chosen } = req.query;
 
     const query: IMatchQueryParams = {};
     if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
@@ -164,6 +165,10 @@ export class MatchController {
 
     if (starred) {
       query.starred = starred === 'true';
+    }
+
+    if (chosen) {
+      query.chosen = chosen === 'true';
     }
 
     try {
