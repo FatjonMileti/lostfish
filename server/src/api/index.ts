@@ -84,8 +84,8 @@ router.use('/user', authorize(), userController.router);
 router.use('/asset', assetController.router);
 router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
-router.use('/attribute', authorize(), attributeController.router);
-router.use('/condition', authorize(), conditionController.router);
+// router.use('/attribute', authorize(), attributeController.router);
+// router.use('/condition', authorize(), conditionController.router);
 router.use('/notification', authorize(), notificationController.router);
 
 module.exports = router;
