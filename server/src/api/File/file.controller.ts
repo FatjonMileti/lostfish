@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 const router: Router = Router();
-import S3UploadService from './services/s3-upload.service';
+import S3UploadService from './services/s3-file.service';
 import LocalUploaderService from './services/local-uploader.service';
 import config from '../../config';
 import assetService from '../Asset/services/asset.service';

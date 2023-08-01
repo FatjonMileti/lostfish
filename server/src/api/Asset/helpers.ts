@@ -1,7 +1,8 @@
 import config from '../../config';
-import fileService from '../../external-services/file.service';
-import S3UploadService from '../File/services/s3-upload.service';
+import fileService from '../File/services/file.service';
+import S3UploadService from '../File/services/s3-file.service';
 const s3UploaderService = S3UploadService.getInstance();
+
 export const getCurrentPropertyTypeForPost = (type: string) => {
   const propertyTypes: any = {
     Detached: 'Detached House',
@@ -19,19 +20,6 @@ export const getCurrentStatusForPost = (status: string) => {
     'For Let': 'Live',
     'Let Agreed': 'Sale Agreed',
     Let: 'Exchanged',
-    Archived: 'Archived',
-    Completed: 'Completed',
-    Draft: 'Draft',
-    'Pre Draft': 'Pre Draft'
-  };
-  return statuses[status];
-};
-
-export const getCurrentStatusForGet = (status: string) => {
-  const statuses: any = {
-    Live: 'For Let',
-    'Sale Agreed': 'Let Agreed',
-    Exchanged: 'Let',
     Archived: 'Archived',
     Completed: 'Completed',
     Draft: 'Draft',
