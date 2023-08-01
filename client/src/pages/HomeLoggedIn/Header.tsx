@@ -10,6 +10,7 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from './avatars';
 import { useProfileStore } from '../../globalState/profile';
 import { CASLAction } from '../../utils/ability.util';
+import { useUserStore } from '../../globalState/user';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -17,6 +18,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
 
   const profileStore = useProfileStore();
+  const userStore = useUserStore();
 
   return (
     <div className={`header ${className}`}>
@@ -41,13 +43,15 @@ export const Header = styled(({ className }: HeaderProps) => {
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/properties'>
-              {({ isActive }) => (
-                <Button active={isActive} inverted>
-                  Properties
-                </Button>
-              )}
-            </NavLink>
+            {userStore?.userDetails?.role === 'Landlord' && (
+              <NavLink to='/properties'>
+                {({ isActive }) => (
+                  <Button active={isActive} inverted>
+                    Properties
+                  </Button>
+                )}
+              </NavLink>
+            )}
             <NavLink to='/messages-page'>
               {({ isActive }) => (
                 <Button active={isActive} inverted>

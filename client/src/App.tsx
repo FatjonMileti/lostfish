@@ -46,7 +46,7 @@ registerStore(
 );
 
 function App() {
-  const user = useUserStore();
+  const userStore = useUserStore();
   const criteriaStore = useCriteriaStore();
   const profileStore = useProfileStore();
 
@@ -57,27 +57,27 @@ function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   React.useEffect(() => {
-    if (user.auth) {
-      criteriaStore.fetchCriteria(user.auth.access_token);
+    if (userStore.auth) {
+      criteriaStore.fetchCriteria(userStore.auth.access_token);
     } else {
       criteriaStore.reset();
     }
-  }, [user.auth]);
+  }, [userStore.auth]);
 
   React.useEffect(() => {
-    if (user.auth) {
-      profileStore.fetchProfile(user.auth.access_token);
+    if (userStore.auth) {
+      profileStore.fetchProfile(userStore.auth.access_token);
     } else {
       profileStore.reset();
     }
-  }, [user.auth]);
+  }, [userStore.auth]);
 
   React.useEffect(() => {
-    if (user.auth) {
+    if (userStore.auth) {
       // @ts-ignore
       const newSocket = io(config.apiUrl, {
         auth: {
-          token: user.auth.access_token
+          token: userStore.auth.access_token
         }
       });
       setSocket(newSocket);
@@ -88,10 +88,10 @@ function App() {
         newSocket.disconnect();
       };
     }
-  }, [user]);
+  }, [userStore]);
 
   const getUnreadMessages = async () => {
-    const response = await request(user.auth.access_token).get('/api/notification/unread');
+    const response = await request(userStore.auth.access_token).get('/api/notification/unread');
     setNotification((prevNotification: any) => ({ ...prevNotification, unread: response.data.unread }));
   };
 
@@ -116,17 +116,21 @@ function App() {
                   <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                   <Route path='/activate-account/:token' element={<VerifyAccount />} />
                   <Route path='/reset-password/:token' element={<ResetPassword />} />
-                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
 
-                  <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
+                  <Route path='' element={!!userStore.auth ? <HomeLoggedIn /> : <Home />} />
+
+                  {userStore?.userDetails?.role === 'Landlord' && (
+                    <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
+                  )}
+
                   <Route path='/messages' element={<ChatPage />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />
                   <Route path='/properties/:id/view' element={<PublicProperty />} />
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
-                  <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-                  <Route path='/my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
-                  <Route path='/dashboard/*' element={!!user.auth ? <MyDashboard /> : <Login />} />
+                  <Route path='/messages-page' element={!!userStore.auth ? <Messages /> : <Login />} />
+                  <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
                   <Route path='*' element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
