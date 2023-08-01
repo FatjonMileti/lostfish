@@ -101,10 +101,10 @@ export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEle
     }
   };
 
-  const loginWithSocials = async ({ provider, user }: { provider: string; user: any }) => {
+  const loginWithSocials = async ({ provider, user: SocialUser }: { provider: string; user: any }) => {
     const response = await axios.post(`${config.apiUrl}/api/account/login-social`, {
       provider,
-      user
+      user: SocialUser
     });
 
     const userDetails = decodeJWT(response.data.access_token);
