@@ -9,7 +9,9 @@ import { Avatar } from '../../components/Avatar';
 
 import { avatars } from './avatars';
 import { useProfileStore } from '../../globalState/profile';
-import { useUserStore } from '../../globalState/user';
+import { useAbility } from '@casl/react';
+import { AbilityContext } from '../../context/AbilityContext';
+import { CASLAction } from '../../utils/ability.util';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -17,7 +19,10 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
 
   const profileStore = useProfileStore();
-  const userStore = useUserStore();
+
+  const ability = useAbility(AbilityContext);
+
+  const canReadPropertyMenuItem = ability.can(CASLAction.Read, 'Menu', 'Properties');
 
   return (
     <div className={`header ${className}`}>
@@ -41,7 +46,7 @@ export const Header = styled(({ className }: HeaderProps) => {
               </Button>
             )}
           </NavLink>
-          {userStore?.userDetails?.role === 'Landlord' && (
+          {canReadPropertyMenuItem && (
             <NavLink to='/properties'>
               {({ isActive }) => (
                 <Button active={isActive} inverted>

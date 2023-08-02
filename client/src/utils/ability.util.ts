@@ -1,4 +1,12 @@
-import { AbilityBuilder, PureAbility, AbilityClass, SubjectRawRule, ConditionsMatcher } from '@casl/ability';
+import {
+  AbilityBuilder,
+  PureAbility,
+  AbilityClass,
+  SubjectRawRule,
+  MatchConditions,
+  ConditionsMatcher,
+  FieldMatcher
+} from '@casl/ability';
 
 export enum CASLAction {
   Manage = 'manage',
@@ -20,7 +28,8 @@ export type AppSubjects =
   | 'SignGenerator'
   | 'SignURL'
   | 'StarredProperties'
-  | 'StarredTenants';
+  | 'StarredTenants'
+  | 'Properties';
 
 export enum Role {
   Agent = 'Agent',
@@ -29,29 +38,23 @@ export enum Role {
   NewUser = 'NewUser'
 }
 
-// Define the conditionsMatcher function
-const conditionsMatcher: (subject: AppSubjects, field: string, value: string) => boolean = (
-  subject: AppSubjects,
-  field: string,
-  value: string
-) => {
-  // Implement your logic to match the conditions here
-  // Return true if the conditions are matched, false otherwise
-  return true;
-};
-
 export type AppAbilityType = PureAbility<[CASLAction, AppSubjects]>;
 export const AppAbility = PureAbility as AbilityClass<AppAbilityType>;
+
+const cnMatcher: ConditionsMatcher<any> = (matchConditions: MatchConditions) => matchConditions;
+
+export const fieldMatcher: FieldMatcher = (fields) => (field) => {
+  return fields.includes(field);
+};
 
 export default function defineRulesFor(role: string) {
   const { can, rules, cannot } = new AbilityBuilder(AppAbility);
 
   if (role === Role.Landlord) {
-    can(CASLAction.Read, 'Menu');
+    can(CASLAction.Read, 'Menu', ['Properties']);
     can(CASLAction.Manage, 'Agent');
     cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Client) {
-    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'Client');
     cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.NewUser) {
@@ -72,6 +75,8 @@ export function buildAbilityFor(
 ): AppAbilityType {
   return new AppAbility([...caslRules, ...defineRulesFor(role)], {
     // @ts-ignore
-    detectSubjectType: (object) => object!.type
+    detectSubjectType: (object) => object!.type,
+    conditionsMatcher: cnMatcher,
+    fieldMatcher
   });
 }

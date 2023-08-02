@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import userService from './user.service';
 import paging from '../../middleware/paging';
-import ability from '../../middleware/ability.middleware';
+import ability, { checkUpdateUserPermission } from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 
 const router: Router = Router();
@@ -17,7 +17,7 @@ export class UserController {
     this.router.get('/', ability(CASLAction.Read, 'User'), paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/:id', ability(CASLAction.Read, 'User'), this.getById);
     this.router.post('/register', this.create);
-    this.router.patch('/:id', ability(CASLAction.Update, 'User'), this.updateUser);
+    this.router.patch('/:id', checkUpdateUserPermission, this.updateUser);
     this.router.delete('/:id', ability(CASLAction.Delete, 'User'), this.delete);
     this.router.post(
       '/forgot-password',

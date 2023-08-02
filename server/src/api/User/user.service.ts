@@ -120,12 +120,7 @@ const getById = async (req: Request, res: Response): Promise<any | undefined> =>
 };
 
 const updateUser = async (req: Request, res: Response) => {
-  const id = req.params.id;
   const userBody = req.body as UserDocument;
-
-  if (id.toString() !== res.locals?.user_id?.toString()) {
-    throw createError(401, { message: 'not_authorized' });
-  }
 
   const user = await findOne({ _id: res.locals.user_id });
 
