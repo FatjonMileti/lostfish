@@ -21,6 +21,7 @@ const findAll = async (req: Request, res: Response) => {
     created_by?: any;
     status_string?: any;
   } = {};
+
   if ([Role.Client, Role.Landlord].includes(res.locals.role)) {
     query.created_by = res.locals.user_id;
   }

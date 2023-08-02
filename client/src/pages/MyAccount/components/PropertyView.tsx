@@ -3,7 +3,7 @@ import { Button } from '../../../components/Button';
 import React from 'react';
 
 interface IProperty {
-  property_images: string[];
+  property_images: any[];
   room_details: string;
   _id: string;
   status_string: object;
@@ -19,7 +19,7 @@ export const PropertyView = (props: IPropertyProps) => {
       <img
         className='property-background-image'
         alt='property-image'
-        src={property.property_images[0]}
+        src={property.property_images[0].link}
         width='100%'
       />
       <div className='property-footer'>
