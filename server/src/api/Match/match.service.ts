@@ -37,7 +37,10 @@ export default class MatchService {
       populate: [
         {
           path: 'property',
-          select: SelectedPropertyFields
+          populate: {
+            path: 'created_by',
+            select: ['first_name', 'last_name', '_id', 'avatar']
+          }
         },
         {
           path: 'tenant',

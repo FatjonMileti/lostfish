@@ -11,6 +11,7 @@ import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import { Role } from '../../User/user.interface';
 import { AssetLog, LogAction } from '../../../data/logs';
+import { faker } from '@faker-js/faker';
 
 const mailService = MailService.getInstance();
 
@@ -242,7 +243,7 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   };
 
   try {
-    const response = await AssetModel.paginate(query, {
+    const response: any = await AssetModel.paginate(query, {
       ...res.locals.paging_options,
       populate: [
         {
@@ -257,6 +258,15 @@ const findPublishedProperties = async (req: Request, res: Response) => {
     });
 
     response.docs = generateLinksForImages(response.docs);
+    response.docs = response.docs.map((item: any, index: number) => {
+      return {
+        sugestion_id: index,
+        property: {
+          ...item.toObject()
+        },
+        percentage: faker.number.int({ min: 30, max: 100 })
+      };
+    });
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
