@@ -4,7 +4,6 @@ const compression = require('compression');
 import createError, { HttpError } from 'http-errors';
 const helmet = require('helmet');
 import express, { Request, Response, Application, NextFunction } from 'express';
-import multer from 'multer';
 require('express-async-errors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -16,8 +15,6 @@ const dbConnect = require('./data');
 const MongoStore = require('connect-mongo');
 import MailService from './utils/email/index';
 import config from './config';
-
-export const uploadDocs = multer({ dest: 'uploads/user-docs' });
 
 const app: Application = express();
 
@@ -48,17 +45,8 @@ app.set('views', path.join(__dirname, '..', 'views'));
 app.set('view engine', 'hbs');
 
 app.use(cors());
-// app.use(helmet.contentSecurityPolicy());
-app.use(helmet.dnsPrefetchControl());
-app.use(helmet.expectCt());
-app.use(helmet.frameguard());
-app.use(helmet.hidePoweredBy());
-app.use(helmet.hsts());
-app.use(helmet.ieNoOpen());
-app.use(helmet.noSniff());
-app.use(helmet.permittedCrossDomainPolicies());
-app.use(helmet.referrerPolicy());
-app.use(helmet.xssFilter());
+
+app.use(helmet());
 app.use(
   logger(
     '[:date[iso]] :remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms'
