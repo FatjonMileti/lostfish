@@ -10,6 +10,7 @@ import { handlePropertyImages, generateLinksForImages, generateLinksForOneAsset 
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import { Role } from '../../User/user.interface';
+import { AssetLog, LogAction } from '../../../data/logs';
 
 const mailService = MailService.getInstance();
 
@@ -55,10 +56,9 @@ const findAll = async (req: Request, res: Response) => {
 
     response.totalDocsUnfiltered = count;
     response.docs = generateLinksForImages(response.docs);
-
+    await AssetLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
-    console.log(error);
     return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
   }
 };
@@ -84,7 +84,7 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   try {
     const asset: AssetDocument = new AssetModel({ ...data });
     await asset.save();
-
+    await AssetLog.create({ user: res.locals.user_id, action: LogAction.Create, info: data });
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'property_not_saved' });
@@ -166,7 +166,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     await asset.save();
-
+    await AssetLog.create({ user: res.locals.user_id, action: LogAction.Update, ref: id, info: data });
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
     throw createError(400, error);
@@ -183,7 +183,12 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
   }
 
   asset.property_images = generateLinksForOneAsset(asset.property_images);
-
+  await AssetLog.create({
+    user: res.locals.user_id,
+    action: LogAction.Read,
+    ref: id,
+    info: asset.toObject()
+  });
   res.status(httpStatus.OK).send(asset);
 };
 
@@ -199,6 +204,7 @@ const findById = async (id: string): Promise<any | null> => {
 const deleteAsset = async (req: Request, res: Response) => {
   const id = req.params.id;
   await AssetModel.findByIdAndDelete(id);
+  await AssetLog.create({ user: res.locals.user_id, action: LogAction.Delete, ref: id });
   res.status(httpStatus.NO_CONTENT).send();
 };
 

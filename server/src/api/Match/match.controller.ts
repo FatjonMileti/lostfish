@@ -9,6 +9,7 @@ import httpStatus from 'http-status';
 import createError from 'http-errors';
 import { generateLinksForMatchesImages } from './match.helper';
 import assetService from '../Asset/services/asset.service';
+import { LogAction, MatchLog } from '../../data/logs';
 
 const router: Router = Router();
 
@@ -67,6 +68,7 @@ export class MatchController {
         landlord: res.locals.user_id,
         created_by: res.locals.user_id
       });
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       return res.status(201).json(match);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to create a match.' });
@@ -118,6 +120,7 @@ export class MatchController {
         tenant: res.locals.user_id,
         created_by: res.locals.user_id
       });
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       return res.status(201).json(match);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to create a match.' });
@@ -178,7 +181,7 @@ export class MatchController {
       );
 
       matches.docs = generateLinksForMatchesImages(matches.docs);
-
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
       return res.status(200).json(matches);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch matches.' });
@@ -213,6 +216,7 @@ export class MatchController {
         }
       }
 
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: req.query });
       return res.send(response);
     } catch (error) {
       res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
@@ -255,6 +259,7 @@ export class MatchController {
       if (!match) {
         return res.status(404).json({ error: 'Match not found.' });
       }
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, ref: matchId, info: match });
       return res.status(200).json(match);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch the match.' });
@@ -297,6 +302,12 @@ export class MatchController {
       if (!updatedMatch) {
         return res.status(404).json({ error: 'Match not found.' });
       }
+      await MatchLog.create({
+        user: res.locals.user_id,
+        action: LogAction.Update,
+        ref: matchId,
+        info: matchData
+      });
       return res.status(200).json(updatedMatch);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to update the match.' });
@@ -337,6 +348,12 @@ export class MatchController {
       if (!deletedMatch) {
         return res.status(404).json({ error: 'Match not found.' });
       }
+      await MatchLog.create({
+        user: res.locals.user_id,
+        action: LogAction.Delete,
+        ref: matchId,
+        info: deletedMatch
+      });
       return res.status(200).json(deletedMatch);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to delete the match.' });

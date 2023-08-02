@@ -67,8 +67,8 @@ const userController = new UserController();
 const chatController = new ChatController();
 const mapController = new MapController();
 const notificationController = new NotificationController();
-const attributeController = new AttributeController();
-const conditionController = new ConditionController();
+// const attributeController = new AttributeController();
+// const conditionController = new ConditionController();
 const docusignController = new DocusignController();
 const fileController = new FileController();
 
