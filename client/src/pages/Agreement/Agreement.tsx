@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import Can from '../../components/Can';
-import { Header } from '../HomeLoggedIn/Header';
-import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,6 +21,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
+import { DashboardHeader } from '../AgentDashboard/components/DashboardHeader';
 
 const schema = yup.object().shape({
   landlord: yup.string().required('Landlord is required'),
@@ -134,7 +133,7 @@ export const Agreement = styled((props: IAgreement) => {
   };
   return (
     <div className={`home-page ${className}`}>
-      <Header />
+      <DashboardHeader />
 
       <div className='container'>
         <div className='content'>

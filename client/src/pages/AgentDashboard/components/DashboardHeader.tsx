@@ -27,28 +27,28 @@ export const DashboardHeader = styled(({ className }: HeaderProps) => {
       <div className='middle-part'>
         <Can do={CASLAction.Read} on='AdminMenu'>
           <div className='menu'>
-            <NavLink to='/dashboard'>
+            <NavLink to='/dashboard' end>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Sessions
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/dashboard/agent-matches'>
+            <NavLink to='/dashboard/agent-matches' end>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Matches
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/dashboard/agent-property'>
+            <NavLink to='/dashboard/agent-property' end>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Properties
                 </Button>
               )}
             </NavLink>
-            <NavLink to='/dashboard/contracts'>
+            <NavLink to='/dashboard/contracts' end>
               {({ isActive }) => (
                 <Button active={isActive} inverted>
                   Contract
