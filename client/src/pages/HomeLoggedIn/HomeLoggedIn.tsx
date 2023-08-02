@@ -77,27 +77,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       <Backdrop open={loading}></Backdrop>
 
-      {!isNaN(parseInt(profileStore.avatar || '')) &&
-        (criteriaStore.lookingFor === 'I own a place' ||
-          (criteriaStore.lookingFor === 'I’m looking for a place' &&
-            criteriaStore.transactionType &&
-            criteriaStore.whenDoYouWantToMove &&
-            criteriaStore.areaOfInterest)) && (
-          <>
-            <div className='container'>
-              <>
-                <SectionOne />
-                <SectionTwo />
-                <SectionThree />
-                <SectionFour />
-                <SectionFive />
-              </>
-            </div>
-            <Footer />
-          </>
-        )}
-
-      {isNaN(parseInt(profileStore.avatar || '')) && (
+      {isNaN(parseInt(profileStore.avatar || '')) ? (
         <motion.div
           key='SelectAvatar'
           initial={{ opacity: 0 }}
@@ -107,9 +87,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           }}>
           <SelectAvatar onSelectAvatar={onSelectAvatar} />
         </motion.div>
-      )}
-
-      {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
+      ) : !criteriaStore.lookingFor ? (
         <motion.div
           key='WhatAreYouLookingFor'
           initial={{ opacity: 0 }}
@@ -123,23 +101,34 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
             onLookingForChange={onLookingForChange}
           />
         </motion.div>
+      ) : criteriaStore.lookingFor === 'I own a place' ||
+        (criteriaStore.lookingFor === 'I’m looking for a place' &&
+          criteriaStore.transactionType &&
+          criteriaStore.whenDoYouWantToMove &&
+          criteriaStore.areaOfInterest) ? (
+        <>
+          <div className='container'>
+            <>
+              <SectionOne />
+              <SectionTwo />
+              <SectionThree />
+              <SectionFour />
+              <SectionFive />
+            </>
+          </div>
+          <Footer />
+        </>
+      ) : (
+        <motion.div
+          key='MinimumRequiredDetails'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1
+          }}>
+          <MinimumRequiredDetails />
+        </motion.div>
       )}
-
-      {!isNaN(parseInt(profileStore.avatar || '')) &&
-        criteriaStore.lookingFor &&
-        (!criteriaStore.transactionType ||
-          !criteriaStore.whenDoYouWantToMove ||
-          !criteriaStore.areaOfInterest) && (
-          <motion.div
-            key='MinimumRequiredDetails'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 1
-            }}>
-            <MinimumRequiredDetails />
-          </motion.div>
-        )}
     </div>
   );
 })`
@@ -153,10 +142,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
     .container {
       width: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
-      justify-content: flex-start;
+      display: grid;
       box-sizing: border-box;
     }
   }
