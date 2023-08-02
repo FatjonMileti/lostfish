@@ -84,7 +84,7 @@ const getConsent = () => {
   const urlScopes = SCOPES.join('+');
 
   // const redirectUri = 'https://developers.docusign.com/platform/auth/consent';
-  const redirectUri = 'http://localhost:3000/api/docusign/callback';
+  const redirectUri = `${config.api_url}/api/docusign/callback`;
   const consentUrl =
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
     `scope=${urlScopes}&client_id=${jwtConfig.dsJWTClientId}&` +
@@ -195,7 +195,7 @@ const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: As
   });
 
   env.templateRoles = [signer1, signer2];
-  env.status = 'sent';
+  env.status = 'Sent';
 
   return env;
 };
@@ -328,12 +328,12 @@ const updateUrlForLoggedInUser = async (request: Request, response: Response) =>
 };
 
 const createEnvelope = async (request: Request, response: Response) => {
-  const { tenant, property_id } = request.body;
+  const { property_id } = request.body;
   try {
     const envelopesApi = await getEnvelopesApi();
 
     const [landlord, tenantUser, property] = await Promise.all([
-      userService.findOne({ _id: response.locals.user_id }),
+      userService.findOne({ _id: request.body.landlord }),
       userService.findOne({ _id: request.body.tenant }),
       assetService.findById(property_id)
     ]);
@@ -347,14 +347,12 @@ const createEnvelope = async (request: Request, response: Response) => {
 
     const envelope = makeEnvelope(landlord, tenantUser, property);
 
-    // return response.json(envelope);
-
     const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
       envelopeDefinition: envelope
     });
 
     if (results) {
-      await docusignLocalService.createEnvelopeDoc(results, response.locals.user_id, request.body.tenant);
+      await docusignLocalService.createEnvelopeDoc(results, request.body.landlord, request.body.tenant);
     }
 
     if (results && results.envelopeId) {

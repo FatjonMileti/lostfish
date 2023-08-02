@@ -11,7 +11,6 @@ import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
-import { TextField } from '../../components/TextField';
 import { Select } from '../../components/Select/Select';
 import { Switch } from '../../components/Switch';
 import { Tabs, Tab } from '../../components/Tab';
@@ -19,6 +18,10 @@ import { AreaOfInterest } from '../Properties/AreaOfInterest';
 
 export type Step1FormType = {
   areaOfInterest: string;
+  location: {
+    latitude?: number;
+    longitude?: number;
+  };
   radius?: number;
   propertyType: {
     Detached: boolean;
@@ -45,6 +48,10 @@ export type Step1FormType = {
 
 export const step1Schema: ObjectSchema<Step1FormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
+  location: yup.object().shape({
+    latitude: yup.number().optional(),
+    longitude: yup.number().optional()
+  }),
   radius: yup.number().optional(),
   propertyType: yup.object().shape({
     Detached: yup.boolean().required(),
@@ -188,7 +195,10 @@ export const SetCriteriaStep1 = styled(
                   placeholder='E.g. Bristol or BA1 2LR'
                   label='Area of interest'
                   areaOfInterest={form.getValues('areaOfInterest')}
-                  onAreaChange={(newValue) => form.setValue('areaOfInterest', newValue)}
+                  onAreaChange={({ formattedAddress, location }) => {
+                    form.setValue('areaOfInterest', formattedAddress);
+                    form.setValue('location', location);
+                  }}
                 />
                 <Select label='Radius' {...form.register('radius')}>
                   <option></option>

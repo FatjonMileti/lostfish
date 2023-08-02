@@ -1,18 +1,15 @@
 import AssetModel from '../schemas/asset.schema';
-import { AssetDocument, CurrencyCode, IOffer, MasterAssetTypeSring } from '../asset.interface';
+import { AssetDocument, CurrencyCode, MasterAssetTypeSring } from '../asset.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
-
 import { Types } from 'mongoose';
-import { getCurrentStatusForGet } from '../helpers';
+import { handlePropertyImages, generateLinksForImages, generateLinksForOneAsset } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
-import fileService from '../../../external-services/file.service';
-const fs = require('fs');
-const path = require('path');
+import { Role } from '../../User/user.interface';
 
 const mailService = MailService.getInstance();
 
@@ -20,11 +17,12 @@ const findAll = async (req: Request, res: Response) => {
   const { status } = req.query;
 
   const query: {
-    created_by: any;
+    created_by?: any;
     status_string?: any;
-  } = {
-    created_by: res.locals.user_id
-  };
+  } = {};
+  if ([Role.Client, Role.Landlord].includes(res.locals.role)) {
+    query.created_by = res.locals.user_id;
+  }
 
   if (status) {
     let filteredStatus: string[] = [];
@@ -56,9 +54,11 @@ const findAll = async (req: Request, res: Response) => {
     });
 
     response.totalDocsUnfiltered = count;
+    response.docs = generateLinksForImages(response.docs);
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
+    console.log(error);
     return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
   }
 };
@@ -157,12 +157,12 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.credit_score_requirements = data.credit_score_requirements;
     }
 
-    if (data.hasOwnProperty('contact_details')) {
-      asset.contact_details = data.contact_details;
+    if (data.hasOwnProperty('contract_details')) {
+      asset.contract_details = data.contract_details;
     }
 
     if (req.body.hasOwnProperty('property_images')) {
-      asset.property_images = data.property_images;
+      asset.property_images = handlePropertyImages(asset.property_images, data.property_images, asset._id);
     }
 
     await asset.save();
@@ -182,7 +182,7 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
     throw createError(404, 'The item does not exist');
   }
 
-  asset.status_string = getCurrentStatusForGet(asset.status_string);
+  asset.property_images = generateLinksForOneAsset(asset.property_images);
 
   res.status(httpStatus.OK).send(asset);
 };
@@ -229,47 +229,6 @@ const sendAssetInvitation = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send({ message: 'invitation_send' });
 };
 
-const getAssetImages = async (req: Request, res: Response) => {
-  const id = req.params.id;
-
-  const asset = await findById(id);
-
-  try {
-    const imageUrls = asset.property_images.map(
-      (image: any) => `${req.protocol}://${req.get('host')}/url-to-file/${image.filename}`
-    );
-
-    res.json(imageUrls);
-  } catch (error) {
-    res.status(500).send('Server error');
-  }
-};
-
-const getSingleImage = async (req: Request, res: Response) => {
-  const { id, imageId } = req.params;
-  try {
-    const asset = await findById(id);
-    const { property_images } = asset;
-
-    const getImage = property_images.find((propImage: any) => propImage.filename === imageId);
-    if (!getImage) {
-      res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
-    }
-
-    return fileService
-      .readFile(imageId)
-      .then((response) => {
-        res.setHeader('Content-Type', getImage.mimetype || 'application/octet-stream');
-        res.send(response);
-      })
-      .catch((error: any) => {
-        res.status(httpStatus.BAD_REQUEST).send(error);
-      });
-  } catch (error) {
-    res.status(httpStatus.BAD_REQUEST).send(error);
-  }
-};
-
 const findPublishedProperties = async (req: Request, res: Response) => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
@@ -281,14 +240,16 @@ const findPublishedProperties = async (req: Request, res: Response) => {
       populate: [
         {
           path: 'created_by',
-          select: ['email', 'username', 'first_name', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         },
         {
           path: 'edited_by',
-          select: ['email', 'username', 'first_name', 'last_name']
+          select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         }
       ]
     });
+
+    response.docs = generateLinksForImages(response.docs);
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
@@ -304,7 +265,5 @@ export default {
   updateAsset,
   findById,
   sendAssetInvitation,
-  getAssetImages,
-  getSingleImage,
   findPublishedProperties
 };

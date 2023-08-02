@@ -39,23 +39,30 @@ export interface ContactDocument extends Document {
   address: string;
 }
 
-export interface IOffer {
-  amount: number;
-  asset_id: string;
-  client_id: string;
-  user_id: string;
-  status: OfferStatus;
-  created_at: Date;
+export enum PropertyPreferences {
+  NewHome = 'New home',
+  RetirementHome = 'Retirement home',
+  SharedOwnership = 'Shared ownership',
+  Auction = 'Auction'
 }
 
-export enum OfferStatus {
-  Unknown = 'Unknown',
-  Confirmed = 'Confirmed',
-  ClientWithdrawn = 'Client Withdrawn',
-  AgentWithdrawn = 'Agent Withdrawn',
-  Accepted = 'Accepted',
-  Rejected = 'Rejected',
-  Pending = 'Pending'
+export enum PropertyFeatures {
+  ParksNearby = 'Parks nearby',
+  PublicTransportNearby = 'Public transport nearby',
+  ShoppingCentersNearby = 'Shopping centers nearby'
+}
+
+export enum SpecificPropertyFeatures {
+  PARKING_SPOT = 'Parking spot',
+  GARDEV = 'Garden',
+  TERRACE = 'Terrace',
+  FULLY_FURNISHED = 'Fully furnished',
+  PARTIALLY_FURNISHED = 'Partially furnished',
+  UNFURNISHED = 'Unfurnished',
+  DOUBLE_GLAZING = 'Double glazing',
+  ALLOWS_SMOKING = 'Allows smoking',
+  ALLOW_PETS = 'Allows pets',
+  CLOSE_PUBLIC_TRANSPORT = 'Close to public transport'
 }
 
 export enum StatusString {
@@ -82,8 +89,7 @@ export enum TransactionTypeString {
   Sale = 'Sale',
   Auction = 'Auction',
   Tender = 'Tender',
-  Rent = 'Rent',
-  NewHomes = 'New Homes'
+  Rent = 'Rent'
 }
 
 export enum MasterAssetTypeSring {
@@ -93,26 +99,13 @@ export enum MasterAssetTypeSring {
   Marine = 'Marine'
 }
 
-export enum AssetTypeString {
-  'Unknown' = 'Unknown',
-  'Apartment' = 'Apartment',
-  'StudioApartment' = 'Studio Apartment',
-  'DetachedHouse' = 'Detached House',
-  'SemiDetachedHouse' = 'Semi Detached House',
-  'MidTerraceHouse' = 'Mid Terrace House',
-  'EndTerraceHouse' = 'End of Terrace House',
-  'DuplexApartment' = 'Duplex Apartment',
-  'Mixed' = 'Mixed',
-  'Land' = 'Land',
-  'Industrial' = 'Industrial',
-  'Retail' = 'Retail',
-  'Office' = 'Office',
-  'PublicHouse' = 'Public House',
-  'Hotel' = 'Hotel',
-  'MixedUse' = 'Mixed use',
-  'Commercial Land' = 'Commercial Land',
-  'MultiFamily' = 'Multi Family',
-  'MedicalFacility' = 'Medical Facility'
+export enum PropertyType {
+  'Detached' = 'Detached',
+  'Semi-Detached' = 'Semi-Detached',
+  'Terraced' = 'Terraced',
+  'Flats' = 'Flats',
+  'Bungalows' = 'Bungalows',
+  'Farms/Land' = 'Farms/Land'
 }
 
 export enum CurrencyCode {
@@ -123,16 +116,6 @@ export enum CurrencyCode {
   'ZAR' = 'ZAR',
   'CHF' = 'CHF',
   'KES' = 'KES'
-}
-
-export enum AssetAtribute {
-  'Text' = 'Text',
-  'Number' = 'Number',
-  'TextArea' = 'TextArea',
-  'Select' = 'Select',
-  'Range' = 'Range',
-  'DataList' = 'DataList',
-  'AgentDoc' = 'Agent Doc'
 }
 
 export enum Access {
@@ -150,28 +133,23 @@ export enum RentalFrequency {
   'Year' = 'Year'
 }
 
-export enum TabName {
-  'Overview',
-  'General',
-  'Details',
-  'Sale',
-  'Auction',
-  'Client',
-  'Applicants',
-  'Viewing',
-  'Vault',
-  'External',
-  'Activity',
-  'Documents',
-  'Advanced',
-  'Payments'
-}
-
 export enum PreferencesEnum {
   NEW_HOME = 'New Home',
   RETIREMENT_HOME = 'Retirement Home',
   SHARED_OWNERSHIP = 'Shared Ownership',
   AUCTION = 'Auction'
+}
+
+export enum CreditScoreRequirement {
+  Excellent = 'Excellent',
+  Good = 'Good',
+  Fair = 'Fair'
+}
+
+export enum ContractDetails {
+  guarantor = 'guarantor',
+  reviewedProperty = 'reviewedProperty',
+  energyCertificate = 'energyCertificate'
 }
 
 export interface AssetDocument extends Document {
@@ -196,8 +174,7 @@ export interface AssetDocument extends Document {
   status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
-  asset_type_string: AssetTypeString;
-  property_type: string;
+  property_type: PropertyType;
   currency_code: CurrencyCode;
   reserved: boolean;
   master_branch_name: string;
@@ -211,8 +188,27 @@ export interface AssetDocument extends Document {
   };
   floor_size: number;
   floor_size_unit: string;
-  property_features: string[];
-  property_preference: string;
+  property_features: PropertyFeatures[];
+  property_preference: PropertyPreferences;
+  asset_rent: {
+    rental_amount: number;
+    rental_frequency: RentalFrequency;
+    deposit_amount: number;
+    interest_by: Date;
+    available_from: Date;
+  };
+  statistics: any;
+  buyers: [object];
+  specific_property_features: SpecificPropertyFeatures[];
+  property_images: object[];
+  credit_score_requirements: CreditScoreRequirement;
+  contract_details: ContractDetails[];
+  settings: any;
+  preferences: string;
+  client_id: number;
+  solicitor_id: number;
+  client?: ContactDocument;
+  solicitor?: ContactDocument;
   asset_sale?: {
     asking_price: number;
     minimum_offer: number;
@@ -230,49 +226,6 @@ export interface AssetDocument extends Document {
     enable_downward_bidding: boolean;
     downward_bidding_allowed_percentage: number;
   };
-  asset_rent: {
-    rental_amount: number;
-    rental_frequency: RentalFrequency;
-    deposit_amount: number;
-    interest_by: Date;
-    available_from: Date;
-  };
-  asset_auction: {
-    guide_price: number;
-    reserve_price: number;
-    starting_bid: number;
-    bidding_increments: number;
-    start_time: Date;
-    end_time: Date;
-    bidding_extension: number;
-    deposit_due_date: Date;
-    completion_date: Date;
-  };
-  client_id: number;
-  client?: ContactDocument;
-  solicitor_id: number;
-  solicitor?: ContactDocument;
-  statistics: any;
-  permission: {
-    administrator_names: [string];
-    display_administrator_names: [string];
-    branch_administrator_names: [string];
-    access: Access;
-    tabs: [
-      {
-        name: TabName;
-        roles: [string];
-      }
-    ];
-  };
-  offers: IOffer[];
-  buyers: [object];
-  specific_property_features: string[];
-  property_images: object[];
-  credit_score_requirements: string;
-  contact_details: string[];
-  settings: any;
-  preferences: string;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

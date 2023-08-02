@@ -1,8 +1,9 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { Request } from 'express';
 import multer, { Multer } from 'multer';
 import multerS3 from 'multer-s3';
 import config from '../../../config';
+import fs from 'fs';
 
 const AWS = require('aws-sdk');
 const s3AWS = new AWS.S3();
@@ -15,18 +16,18 @@ const s3 = new S3Client({
   }
 });
 
-export default class S3UploadService {
-  private static instance: S3UploadService;
+export default class S3FileService {
+  private static instance: S3FileService;
   private uploader!: Multer;
   private s3service = s3AWS;
 
   private constructor() {}
 
-  static getInstance(): S3UploadService {
-    if (!S3UploadService.instance) {
-      S3UploadService.instance = new S3UploadService();
+  static getInstance(): S3FileService {
+    if (!S3FileService.instance) {
+      S3FileService.instance = new S3FileService();
     }
-    return S3UploadService.instance;
+    return S3FileService.instance;
   }
 
   createPublicUploader(): Multer {
@@ -76,5 +77,19 @@ export default class S3UploadService {
         return resolve(url);
       });
     });
+  }
+
+  async deleteImage(imgKey: any) {
+    try {
+      const params = {
+        Bucket: config.aws.awsBucket,
+        Key: imgKey
+      };
+      const command = new DeleteObjectCommand({ Bucket: config.aws.awsBucket, Key: imgKey });
+      await s3.send(command);
+      console.log('File deleted successfully.');
+    } catch (err) {
+      console.error('Error deleting file:', err);
+    }
   }
 }

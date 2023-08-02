@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import Can from '../../components/Can';
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
@@ -9,6 +9,8 @@ import { Avatar } from '../../components/Avatar';
 
 import { avatars } from './avatars';
 import { useProfileStore } from '../../globalState/profile';
+import { CASLAction } from '../../utils/ability.util';
+import { useUserStore } from '../../globalState/user';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -16,6 +18,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
 
   const profileStore = useProfileStore();
+  const userStore = useUserStore();
 
   return (
     <div className={`header ${className}`}>
@@ -24,36 +27,72 @@ export const Header = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='middle-part'>
-        <div className='menu'>
-          <NavLink to='/'>
-            {({ isActive }) => (
-              <Button active={isActive} inverted>
-                Home
-              </Button>
+        <Can do={CASLAction.Read} on='Menu'>
+          <div className='menu'>
+            <NavLink to='/'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Home
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to='/matches'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Matches
+                </Button>
+              )}
+            </NavLink>
+            {userStore?.userDetails?.role === 'Landlord' && (
+              <NavLink to='/properties'>
+                {({ isActive }) => (
+                  <Button active={isActive} inverted>
+                    Properties
+                  </Button>
+                )}
+              </NavLink>
             )}
-          </NavLink>
-          <NavLink to='/matches'>
-            {({ isActive }) => (
-              <Button active={isActive} inverted>
-                Matches
-              </Button>
-            )}
-          </NavLink>
-          <NavLink to='/properties'>
-            {({ isActive }) => (
-              <Button active={isActive} inverted>
-                Properties
-              </Button>
-            )}
-          </NavLink>
-          <NavLink to='/messages-page'>
-            {({ isActive }) => (
-              <Button active={isActive} inverted>
-                Messages
-              </Button>
-            )}
-          </NavLink>
-        </div>
+            <NavLink to='/messages-page'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Messages
+                </Button>
+              )}
+            </NavLink>
+          </div>
+        </Can>
+        <Can do={CASLAction.Read} on='AdminMenu'>
+          <div className='menu'>
+            <NavLink to='/dashboard'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Sessions
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to='/dashboard/agent-matches'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Matches
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to='/dashboard/agent-property'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Properties
+                </Button>
+              )}
+            </NavLink>
+            <NavLink to='/dashboard/contracts'>
+              {({ isActive }) => (
+                <Button active={isActive} inverted>
+                  Contract
+                </Button>
+              )}
+            </NavLink>
+          </div>
+        </Can>
       </div>
 
       <div className='right-part'>

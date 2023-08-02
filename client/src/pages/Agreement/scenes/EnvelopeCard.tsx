@@ -22,10 +22,8 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
     created_at
   } = envelope || {};
 
-  const isLandlord = userDetails.user_id.toString() === land_lord._id.toString();
-  const isTenant = userDetails.user_id.toString() === tenant._id.toString();
-
-  console.log({ isLandlord, isTenant });
+  const isLandlord = userDetails.user_id.toString() === land_lord?._id?.toString();
+  const isTenant = userDetails.user_id.toString() === tenant?._id?.toString();
 
   const params = useParams<{ id: string }>();
 
@@ -34,6 +32,20 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
       `${config.apiUrl}/api/docusign/${params.id}/generate-url`
     );
   };
+
+  if (!land_lord || !tenant) {
+    return (
+      <Box display='flex' justifyContent='center'>
+        <Card>
+          <CardContent>
+            <Typography color='textSecondary' gutterBottom>
+              No data
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
 
   return (
     <Box display='flex' justifyContent='center'>

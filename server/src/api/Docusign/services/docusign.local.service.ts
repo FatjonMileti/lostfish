@@ -111,7 +111,7 @@ const generateNewSignUrls = async (req: Request, res: Response) => {
 
 const successSignRedirect = async (req: Request, res: Response) => {
   const { userId, userType, envelopId, event } = req.query;
-  console.log(req.query);
+
   try {
     if (userId) {
       const user = await userService.findOne({ _id: userId });
@@ -132,6 +132,11 @@ const successSignRedirect = async (req: Request, res: Response) => {
       if (userType && userType === Role.Landlord) {
         existingEnvelope.signed_by_landlord = true;
       }
+
+      if (existingEnvelope.signed_by_landlord && existingEnvelope.signed_by_tenant) {
+        existingEnvelope.status = 'Signed';
+      }
+
       await existingEnvelope.save();
       return res.redirect(`${config.front_end_url}?event=signing_complete`);
     }
@@ -145,9 +150,10 @@ const successSignRedirect = async (req: Request, res: Response) => {
 };
 
 const getEnvelopeList = async (req: Request, res: Response) => {
-  const query: any = {
-    $or: [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }]
-  };
+  const query: { $or?: any } = {};
+  if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
+    query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
+  }
 
   const response = await Envelope.paginate(query, {
     ...res.locals.paging_options,

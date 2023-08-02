@@ -26,15 +26,23 @@ const columns: GridColDef[] = [
     field: 'landlord',
     headerName: 'Landlord',
     width: 130,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.land_lord.first_name || ''} ${params.row.land_lord.last_name || ''}`
+    valueGetter: (params: GridValueGetterParams) => {
+      if (params.row.land_lord) {
+        return `${params.row.land_lord.first_name || ''} ${params.row.land_lord.last_name || ''}`;
+      }
+      return '';
+    }
   },
   {
     field: 'tenant',
     headerName: 'Tenant',
     width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.tenant.first_name || ''} ${params.row.tenant.last_name || ''}`
+    valueGetter: (params: GridValueGetterParams) => {
+      if (params.row?.tenant) {
+        return `${params.row.tenant.first_name || ''} ${params.row.tenant.last_name || ''}`;
+      }
+      return '';
+    }
   },
   {
     field: 'details',

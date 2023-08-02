@@ -7,19 +7,21 @@ function defineAbilitiesFor(role: string): PureAbility<[CASLAction, AppSubjects]
     createMongoAbility
   );
 
-  if (role === Role.Admin) {
-    can(CASLAction.Manage, 'all');
-  } else if (role === Role.Client) {
+  if (role === Role.Client) {
     can(CASLAction.Manage, 'all');
     cannot(CASLAction.Create, 'SignGenerator');
     cannot(CASLAction.Update, 'SignGenerator');
     cannot(CASLAction.Delete, 'SignGenerator');
-    cannot(CASLAction.Read, 'SignGenerator');
+    can(CASLAction.Read, 'SignGenerator');
+    cannot(CASLAction.Read, 'StarredTenants');
+    can(CASLAction.Read, 'StarredProperties');
   } else if (role === Role.Agent) {
     can(CASLAction.Manage, 'all');
   } else if (role === Role.Landlord) {
     can(CASLAction.Manage, 'all');
     can(CASLAction.Manage, 'SignGenerator');
+    cannot(CASLAction.Read, 'StarredProperties');
+    can(CASLAction.Read, 'StarredTenants');
   } else if (role === Role.Client) {
     can(CASLAction.Manage, 'all');
   } else if (role === Role.NeWUser) {

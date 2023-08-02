@@ -14,16 +14,19 @@ export type AppSubjects =
   | 'Chat'
   | 'all'
   | 'Menu'
+  | 'AdminMenu'
   | 'Client'
   | 'Agent'
   | 'SignGenerator'
-  | 'SignURL';
+  | 'SignURL'
+  | 'StarredProperties'
+  | 'StarredTenants';
 
 export enum Role {
-  Admin = 'Admin',
   Agent = 'Agent',
-  Client = 'Client',
-  Solicitor = 'Solicitor'
+  Client = 'Tenant',
+  Landlord = 'Landlord',
+  NewUser = 'NewUser'
 }
 
 export type AppAbilityType = PureAbility<[CASLAction, AppSubjects]>;
@@ -32,13 +35,21 @@ export const AppAbility = PureAbility as AbilityClass<AppAbilityType>;
 export default function defineRulesFor(role: string) {
   const { can, rules, cannot } = new AbilityBuilder(AppAbility);
 
-  if (role === Role.Admin) {
-    can(CASLAction.Manage, 'Menu');
+  if (role === Role.Landlord) {
+    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'Agent');
+    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Client) {
+    can(CASLAction.Read, 'Menu');
     can(CASLAction.Manage, 'Client');
+    cannot(CASLAction.Read, 'AdminMenu');
+  } else if (role === Role.NewUser) {
+    can(CASLAction.Read, 'Menu');
+    can(CASLAction.Manage, 'all');
+    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Agent) {
-    can(CASLAction.Manage, 'Agent');
+    can(CASLAction.Read, 'AdminMenu');
+    cannot(CASLAction.Read, 'Menu');
   }
 
   return rules;

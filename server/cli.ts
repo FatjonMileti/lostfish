@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const inquirer = require('inquirer');
 const joi = require('joi');
 import { Schema } from 'joi';
-import { Role } from './src/enums';
+import { Role } from './src/api/User/user.interface';
 
 console.log(chalk.green('Configure digital advertising default user'));
 // tslint:disable-next-line: no-any
@@ -62,7 +62,7 @@ const validate = (schema: Schema) => (answers: any) => {
     await new User({
       username: response.email,
       hash,
-      role: Role.Admin,
+      role: Role.Agent,
       is_disabled: false,
       email: response.email,
       first_name: response.first_name,

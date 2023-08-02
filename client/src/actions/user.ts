@@ -1,33 +1,32 @@
-import React from "react";
-import { UserActionType, IUserContext } from "../context/user";
-import config from "../config";
+import React from 'react';
+import { UserActionType, IUserContext } from '../context/user';
+import config from '../config';
 
 export const login =
-  (userContext: IUserContext) =>
-  async (username: string, password: string, rememberMe: boolean) => {
+  (userContext: IUserContext) => async (username: string, password: string, rememberMe: boolean) => {
     try {
       const response = await fetch(`${config.apiUrl}/api/account/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: username,
-          password,
-        }),
+          password
+        })
       });
 
       if (!response.ok || response.status !== 200) return false;
 
       const json = await response.json();
 
-      sessionStorage.setItem('access_token', json.access_token)
+      sessionStorage.setItem('access_token', json.access_token);
 
       userContext.dispatch({
         type: UserActionType.LOGIN,
         payload: {
           token: json.access_token,
           refreshToken: json.refresh_token,
-          rememberMe: rememberMe,
-        },
+          rememberMe: rememberMe
+        }
       });
       return true;
     } catch (err) {
@@ -38,29 +37,29 @@ export const login =
 export const logout = (userContext: IUserContext) => async () => {
   try {
     await fetch(`${config.apiUrl}/api/account/logout`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userContext.state.token}`,
-      },
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userContext.state.token}`
+      }
     });
   } catch (err) {
-    console.error("could not logout", err);
+    console.error('could not logout', err);
   }
 
   userContext.dispatch({
-    type: UserActionType.LOGOUT,
+    type: UserActionType.LOGOUT
   });
 };
 
 export const refresh = (userContext: IUserContext) => async () => {
   try {
     const response = await fetch(`${config.apiUrl}/api/account/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        refresh_token: userContext.state.refreshToken,
-      }),
+        refresh_token: userContext.state.refreshToken
+      })
     });
 
     if (!response.ok || response.status !== 200) return false;
@@ -72,8 +71,8 @@ export const refresh = (userContext: IUserContext) => async () => {
       payload: {
         token: json.access_token,
         refreshToken: json.refresh_token,
-        rememberMe: userContext.state.rememberMe,
-      },
+        rememberMe: userContext.state.rememberMe
+      }
     });
     return true;
   } catch (err) {

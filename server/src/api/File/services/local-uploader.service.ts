@@ -1,11 +1,13 @@
 import multer, { Multer } from 'multer';
 import * as process from 'process';
+import internalFileService from '../services/file.service';
+
 const fs = require('fs');
 const path = require('path');
-
 export default class LocalUploadService {
   private static instance: LocalUploadService;
   private uploader!: Multer;
+  private internalFileService = internalFileService;
 
   private constructor() {}
 
@@ -25,10 +27,17 @@ export default class LocalUploadService {
     const imagePath = path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
 
     try {
-      const image = fs.readFileSync(imagePath);
-      return image;
+      return fs.readFileSync(imagePath);
     } catch (error: any) {
       return null;
+    }
+  }
+
+  async deleteImage(img: string, propertyId: string = '', userId: string = ''): Promise<any> {
+    if (propertyId) {
+      return this.internalFileService.removeFile(img, propertyId);
+    } else if (userId) {
+      return this.internalFileService.removeFile(img, '', userId);
     }
   }
 }

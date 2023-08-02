@@ -9,6 +9,7 @@ export enum MatchingType {
 export interface MatchDocument extends Document {
   property: ObjectIdField;
   tenant: ObjectIdField;
+  landlord: ObjectIdField;
   chosen: boolean;
   starred: boolean;
   type: MatchingType;

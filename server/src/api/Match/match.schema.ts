@@ -13,6 +13,7 @@ export interface IMatchQueryParams {
 const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
   {
     tenant: { type: Schema.Types.ObjectId, ref: 'user' },
+    landlord: { type: Schema.Types.ObjectId, ref: 'user' },
     chosen: { type: Boolean, default: false },
     starred: { type: Boolean, default: false },
     type: { type: String, enum: MatchingType },

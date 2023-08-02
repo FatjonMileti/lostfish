@@ -234,37 +234,22 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
       }
     },
     {
-      $facet: {
-        total: [
-          {
-            $count: 'created_at'
-          }
-        ],
-        data: [
-          {
-            $addFields: {
-              _id: '$_id'
-            }
-          }
-        ]
+      $group: {
+        _id: null,
+        docs: {
+          $push: '$$ROOT'
+        },
+        totalDocs: {
+          $sum: 1
+        }
       }
-    },
-    {
-      $unwind: '$total'
     },
     {
       $project: {
         docs: {
-          $slice: [
-            '$data',
-            skip,
-            {
-              $ifNull: [limit, '$total.created_at']
-            }
-          ]
+          $slice: ['$docs', skip, limit]
         },
-
-        totalDocs: '$total.created_at',
+        totalDocs: '$totalDocs',
         limit: {
           $literal: limit
         },
@@ -272,9 +257,12 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
           $literal: page
         },
         totalPages: {
-          $ceil: {
-            $divide: ['$total.created_at', limit]
-          }
+          $add: [
+            { $divide: ['$totalDocs', limit] },
+            {
+              $cond: [{ $gt: [{ $mod: ['$totalDocs', limit] }, 0] }, 1, 0]
+            }
+          ]
         }
       }
     }

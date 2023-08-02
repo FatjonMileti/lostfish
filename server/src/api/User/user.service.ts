@@ -23,6 +23,7 @@ const getAll = async (req: Request, res: Response) => {
     created_at?: any;
     is_disabled?: boolean;
     role?: Role;
+    roles?: Role[];
     $or?: { [key: string]: RegExp }[];
     _id?: any;
   } = {};
@@ -31,14 +32,14 @@ const getAll = async (req: Request, res: Response) => {
 
   if (search) {
     query.$or = [
-      { firstName: new RegExp(<string>search, 'i') },
-      { lastName: new RegExp(<string>search, 'i') },
+      { first_name: new RegExp(<string>search, 'i') },
+      { last_name: new RegExp(<string>search, 'i') },
       { phone: new RegExp(<string>search, 'i') },
       { email: new RegExp(<string>search, 'i') }
     ];
   }
 
-  const { is_disabled, role } = req.query;
+  const { is_disabled, role, roles } = req.query;
   let createdAtSince: any | null = req.query.created_atSince;
   let createdAtUntil: any | null = req.query.created_atUntil;
 
@@ -351,6 +352,10 @@ const getUserPublicData = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send(users);
 };
 
+const findByQuery = (query: any) => {
+  return UserModel.find(query).lean();
+};
+
 export default {
   getAll,
   getById,
@@ -360,5 +365,6 @@ export default {
   deleteUser,
   resetUserPassword,
   sendResetPasswordInstructions,
-  getUserPublicData
+  getUserPublicData,
+  findByQuery
 };

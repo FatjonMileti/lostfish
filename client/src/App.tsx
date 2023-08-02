@@ -32,8 +32,9 @@ import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter
 import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
 import { useProfileStore } from './globalState/profile';
-import { Agreement } from './pages/Agreement/Agreement';
+
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
+import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 
 registerStore(
   'notification',
@@ -45,7 +46,7 @@ registerStore(
 );
 
 function App() {
-  const user = useUserStore();
+  const userStore = useUserStore();
   const criteriaStore = useCriteriaStore();
   const profileStore = useProfileStore();
 
@@ -56,27 +57,27 @@ function App() {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   React.useEffect(() => {
-    if (user.auth) {
-      criteriaStore.fetchCriteria(user.auth.access_token);
+    if (userStore.auth) {
+      criteriaStore.fetchCriteria(userStore.auth.access_token);
     } else {
       criteriaStore.reset();
     }
-  }, [user.auth]);
+  }, [userStore.auth]);
 
   React.useEffect(() => {
-    if (user.auth) {
-      profileStore.fetchProfile(user.auth.access_token);
+    if (userStore.auth) {
+      profileStore.fetchProfile(userStore.auth.access_token);
     } else {
       profileStore.reset();
     }
-  }, [user.auth]);
+  }, [userStore.auth]);
 
   React.useEffect(() => {
-    if (user.auth) {
+    if (userStore.auth) {
       // @ts-ignore
       const newSocket = io(config.apiUrl, {
         auth: {
-          token: user.auth.access_token
+          token: userStore.auth.access_token
         }
       });
       setSocket(newSocket);
@@ -87,10 +88,10 @@ function App() {
         newSocket.disconnect();
       };
     }
-  }, [user]);
+  }, [userStore]);
 
   const getUnreadMessages = async () => {
-    const response = await request(user.auth.access_token).get('/api/notification/unread');
+    const response = await request(userStore.auth.access_token).get('/api/notification/unread');
     setNotification((prevNotification: any) => ({ ...prevNotification, unread: response.data.unread }));
   };
 
@@ -105,7 +106,6 @@ function App() {
               <BrowserRouter>
                 <Routes>
                   <Route path='/login' element={<Login />} />
-                  <Route path='/agreement' element={<Agreement />} />
                   <Route path='/agreement/:id' element={<AgreementDetails />} />
                   <Route path='/components' element={<PreviewComponents />} />
                   <Route path='/about' element={<About />} />
@@ -117,30 +117,21 @@ function App() {
                   <Route path='/activate-account/:token' element={<VerifyAccount />} />
                   <Route path='/reset-password/:token' element={<ResetPassword />} />
 
-                  <Route path='' element={!!user.auth ? <HomeLoggedIn /> : <Home />} />
+                  <Route path='' element={!!userStore.auth ? <HomeLoggedIn /> : <Home />} />
 
-                  <Route path='/properties' element={!!user.auth ? <Properties /> : <Login />} />
+                  {userStore?.userDetails?.role === 'Landlord' && (
+                    <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
+                  )}
+
                   <Route path='/messages' element={<ChatPage />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />
                   <Route path='/properties/:id/view' element={<PublicProperty />} />
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
-                  <Route path='/messages-page' element={!!user.auth ? <Messages /> : <Login />} />
-                  <Route path='my-account/*' element={!!user.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/messages-page' element={!!userStore.auth ? <Messages /> : <Login />} />
+                  <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
+                  <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
                   <Route path='*' element={<NotFound />} />
-
-                  {/* <Route */}
-                  {/*   path='/*' */}
-                  {/*   element={ */}
-                  {/*     <PrivateRoute> */}
-                  {/*       <Layout> */}
-                  {/*         <Routes> */}
-                  {/*           <Route path='*' element={<NotFound />} /> */}
-                  {/*         </Routes> */}
-                  {/*       </Layout> */}
-                  {/*     </PrivateRoute> */}
-                  {/*   } */}
-                  {/* /> */}
                 </Routes>
               </BrowserRouter>
             </UIProvider>

@@ -17,7 +17,7 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   status: string;
   viewDetails: MouseEventHandler;
   image?: string;
-  images: string[];
+  images: any[];
 }
 
 export const Property = styled(
