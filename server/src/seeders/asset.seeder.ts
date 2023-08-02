@@ -1,5 +1,6 @@
 import AssetSchema from '../api/Asset/schemas/asset.schema';
 import { faker } from '@faker-js/faker';
+import axios from 'axios';
 import {
   ContractDetails,
   CountryCode,
@@ -14,16 +15,44 @@ import {
 } from '../api/Asset/asset.interface';
 import userService from '../api/User/user.service';
 
-const generateAsset = async () => {
+// Define your Unsplash API key here
+const ACCESS_KEY: string = 'jCUSC7UiB67_YlXdPgqHafZjswTiTwvO9aHtA0kWsng';
+
+// Function to search for images on Unsplash
+const searchImages = async () => {
+  const query: string = 'apartment';
+  try {
+    const response = await axios.get('https://api.unsplash.com/search/photos', {
+      params: {
+        query,
+        per_page: 100,
+        client_id: ACCESS_KEY
+      }
+    });
+
+    return response.data.results.map((item: any) => {
+      return {
+        key: item.urls.regular,
+        link: item.urls.regular
+      };
+    });
+  } catch (error: any) {
+    console.error('Error fetching images:', error.message);
+    return [];
+  }
+};
+let imagesTest: any = [];
+
+const getImages = async () => {
+  const data = await searchImages();
+  imagesTest = [...data];
+};
+
+const generateAsset = async (index: number) => {
   const landlord = await userService.findOne({ email: 'Landlord@lostfish.com' });
 
-  const imageUrl = faker.helpers.arrayElement([
-    'https://image1.apartmentfinder.com/i2/QSPDNZRTt1ZwZHIYM6clPkkUn4EnHfS8ON7FSh_2Yuk/110/image.jpg',
-    'https://image1.apartmentfinder.com/i2/hzP1c44UUaD1eD_wkA-WlKZK_4I2Sv6kewfU7JcScMY/116/the-irby-atlanta-ga-primary-photo.jpg',
-    'https://image1.apartmentfinder.com/i2/DXJQ3WybRo8I_4dFOZcs8h9pwq1BdwPq2ohXMPXJiR0/116/the-irby-atlanta-ga-lobby.jpg',
-    'https://image1.apartmentfinder.com/i2/XS85ZX4adC0GFvyeeU_qSUJl11pZ0rLA7keakzf1E4E/116/amli-lenox-atlanta-ga-2br-2ba---1248-sf.jpg',
-    'https://image1.apartmentfinder.com/i2/H5pW-8KzWEeWGF2f2uI9EZaMmetOwKKdOvEGWiKTzvM/116/amli-lenox-atlanta-ga-2br-2ba---1248-sf.jpg'
-  ]);
+  await getImages();
+
   const asset: any = {
     area_of_interest: faker.location.streetAddress(),
     radius: faker.helpers.arrayElement(['1', '5', '10', '50']),
@@ -54,12 +83,7 @@ const generateAsset = async () => {
     status_string: faker.helpers.arrayElement(['Live', 'Draft']),
     transaction_type_string: TransactionTypeString.Rent,
     contract_details: faker.helpers.arrayElements(Object.values(ContractDetails)),
-    property_images: [
-      {
-        key: imageUrl,
-        link: imageUrl
-      }
-    ]
+    property_images: faker.helpers.arrayElements(imagesTest, { min: 1, max: 6 })
   };
 
   asset.created_by = landlord?._id ?? undefined;
@@ -71,8 +95,11 @@ export const seedAssets = async (numAssets: number): Promise<void> => {
   try {
     await AssetSchema.deleteMany({});
 
-    const assets = await Promise.all(Array.from({ length: numAssets }, generateAsset));
-
+    const assets: any[] = []; //= await Promise.all(Array.from({ length: numAssets }, generateAsset));
+    for (let i = 0; i < numAssets; i++) {
+      const asset = await generateAsset(i);
+      assets.push(asset);
+    }
     await AssetSchema.insertMany(assets);
     console.log(`${numAssets} assets seeded successfully.`);
   } catch (error) {
