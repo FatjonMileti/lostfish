@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 import { Backdrop } from '../../../components/Backdrop';
@@ -50,13 +50,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
   const startMatching = async () => {
     setLoading(true);
 
-    // criteriaStore.set({
-    //   transactionType: state.transactionType,
-    //   whenDoYouWantToMove: state.whenDoYouWantToMove,
-    //   areaOfInterest: state.areaOfInterest
-    // });
-
-    const { data } = await axios(auth.access_token).post('/api/criteria', {
+    const { data } = await axios(auth.access_token).patch('/api/criteria', {
       looking_for: criteriaStore.lookingFor,
       transaction_type_string: state.transactionType,
       moving_time: state.whenDoYouWantToMove,
@@ -87,39 +81,43 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       <div
         className={`minimum-requirements ${className}`}
         style={{ alignContent: state.transactionType ? 'flex-start' : 'center' }}>
-        <TransactionType
-          transactionType={state.transactionType}
-          onTransactionTypeChange={onTransactionTypeChange}
-        />
+        {criteriaStore.lookingFor === 'I’m looking for a place' && (
+          <>
+            <TransactionType
+              transactionType={state.transactionType}
+              onTransactionTypeChange={onTransactionTypeChange}
+            />
 
-        {state.transactionType && (
-          <motion.div
-            key='whenDoYouWantToMove'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}>
-            <WhenDoYouWantToMove onWhenChange={onWhenChange} value={state.whenDoYouWantToMove} />
-          </motion.div>
-        )}
+            {state.transactionType && (
+              <motion.div
+                key='whenDoYouWantToMove'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}>
+                <WhenDoYouWantToMove onWhenChange={onWhenChange} value={state.whenDoYouWantToMove} />
+              </motion.div>
+            )}
 
-        {state.whenDoYouWantToMove && (
-          <motion.div
-            key='areaOfInterest'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}>
-            <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
-          </motion.div>
-        )}
+            {state.whenDoYouWantToMove && (
+              <motion.div
+                key='areaOfInterest'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}>
+                <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
+              </motion.div>
+            )}
 
-        {state.whenDoYouWantToMove && state.areaOfInterest && (
-          <motion.div
-            key='startMatching'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}>
-            <Button onClick={startMatching}>Start matching</Button>
-          </motion.div>
+            {state.whenDoYouWantToMove && state.areaOfInterest && (
+              <motion.div
+                key='startMatching'
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}>
+                <Button onClick={startMatching}>Start matching</Button>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
     </>

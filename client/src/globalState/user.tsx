@@ -14,13 +14,18 @@ type UserStoreType = {
     replace?: boolean | undefined
   ) => void;
 };
+
+const userInitialState = {
+  rememberMe: false,
+  auth: null,
+  userDetails: null,
+  ability: null
+};
+
 export const useUserStore = create<UserStoreType>()(
   persist(
     (set) => ({
-      rememberMe: false,
-      auth: null,
-      userDetails: null,
-      ability: null,
+      ...userInitialState,
       set
     }),
     { name: 'userStore' }

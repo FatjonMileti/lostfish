@@ -1,4 +1,3 @@
-import { useGlobalState } from '../../globalState/globalState';
 import React from 'react';
 import axios from 'axios';
 import config from '../../config';
@@ -7,6 +6,40 @@ import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from './Login';
 import { Backdrop } from '../../components/Backdrop';
 import { useUserStore } from '../../globalState/user';
+
+export const refreshToken = async (debug = false) => {
+  if (debug) console.log('Refreshing token...');
+
+  const userStore = useUserStore.getState();
+
+  try {
+    const response = await axios.post(`${config.apiUrl}/api/account/refresh`, {
+      refresh_token: userStore.auth.refresh_token
+    });
+
+    const userDetails = decodeJWT(response.data.access_token);
+
+    userDetails.rules = response.data.rules;
+
+    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
+
+    const auth = response.data;
+
+    userStore.set((user: any) => ({
+      ...user,
+      auth: {
+        ...auth,
+        expirationTime: Date.now() + auth.expires_in * 1000,
+        refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
+      },
+      userDetails,
+      ability
+    }));
+  } catch (error) {
+    if (debug) console.log('Error refreshing token', error);
+    userStore.set((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+  }
+};
 
 export const SessionMaintainer = ({
   debug = false,
@@ -20,37 +53,6 @@ export const SessionMaintainer = ({
 
   const [refreshTimeoutId, setRefreshTimeoutId] = React.useState<NodeJS.Timeout | undefined>(undefined);
   const [resumingSession, setResumingSession] = React.useState<boolean>(true);
-
-  const refreshToken = async () => {
-    if (debug) console.log('Refreshing token...');
-
-    try {
-      const response = await axios.post(`${config.apiUrl}/api/account/refresh`, {
-        refresh_token: user.auth.refresh_token
-      });
-
-      const userDetails = decodeJWT(response.data.access_token);
-      userDetails.rules = response.data.rules;
-
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-
-      const auth = response.data;
-
-      setUser((user: any) => ({
-        ...user,
-        auth: {
-          ...auth,
-          expirationTime: Date.now() + auth.expires_in * 1000,
-          refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
-        },
-        userDetails,
-        ability
-      }));
-    } catch (error) {
-      if (debug) console.log('Error refreshing token', error);
-      setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
-    }
-  };
 
   React.useEffect(() => {
     if (!user.auth) {
@@ -77,7 +79,7 @@ export const SessionMaintainer = ({
       } else {
         if (debug) console.log('Refresh token has not expired yet');
 
-        refreshToken().then(() => {
+        refreshToken(debug).then(() => {
           setResumingSession(false);
         });
       }

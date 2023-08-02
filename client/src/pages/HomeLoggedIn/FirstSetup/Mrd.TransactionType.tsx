@@ -20,8 +20,8 @@ export const TransactionType = styled(
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
-              className={`looking-for-choice for-tenant ${transactionType === 'Tenant' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Tenant')}>
+              className={`looking-for-choice for-tenant ${transactionType === 'Rent' ? 'active' : ''}`}
+              onClick={() => onTransactionTypeChange('Rent')}>
               <div className='indicators'>
                 <IconButton size='large'>
                   <Icon icon='key' size={26} />
@@ -30,14 +30,16 @@ export const TransactionType = styled(
                 <Typography variant='body4' className='title'>
                   I’m looking to rent a place
                 </Typography>
-                <Radio value='Rent' checked={transactionType === 'Tenant'} readOnly />
+                <Radio value='Rent' checked={transactionType === 'Rent'} readOnly />
               </div>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 1 }}
-              className={`looking-for-choice for-buyer ${transactionType === 'Buyer' ? 'active' : ''}`}
-              onClick={() => onTransactionTypeChange('Buyer')}>
+              className={`looking-for-choice for-buyer ${transactionType === 'Sale' ? 'active' : ''}`}
+              onClick={() => {
+                // onTransactionTypeChange('Sale')
+              }}>
               <div className='indicators'>
                 <IconButton size='large' noBackground>
                   <Icon icon='credit-card' />
@@ -45,7 +47,7 @@ export const TransactionType = styled(
                 <Typography variant='body4' className='title'>
                   I’m looking to buy a place
                 </Typography>
-                <Radio value='Sale' checked={transactionType === 'Buyer'} readOnly />
+                <Radio value='Sale' checked={transactionType === 'Sale'} readOnly />
               </div>
             </motion.div>
           </>
