@@ -16,4 +16,5 @@ export type AppSubjects =
   | 'SignGenerator'
   | 'SignURL'
   | 'StarredProperties'
-  | 'StarredTenants';
+  | 'StarredTenants'
+  | 'Criteria';

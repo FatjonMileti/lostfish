@@ -43,7 +43,7 @@ const login = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Login
   }).save();
 
-  const rules = packRules(defineAbilitiesFor(user.role).rules);
+  const rules = packRules(defineAbilitiesFor(user.role, user._id).rules);
 
   return res.json({
     token_type: 'bearer',
