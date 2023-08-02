@@ -3,10 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import { HTMLMotionProps, motion } from 'framer-motion';
 
 import { Typography } from '../../../components/Typography';
-import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
-import { ArrowButton } from '../../../components/ArrowButton';
-
 import { Label } from '../../../components/Label';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
@@ -14,70 +11,75 @@ import { useUserStore } from '../../../globalState/user';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 import { SetCriteria } from '../../SetCriteria/SetCriteria';
-import { ViewProperty } from './ViewProperty';
-import { avatars } from '../../HomeLoggedIn/avatars';
+import { Switch } from '../../../components/Switch';
+import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
+import { AddedMatches } from './MatchedProperties.AddedMatches';
 
-interface PropertyType {
-  property_images: { link: string }[];
-  area_of_interest: string;
-  property_type?: string;
-  floor_size: string;
-  specific_property_features?: string[];
-  contract_details?: string[];
-  room_details: {
-    number_of_bathrooms: string;
-    number_of_bedrooms: string;
+export interface PropertyType {
+  property: {
+    _id: string;
+    property_images: { link: string }[];
+    area_of_interest: string;
+    property_type?: string;
+    floor_size: string;
+    specific_property_features?: string[];
+    contract_details?: string[];
+
+    room_details: {
+      number_of_bathrooms: string;
+      number_of_bedrooms: string;
+    };
+
+    asset_rent: {
+      rental_amount?: string;
+    };
+    created_by: {
+      email: string;
+      first_name: string;
+      last_name: string;
+      avatar: string;
+    };
+
+    asset_address: any;
   };
-
-  asset_rent: {
-    rental_amount?: string;
-  };
-
-  id: string;
   matchId?: string;
   chosen: boolean;
   starred: boolean;
-  asset_address: any;
-
-  created_by: {
-    email: string;
-    first_name: string;
-    last_name: string;
-    avatar: string;
-  };
 }
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) => {
-  const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
+
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
   const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
-
-  const [viewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
+  const [checkedProperties, setCheckedProperties] = React.useState<any[]>([]);
+  const [matchedView, setMatchedView] = React.useState<boolean>(false);
 
   const { auth } = useUserStore();
 
   const criteriaStore = useCriteriaStore();
 
   React.useEffect(() => {
-    getProperties();
-  }, []);
+    getCheckedProperties();
+  }, [properties]);
 
-  const property = properties[activeSlide];
+  const getCheckedProperties = async () => {
+    try {
+      const { data } = await axios(auth.access_token).get('/api/match', { params: { chosen: true } });
+      setCheckedProperties(data.docs);
+    } catch (err) {
+      throw err;
+    }
+  };
   const getProperties = async () => {
     const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
     setProperties(data.docs.map((doc: any) => ({ ...doc, chosen: false, starred: false, id: doc._id })));
     await Promise.all(
-      data.docs.map(async (d: any) => {
-        await isPropertyChosen(d._id);
+      data.docs.map(async (d: PropertyType) => {
+        await isPropertyChosen(d.property._id);
       })
     );
-  };
-
-  const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % properties?.length));
-  const previous = () => {
-    activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
   const isPropertyChosen = async (propertyId: string): Promise<void> => {
@@ -95,12 +97,12 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       setProperties((properties) => {
         const propertiesCopy = [...properties];
 
-        const property = propertiesCopy.find((p: any) => p.id === propertyId);
+        const property = propertiesCopy.find((p: any) => p.property._id === propertyId);
         if (property) {
-          const tenantIndex = propertiesCopy.indexOf(property);
-          propertiesCopy[tenantIndex].chosen = match.chosen;
-          propertiesCopy[tenantIndex].starred = match.starred;
-          propertiesCopy[tenantIndex].matchId = match.matchId;
+          const propertyIndex = propertiesCopy.indexOf(property);
+          propertiesCopy[propertyIndex].chosen = match.chosen;
+          propertiesCopy[propertyIndex].starred = match.starred;
+          propertiesCopy[propertyIndex].matchId = match.matchId;
         }
 
         return propertiesCopy;
@@ -110,12 +112,12 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
         setProperties((properties) => {
           const propertiesCopy = [...properties];
 
-          const property = propertiesCopy.find((p: any) => p.id === propertyId);
+          const property = propertiesCopy.find((p: any) => p.property._id === propertyId);
           if (property) {
-            const tenantIndex = propertiesCopy.indexOf(property);
-            propertiesCopy[tenantIndex].chosen = false;
-            propertiesCopy[tenantIndex].starred = false;
-            propertiesCopy[tenantIndex].matchId = undefined;
+            const propertyIndex = propertiesCopy.indexOf(property);
+            propertiesCopy[propertyIndex].chosen = false;
+            propertiesCopy[propertyIndex].starred = false;
+            propertiesCopy[propertyIndex].matchId = undefined;
           }
           return propertiesCopy;
         });
@@ -128,29 +130,33 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   };
 
   const addOrUpdateTenantMatch = async (
-    tenantId: string,
+    propertyId: string,
     chosen: boolean = false,
     starred: boolean = false
   ) => {
-    const matchId = properties.find((p) => p.id === tenantId)?.matchId || false;
+    const matchId = properties.find((p) => p.property._id === propertyId)?.matchId || false;
 
     if (matchId) {
       await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred });
     } else {
-      await axios(auth.access_token).post('/api/match/property', { property: tenantId, chosen, starred });
+      await axios(auth.access_token).post('/api/match/property', { property: propertyId, chosen, starred });
     }
 
-    isPropertyChosen(property?.id);
+    isPropertyChosen(propertyId);
   };
 
-  const starProperty = async () => {
-    await addOrUpdateTenantMatch(property.id, property?.chosen, true);
+  const starProperty = async (propertyId: string, chosen: boolean) => {
+    await addOrUpdateTenantMatch(propertyId, chosen, true);
   };
 
-  const removeTenantMatch = async (matchId: string) => {
+  const checkProperty = async (propertyId: string, starred: boolean) => {
+    await addOrUpdateTenantMatch(propertyId, true, starred);
+  };
+
+  const removePropertyMatch = async (propertyId: string, matchId: string) => {
     try {
       await axios(auth.access_token).delete(`/api/match/${matchId}`);
-      isPropertyChosen(property.id);
+      isPropertyChosen(propertyId);
     } catch (err) {
       throw err;
     } finally {
@@ -159,35 +165,49 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   return (
     <div className={`${className}`}>
-      <ViewProperty
-        open={viewPropertyModalVisibility}
-        closeModal={() => setViewPropertyModalVisibility(false)}
-        onBackdropClick={() => setViewPropertyModalVisibility(false)}
-        images={property?.property_images.map(({ link }) => link) || []}
-        avatar={
-          !isNaN(parseInt(property?.created_by?.avatar || ''))
-            ? avatars[parseInt(property?.created_by?.avatar || '')]?.image
-            : ''
-        }
-        areaOfInterest={property?.area_of_interest || ''}
-        numberOfBedrooms={property?.room_details?.number_of_bedrooms}
-        rentingPrice={property?.asset_rent?.rental_amount}
-        numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-        propertyOwnerName={`${property?.created_by?.first_name} ${property?.created_by?.last_name}`}
-        propertyType={property?.property_type || ''}
-        propertyArea={property?.floor_size}
-        parkingSpot={(property?.specific_property_features || []).includes('Parking spot')}
-        energyCertificate={(property?.contract_details || []).includes('energyCertificate')}
-        address={{
-          lat: property?.asset_address?.latitude,
-          lng: property?.asset_address?.longitude
-        }}
-        refineYourSearchClick={() => {
-          setViewPropertyModalVisibility(false);
-        }}
-        starProperty={starProperty}
-        isPropertyStarred={!!property?.starred}
-      />
+      <div className='page-title-section'>
+        <div>
+          <Typography>
+            Matching with{' '}
+            <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
+          </Typography>
+          <Typography variant='body5' className='sub-title'>
+            Displaying 1240 matches. Enter more details to refine your search.
+          </Typography>
+        </div>
+
+        {((id: string) => (
+          <div className='switch-to-matched-view-button-wrapper'>
+            {checkedProperties.length > 0 && (
+              <>
+                <label htmlFor={id}>Switch to matched view</label>
+                <Switch id={id} checked={matchedView} onChange={(e) => setMatchedView(e.target.checked)} />
+              </>
+            )}
+          </div>
+        ))(React.useId())}
+      </div>
+
+      {!matchedView ? (
+        <SuggestedMatches
+          properties={properties}
+          setProperties={setProperties}
+          getProperties={getProperties}
+          improveTrustScore={() => setImproveTrustScoreModalVisibility(true)}
+          removePropertyMatch={removePropertyMatch}
+          starProperty={starProperty}
+          checkProperty={checkProperty}
+        />
+      ) : (
+        <AddedMatches
+          properties={checkedProperties}
+          setProperties={setCheckedProperties}
+          removePropertyMatch={removePropertyMatch}
+          starProperty={() => {}}
+          checkProperty={() => {}}
+        />
+      )}
+
       <ImproveTrustScoreModal
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
@@ -205,123 +225,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           }}
         />
       )}
-
-      <div>
-        <Typography>
-          Matching with <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
-        </Typography>
-        <Typography variant='body5' className='sub-title'>
-          Displaying 1240 matches. Enter more details to refine your search.
-        </Typography>
-      </div>
-
-      <div className='matches-slider'>
-        <div className='matches-slider-body'>
-          <div className='trust-score-section'>
-            <Typography variant='body5' className='your-trust-score-text'>
-              Your trust score
-            </Typography>
-            <Typography variant='h3' className='trust-score'>
-              45%
-            </Typography>
-            <Typography variant='body3' className='improve-trust-score-title'>
-              Improve your trust score and find better matches
-            </Typography>
-            <Typography variant='body4' className='trust-score-description'>
-              Go through the steps below to improve your trust score. Remember that you can’t close a certain
-              deal without maximum trust score.
-            </Typography>
-
-            <Label
-              variant='tertiary'
-              size='medium'
-              className='improve-link'
-              onClick={() => setImproveTrustScoreModalVisibility(true)}>
-              Improve trust score
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
-          </div>
-          <div className='slides-wrapper'>
-            {properties.map((property, propertyIndex) => {
-              const property_images: any = property?.property_images.map(({ link }) => link);
-              return (
-                <MatchedSlide
-                  key={propertyIndex}
-                  className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${property_images?.[0]}`}
-                  propertyOwnerName={`${property.created_by.first_name} ${property.created_by.last_name}`}
-                  avatar={
-                    !isNaN(parseInt(property.created_by.avatar || ''))
-                      ? avatars[parseInt(property.created_by.avatar || '')]?.image
-                      : ''
-                  }
-                  animate={{
-                    x:
-                      propertyIndex < activeSlide
-                        ? `calc(${-100 * propertyIndex}% - ${propertyIndex * 24}px)`
-                        : `calc(${-100 * activeSlide}% - ${24 * activeSlide - propertyIndex}px)`,
-                    scale: propertyIndex < activeSlide ? 0.9 : 1,
-                    y: propertyIndex >= activeSlide ? `0` : `32px`,
-                    opacity: propertyIndex === activeSlide ? 1 : 0.5
-                  }}
-                  transition={{ ease: 'easeOut', duration: 0.5 }}
-                  areaOfInterest={property.area_of_interest}
-                  numberOfBedrooms={property?.room_details?.number_of_bedrooms}
-                  rentingPrice={property.asset_rent?.rental_amount}
-                  numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-                  viewProperty={() => setViewPropertyModalVisibility(true)}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className='matches-slider-footer'>
-          <ArrowButton
-            direction='left'
-            onClick={previous}
-            style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
-            size='large'
-          />
-          <div className='match-actions'>
-            <IconButton
-              className='remove-button'
-              size='large'
-              onClick={() => {
-                if (property?.matchId) {
-                  removeTenantMatch(property?.matchId);
-                }
-              }}
-              disabled={!property?.matchId}>
-              <Icon icon='close' size={28} />
-            </IconButton>
-
-            <IconButton
-              size='large'
-              inverted
-              className={`check-button ${property?.chosen ? 'active' : ''}`}
-              onClick={() => {
-                addOrUpdateTenantMatch(property.id, true, property?.starred);
-              }}>
-              <Icon icon='checked' size={28} />
-            </IconButton>
-
-            <IconButton
-              size='large'
-              className={`star-button ${property?.starred ? 'active' : ''}`}
-              onClick={() => {
-                addOrUpdateTenantMatch(property.id, property?.chosen, true);
-              }}>
-              <Icon icon='star-solid' size={28} />
-            </IconButton>
-          </div>
-          <ArrowButton
-            direction='right'
-            onClick={next}
-            size='large'
-            style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
-          />
-        </div>
-      </div>
     </div>
   );
 })`
@@ -330,129 +233,35 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     row-gap: 48px;
     grid-template-rows: min-content auto;
 
-    .matches-slider {
-      display: grid;
-      align-content: space-between;
+    .page-title-section {
+      display: flex;
+      column-gap: 24px;
+      justify-content: space-between;
+      align-items: center;
 
-      .matches-slider-body {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
-        column-gap: 24px;
-
-        .trust-score-section {
-          display: grid;
-          align-content: center;
-
-          .trust-score {
-            margin-top: 4px;
-            line-height: 64px;
-            color: #e5155a;
-            font-family: Roobert, serif;
-            font-weight: 700;
-          }
-
-          .improve-trust-score-title {
-            margin-top: 16px;
-          }
-
-          .trust-score-description {
-            margin-top: 16px;
-          }
-
-          .improve-link {
-            margin-top: 24px;
-          }
-
-          .your-trust-score-text {
-            line-height: 16px;
-            color: #a7a7a7;
-          }
-        }
-
-        .slides-wrapper {
-          padding-bottom: 40px;
-          padding-left: 24px;
-          margin-left: -24px;
-          margin-right: -36px;
-          display: flex;
-          column-gap: 24px;
-
-          overflow-x: hidden;
-        }
+      .matching-with {
+        color: #184d6d;
+        border-bottom: 1px solid #184d6d;
       }
 
-      .matches-slider-footer {
+      .sub-title {
+        margin-top: 8px;
+      }
+
+      .switch-to-matched-view-button-wrapper {
         display: flex;
-        justify-content: center;
+        column-gap: 16px;
         align-items: center;
-        column-gap: 84px;
 
-        .match-actions {
-          display: flex;
-          column-gap: 24px;
-          align-items: center;
-
-          .star-button {
-            padding: 16px;
-            border: 2px solid #0d2a38;
-
-            &.active {
-              border: 2px solid #184d6d;
-              background: #184d6d;
-              color: white;
-
-              :hover {
-                border: 2px solid #0d2a38;
-                background: #0d2a38;
-              }
-            }
-
-            :hover {
-              border: 2px solid white;
-              background-color: white;
-            }
-          }
-
-          .remove-button {
-            padding: 16px;
-            border: 2px solid #b4263b;
-            color: #b4263b;
-
-            :hover {
-              border: 2px solid white;
-              background-color: white;
-            }
-
-            &:disabled {
-              border: 2px solid #a7a7a7;
-              color: #a7a7a7;
-            }
-          }
-
-          .check-button {
-            padding: 30px;
-            border: 2px solid #184d6d;
-            :hover {
-              background-color: #0d2a38;
-              color: white;
-            }
-
-            &.active {
-              border: 2px solid #408140;
-              background: #408140;
-            }
-          }
+        label {
+          font-family: Roobert, serif;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 20px;
+          color: #646464;
         }
       }
-    }
-
-    .matching-with {
-      color: #184d6d;
-      border-bottom: 1px solid #184d6d;
-    }
-
-    .sub-title {
-      margin-top: 8px;
     }
   }
 `;
@@ -468,7 +277,7 @@ interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   viewProperty: () => void;
 }
 
-const MatchedSlide = styled(
+export const MatchedSlide = styled(
   ({
     className,
     image,
@@ -556,7 +365,16 @@ const MatchedSlide = styled(
     align-content: space-between;
     overflow: hidden;
 
+    &.active {
+      .slide-header,
+      .slide-footer {
+        visibility: visible;
+      }
+    }
+
     .slide-header {
+      visibility: hidden;
+
       padding: 24px;
       background: linear-gradient(180deg, rgba(38, 38, 38, 0.7) 0%, rgba(38, 38, 38, 0) 100%);
       display: flex;
@@ -570,6 +388,7 @@ const MatchedSlide = styled(
     }
 
     .slide-footer {
+      visibility: hidden;
       padding: 24px;
       display: flex;
       justify-content: space-between;

@@ -5,7 +5,6 @@ import { Button } from '../../../components/Button';
 import axios from 'axios';
 import config from '../../../config';
 import { Typography } from '../../../components/Typography';
-import Underground from './Underground.svg';
 import { Icon } from '../../../components/Icon';
 interface NearestThingsProps extends HTMLAttributes<HTMLElement> {
   location: {
