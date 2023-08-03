@@ -8,8 +8,7 @@ import {
   MasterAssetTypeSring,
   StatusString,
   TransactionTypeString,
-  RentStatusString,
-  ContractDetails
+  RentStatusString
 } from '../asset.interface';
 
 const Contact = {

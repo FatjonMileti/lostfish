@@ -30,7 +30,8 @@ const getAll = async (req: Request, res: Response) => {
     roles?: Role[];
     $or?: { [key: string]: RegExp }[];
     _id?: any;
-  } = {};
+    deleted_at?: any;
+  } = { deleted_at: { $exists: false } };
 
   query._id = { $nin: [new mongoose.Types.ObjectId(res.locals.user_id)] };
 
@@ -103,7 +104,8 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response): Promise<any | undefined> => {
   const id = req.params.id;
-  const user: UserDocument | null = await UserModel.findOne({ _id: id }, null, {
+  const query = { deleted_at: { $exists: false, _id: id } };
+  const user: UserDocument | null = await UserModel.findOne(query, null, {
     select: ['-hash'],
     populate: [
       {
