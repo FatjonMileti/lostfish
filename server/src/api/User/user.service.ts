@@ -13,6 +13,10 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
+import MatchService from '../Match/match.service';
+import MatchSchema from '../Match/match.schema';
+import assetService from '../Asset/services/asset.service';
+import AssetSchema from '../Asset/schemas/asset.schema';
 
 const mailService = MailService.getInstance();
 
@@ -228,9 +232,10 @@ const createUser = async (req: Request, res: Response) => {
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<any> => {
-  const { id } = req.params;
+  const userId = res.locals.user_id ?? '';
   try {
-    await UserModel.findByIdAndDelete(id);
+    await UserModel.findByIdAndDelete(userId);
+    deleteAllUserData(userId);
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'user_not_deleted' });
@@ -353,6 +358,11 @@ const getUserPublicData = async (req: Request, res: Response) => {
 
 const findByQuery = (query: any) => {
   return UserModel.find(query).lean();
+};
+
+const deleteAllUserData = async (userId: string) => {
+  await MatchSchema.deleteMany({ created_by: userId });
+  await AssetSchema.deleteMany({ created_by: userId });
 };
 
 export default {

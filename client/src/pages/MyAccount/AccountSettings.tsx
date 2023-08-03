@@ -3,8 +3,43 @@ import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Link } from '../../components/Link';
+import request from '../../utils/axios';
+import { useUserStore } from '../../globalState/user';
+import { useNavigate } from 'react-router-dom';
 
 export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const userStore = useUserStore();
+
+  const navigate = useNavigate();
+
+  const closeAccount = async () => {
+    const confirmation = confirm('Are you sure you want to delete?');
+    if (confirmation) {
+      try {
+        const response = await request(userStore.auth.access_token).delete('/api/user');
+        if (response.status === 204) {
+          logOut();
+        }
+      } catch (error: any) {
+        console.log(error);
+      }
+    } else {
+      console.log('Deletion canceled.');
+    }
+  };
+
+  const logOut = async () => {
+    try {
+      await request(userStore.auth.access_token).post('/api/account/logout', {
+        refresh_token: userStore.auth.refresh_token
+      });
+    } catch (err) {
+    } finally {
+      userStore.set((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+      navigate('/');
+    }
+  };
+
   return (
     <div className={`account-settings ${className}`}>
       <div className='left-part'>
@@ -31,7 +66,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
               If you want to delete your account you can do so by clicking the button below. Be aware that any
               matches or ongoing messages will be deleted and can not be recovered.
             </Typography>
-            <Link>Close my Lostfish account</Link>
+            <Link onClick={() => closeAccount()}>Close my Lostfish account</Link>
           </div>
         </div>
       </div>

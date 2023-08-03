@@ -69,27 +69,16 @@ export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDiv
       if (message === 'user_already_exists') {
         return setError('email', { message: 'User already registered!', type: 'server' });
       }
-      if (message === 'should_have_uppercase') {
+      if (
+        [
+          'should_have_uppercase',
+          'should_have_number',
+          'should_have_symbol',
+          'password_length_less_than_eight'
+        ].includes(message)
+      ) {
         return setError('password', {
-          message: 'Password must contain at least one uppercase letter.',
-          type: 'server'
-        });
-      }
-      if (message === 'should_have_number') {
-        return setError('password', {
-          message: 'Password must contain at least one number.',
-          type: 'server'
-        });
-      }
-      if (message === 'should_have_symbol') {
-        return setError('password', {
-          message: 'Password must contain at least one symbol.',
-          type: 'server'
-        });
-      }
-      if (message === 'password_length_less_than_eight') {
-        return setError('password', {
-          message: 'Password must be at least 8 characters long.',
+          message: 'Password must contain uppercase letter, number, and symbol',
           type: 'server'
         });
       }

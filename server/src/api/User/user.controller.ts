@@ -18,7 +18,7 @@ export class UserController {
     this.router.get('/:id', ability(CASLAction.Read, 'User'), this.getById);
     this.router.post('/register', this.create);
     this.router.patch('/:id', checkUpdateUserPermission, this.updateUser);
-    this.router.delete('/:id', ability(CASLAction.Delete, 'User'), this.delete);
+    this.router.delete('/', ability(CASLAction.Delete, 'User'), this.delete);
     this.router.post(
       '/forgot-password',
       ability(CASLAction.Update, 'User'),
@@ -104,10 +104,10 @@ export class UserController {
   private updateUser = this.userService.updateUser;
 
   /**
-   * @api {delete} /api/user/:id Delete
+   * @api {delete} /api/user Delete
    * @apiDescription Delete user
    * @apiGroup User
-   * @apiSampleRequest /api/user/:id
+   * @apiSampleRequest /api/user
    * @apiParam id
    * @apiPermission admin
    * @apiUse bearer

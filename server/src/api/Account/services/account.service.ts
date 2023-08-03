@@ -77,8 +77,6 @@ const refreshToken = async (req: express.Request, res: express.Response) => {
 
   if (!payload) throw createError(401, 'invalid token');
 
-  console.log('payload: ', payload);
-
   const used = await UsedRefreshToken.findOne({ token: refresh_token });
   if (used) throw createError(401, 'refresh_token is already used');
 
@@ -214,6 +212,9 @@ const logout = async (req: express.Request, res: express.Response) => {
     expiresAt: new Date(res.locals.claims!.exp! * 1000)
   }).save();
 
+  await new UsedRefreshToken({ token: req.body.refresh_token, expiresAt: new Date() }).save();
+
+  console.log(req.body);
   await new LoginLog({
     user: res.locals.user_id,
     info: res.locals.username,
