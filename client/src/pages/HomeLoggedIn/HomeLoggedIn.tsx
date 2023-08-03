@@ -133,7 +133,6 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
   );
 })`
   &.home-logged-in-page {
-    width: 100%;
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
@@ -141,7 +140,6 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     box-sizing: border-box;
 
     .container {
-      width: 100%;
       display: grid;
       box-sizing: border-box;
     }

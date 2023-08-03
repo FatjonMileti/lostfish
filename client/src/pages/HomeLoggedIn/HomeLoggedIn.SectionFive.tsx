@@ -31,10 +31,9 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
   );
 })`
   & {
+    width: 100%;
     padding: 64px 36px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
     gap: 48px;
     box-sizing: border-box;
 
@@ -51,14 +50,17 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
     }
 
     .images {
-      display: flex;
+      width: 100%;
+      max-width: 1440px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
       align-items: flex-start;
       box-sizing: border-box;
+      margin: 0 auto;
       gap: 24px;
 
       .image {
         display: flex;
-        width: 440px;
         height: 540px;
         align-items: flex-start;
         gap: -540px;
@@ -69,13 +71,11 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
 
         .content {
           display: flex;
-          width: 440px;
           height: 540px;
           box-sizing: border-box;
           padding: 32px;
           flex-direction: column;
           justify-content: flex-end;
-          align-items: center;
           gap: 16px;
           border-radius: 12px;
           background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.6) 60%, #000 100%);
