@@ -4,6 +4,7 @@ import { Agreement } from '../Agreement/Agreement';
 import { AllProperties } from './AllProperties';
 import { Matches as SystemMatches } from './Matches';
 import React from 'react';
+import { MyAccount } from './pages/MyAccount/MyAccount';
 
 export const MyDashboard = () => {
   return (
@@ -12,6 +13,7 @@ export const MyDashboard = () => {
       <Route path='/contracts' element={<Agreement />} />
       <Route path='/agent-property' element={<AllProperties />} />
       <Route path='/agent-matches' element={<SystemMatches />} />
+      <Route path='/my-account/*' element={<MyAccount />} />
     </Routes>
   );
 };

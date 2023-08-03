@@ -69,7 +69,7 @@ export const DashboardHeader = styled(({ className }: HeaderProps) => {
           </Typography>
         </div>
 
-        <NavLink to='/my-account'>
+        <NavLink to='/dashboard/my-account'>
           <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined} />
         </NavLink>
       </div>
