@@ -1,14 +1,18 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useState } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Link } from '../../components/Link';
 import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useNavigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import config from '../../config';
 
 export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
+
+  console.log({ userStore });
 
   const navigate = useNavigate();
 
@@ -40,6 +44,25 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     }
   };
 
+  const resetPassword = async () => {
+    const confirmation = confirm(
+      'An email with password reset instructions will be sent to your email. After reseting your password you will have to login again.'
+    );
+    if (confirmation) {
+      try {
+        const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
+
+        if (response.status === 201) {
+          logOut();
+        }
+      } catch (err: AxiosError | any) {
+        const message = err?.response?.data?.message;
+
+        if (!message) throw err;
+      }
+    }
+  };
+
   return (
     <div className={`account-settings ${className}`}>
       <div className='left-part'>
@@ -53,7 +76,9 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
               password you will have to login again.
             </Typography>
 
-            <Button variant='secondary'>Reset password</Button>
+            <Button variant='secondary' onClick={() => resetPassword()}>
+              Reset password
+            </Button>
           </div>
         </div>
 

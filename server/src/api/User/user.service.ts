@@ -250,10 +250,15 @@ const resetUserPassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: 'user_not_found' });
   }
+
+  const validatePass = isPasswordStrong(password);
+  if (!validatePass.is_strong) {
+    throw createError(400, validatePass.message);
+  }
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = null;
-  await updateUser(user._id.toString(), user);
+  await user.save();
 
   const { token: accessToken, refresh } = accountService.generateTokens(user);
 
@@ -295,6 +300,36 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
     await mailService.sendMail({
       to: user.email,
       subject: 'Reset Password',
+      html: emailTemplate.html
+    });
+
+    res.status(httpStatus.CREATED).send('ok');
+  } catch (err) {
+    throw err;
+  }
+};
+
+const sendChangePasswordInstructions = async (req: express.Request, res: express.Response) => {
+  try {
+    const user: any = await findOne({ _id: res.locals.user_id });
+
+    if (!user) {
+      return res.status(404).json({ message: 'user_not_found' });
+    }
+
+    user.confirmation_token = randomUUID();
+
+    await user.save();
+
+    const emailTemplate = resetPasswordTemplate({
+      link: `${process.env.FRONTEND_URL}/reset-password/${user.confirmation_token}`,
+      userName: user.first_name + user.last_name
+    });
+
+    // @ts-ignore
+    await mailService.sendMail({
+      to: user.email,
+      subject: 'Change Password',
       html: emailTemplate.html
     });
 
@@ -374,6 +409,7 @@ export default {
   deleteUser,
   resetUserPassword,
   sendResetPasswordInstructions,
+  sendChangePasswordInstructions,
   getUserPublicData,
   findByQuery
 };

@@ -4,7 +4,6 @@ import { Typography } from '../../components/Typography';
 import { Header } from '../Login/Header';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
-import { Link } from '../../components/Link';
 import { TextField } from '../../components/TextField';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,16 +13,16 @@ import config from '../../config';
 import * as yup from 'yup';
 
 import loginIllustration from '../Login/loginIllustration.png';
-import { useGlobalState } from '../../globalState/globalState';
 
 import { useUserStore } from '../../globalState/user';
+import { strongPasswordValidator } from '../../utils/validation.helper';
 
 const schema = yup.object().shape({
-  password: yup.string().required('password is required'),
+  password: strongPasswordValidator,
   'repeat-password': yup
     .string()
     .oneOf([yup.ref('password')], 'Passwords must match')
-    .required('password repetition is required')
+    .required('Password repetition is required')
 });
 
 export const ResetPassword = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {

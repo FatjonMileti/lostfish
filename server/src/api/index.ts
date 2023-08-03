@@ -80,7 +80,7 @@ router.use('/file', fileController.router);
 router.use('/docusign', docusignController.router);
 router.use('/criteria', criteriaController.router);
 router.use('/account', accountController.router);
-router.use('/user', authorize(), userController.router);
+router.use('/user', userController.router);
 router.use('/asset', assetController.router);
 router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);

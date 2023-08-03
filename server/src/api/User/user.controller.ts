@@ -3,6 +3,7 @@ import userService from './user.service';
 import paging from '../../middleware/paging';
 import ability, { checkUpdateUserPermission } from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
+import authorize from '../../middleware/authorize';
 
 const router: Router = Router();
 
@@ -14,17 +15,20 @@ export class UserController {
   }
 
   private initializeRoutes() {
-    this.router.get('/', ability(CASLAction.Read, 'User'), paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/:id', ability(CASLAction.Read, 'User'), this.getById);
-    this.router.post('/register', this.create);
-    this.router.patch('/:id', checkUpdateUserPermission, this.updateUser);
-    this.router.delete('/', ability(CASLAction.Delete, 'User'), this.delete);
-    this.router.post(
-      '/forgot-password',
-      ability(CASLAction.Update, 'User'),
-      this.sendResetPasswordInstructions
+    this.router.get(
+      '/',
+      authorize(),
+      ability(CASLAction.Read, 'User'),
+      paging({ sort: { created_at: -1 } }),
+      this.getAll
     );
-    this.router.post('/reset-password', ability(CASLAction.Update, 'User'), this.resetPassword);
+    this.router.get('/:id', authorize(), ability(CASLAction.Read, 'User'), this.getById);
+    this.router.post('/register', this.create);
+    this.router.patch('/:id', authorize(), checkUpdateUserPermission, this.updateUser);
+    this.router.delete('/', authorize(), ability(CASLAction.Delete, 'User'), this.delete);
+    this.router.post('/forgot-password', this.sendResetPasswordInstructions);
+    this.router.post('/reset-password', this.resetPassword);
+    this.router.post('/change-password', authorize(), this.sendChangePasswordInstructions);
   }
 
   /**
@@ -124,4 +128,14 @@ export class UserController {
    */
 
   private sendResetPasswordInstructions = this.userService.sendResetPasswordInstructions;
+
+  /**
+   * @api {post} /api/user/change-password Forgot Password
+   * @apiDescription sends recover account instructions
+   * @apiGroup User
+   * @apiSampleRequest /api/user/forgot-password
+   * @apiBody {string} email
+   */
+
+  private sendChangePasswordInstructions = this.userService.sendChangePasswordInstructions;
 }
