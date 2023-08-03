@@ -8,12 +8,12 @@ import { Label } from '../../../components/Label';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { useCriteriaStore } from '../../../globalState/criteria';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
 import { SetCriteria } from '../../SetCriteria/SetCriteria';
-import { Switch } from '../../../components/Switch';
 import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
+import { avatars } from '../../HomeLoggedIn/avatars';
+import { ViewProperty } from './ViewProperty';
 
 export interface PropertyType {
   property: {
@@ -56,9 +56,9 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   const [checkedProperties, setCheckedProperties] = React.useState<any[]>([]);
   const [matchedView, setMatchedView] = React.useState<boolean>(false);
 
-  const { auth } = useUserStore();
+  const [propertyToView, setPropertyToView] = React.useState<PropertyType | null>(null);
 
-  const criteriaStore = useCriteriaStore();
+  const { auth } = useUserStore();
 
   React.useEffect(() => {
     getCheckedProperties();
@@ -73,7 +73,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     }
   };
   const getProperties = async () => {
-    const { data } = await axios(auth.access_token).get('/api/asset/matches-example');
+    const { data } = await axios(auth?.access_token).get('/api/asset/matches-example');
     setProperties(data.docs.map((doc: any) => ({ ...doc, chosen: false, starred: false, id: doc._id })));
     await Promise.all(
       data.docs.map(async (d: PropertyType) => {
@@ -153,10 +153,13 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     await addOrUpdateTenantMatch(propertyId, true, starred);
   };
 
-  const removePropertyMatch = async (propertyId: string, matchId: string) => {
+  const removePropertyMatch = async (matchId: string, propertyId?: string) => {
     try {
       await axios(auth.access_token).delete(`/api/match/${matchId}`);
-      isPropertyChosen(propertyId);
+
+      if (propertyId) {
+        isPropertyChosen(propertyId);
+      }
     } catch (err) {
       throw err;
     } finally {
@@ -165,46 +168,38 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   return (
     <div className={`${className}`}>
-      <div className='page-title-section'>
-        <div>
-          <Typography>
-            Matching with{' '}
-            <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
-          </Typography>
-          <Typography variant='body5' className='sub-title'>
-            Displaying 1240 matches. Enter more details to refine your search.
-          </Typography>
-        </div>
-
-        {((id: string) => (
-          <div className='switch-to-matched-view-button-wrapper'>
-            {checkedProperties.length > 0 && (
-              <>
-                <label htmlFor={id}>Switch to matched view</label>
-                <Switch id={id} checked={matchedView} onChange={(e) => setMatchedView(e.target.checked)} />
-              </>
-            )}
-          </div>
-        ))(React.useId())}
-      </div>
-
       {!matchedView ? (
         <SuggestedMatches
           properties={properties}
-          setProperties={setProperties}
           getProperties={getProperties}
           improveTrustScore={() => setImproveTrustScoreModalVisibility(true)}
           removePropertyMatch={removePropertyMatch}
           starProperty={starProperty}
           checkProperty={checkProperty}
+          showSwitchToMatchedViewSwitch={checkedProperties.length > 0}
+          matchedView={matchedView}
+          setMatchedView={setMatchedView}
+          setPropertyToView={setPropertyToView}
         />
       ) : (
         <AddedMatches
           properties={checkedProperties}
           setProperties={setCheckedProperties}
           removePropertyMatch={removePropertyMatch}
-          starProperty={() => {}}
-          checkProperty={() => {}}
+          getCheckedProperties={getCheckedProperties}
+          matchedView={matchedView}
+          setMatchedView={setMatchedView}
+          setPropertyToView={setPropertyToView}
+        />
+      )}
+
+      {propertyToView && (
+        <ViewProperty
+          open={true}
+          starProperty={() => starProperty(propertyToView?.property?._id, propertyToView.chosen)}
+          closeModal={() => setPropertyToView(null)}
+          onBackdropClick={() => setPropertyToView(null)}
+          propertyToView={propertyToView}
         />
       )}
 
@@ -266,82 +261,99 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   }
 `;
 
-interface MatchedSlideProps extends HTMLMotionProps<'div'> {
+interface MatchedSlideProps extends Omit<HTMLMotionProps<'div'>, 'property'> {
   image: string;
-  avatar: string;
-  propertyOwnerName: string;
-  areaOfInterest?: string;
-  numberOfBedrooms?: string;
-  numberOfBathrooms?: string;
-  rentingPrice?: string;
   viewProperty: () => void;
+  property?: PropertyType['property'];
 }
 
 export const MatchedSlide = styled(
-  ({
-    className,
-    image,
-    avatar,
-    areaOfInterest = '',
-    numberOfBedrooms = '',
-    numberOfBathrooms = '',
-    rentingPrice = '',
-    propertyOwnerName = '',
-    viewProperty,
-    ...rest
-  }: MatchedSlideProps) => {
-    const numberOfBedroomsWord =
-      {
-        '1': 'One',
-        '2': 'Two',
-        '3': 'Three',
-        '4': 'Four',
-        '5': 'Five',
-        '6': 'Six',
-        '7': 'Seven',
-        '8': 'Eight',
-        '9': 'Nine',
-        '10': 'Ten'
-      }[numberOfBedrooms] || numberOfBedrooms;
+  ({ className, image, viewProperty, property, ...rest }: MatchedSlideProps) => {
+    const deleted = !property;
+
+    let parsedProperty: any = {};
+
+    if (!deleted) {
+      parsedProperty.avatar = !isNaN(parseInt(property.created_by.avatar || ''))
+        ? avatars[parseInt(property.created_by.avatar || '')]?.image
+        : '';
+
+      parsedProperty.image = property?.property_images[0].link || '';
+
+      parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
+
+      parsedProperty.areaOfInterest = property.area_of_interest;
+
+      parsedProperty.numberOfBedrooms = property?.room_details?.number_of_bedrooms;
+
+      parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
+
+      parsedProperty.numberOfBedroomsWord =
+        {
+          '1': 'One',
+          '2': 'Two',
+          '3': 'Three',
+          '4': 'Four',
+          '5': 'Five',
+          '6': 'Six',
+          '7': 'Seven',
+          '8': 'Eight',
+          '9': 'Nine',
+          '10': 'Ten'
+        }[property?.room_details?.number_of_bedrooms] || property?.room_details?.number_of_bedrooms;
+
+      parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
+    }
 
     return (
       <>
         <motion.div className={`match-property-slide ${className}`} {...rest}>
-          <div className='slide-header'>
-            <Avatar image={avatar} />
-            <Typography variant='body4'>{propertyOwnerName} • 34%</Typography>
-          </div>
-          <div className='slide-footer'>
-            <div className='left-part'>
-              <Typography className='property-name'>
-                {numberOfBedroomsWord} bedroom apartment for rent
-              </Typography>
-              <div className='property-details'>
-                <div className='detail'>
-                  <Icon icon='location' />
-                  <Typography variant='body5'>{areaOfInterest}</Typography>
-                </div>
-                •
-                <div className='detail'>
-                  <Icon icon='banknote' />
-                  <Typography variant='body5'>£{rentingPrice?.toLocaleString()} PCM</Typography>
-                </div>
-                •
-                <div className='detail'>
-                  <Icon icon='double-bed' />
-                  <Typography variant='body5'>{numberOfBedrooms}</Typography>
-                </div>
-                •
-                <div className='detail'>
-                  <Icon icon='bathtub' />
-                  <Typography variant='body5'>{numberOfBathrooms}</Typography>
-                </div>
-              </div>
+          {deleted && (
+            <div className='not-available'>
+              <Typography>Not available!</Typography>
             </div>
-            <Label variant='secondary' inverted onClick={viewProperty}>
-              View property
-            </Label>
-          </div>
+          )}
+          {!deleted && (
+            <>
+              <div className='slide-header'>
+                <Avatar image={parsedProperty.avatar} />
+                <Typography variant='body4'>{parsedProperty.propertyOwnerName} • 34%</Typography>
+              </div>
+              <div className='slide-footer'>
+                <div className='left-part'>
+                  <Typography className='property-name'>
+                    {parsedProperty.numberOfBedroomsWord} bedroom apartment for rent
+                  </Typography>
+                  <div className='property-details'>
+                    <div className='detail'>
+                      <Icon icon='location' />
+                      <Typography variant='body5'>{parsedProperty.areaOfInterest}</Typography>
+                    </div>
+                    •
+                    <div className='detail'>
+                      <Icon icon='banknote' />
+                      <Typography variant='body5'>
+                        £{parsedProperty.rentingPrice?.toLocaleString()} PCM
+                      </Typography>
+                    </div>
+                    •
+                    <div className='detail'>
+                      <Icon icon='double-bed' />
+                      <Typography variant='body5'>{parsedProperty.numberOfBedrooms}</Typography>
+                    </div>
+                    •
+                    <div className='detail'>
+                      <Icon icon='bathtub' />
+                      <Typography variant='body5'>{parsedProperty.numberOfBathrooms}</Typography>
+                    </div>
+                  </div>
+                </div>
+                <Label variant='secondary' inverted onClick={viewProperty}>
+                  View property
+                </Label>
+              </div>
+            </>
+          )}
         </motion.div>
       </>
     );
@@ -364,6 +376,18 @@ export const MatchedSlide = styled(
     display: grid;
     align-content: space-between;
     overflow: hidden;
+
+    .not-available {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      margin-top: 32px;
+      .typography {
+        color: gray;
+      }
+    }
 
     &.active {
       .slide-header,

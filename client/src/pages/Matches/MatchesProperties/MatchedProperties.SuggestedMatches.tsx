@@ -5,31 +5,38 @@ import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
-import { avatars } from '../../HomeLoggedIn/avatars';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { IconButton } from '../../../components/IconButton';
 import { MatchedSlide, PropertyType } from './MatchesProperties';
-import { ViewProperty } from './ViewProperty';
+import { Switch } from '../../../components/Switch';
+import { useCriteriaStore } from '../../../globalState/criteria';
+import { motion } from 'framer-motion';
 
 interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   properties: PropertyType[];
   improveTrustScore: () => void;
-  setProperties: (properties: PropertyType[] | ((properties: PropertyType[]) => PropertyType[])) => void;
-  removePropertyMatch: (propertyId: string, matchId: string) => void;
+  removePropertyMatch: (matchId: string, propertyId?: string) => void;
   starProperty: (propertyId: string, chosen: boolean) => void;
   checkProperty: (propertyId: string, starred: boolean) => void;
   getProperties: () => void;
+  showSwitchToMatchedViewSwitch: boolean;
+  matchedView: boolean;
+  setMatchedView: (matchedView: boolean) => void;
+  setPropertyToView: (propertyToView: PropertyType) => void;
 }
 export const SuggestedMatches = styled(
   ({
     className,
     properties,
-    setProperties,
     improveTrustScore,
     removePropertyMatch,
     starProperty,
     checkProperty,
-    getProperties
+    getProperties,
+    showSwitchToMatchedViewSwitch,
+    matchedView,
+    setMatchedView,
+    setPropertyToView
   }: SuggestedMatchesProps) => {
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
@@ -37,6 +44,8 @@ export const SuggestedMatches = styled(
 
     const suggestedMatch = properties[activeSlide];
     const property = suggestedMatch?.property;
+
+    const criteriaStore = useCriteriaStore();
 
     React.useEffect(() => {
       getProperties();
@@ -48,138 +57,126 @@ export const SuggestedMatches = styled(
     };
 
     return (
-      <div className={classNames('matches-slider', className)}>
-        <ViewProperty
-          open={viewPropertyModalVisibility}
-          closeModal={() => setViewPropertyModalVisibility(false)}
-          onBackdropClick={() => setViewPropertyModalVisibility(false)}
-          images={property?.property_images.map(({ link }) => link) || []}
-          avatar={
-            !isNaN(parseInt(property?.created_by?.avatar || ''))
-              ? avatars[parseInt(property?.created_by?.avatar || '')]?.image
-              : ''
-          }
-          areaOfInterest={property?.area_of_interest || ''}
-          numberOfBedrooms={property?.room_details?.number_of_bedrooms}
-          rentingPrice={property?.asset_rent?.rental_amount}
-          numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-          propertyOwnerName={`${property?.created_by?.first_name} ${property?.created_by?.last_name}`}
-          propertyType={property?.property_type || ''}
-          propertyArea={property?.floor_size}
-          parkingSpot={(property?.specific_property_features || []).includes('Parking spot')}
-          energyCertificate={(property?.contract_details || []).includes('energyCertificate')}
-          address={{
-            lat: property?.asset_address?.latitude,
-            lng: property?.asset_address?.longitude
-          }}
-          refineYourSearchClick={() => {
-            setViewPropertyModalVisibility(false);
-          }}
-          starProperty={() => starProperty(property._id, suggestedMatch.chosen)}
-          isPropertyStarred={!!suggestedMatch?.starred}
-        />
-        <div className='matches-slider-body'>
-          <div className='trust-score-section'>
-            <Typography variant='body5' className='your-trust-score-text'>
-              Your trust score
+      <>
+        <div className='page-title-section'>
+          <div>
+            <Typography>
+              Matching with{' '}
+              <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
             </Typography>
-            <Typography variant='h3' className='trust-score'>
-              45%
+            <Typography variant='body5' className='sub-title'>
+              Displaying 1240 matches. Enter more details to refine your search.
             </Typography>
-            <Typography variant='body3' className='improve-trust-score-title'>
-              Improve your trust score and find better matches
-            </Typography>
-            <Typography variant='body4' className='trust-score-description'>
-              Go through the steps below to improve your trust score. Remember that you can’t close a certain
-              deal without maximum trust score.
-            </Typography>
-
-            <Label variant='tertiary' size='medium' className='improve-link' onClick={improveTrustScore}>
-              Improve trust score
-              <Icon icon='arrow-right-1' size={16} />
-            </Label>
           </div>
-          <div className='slides-wrapper'>
-            {properties.map(({ property }, propertyIndex) => {
-              const property_images: any = property?.property_images.map(({ link }) => link);
-              return (
-                <MatchedSlide
-                  key={propertyIndex}
-                  className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${property_images?.[0]}`}
-                  propertyOwnerName={`${property.created_by.first_name} ${property.created_by.last_name}`}
-                  avatar={
-                    !isNaN(parseInt(property.created_by.avatar || ''))
-                      ? avatars[parseInt(property.created_by.avatar || '')]?.image
-                      : ''
+
+          {((id: string) => (
+            <div className='switch-to-matched-view-button-wrapper'>
+              {showSwitchToMatchedViewSwitch && (
+                <>
+                  <label htmlFor={id}>Switch to matched view</label>
+                  <Switch id={id} checked={matchedView} onChange={(e) => setMatchedView(e.target.checked)} />
+                </>
+              )}
+            </div>
+          ))(React.useId())}
+        </div>
+        <div className={classNames('matches-slider', className)}>
+          <div className='matches-slider-body'>
+            <div className='trust-score-section'>
+              <Typography variant='body5' className='your-trust-score-text'>
+                Your trust score
+              </Typography>
+              <Typography variant='h3' className='trust-score'>
+                45%
+              </Typography>
+              <Typography variant='body3' className='improve-trust-score-title'>
+                Improve your trust score and find better matches
+              </Typography>
+              <Typography variant='body4' className='trust-score-description'>
+                Go through the steps below to improve your trust score. Remember that you can’t close a
+                certain deal without maximum trust score.
+              </Typography>
+
+              <Label variant='tertiary' size='medium' className='improve-link' onClick={improveTrustScore}>
+                Improve trust score
+                <Icon icon='arrow-right-1' size={16} />
+              </Label>
+            </div>
+            <div className='slides-wrapper'>
+              {properties.map((suggestedProperty, propertyIndex) => {
+                const { property } = suggestedProperty;
+                return (
+                  <motion.div
+                    key={propertyIndex}
+                    animate={{
+                      x:
+                        propertyIndex < activeSlide
+                          ? `calc(${-100 * propertyIndex}% - ${propertyIndex * 24}px)`
+                          : `calc(${-100 * activeSlide}% - ${24 * activeSlide - propertyIndex}px)`,
+                      scale: propertyIndex < activeSlide ? 0.9 : 1,
+                      y: propertyIndex >= activeSlide ? `0` : `32px`,
+                      opacity: propertyIndex === activeSlide ? 1 : 0.5
+                    }}
+                    transition={{ ease: 'easeOut', duration: 0.5 }}>
+                    <MatchedSlide
+                      className={classNames({ active: propertyIndex === activeSlide })}
+                      image={`${property?.property_images?.[0].link || ''}`}
+                      viewProperty={() => setPropertyToView(suggestedProperty)}
+                      property={property}
+                    />
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+          <div className='matches-slider-footer'>
+            <ArrowButton
+              direction='left'
+              onClick={previous}
+              style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
+              size='large'
+            />
+            <div className='match-actions'>
+              <IconButton
+                className='remove-button'
+                size='large'
+                onClick={() => {
+                  if (suggestedMatch?.matchId) {
+                    removePropertyMatch(suggestedMatch?.matchId, property._id);
                   }
-                  animate={{
-                    x:
-                      propertyIndex < activeSlide
-                        ? `calc(${-100 * propertyIndex}% - ${propertyIndex * 24}px)`
-                        : `calc(${-100 * activeSlide}% - ${24 * activeSlide - propertyIndex}px)`,
-                    scale: propertyIndex < activeSlide ? 0.9 : 1,
-                    y: propertyIndex >= activeSlide ? `0` : `32px`,
-                    opacity: propertyIndex === activeSlide ? 1 : 0.5
-                  }}
-                  transition={{ ease: 'easeOut', duration: 0.5 }}
-                  areaOfInterest={property.area_of_interest}
-                  numberOfBedrooms={property?.room_details?.number_of_bedrooms}
-                  rentingPrice={property.asset_rent?.rental_amount}
-                  numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-                  viewProperty={() => setViewPropertyModalVisibility(true)}
-                />
-              );
-            })}
+                }}
+                disabled={!suggestedMatch?.matchId}>
+                <Icon icon='close' size={28} />
+              </IconButton>
+
+              <IconButton
+                size='large'
+                inverted
+                className={`check-button ${suggestedMatch?.chosen ? 'active' : ''}`}
+                onClick={() => {
+                  checkProperty(property._id, suggestedMatch.starred);
+                }}>
+                <Icon icon='checked' size={28} />
+              </IconButton>
+
+              <IconButton
+                size='large'
+                className={`star-button ${suggestedMatch?.starred ? 'active' : ''}`}
+                onClick={() => {
+                  starProperty(property._id, suggestedMatch.chosen);
+                }}>
+                <Icon icon='star-solid' size={28} />
+              </IconButton>
+            </div>
+            <ArrowButton
+              direction='right'
+              onClick={next}
+              size='large'
+              style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
+            />
           </div>
         </div>
-        <div className='matches-slider-footer'>
-          <ArrowButton
-            direction='left'
-            onClick={previous}
-            style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
-            size='large'
-          />
-          <div className='match-actions'>
-            <IconButton
-              className='remove-button'
-              size='large'
-              onClick={() => {
-                if (suggestedMatch?.matchId) {
-                  removePropertyMatch(property._id, suggestedMatch?.matchId);
-                }
-              }}
-              disabled={!suggestedMatch?.matchId}>
-              <Icon icon='close' size={28} />
-            </IconButton>
-
-            <IconButton
-              size='large'
-              inverted
-              className={`check-button ${suggestedMatch?.chosen ? 'active' : ''}`}
-              onClick={() => {
-                checkProperty(property._id, suggestedMatch.starred);
-              }}>
-              <Icon icon='checked' size={28} />
-            </IconButton>
-
-            <IconButton
-              size='large'
-              className={`star-button ${suggestedMatch?.starred ? 'active' : ''}`}
-              onClick={() => {
-                starProperty(property._id, suggestedMatch.chosen);
-              }}>
-              <Icon icon='star-solid' size={28} />
-            </IconButton>
-          </div>
-          <ArrowButton
-            direction='right'
-            onClick={next}
-            size='large'
-            style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
-          />
-        </div>
-      </div>
+      </>
     );
   }
 )`
@@ -232,6 +229,9 @@ export const SuggestedMatches = styled(
         column-gap: 24px;
 
         overflow-x: hidden;
+
+        padding-top: 24px;
+        margin-top: -24px;
       }
     }
 

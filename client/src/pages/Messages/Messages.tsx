@@ -16,6 +16,8 @@ import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 
 import { useUserStore } from '../../globalState/user';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from '../../utils/axios';
 
 registerStore('transactionAgreement', { signed: false });
 
@@ -24,13 +26,16 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     transactionAgreement: [transactionAgreement, setTransactionAgreement]
   } = useGlobalState();
 
-  const { userDetails, auth } = useUserStore();
+  const userStore = useUserStore();
 
   const { socket } = useContext(SocketContext);
 
   const [room, setRoom] = useState<IRoom | null>(null);
   const [messages, setMessages] = useState<IMessageItem[]>([]);
   const [conversations, setConversations] = useState<IRoom[]>([]);
+
+  const queryParams = new URLSearchParams(useLocation().search);
+  const navigate = useNavigate();
 
   const reorderMessages = (data: any) => {
     const filteredRooms = conversations.filter((room: IRoom) => room._id.toString() !== data._id.toString());
@@ -48,30 +53,66 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   }, [reorderMessages]);
 
+  React.useEffect(() => {
+    const userIdInQueryParams = queryParams.get('userId');
+
+    if (!room && userIdInQueryParams) {
+      console.log('userIdInQueryParams: ', userIdInQueryParams);
+      console.log('conversations: ', conversations);
+      if (conversations.length > 0) {
+        const roomOnQueryParameter = conversations.find((c) => c.participant._id === userIdInQueryParams);
+        if (roomOnQueryParameter) {
+          joinRoom(roomOnQueryParameter);
+        } else {
+          createRoom(userIdInQueryParams).then(async () => {
+            await previous.refetch();
+          });
+        }
+      }
+    }
+  }, [conversations]);
+
+  const createRoom = async (participantId: string) => {
+    try {
+      const { data } = await axios(userStore.auth.access_token).post('/api/chat/create', {
+        author: userStore.userDetails.user_id,
+        participant: participantId
+      });
+    } catch (err) {}
+  };
+
   const previous = useQuery<IRoom[]>(['messages'], async (): Promise<any[]> => {
-    const response = await request(auth.access_token).get('/api/chat');
+    const response = await request(userStore.auth.access_token).get('/api/chat');
 
     setConversations(response.data.docs);
     return response.data.docs;
   });
 
   const getMessagesForRoom = async (roomId: string) => {
-    const response = await request(auth.access_token).get('/api/chat/' + roomId + '?pageSize=10&page=1');
+    const response = await request(userStore.auth.access_token).get(
+      '/api/chat/' + roomId + '?pageSize=10&page=1'
+    );
     setMessages(response.data.docs.reverse());
     previous.refetch();
   };
 
   const handleReadMessages = async (room: IRoom) => {
-    return await request(auth.access_token).put('/api/chat/read', { room_id: room._id });
+    return await request(userStore.auth.access_token).put('/api/chat/read', { room_id: room._id });
   };
 
   const joinRoom = async (roomObj?: IRoom | null) => {
-    if (userDetails && roomObj) {
+    if (userStore.userDetails && roomObj) {
       await handleReadMessages(roomObj);
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
       if (socket) socket.emit('join_room', roomObj._id);
+      navigate(`/messages-page?userId=${roomObj.participant._id}`);
     }
+  };
+
+  const closeChatBox = () => {
+    navigate(`/messages-page`);
+    setRoom(null);
   };
 
   return (
@@ -104,7 +145,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             <div className='conversations-list'>
               {conversations.map((row: IRoom, rowIndex: number) => {
                 const fullName =
-                  userDetails?.user_id === row?.author?._id
+                  userStore.userDetails?.user_id === row?.author?._id
                     ? `${row.participant?.first_name} ${row.participant?.last_name}`
                     : `${row.author?.first_name} ${row.author?.last_name}`;
 
@@ -124,14 +165,14 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           <div className='line'></div>
 
           {room &&
-            (transactionAgreement.signed ? (
+            (transactionAgreement.signed || 1 == 1 ? (
               <Chatbox
-                username={userDetails?.username}
+                username={userStore.userDetails?.username}
                 room={room}
-                user_id={userDetails?.user_id}
+                user_id={userStore.userDetails?.user_id}
                 messages={messages}
                 socket={socket}
-                closeDeal={() => setRoom(null)}
+                closeDeal={closeChatBox}
                 updateList={reorderMessages}
               />
             ) : (

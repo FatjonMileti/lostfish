@@ -1,15 +1,16 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import React, { HTMLAttributes } from 'react';
+import { motion } from 'framer-motion';
 
 import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
-import { avatars } from '../../HomeLoggedIn/avatars';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchedSlide } from './MatchesProperties';
+import { MatchedSlide, PropertyType } from './MatchesProperties';
 import { Button } from '../../../components/Button';
-import { ViewProperty } from './ViewProperty';
+import { useNavigate } from 'react-router-dom';
+import { Switch } from '../../../components/Switch';
 
 interface AddedMatchedProperty {
   _id: string;
@@ -36,6 +37,7 @@ interface AddedMatchedProperty {
     asset_address: any;
 
     created_by: {
+      _id: string;
       email: string;
       first_name: string;
       last_name: string;
@@ -53,141 +55,147 @@ interface AddedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   setProperties: (
     properties: AddedMatchedProperty[] | ((properties: AddedMatchedProperty[]) => AddedMatchedProperty[])
   ) => void;
-  removePropertyMatch: (propertyId: string, matchId: string) => void;
-  starProperty: (propertyId: string, chosen: boolean) => void;
-  checkProperty: () => void;
+  removePropertyMatch: (matchId: string, propertyId?: string) => Promise<void>;
+  getCheckedProperties: () => Promise<void>;
+  matchedView: boolean;
+  setMatchedView: (matchedView: boolean) => void;
+  setPropertyToView: (propertyToView: PropertyType) => void;
 }
 export const AddedMatches = styled(
-  ({ className, properties, removePropertyMatch, starProperty, checkProperty }: AddedMatchesProps) => {
+  ({
+    className,
+    properties,
+    removePropertyMatch,
+    getCheckedProperties,
+    matchedView,
+    setMatchedView,
+    setPropertyToView
+  }: AddedMatchesProps) => {
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
     const [viewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
-
+    const navigate = useNavigate();
     const matchedProperty: AddedMatchedProperty = properties[activeSlide];
-    const property = matchedProperty.property;
+    const property = matchedProperty?.property;
 
     const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % properties?.length));
     const previous = () => {
       activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
     };
 
+    const chantWith = (userId: string) => {
+      try {
+        navigate(`/messages-page?userId=${userId}`);
+      } catch (err) {}
+    };
+
     return (
-      <div className={classNames('matches-slider', className)}>
-        <ViewProperty
-          open={viewPropertyModalVisibility}
-          closeModal={() => setViewPropertyModalVisibility(false)}
-          onBackdropClick={() => setViewPropertyModalVisibility(false)}
-          images={matchedProperty.property?.property_images.map(({ link }) => link) || []}
-          avatar={
-            !isNaN(parseInt(property.created_by?.avatar || ''))
-              ? avatars[parseInt(property.created_by?.avatar || '')]?.image
-              : ''
-          }
-          areaOfInterest={matchedProperty.property?.area_of_interest || ''}
-          numberOfBedrooms={matchedProperty.property?.room_details?.number_of_bedrooms}
-          rentingPrice={matchedProperty.property?.asset_rent?.rental_amount}
-          numberOfBathrooms={matchedProperty.property?.room_details?.number_of_bathrooms}
-          propertyOwnerName={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
-          propertyType={matchedProperty.property?.property_type || ''}
-          propertyArea={matchedProperty.property?.floor_size}
-          parkingSpot={(matchedProperty.property?.specific_property_features || []).includes('Parking spot')}
-          energyCertificate={(matchedProperty.property?.contract_details || []).includes('energyCertificate')}
-          address={{
-            lat: matchedProperty.property?.asset_address?.latitude,
-            lng: matchedProperty.property?.asset_address?.longitude
-          }}
-          refineYourSearchClick={() => {
-            setViewPropertyModalVisibility(false);
-          }}
-          starProperty={() => starProperty(matchedProperty.property._id, matchedProperty.chosen)}
-          isPropertyStarred={matchedProperty.starred}
-        />
-
-        <div className='matches-slider-body'>
-          <div className='trust-score-section'>
-            <Typography variant='body3' className='improve-trust-score-title'>
-              Did you know?
+      <>
+        <div className='page-title-section'>
+          <div>
+            <Typography>
+              Matching with{' '}
+              <span className='matching-with'>
+                {' '}
+                {properties.length} potential {properties.length > 1 ? 'properties' : 'propertry'}
+              </span>
             </Typography>
-            <Typography variant='body4' className='trust-score-description'>
-              Once you decide on your perfect match you will be able to get in touch and discuss more. You can
-              choose to view the property or have a Lostfish representative do that for you. Once finished you
-              can close the deal through our assisted platform.
+            <Typography variant='body5' className='sub-title'>
+              Displaying 1240 matches. Enter more details to refine your search.
             </Typography>
-
-            <Label variant='tertiary' size='medium' className='improve-link'>
-              Find out more
-            </Label>
           </div>
-          <div className='slides-wrapper'>
-            {properties.map(({ property }, propertyIndex) => {
-              const property_images: any = property?.property_images.map(({ link }) => link);
-              return (
-                <MatchedSlide
-                  key={propertyIndex}
-                  className={`${propertyIndex === activeSlide ? 'active' : ''}`}
-                  image={`${property_images?.[0]}`}
-                  propertyOwnerName={`${property.created_by.first_name} ${property.created_by.last_name}`}
-                  avatar={
-                    !isNaN(parseInt(property.created_by.avatar || ''))
-                      ? avatars[parseInt(property.created_by.avatar || '')]?.image
-                      : ''
-                  }
-                  animate={{
-                    x:
-                      propertyIndex < activeSlide
-                        ? `calc(${-100 * propertyIndex}% - ${propertyIndex * 24}px)`
-                        : `calc(${-100 * activeSlide}% - ${24 * activeSlide - propertyIndex}px)`,
-                    scale: propertyIndex < activeSlide ? 0.9 : 1,
-                    y: propertyIndex >= activeSlide ? `0` : `32px`,
-                    opacity: propertyIndex === activeSlide ? 1 : 0.5
-                  }}
-                  transition={{ ease: 'easeOut', duration: 0.5 }}
-                  areaOfInterest={property.area_of_interest}
-                  numberOfBedrooms={property?.room_details?.number_of_bedrooms}
-                  rentingPrice={property.asset_rent?.rental_amount}
-                  numberOfBathrooms={property?.room_details?.number_of_bathrooms}
-                  viewProperty={() => setViewPropertyModalVisibility(true)}
-                />
-              );
-            })}
+
+          {((id: string) => (
+            <div className='switch-to-matched-view-button-wrapper'>
+              <>
+                <label htmlFor={id}>Switch to matched view</label>
+                <Switch id={id} checked={matchedView} onChange={(e) => setMatchedView(e.target.checked)} />
+              </>
+            </div>
+          ))(React.useId())}
+        </div>
+        <div className={classNames('matches-slider', className)}>
+          <div className='matches-slider-body'>
+            <div className='trust-score-section'>
+              <Typography variant='body3' className='improve-trust-score-title'>
+                Did you know?
+              </Typography>
+              <Typography variant='body4' className='trust-score-description'>
+                Once you decide on your perfect match you will be able to get in touch and discuss more. You
+                can choose to view the property or have a Lostfish representative do that for you. Once
+                finished you can close the deal through our assisted platform.
+              </Typography>
+
+              <Label variant='tertiary' size='medium' className='improve-link'>
+                Find out more
+              </Label>
+            </div>
+            <div className='slides-wrapper'>
+              {properties.map((addedProperty, propertyIndex) => {
+                const { property } = addedProperty;
+                return (
+                  <motion.div
+                    animate={{
+                      x:
+                        propertyIndex < activeSlide
+                          ? `calc(${-100 * propertyIndex}% - ${propertyIndex * 24}px)`
+                          : `calc(${-100 * activeSlide}% - ${24 * activeSlide - propertyIndex}px)`,
+                      scale: propertyIndex < activeSlide ? 0.9 : 1,
+                      y: propertyIndex >= activeSlide ? `0` : `32px`,
+                      opacity: propertyIndex === activeSlide ? 1 : 0.5
+                    }}
+                    transition={{ ease: 'easeOut', duration: 0.5 }}>
+                    <MatchedSlide
+                      key={propertyIndex}
+                      className={classNames({ active: propertyIndex === activeSlide })}
+                      image={`${property?.property_images?.[0].link || ''}`}
+                      viewProperty={() => setPropertyToView(addedProperty)}
+                      property={property}
+                    />
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+          <div className='matches-slider-footer'>
+            <ArrowButton
+              direction='left'
+              onClick={previous}
+              style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
+              size='large'
+            />
+            <div className='match-actions'>
+              <Button
+                startIcon={<Icon icon='email' size={24} />}
+                size='large'
+                className={classNames({ active: false })}
+                onClick={async () => {
+                  chantWith(property.created_by._id);
+                }}>
+                Messages
+              </Button>
+
+              <Button
+                variant='secondary'
+                startIcon={<Icon icon='close' size={24} />}
+                size='large'
+                className={classNames({ active: false })}
+                onClick={async () => {
+                  console.log('unmatch');
+                  await removePropertyMatch(matchedProperty._id, matchedProperty?.property?._id);
+                  await getCheckedProperties();
+                }}>
+                Unmatch
+              </Button>
+            </div>
+            <ArrowButton
+              direction='right'
+              onClick={next}
+              size='large'
+              style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
+            />
           </div>
         </div>
-        <div className='matches-slider-footer'>
-          <ArrowButton
-            direction='left'
-            onClick={previous}
-            style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
-            size='large'
-          />
-          <div className='match-actions'>
-            <Button
-              startIcon={<Icon icon='email' size={24} />}
-              size='large'
-              className={classNames({ active: false })}
-              onClick={() => {
-                // if (matchedProperty?._id) {
-                //   removePropertyMatch(matchedProperty.property._id, matchedProperty._id);
-                // }
-              }}>
-              Messages
-            </Button>
-
-            <Button
-              variant='secondary'
-              startIcon={<Icon icon='close' size={24} />}
-              size='large'
-              className={classNames({ active: false })}
-              onClick={() => {}}>
-              Unmatch
-            </Button>
-          </div>
-          <ArrowButton
-            direction='right'
-            onClick={next}
-            size='large'
-            style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
-          />
-        </div>
-      </div>
+      </>
     );
   }
 )`
@@ -227,6 +235,9 @@ export const AddedMatches = styled(
         column-gap: 24px;
 
         overflow-x: hidden;
+
+        padding-top: 24px;
+        margin-top: -24px;
       }
     }
 

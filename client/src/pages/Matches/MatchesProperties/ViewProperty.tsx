@@ -9,67 +9,44 @@ import { Map } from './ViewProperty.Map';
 import classNames from 'classnames';
 import { Carousel } from './MatchesProperties.Carousel';
 import { NearestThings } from './ViewProperty.NearestThings';
+import { PropertyType } from './MatchesProperties';
+import { avatars } from '../../HomeLoggedIn/avatars';
 
 interface ViewPropertyModalProps extends ModalProps {
-  refineYourSearchClick?: () => void;
-  images: string[];
-  avatar: string;
-  propertyOwnerName: string;
-  areaOfInterest?: string;
-  numberOfBedrooms?: string;
-  numberOfBathrooms?: string;
-  propertyType: string;
-  propertyArea: string;
-  rentingPrice?: string;
-  parkingSpot: boolean;
-  energyCertificate?: boolean;
-  address: any;
+  propertyToView: PropertyType;
   starProperty: () => void;
-  isPropertyStarred: boolean;
 }
 
 export const ViewProperty = styled(
-  ({
-    className,
-    closeModal,
-    images,
-    avatar,
-    propertyOwnerName,
-    numberOfBedrooms,
-    numberOfBathrooms,
-    rentingPrice,
-    areaOfInterest,
-    propertyType,
-    propertyArea,
-    parkingSpot,
-    energyCertificate,
-    address,
-    refineYourSearchClick = () => {},
-    starProperty,
-    isPropertyStarred,
-    ...rest
-  }: ViewPropertyModalProps) => {
-    const [selectedButton, setSelectedButton] = useState('stations');
+  ({ className, closeModal, propertyToView, starProperty, ...rest }: ViewPropertyModalProps) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-    const previous = () => {
-      activeImageIndex > 0
-        ? setActiveImageIndex(activeImageIndex - 1)
-        : setActiveImageIndex(images.length - 1);
+    const property = propertyToView.property;
+    let parsedProperty: any = {};
+    parsedProperty.images = property?.property_images.map(({ link }) => link) || [];
+    parsedProperty.avatar = !isNaN(parseInt(property.created_by.avatar || ''))
+      ? avatars[parseInt(property.created_by.avatar || '')]?.image
+      : '';
+    parsedProperty.areaOfInterest = property.area_of_interest;
+    parsedProperty.numberOfBedrooms = property?.room_details?.number_of_bedrooms;
+    parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
+    parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
+    parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
+    parsedProperty.propertyType = property?.property_type || '';
+    parsedProperty.propertyArea = property?.floor_size;
+    parsedProperty.parkingSpot = (property?.specific_property_features || []).includes('Parking spot');
+    parsedProperty.energyCertificate = (property?.contract_details || []).includes('energyCertificate');
+    parsedProperty.address = {
+      lat: property?.asset_address?.latitude,
+      lng: property?.asset_address?.longitude
     };
-
-    const next = () => {
-      activeImageIndex < images.length - 1
-        ? setActiveImageIndex(activeImageIndex + 1)
-        : setActiveImageIndex(0);
-    };
+    parsedProperty.isPropertyStarred = !!propertyToView?.starred;
 
     return (
       <Modal className={classNames('view-property-modal', className)} {...rest}>
         <div className='modal-header'>
           <div className='avatar-wrapper'>
-            <Avatar image={avatar} />
-            <Typography variant='body4'>{propertyOwnerName}</Typography>
+            <Avatar image={parsedProperty.avatar} />
+            <Typography variant='body4'>{parsedProperty.propertyOwnerName}</Typography>
             <Typography variant='body4' className='dot'>
               •
             </Typography>
@@ -80,7 +57,9 @@ export const ViewProperty = styled(
           </IconButton>
         </div>
 
-        <Carousel indexStore={[activeImageIndex, setActiveImageIndex]} images={images}></Carousel>
+        <Carousel
+          indexStore={[activeImageIndex, setActiveImageIndex]}
+          images={parsedProperty.images}></Carousel>
 
         <div className='description'>
           <div className='description-header'>
@@ -88,7 +67,7 @@ export const ViewProperty = styled(
               <Typography variant='body2'>Two bedroom apartment for rent</Typography>
               <IconButton
                 size='large'
-                className={classNames('stared-button', { active: isPropertyStarred })}
+                className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}
                 onClick={starProperty}>
                 <Icon icon='star' size={20} />
               </IconButton>
@@ -96,35 +75,35 @@ export const ViewProperty = styled(
             <div className='property-details'>
               <div className='detail'>
                 <Icon icon='location' />
-                <Typography variant='body5'>{areaOfInterest}</Typography>
+                <Typography variant='body5'>{parsedProperty.areaOfInterest}</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
                 <Icon icon='banknote' />
-                <Typography variant='body5'>£{rentingPrice?.toLocaleString()} PCM</Typography>
+                <Typography variant='body5'>£{parsedProperty.rentingPrice?.toLocaleString()} PCM</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
                 <Icon icon='double-bed' />
-                <Typography variant='body5'>{numberOfBedrooms}</Typography>
+                <Typography variant='body5'>{parsedProperty.numberOfBedrooms}</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
                 <Icon icon='bathtub' />
-                <Typography variant='body5'>{numberOfBathrooms}</Typography>
+                <Typography variant='body5'>{parsedProperty.numberOfBathrooms}</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
               <div className='detail'>
                 <Icon icon='building' />
-                <Typography variant='body5'>{propertyType}</Typography>
+                <Typography variant='body5'>{parsedProperty.propertyType}</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
@@ -132,14 +111,17 @@ export const ViewProperty = styled(
               <div className='detail'>
                 <Icon icon='ruler' />
                 <Typography variant='body5'>
-                  {!isNaN(parseInt(propertyArea || '')) ? parseInt(propertyArea || '') * 10.76 : ''} sqft/
-                  {propertyArea} sqm
+                  {!isNaN(parseInt(parsedProperty.propertyArea || ''))
+                    ? parseInt(parsedProperty.propertyArea || '') * 10.76
+                    : ''}{' '}
+                  sqft/
+                  {parsedProperty.propertyArea} sqm
                 </Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •
               </Typography>
-              {parkingSpot && (
+              {parsedProperty.parkingSpot && (
                 <>
                   <div className='detail'>
                     <Icon icon='car' />
@@ -151,7 +133,7 @@ export const ViewProperty = styled(
                 </>
               )}
 
-              {energyCertificate && (
+              {parsedProperty.energyCertificate && (
                 <div className='detail'>
                   <Icon icon='temperature' />
                   <Typography variant='body5'>EPC Rating: C*</Typography>
@@ -183,9 +165,9 @@ export const ViewProperty = styled(
               Arts Centre, a celebrated fringe venue.
             </Typography>
           </div>
-          <Map address={address} />
+          <Map address={parsedProperty.address} />
 
-          <NearestThings location={address} />
+          <NearestThings location={parsedProperty.address} />
 
           <div className='facilities-wrapper'>
             <Typography variant='body4' className='label'>

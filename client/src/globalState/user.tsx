@@ -3,8 +3,12 @@ import { persist } from 'zustand/middleware';
 
 type UserStoreType = {
   rememberMe: boolean;
-  auth?: any;
-  userDetails: any;
+  auth:
+    | {
+        access_token: string;
+      }
+    | any;
+  userDetails: { user_id: string } | any;
   ability: any;
   set: (
     partial:
