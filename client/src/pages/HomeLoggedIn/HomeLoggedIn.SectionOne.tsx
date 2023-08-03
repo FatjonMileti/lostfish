@@ -128,13 +128,10 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 })`
   & {
     display: flex;
-    flex-wrap: wrap;
-    width: 100%;
     padding: 64px 36px;
     justify-content: center;
     align-items: flex-start;
     gap: 24px;
-    box-sizing: border-box;
 
     .section-content {
       display: flex;

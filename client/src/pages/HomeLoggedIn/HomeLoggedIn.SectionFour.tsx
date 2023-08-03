@@ -5,28 +5,71 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from './avatars';
 import { Button } from '../../components/Button';
 import verified from '../MyAccount/images/verified.svg';
+import { useNavigate } from 'react-router-dom';
 
 export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const usernames = [
-    'Nancy Jones',
-    'Nick Young',
-    'Marcus Korsgaard',
-    'Lindsey Siphron',
-    'Leo Korsgaard',
-    'Phillip Dokidis'
+  const navigate = useNavigate();
+
+  const matches = [
+    {
+      id: 0,
+      first_name: 'Nancy',
+      last_name: 'Jones',
+      email: 'Sincere@april.biz',
+      avatar: '0'
+    },
+    {
+      id: 1,
+      first_name: 'Nick',
+      last_name: 'Young',
+      email: 'Sincere@april.biz',
+      avatar: '1'
+    },
+    {
+      id: 2,
+      first_name: 'Marcus',
+      last_name: 'Korsgaard',
+      email: 'Sincere@april.biz',
+      avatar: '2'
+    },
+    {
+      id: 3,
+      first_name: 'Lindsey',
+      last_name: 'Siphron',
+      email: 'Sincere@april.biz',
+      avatar: '3'
+    },
+    {
+      id: 4,
+      first_name: 'Leo',
+      last_name: 'Korsgaard',
+      email: 'Sincere@april.biz',
+      avatar: '4'
+    },
+    {
+      id: 5,
+      first_name: 'Phillip',
+      last_name: 'Dokidis',
+      email: 'Sincere@april.biz',
+      avatar: '5'
+    }
   ];
+
   return (
     <div className={className}>
       <div className='title'>
         <Typography>Your recent matches</Typography>
       </div>
       <div className='avatars'>
-        {avatars.map((_, i) => (
-          <Avatar image={avatars[i].image} className='avatar' key={i}>
+        {matches.map((match, i) => (
+          <div
+            className='avatar'
+            key={i}
+            style={{ backgroundImage: `url(${avatars[Number(match.avatar)].image})` }}>
             <div className='content'>
               <div className='username'>
                 <Typography variant='body4'>
-                  {usernames[i]}
+                  {`${match.first_name} ${match.last_name}`}
                   <img src={verified} alt='verified' />
                 </Typography>
               </div>
@@ -36,11 +79,11 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
                 </Button>
               </div>
             </div>
-          </Avatar>
+          </div>
         ))}
       </div>
       <div className='bottom'>
-        <Button active={false} inverted size='large'>
+        <Button active={false} inverted size='large' onClick={() => navigate('/matches')}>
           View all matches
         </Button>
       </div>
@@ -50,11 +93,7 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
   & {
     width: 100%;
     padding: 64px 0px 32px 36px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: grid;
     gap: 48px;
     box-sizing: border-box;
 
@@ -78,9 +117,12 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
       overflow-x: hidden;
       box-sizing: border-box;
       align-self: stretch;
-      margin-right: -69px;
+      margin-right: -36px;
 
       .avatar {
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
         display: flex;
         width: 232px;
         height: 328px;
@@ -132,6 +174,8 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
     }
 
     .bottom {
+      display: flex;
+      justify-content: center;
       .button {
         color: #184d6d;
         background: none;

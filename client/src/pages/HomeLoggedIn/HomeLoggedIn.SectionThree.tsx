@@ -9,7 +9,7 @@ import { Label } from '../../components/Label';
 export const SectionThree = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
-      <div className='wrapper-section'>
+      <div className='section-wrapper'>
         <div className='left'>
           <div className='section-wrapper'>
             <div className='header'>
@@ -52,28 +52,23 @@ export const SectionThree = styled(({ className }: HTMLAttributes<HTMLDivElement
   );
 })`
   & {
+    width: 100%;
     padding: 64px 36px;
     background: #f7f1e7;
     box-shadow: 0px 4px 32px 0px rgba(0, 0, 0, 0.1) inset;
-    display: flex;
-    align-items: center;
     box-sizing: border-box;
 
-    .wrapper-section {
+    .section-wrapper {
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1 0 0;
-      align-self: stretch;
+      max-width: 1440px;
+      display: grid;
+      grid-template-columns: 1fr 1.06fr;
+      margin: 0 auto;
 
       .left {
         display: flex;
-        width: 660px;
-        height: 560px;
         padding: 64px;
         box-sizing: border-box;
-        flex-direction: column;
         justify-content: center;
         align-items: flex-start;
         gap: 88px;
@@ -165,8 +160,7 @@ export const SectionThree = styled(({ className }: HTMLAttributes<HTMLDivElement
         background-image: url(${apartament});
         background-repeat: no-repeat;
         background-size: cover;
-        height: 560px;
-        width: 708px;
+        height: 100%;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
       }
