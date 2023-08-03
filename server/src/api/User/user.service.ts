@@ -5,7 +5,7 @@ import createError from 'http-errors';
 import mongoose from 'mongoose';
 import moment from 'moment';
 import httpStatus from 'http-status';
-import { hashPassword } from './user.helpers';
+import { hashPassword, isPasswordStrong } from './user.helpers';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import accountService from '../Account/services/account.service';
 import { validate, ValidationError } from 'class-validator';
@@ -13,6 +13,10 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
+import MatchService from '../Match/match.service';
+import MatchSchema from '../Match/match.schema';
+import assetService from '../Asset/services/asset.service';
+import AssetSchema from '../Asset/schemas/asset.schema';
 
 const mailService = MailService.getInstance();
 
@@ -195,6 +199,10 @@ const createUser = async (req: Request, res: Response) => {
   }
 
   const password = req.body.password;
+  const validatePass = isPasswordStrong(password);
+  if (!validatePass.is_strong) {
+    throw createError(400, validatePass.message);
+  }
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = randomUUID();
@@ -224,9 +232,19 @@ const createUser = async (req: Request, res: Response) => {
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<any> => {
-  const { id } = req.params;
+  const userId = res.locals.user_id ?? '';
   try {
-    await UserModel.findByIdAndDelete(id);
+    await UserModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          deleted_at: new Date(),
+          is_disabled: true
+        }
+      }
+    );
+    /*
+    deleteAllUserData(userId); */
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'user_not_deleted' });
@@ -241,10 +259,15 @@ const resetUserPassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: 'user_not_found' });
   }
+
+  const validatePass = isPasswordStrong(password);
+  if (!validatePass.is_strong) {
+    throw createError(400, validatePass.message);
+  }
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = null;
-  await updateUser(user._id.toString(), user);
+  await user.save();
 
   const { token: accessToken, refresh } = accountService.generateTokens(user);
 
@@ -286,6 +309,36 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
     await mailService.sendMail({
       to: user.email,
       subject: 'Reset Password',
+      html: emailTemplate.html
+    });
+
+    res.status(httpStatus.CREATED).send('ok');
+  } catch (err) {
+    throw err;
+  }
+};
+
+const sendChangePasswordInstructions = async (req: express.Request, res: express.Response) => {
+  try {
+    const user: any = await findOne({ _id: res.locals.user_id });
+
+    if (!user) {
+      return res.status(404).json({ message: 'user_not_found' });
+    }
+
+    user.confirmation_token = randomUUID();
+
+    await user.save();
+
+    const emailTemplate = resetPasswordTemplate({
+      link: `${process.env.FRONTEND_URL}/reset-password/${user.confirmation_token}`,
+      userName: user.first_name + user.last_name
+    });
+
+    // @ts-ignore
+    await mailService.sendMail({
+      to: user.email,
+      subject: 'Change Password',
       html: emailTemplate.html
     });
 
@@ -351,6 +404,11 @@ const findByQuery = (query: any) => {
   return UserModel.find(query).lean();
 };
 
+const deleteAllUserData = async (userId: string) => {
+  await MatchSchema.deleteMany({ created_by: userId });
+  await AssetSchema.deleteMany({ created_by: userId });
+};
+
 export default {
   getAll,
   getById,
@@ -360,6 +418,7 @@ export default {
   deleteUser,
   resetUserPassword,
   sendResetPasswordInstructions,
+  sendChangePasswordInstructions,
   getUserPublicData,
   findByQuery
 };
