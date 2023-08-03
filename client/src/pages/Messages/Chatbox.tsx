@@ -29,7 +29,9 @@ export const Chatbox = styled(
     const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      setMessageList(messages);
+      setMessageList(
+        messages.filter((item: any) => item.hasOwnProperty('author') && item.hasOwnProperty('participant'))
+      );
     }, [messages]);
 
     useEffect(() => {
@@ -108,6 +110,8 @@ export const Chatbox = styled(
         <div className='conversation' ref={conversationBoxRef}>
           {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
             const authorId = messageContent?.sender?._id;
+
+            console.log({ authorId, user_id, messageContent, messageList });
 
             const fromMe = authorId.toString() === user_id.toString();
             const isLastMessageFromAuthor =

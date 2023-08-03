@@ -1,10 +1,11 @@
 import express, { Router } from 'express';
 import roomService from './room.service';
-import { ChatDocument } from './chat.interface';
 import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
 import MessageModel from './schemas/message.schema';
 import Notification from '../Notification/notification.schema';
+import { RoomDocument } from './room.interface';
+import RoomSchema from './schemas/room.schema';
 const router: Router = Router();
 
 export class ChatController {
@@ -17,7 +18,7 @@ export class ChatController {
   private initializeRoutes() {
     this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
     this.router.get('/:id', paging({ sort: { created_at: -1 } }), this.getById);
-    this.router.post('/', this.create);
+    this.router.post('/create', this.create);
     this.router.put('/read', this.readMessages);
     this.router.delete('/:id', this.delete);
   }
@@ -94,39 +95,28 @@ export class ChatController {
   };
 
   /**
-   * @api {post} /api/chat Post
-   * @apiDescription Register
+   * @api {post} /api/chat/create Post
+   * @apiDescription Start new chat
    * @apiGroup Chat
-   * @apiSampleRequest /api/chat
+   * @apiSampleRequest /api/chat/create
    *
    * @apiBody {string} author
    * @apiBody {string} participant
-   * @apiBody {string} message
-   * @apiBody {string} room_id
    *
    * @apiPermission admin
    * @apiUse bearer
    */
   private create = async (req: express.Request, res: express.Response) => {
-    const chat: ChatDocument = req.body as ChatDocument;
+    const room: any = req.body;
 
-    /*if (!chat.room_id) {
-      const newRoom = await roomService.create({
-        author: chat.author,
-        participant: chat.participant
-      });
+    const newRoom = await RoomSchema.create({
+      author: room.author,
+      participant: room.participant
+    });
 
-      if (newRoom) {
-        chat.room_id = newRoom._id;
-      }
-
-      await chatService.create(chat);
-      return res.status(200).send(chat);
-    }
-
-    await chatService.create(chat);
-    return res.status(200).send(chat);
-    */
+    const message = { ...newRoom, room_id: newRoom._id };
+    await MessageModel.create(message);
+    res.status(200).send(newRoom);
   };
 
   /**

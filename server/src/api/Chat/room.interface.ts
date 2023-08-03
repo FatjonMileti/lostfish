@@ -4,5 +4,5 @@ export interface RoomDocument extends Document {
   author: ObjectId | string;
   participant: ObjectId | string;
   last_message?: any;
-  created_at: Date;
+  created_at?: Date;
 }
