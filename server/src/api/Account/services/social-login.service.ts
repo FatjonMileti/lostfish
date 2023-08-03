@@ -189,7 +189,7 @@ const createUserFromFacebook = async (user: any): Promise<UserDocument> => {
 
 const generateTokensForCurrentUser = async (user: UserDocument): Promise<TokenResponse> => {
   const { token, refresh } = accountService.generateTokens(user);
-  const rules = packRules(defineAbilitiesFor(user.role).rules);
+  const rules = packRules(defineAbilitiesFor(user).rules);
 
   return {
     token_type: 'bearer',

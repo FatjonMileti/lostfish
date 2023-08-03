@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import UserModel from './user.schema';
-import { ContactType, Role, UserDocument } from './user.interface';
+import { Role, UserDocument } from './user.interface';
 import createError from 'http-errors';
 import mongoose from 'mongoose';
 import moment from 'moment';
@@ -13,11 +13,8 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
-import MatchService from '../Match/match.service';
 import MatchSchema from '../Match/match.schema';
-import assetService from '../Asset/services/asset.service';
 import AssetSchema from '../Asset/schemas/asset.schema';
-
 const mailService = MailService.getInstance();
 
 const getAll = async (req: Request, res: Response) => {
@@ -104,31 +101,36 @@ const getAll = async (req: Request, res: Response) => {
 
 const getById = async (req: Request, res: Response): Promise<any | undefined> => {
   const id = req.params.id;
-  const query = { deleted_at: { $exists: false, _id: id } };
-  const user: UserDocument | null = await UserModel.findOne(query, null, {
-    select: ['-hash'],
-    populate: [
-      {
-        path: 'created_by',
-        select: ['email', 'username', 'firstName', 'lastName']
-      },
-      {
-        path: 'edited_by',
-        select: ['email', 'username', 'firstName', 'lastName']
-      }
-    ]
-  });
-  if (!user) {
-    throw createError(404, 'The item does not exist');
-  }
+  try {
+    const query = { _id: id, deleted_at: { $exists: false } };
+    const user: UserDocument | null = await UserModel.findOne(query, null, {
+      select: ['-hash'],
+      populate: [
+        {
+          path: 'created_by',
+          select: ['email', 'username', 'first_name', 'last_name']
+        },
+        {
+          path: 'edited_by',
+          select: ['email', 'username', 'first_name', 'last_name']
+        }
+      ]
+    });
+    if (!user) {
+      throw createError(404, 'The item does not exist');
+    }
 
-  res.status(httpStatus.OK).send(mapToUser(user));
+    res.status(httpStatus.OK).send(mapToUser(user));
+  } catch (error: any) {
+    console.log(error);
+    throw createError(400, error);
+  }
 };
 
 const updateUser = async (req: Request, res: Response) => {
   const userBody = req.body as UserDocument;
 
-  const user = await findOne({ _id: res.locals.user_id });
+  const user = await findOne({ _id: req.params.id });
 
   if (!user) {
     throw createError(404, { message: 'user_not_found' });

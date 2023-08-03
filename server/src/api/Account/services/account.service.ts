@@ -43,7 +43,7 @@ const login = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Login
   }).save();
 
-  const rules = packRules(defineAbilitiesFor(user.role, user._id.toString()).rules);
+  const rules = packRules(defineAbilitiesFor(user).rules);
 
   return res.json({
     token_type: 'bearer',
@@ -100,7 +100,7 @@ const refreshToken = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Refresh
   }).save();
 
-  const rules = packRules(defineAbilitiesFor(user.role).rules);
+  const rules = packRules(defineAbilitiesFor(user).rules);
 
   return res.json({
     token_type: 'bearer',
@@ -117,7 +117,7 @@ const getMyProfile = async (req: express.Request, res: express.Response) => {
   if (!user) {
     throw createError(404, { message: 'not_found' });
   }
-  const rules = packRules(defineAbilitiesFor(user.role, user._id.toString()).rules);
+  const rules = packRules(defineAbilitiesFor(user).rules);
   const data: any = { ...user.toObject(), rules };
 
   res.status(httpStatus.OK).json(data);
@@ -136,7 +136,7 @@ const getAccessToken = async (req: express.Request, res: express.Response) => {
     action: LoginLogAction.Login
   }).save();
 
-  const rules = packRules(defineAbilitiesFor(user.role).rules);
+  const rules = packRules(defineAbilitiesFor(user).rules);
 
   return res.json({
     token_type: 'bearer',

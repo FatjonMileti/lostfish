@@ -17,4 +17,5 @@ export type AppSubjects =
   | 'SignURL'
   | 'StarredProperties'
   | 'StarredTenants'
-  | 'Criteria';
+  | 'Criteria'
+  | 'Matches';

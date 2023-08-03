@@ -88,7 +88,7 @@ function App() {
         newSocket.disconnect();
       };
     }
-  }, [userStore]);
+  }, [userStore?.userDetails?.user_id]);
 
   const getUnreadMessages = async () => {
     const response = await request(userStore.auth.access_token).get('/api/notification/unread');

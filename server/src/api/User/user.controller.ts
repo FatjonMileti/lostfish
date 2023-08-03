@@ -22,7 +22,7 @@ export class UserController {
       paging({ sort: { created_at: -1 } }),
       this.getAll
     );
-    this.router.get('/:id', authorize(), ability(CASLAction.Read, 'User'), this.getById);
+    this.router.get('/:id', authorize(), checkUpdateUserPermission, this.getById);
     this.router.post('/register', this.create);
     this.router.patch('/:id', authorize(), checkUpdateUserPermission, this.updateUser);
     this.router.delete('/', authorize(), ability(CASLAction.Delete, 'User'), this.delete);

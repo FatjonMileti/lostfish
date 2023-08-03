@@ -29,7 +29,9 @@ export type AppSubjects =
   | 'SignURL'
   | 'StarredProperties'
   | 'StarredTenants'
-  | 'Properties';
+  | 'Properties'
+  | 'Matches'
+  | 'Message';
 
 export enum Role {
   Agent = 'Agent',
@@ -51,15 +53,15 @@ export default function defineRulesFor(role: string) {
   const { can, rules, cannot } = new AbilityBuilder(AppAbility);
 
   if (role === Role.Landlord) {
-    can(CASLAction.Read, 'Menu', ['Properties']);
+    can(CASLAction.Read, 'Menu', ['Home', 'Property', 'Match', 'Message']);
     can(CASLAction.Manage, 'Agent');
     cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Client) {
+    can(CASLAction.Read, 'Menu', ['Home', 'Match', 'Message']);
     can(CASLAction.Manage, 'Client');
     cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.NewUser) {
-    can(CASLAction.Read, 'Menu');
-    can(CASLAction.Manage, 'all');
+    can(CASLAction.Read, 'Menu', ['Home']);
     cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Agent) {
     can(CASLAction.Read, 'AdminMenu');

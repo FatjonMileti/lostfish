@@ -1,17 +1,24 @@
 import { AppSubjects, CASLAction } from '../casl/casl.interface';
 import { NextFunction, Request, Response } from 'express';
-import defineAbilitiesFor from '../casl/casl';
+import defineAbilitiesFor, { IUserAbilityData } from '../casl/casl';
 import httpStatus from 'http-status';
+import UserSchema from '../api/User/user.schema';
+import createError from 'http-errors';
 
 const abilityMiddleware = (action: CASLAction, subject: AppSubjects) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { role, user_id } = res.locals;
 
-    if (!role) {
+    if (!role || !user_id) {
       return res.status(httpStatus.UNAUTHORIZED).json({ error: 'unauthorized' });
     }
 
-    const ability = defineAbilitiesFor(role);
+    const user: IUserAbilityData = {
+      _id: res.locals.user_id as string,
+      role: res.locals.role as string
+    };
+
+    const ability = defineAbilitiesFor(user);
 
     if (!ability.can(action, subject)) {
       return res.status(httpStatus.FORBIDDEN).json({ message: 'forbidden' });
@@ -21,14 +28,18 @@ const abilityMiddleware = (action: CASLAction, subject: AppSubjects) => {
   };
 };
 
-export const checkUpdateUserPermission = (req: Request, res: Response, next: NextFunction) => {
-  const userId = res.locals.user_id ?? '';
-  const userToUpdate = req.params.id as string;
+export const checkUpdateUserPermission = async (req: Request, res: Response, next: NextFunction) => {
+  const loggedUser = await UserSchema.findById(res.locals.user_id);
+  if (!loggedUser) {
+    throw createError(httpStatus.UNAUTHORIZED, { message: 'Unauthorized' });
+  }
 
-  if (userId?.toString() !== userToUpdate.toString()) {
-    return res
-      .status(httpStatus.FORBIDDEN)
-      .json({ error: 'Unauthorized: You dont have permission to update users.' });
+  const ability = defineAbilitiesFor(loggedUser);
+
+  if (!ability.can(CASLAction.Update, 'User', req.params.id)) {
+    throw createError(httpStatus.FORBIDDEN, {
+      message: `Unauthorized: You dont have permission to ${req.method} this user`
+    });
   }
 
   next();

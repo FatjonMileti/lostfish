@@ -15,6 +15,7 @@ declare module 'express' {
   }
   interface Request {
     ability?: any;
+    user?: any;
   }
 }
 

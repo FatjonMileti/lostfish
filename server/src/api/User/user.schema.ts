@@ -63,11 +63,6 @@ schema.virtual('isDeleted').get(function () {
   return this.deleted_at !== undefined;
 });
 
-// schema.pre(/^find/, function (next) {
-//   this.find({ deleted_at: { $exists: false } });
-//   next();
-// });
-
 schema.plugin(mongoosePaginate);
 
 export default model<UserDocument, PaginateModel<UserDocument>>('user', schema);
