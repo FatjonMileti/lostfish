@@ -55,7 +55,13 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },
-  created_by: { type: Schema.Types.ObjectId, ref: 'user' }
+  created_by: { type: Schema.Types.ObjectId, ref: 'user' },
+  deleted_at: { type: Date, default: undefined }
+});
+
+schema.pre(/^find/, function (next) {
+  this.find({ deleted_at: { $exists: false } });
+  next();
 });
 
 schema.plugin(mongoosePaginate);

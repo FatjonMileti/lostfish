@@ -56,6 +56,7 @@ export interface UserDocument extends Document {
   edited_by?: ObjectId | string;
   created_at: Date;
   created_by?: ObjectId | string;
+  deleted_at?: Date;
 }
 
 export enum Role {

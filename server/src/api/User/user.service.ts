@@ -234,8 +234,17 @@ const createUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response): Promise<any> => {
   const userId = res.locals.user_id ?? '';
   try {
-    await UserModel.findByIdAndDelete(userId);
-    deleteAllUserData(userId);
+    await UserModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          deleted_at: new Date(),
+          is_disabled: true
+        }
+      }
+    );
+    /*
+    deleteAllUserData(userId); */
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'user_not_deleted' });
