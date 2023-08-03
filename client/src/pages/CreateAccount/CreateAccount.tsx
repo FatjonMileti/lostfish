@@ -23,7 +23,15 @@ const schema = yup.object().shape({
   firstName: yup.string().required('first name is required'),
   lastName: yup.string().required('last name is required'),
   email: yup.string().email().required('email is required'),
-  password: yup.string().min(6).max(32).required()
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .max(32, 'Password must not exceed 32 characters')
+    .test('password-strength', 'Password must contain uppercase letter, number, and symbol', (value) => {
+      if (!value) return false;
+      return /[A-Z]/.test(value) && /\d/.test(value) && /[!@#$%^&*()\-=_+[\]{}|\\;:'",.<>?/]/.test(value);
+    })
+    .required('Password is required')
 });
 
 export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -59,7 +67,31 @@ export const CreateAccount = styled(({ className }: React.HTMLAttributes<HTMLDiv
       if (!message) throw err;
 
       if (message === 'user_already_exists') {
-        return setError('email', { message: 'user already registered!', type: 'server' });
+        return setError('email', { message: 'User already registered!', type: 'server' });
+      }
+      if (message === 'should_have_uppercase') {
+        return setError('password', {
+          message: 'Password must contain at least one uppercase letter.',
+          type: 'server'
+        });
+      }
+      if (message === 'should_have_number') {
+        return setError('password', {
+          message: 'Password must contain at least one number.',
+          type: 'server'
+        });
+      }
+      if (message === 'should_have_symbol') {
+        return setError('password', {
+          message: 'Password must contain at least one symbol.',
+          type: 'server'
+        });
+      }
+      if (message === 'password_length_less_than_eight') {
+        return setError('password', {
+          message: 'Password must be at least 8 characters long.',
+          type: 'server'
+        });
       }
 
       throw err;

@@ -5,7 +5,7 @@ import createError from 'http-errors';
 import mongoose from 'mongoose';
 import moment from 'moment';
 import httpStatus from 'http-status';
-import { hashPassword } from './user.helpers';
+import { hashPassword, isPasswordStrong } from './user.helpers';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import accountService from '../Account/services/account.service';
 import { validate, ValidationError } from 'class-validator';
@@ -195,6 +195,10 @@ const createUser = async (req: Request, res: Response) => {
   }
 
   const password = req.body.password;
+  const validatePass = isPasswordStrong(password);
+  if (!validatePass.is_strong) {
+    throw createError(400, validatePass.message);
+  }
   user.hash = <string>await hashPassword(password);
 
   user.confirmation_token = randomUUID();
