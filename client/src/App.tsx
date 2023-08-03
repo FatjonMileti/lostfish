@@ -23,7 +23,7 @@ import request from './utils/axios';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
-import { ChatPage } from './pages/Chat';
+
 import { PublicProperty } from './pages/Properties/pages/PublicProperty';
 import { PropertyApplications } from './pages/Properties/pages/PropertyApplications';
 import { UserProvider } from './context/UserProvider';
@@ -123,12 +123,11 @@ function App() {
                     <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
                   )}
 
-                  <Route path='/messages' element={<ChatPage />} />
                   <Route path='/properties/:id' element={<PrivateProperty />} />
                   <Route path='/properties/:id/view' element={<PublicProperty />} />
                   <Route path='/properties/:id/applications' element={<PropertyApplications />} />
                   <Route path='/matches' element={<Matches />} />
-                  <Route path='/messages-page' element={!!userStore.auth ? <Messages /> : <Login />} />
+                  <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
                   <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
                   <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
                   <Route path='*' element={<NotFound />} />

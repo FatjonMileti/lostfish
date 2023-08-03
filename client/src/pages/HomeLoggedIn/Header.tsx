@@ -55,7 +55,7 @@ export const Header = styled(({ className }: HeaderProps) => {
               )}
             </NavLink>
           )}
-          <NavLink to='/messages-page'>
+          <NavLink to='/messages'>
             {({ isActive }) => (
               <Button active={isActive} inverted>
                 Messages

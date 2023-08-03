@@ -84,7 +84,7 @@ export const AddedMatches = styled(
 
     const chantWith = (userId: string) => {
       try {
-        navigate(`/messages-page?userId=${userId}`);
+        navigate(`/messages?userId=${userId}`);
       } catch (err) {}
     };
 

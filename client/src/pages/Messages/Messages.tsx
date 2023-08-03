@@ -106,12 +106,12 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
       if (socket) socket.emit('join_room', roomObj._id);
-      navigate(`/messages-page?userId=${roomObj.participant._id}`);
+      navigate(`/messages?userId=${roomObj.participant._id}`);
     }
   };
 
   const closeChatBox = () => {
-    navigate(`/messages-page`);
+    navigate(`/messages`);
     setRoom(null);
   };
 
