@@ -72,7 +72,7 @@ const getRoomDetails = async (query: any) => {
 };
 
 const findOne = async (query: any) => {
-  return RoomModel.findOne({ ...query });
+  return RoomModel.findOne({ ...query }).populate('author', ['first_name', 'last_name']).populate('participant', ['first_name', 'last_name']);
 };
 
 const findWithAggregate = async (id: string) => {
