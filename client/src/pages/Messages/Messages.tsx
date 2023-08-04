@@ -54,31 +54,46 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   }, [reorderMessages]);
 
   React.useEffect(() => {
-    const userIdInQueryParams = queryParams.get('userId');
+    handleRoomIdInQueryParams();
+  }, []);
 
-    if (!room && userIdInQueryParams) {
-      console.log('userIdInQueryParams: ', userIdInQueryParams);
-      console.log('conversations: ', conversations);
-      if (conversations.length > 0) {
-        const roomOnQueryParameter = conversations.find((c) => c.participant._id === userIdInQueryParams);
-        if (roomOnQueryParameter) {
-          joinRoom(roomOnQueryParameter);
+  const handleRoomIdInQueryParams = async () => {
+    try {
+      const userIdInQueryParams = queryParams.get('userId');
+      if (userIdInQueryParams) {
+        const room = (await getRoomWithUser(userIdInQueryParams)) || (await createRoom(userIdInQueryParams));
+        if (room) {
+          joinRoom(room);
         } else {
-          createRoom(userIdInQueryParams).then(async () => {
-            await previous.refetch();
-          });
+          navigate(`/messages`);
         }
       }
+    } catch (err) {
+      throw err;
     }
-  }, [conversations]);
+  };
 
-  const createRoom = async (participantId: string) => {
+  const getRoomWithUser = async (userId: string): Promise<IRoom | false> => {
+    try {
+      const { data } = await axios(userStore.auth.access_token).get('/api/chat/room', {
+        params: { participant: userId }
+      });
+      return data;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const createRoom = async (participantId: string): Promise<IRoom | false> => {
     try {
       const { data } = await axios(userStore.auth.access_token).post('/api/chat/create', {
         author: userStore.userDetails.user_id,
         participant: participantId
       });
-    } catch (err) {}
+      return data;
+    } catch (err) {
+      return false;
+    }
   };
 
   const previous = useQuery<IRoom[]>(['messages'], async (): Promise<any[]> => {
@@ -100,13 +115,14 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     return await request(userStore.auth.access_token).put('/api/chat/read', { room_id: room._id });
   };
 
-  const joinRoom = async (roomObj?: IRoom | null) => {
-    if (userStore.userDetails && roomObj) {
+  const joinRoom = async (roomObj: IRoom) => {
+    try {
       await handleReadMessages(roomObj);
       await getMessagesForRoom(roomObj._id);
       setRoom(roomObj);
       if (socket) socket.emit('join_room', roomObj._id);
-      navigate(`/messages?userId=${roomObj.participant._id}`);
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -213,6 +229,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       display: grid;
       justify-items: center;
       align-content: center;
+      padding: 36px;
 
       img {
         max-height: 280px;

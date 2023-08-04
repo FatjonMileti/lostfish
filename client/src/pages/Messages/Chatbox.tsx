@@ -24,7 +24,7 @@ export const Chatbox = styled(
     const [currentMessage, setCurrentMessage] = useState('');
     const [messageList, setMessageList] = useState<IMessageItem[]>([]);
 
-    const isAuthor = room.author._id.toString() === user_id.toString();
+    const isAuthor = room.author._id === user_id.toString();
 
     const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
@@ -111,9 +111,8 @@ export const Chatbox = styled(
           {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
             const authorId = messageContent?.sender?._id;
 
-            console.log({ authorId, user_id, messageContent, messageList });
+            const fromMe = authorId === user_id;
 
-            const fromMe = authorId.toString() === user_id.toString();
             const isLastMessageFromAuthor =
               messageList.findLastIndex((m: any) => m.sender._id === authorId) === messageIndex;
 
