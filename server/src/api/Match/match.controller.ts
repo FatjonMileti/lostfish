@@ -302,6 +302,12 @@ export class MatchController {
       if (!updatedMatch) {
         return res.status(404).json({ error: 'Match not found.' });
       }
+
+      if (!updatedMatch.chosen && !updatedMatch.starred) {
+        const deletedMatch = await this.matchService.deleteMatch(matchId);
+        return res.status(204).send(deletedMatch);
+      }
+
       await MatchLog.create({
         user: res.locals.user_id,
         action: LogAction.Update,

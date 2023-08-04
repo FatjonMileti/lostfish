@@ -39,7 +39,7 @@ export const ViewProperty = styled(
       lat: property?.asset_address?.latitude,
       lng: property?.asset_address?.longitude
     };
-    parsedProperty.isPropertyStarred = !!propertyToView?.starred;
+    parsedProperty.isPropertyStarred = propertyToView.starred;
 
     return (
       <Modal className={classNames('view-property-modal', className)} {...rest}>

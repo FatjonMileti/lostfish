@@ -6,12 +6,13 @@ import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
 import { Types } from 'mongoose';
-import { handlePropertyImages, generateLinksForImages, generateLinksForOneAsset } from '../helpers';
+import { generateLinksForImages, generateLinksForOneAsset, handlePropertyImages } from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import { Role } from '../../User/user.interface';
 import { AssetLog, LogAction } from '../../../data/logs';
 import { faker } from '@faker-js/faker';
+import MatchSchema from '../../Match/match.schema';
 
 const mailService = MailService.getInstance();
 
@@ -257,19 +258,26 @@ const findPublishedProperties = async (req: Request, res: Response) => {
       ]
     });
 
+    const matches = await MatchSchema.find({ created_by: res.locals.user_id }).lean();
+
     response.docs = generateLinksForImages(response.docs);
     response.docs = response.docs.map((item: any, index: number) => {
+      const matchProperty = matches.find((match: any) => match.property.toString() === item._id.toString());
       return {
         sugestion_id: index,
         property: {
           ...item.toObject()
         },
+        chosen: matchProperty?.chosen ?? false,
+        starred: matchProperty?.starred ?? false,
+        matchId: matchProperty?._id ?? undefined,
         percentage: faker.number.int({ min: 30, max: 100 })
       };
     });
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
+    console.log(error);
     return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
   }
 };

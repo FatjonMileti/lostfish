@@ -16,8 +16,8 @@ interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   properties: PropertyType[];
   improveTrustScore: () => void;
   removePropertyMatch: (matchId: string, propertyId?: string) => void;
-  starProperty: (propertyId: string, chosen: boolean) => void;
-  checkProperty: (propertyId: string, starred: boolean) => void;
+  starProperty: (propertyId: string, chosen: boolean, starred: boolean) => void;
+  checkProperty: (propertyId: string, chosen: boolean, starred: boolean) => void;
   getProperties: () => void;
   showSwitchToMatchedViewSwitch: boolean;
   matchedView: boolean;
@@ -154,7 +154,7 @@ export const SuggestedMatches = styled(
                 inverted
                 className={`check-button ${suggestedMatch?.chosen ? 'active' : ''}`}
                 onClick={() => {
-                  checkProperty(property._id, suggestedMatch.starred);
+                  checkProperty(property._id, !suggestedMatch?.chosen, suggestedMatch.starred);
                 }}>
                 <Icon icon='checked' size={28} />
               </IconButton>
@@ -163,7 +163,7 @@ export const SuggestedMatches = styled(
                 size='large'
                 className={`star-button ${suggestedMatch?.starred ? 'active' : ''}`}
                 onClick={() => {
-                  starProperty(property._id, suggestedMatch.chosen);
+                  starProperty(property._id, suggestedMatch.chosen, !suggestedMatch.starred);
                 }}>
                 <Icon icon='star-solid' size={28} />
               </IconButton>

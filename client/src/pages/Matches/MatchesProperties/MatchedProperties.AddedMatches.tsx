@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 import { Typography } from '../../../components/Typography';
@@ -81,6 +81,12 @@ export const AddedMatches = styled(
     const previous = () => {
       activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
     };
+
+    useEffect(() => {
+      if (properties.length === 0) {
+        setMatchedView(false);
+      }
+    }, [properties.length]);
 
     const chantWith = (userId: string) => {
       try {

@@ -74,59 +74,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   };
   const getProperties = async () => {
     const { data } = await axios(auth?.access_token).get('/api/asset/matches-example');
-    setProperties(data.docs.map((doc: any) => ({ ...doc, chosen: false, starred: false, id: doc._id })));
-    await Promise.all(
-      data.docs.map(async (d: PropertyType) => {
-        await isPropertyChosen(d.property._id);
-      })
-    );
-  };
-
-  const isPropertyChosen = async (propertyId: string): Promise<void> => {
-    try {
-      const {
-        data: { chosen, starred, _id }
-      } = await axios(auth.access_token).get(`/api/match/check?property=${propertyId}`);
-
-      const match = {
-        chosen,
-        starred,
-        matchId: _id
-      };
-
-      setProperties((properties) => {
-        const propertiesCopy = [...properties];
-
-        const property = propertiesCopy.find((p: any) => p.property._id === propertyId);
-        if (property) {
-          const propertyIndex = propertiesCopy.indexOf(property);
-          propertiesCopy[propertyIndex].chosen = match.chosen;
-          propertiesCopy[propertyIndex].starred = match.starred;
-          propertiesCopy[propertyIndex].matchId = match.matchId;
-        }
-
-        return propertiesCopy;
-      });
-    } catch (err: any) {
-      if (err?.response?.status === 404) {
-        setProperties((properties) => {
-          const propertiesCopy = [...properties];
-
-          const property = propertiesCopy.find((p: any) => p.property._id === propertyId);
-          if (property) {
-            const propertyIndex = propertiesCopy.indexOf(property);
-            propertiesCopy[propertyIndex].chosen = false;
-            propertiesCopy[propertyIndex].starred = false;
-            propertiesCopy[propertyIndex].matchId = undefined;
-          }
-          return propertiesCopy;
-        });
-
-        return;
-      } else {
-        throw err;
-      }
-    }
+    setProperties(data.docs.map((doc: any) => ({ ...doc, id: doc._id })));
   };
 
   const addOrUpdateTenantMatch = async (
@@ -134,23 +82,40 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     chosen: boolean = false,
     starred: boolean = false
   ) => {
-    const matchId = properties.find((p) => p.property._id === propertyId)?.matchId || false;
+    const match = properties.find((p) => p.property._id === propertyId);
 
-    if (matchId) {
-      await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred });
-    } else {
-      await axios(auth.access_token).post('/api/match/property', { property: propertyId, chosen, starred });
+    const response = match?.matchId
+      ? await axios(auth.access_token).put(`/api/match/${match.matchId}`, { chosen, starred })
+      : await axios(auth.access_token).post('/api/match/property', { property: propertyId, chosen, starred });
+
+    if (response.status === 200 || response.status === 201) {
+      setProperties((prevArray) =>
+        prevArray.map((obj) =>
+          obj.property._id === propertyId ? { ...obj, chosen, starred, matchId: response.data._id } : obj
+        )
+      );
+      if (propertyToView && propertyToView?.property._id === propertyId) {
+        setPropertyToView((prevState) => {
+          return prevState ? { ...prevState, chosen, starred } : null;
+        });
+      }
+    } else if (response.status === 204) {
+      setProperties((prevArray) =>
+        prevArray.map((obj) =>
+          obj.property._id === propertyId
+            ? { ...obj, chosen: false, starred: false, matchId: undefined }
+            : obj
+        )
+      );
     }
-
-    isPropertyChosen(propertyId);
   };
 
-  const starProperty = async (propertyId: string, chosen: boolean) => {
-    await addOrUpdateTenantMatch(propertyId, chosen, true);
+  const starProperty = async (propertyId: string, chosen: boolean, starred: boolean) => {
+    await addOrUpdateTenantMatch(propertyId, chosen, starred);
   };
 
-  const checkProperty = async (propertyId: string, starred: boolean) => {
-    await addOrUpdateTenantMatch(propertyId, true, starred);
+  const checkProperty = async (propertyId: string, chosen: boolean, starred: boolean) => {
+    await addOrUpdateTenantMatch(propertyId, chosen, starred);
   };
 
   const removePropertyMatch = async (matchId: string, propertyId?: string) => {
@@ -158,7 +123,13 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       await axios(auth.access_token).delete(`/api/match/${matchId}`);
 
       if (propertyId) {
-        isPropertyChosen(propertyId);
+        setProperties((prevArray) =>
+          prevArray.map((obj) =>
+            obj.property._id === propertyId
+              ? { ...obj, chosen: false, starred: false, matchId: undefined }
+              : obj
+          )
+        );
       }
     } catch (err) {
       throw err;
@@ -196,7 +167,9 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       {propertyToView && (
         <ViewProperty
           open={true}
-          starProperty={() => starProperty(propertyToView?.property?._id, propertyToView.chosen)}
+          starProperty={() =>
+            starProperty(propertyToView?.property?._id, propertyToView.chosen, !propertyToView?.starred)
+          }
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
