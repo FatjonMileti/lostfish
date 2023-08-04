@@ -147,7 +147,8 @@ export class ChatController {
 
     const message = { ...newRoom, room_id: newRoom._id };
     await MessageModel.create(message);
-    res.status(200).send(newRoom);
+    const getRoom  = await roomService.findOne({_id: newRoom._id})
+    res.status(200).send(getRoom);
   };
 
   /**
