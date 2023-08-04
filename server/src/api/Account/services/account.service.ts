@@ -214,7 +214,6 @@ const logout = async (req: express.Request, res: express.Response) => {
 
   await new UsedRefreshToken({ token: req.body.refresh_token, expiresAt: new Date() }).save();
 
-  console.log(req.body);
   await new LoginLog({
     user: res.locals.user_id,
     info: res.locals.username,

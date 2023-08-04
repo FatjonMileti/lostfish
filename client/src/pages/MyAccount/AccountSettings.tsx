@@ -6,13 +6,10 @@ import { Link } from '../../components/Link';
 import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useNavigate } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
-import config from '../../config';
+import { AxiosError } from 'axios';
 
 export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
-
-  console.log({ userStore });
 
   const navigate = useNavigate();
 

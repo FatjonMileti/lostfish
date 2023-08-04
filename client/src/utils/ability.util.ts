@@ -54,18 +54,10 @@ export default function defineRulesFor(role: string) {
 
   if (role === Role.Landlord) {
     can(CASLAction.Read, 'Menu', ['Home', 'Property', 'Match', 'Message']);
-    can(CASLAction.Manage, 'Agent');
-    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.Client) {
     can(CASLAction.Read, 'Menu', ['Home', 'Match', 'Message']);
-    can(CASLAction.Manage, 'Client');
-    cannot(CASLAction.Read, 'AdminMenu');
   } else if (role === Role.NewUser) {
     can(CASLAction.Read, 'Menu', ['Home']);
-    cannot(CASLAction.Read, 'AdminMenu');
-  } else if (role === Role.Agent) {
-    can(CASLAction.Read, 'AdminMenu');
-    cannot(CASLAction.Read, 'Menu');
   }
 
   return rules;
