@@ -67,12 +67,12 @@ const getMessages = async (
 
 const getRoomDetails = async (query: any) => {
   return RoomModel.findOne({ ...query })
-    .populate('author', ['first_name', 'last_name'])
-    .populate('participant', ['first_name', 'last_name']);
+    .populate('author', ['first_name', 'last_name', 'avatar'])
+    .populate('participant', ['first_name', 'last_name', 'avatar']);
 };
 
 const findOne = async (query: any) => {
-  return RoomModel.findOne({ ...query }).populate('author', ['first_name', 'last_name']).populate('participant', ['first_name', 'last_name']);
+  return RoomModel.findOne({ ...query }).populate('author', ['first_name', 'last_name', 'avatar']).populate('participant', ['first_name', 'last_name', 'avatar']);
 };
 
 const findWithAggregate = async (id: string) => {

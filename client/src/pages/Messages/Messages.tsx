@@ -9,15 +9,15 @@ import request from '../../utils/axios';
 import { useGlobalState, registerStore } from '../../globalState/globalState';
 import SocketContext from '../../context/SocketContext';
 import { IMessageItem, IRoom } from './messages.interface';
-
 import noMessages from './noMessages.png';
-import { Footer } from '../Home/Footer';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 
 import { useUserStore } from '../../globalState/user';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axios';
+
+import messagesBackground from './massages-page-backgroud.png';
 
 registerStore('transactionAgreement', { signed: false });
 
@@ -132,98 +132,111 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   };
 
   return (
-    <div
-      className={`messages-page ${
-        !previous.isLoading && previous.data?.length === 0 ? 'no-messages' : ''
-      } ${className}`}>
-      <Header />
-      <Backdrop open={previous.isLoading || previous.isFetching}></Backdrop>
+    <>
+      <div
+        className={`messages-page ${
+          !previous.isLoading && previous.data?.length === 0 ? 'no-messages' : ''
+        } ${className}`}>
+        <Header />
+        <Backdrop open={previous.isLoading || previous.isFetching}></Backdrop>
 
-      {!previous.isLoading && previous.data?.length === 0 && (
-        <div className='no-messages-view'>
-          <img src={noMessages} alt='no messages' />
-          <Typography variant='body2' className='title'>
-            You don’t have any messages at the moment.
-          </Typography>
-          <Typography variant='body5' className='description'>
-            Once you perfectly match with someone, you can start a conversation and it will appear here.
-          </Typography>
-        </div>
-      )}
-
-      {previous.isLoading && <div />}
-
-      {!previous.isLoading && previous.data?.length !== 0 && (
-        <div className='container'>
-          <div className='chats'>
-            <Typography variant='body2'>My messages</Typography>
-
-            <div className='conversations-list'>
-              {conversations.map((row: IRoom, rowIndex: number) => {
-                const fullName =
-                  userStore.userDetails?.user_id === row?.author?._id
-                    ? `${row.participant?.first_name} ${row.participant?.last_name}`
-                    : `${row.author?.first_name} ${row.author?.last_name}`;
-
-                return (
-                  <Conversation
-                    key={rowIndex}
-                    joinRoom={joinRoom}
-                    fullName={fullName}
-                    row={row}
-                    active={room?._id === row?._id}
-                  />
-                );
-              })}
-            </div>
+        {!previous.isLoading && previous.data?.length === 0 && (
+          <div className='no-messages-view'>
+            <img src={noMessages} alt='no messages' />
+            <Typography variant='body2' className='title'>
+              You don’t have any messages at the moment.
+            </Typography>
+            <Typography variant='body5' className='description'>
+              Once you perfectly match with someone, you can start a conversation and it will appear here.
+            </Typography>
           </div>
+        )}
 
-          <div className='line'></div>
+        {previous.isLoading && <div />}
 
-          {room &&
-            (transactionAgreement.signed || 1 == 1 ? (
-              <Chatbox
-                username={userStore.userDetails?.username}
-                room={room}
-                user_id={userStore.userDetails?.user_id}
-                messages={messages}
-                socket={socket}
-                closeDeal={closeChatBox}
-                updateList={reorderMessages}
-              />
-            ) : (
-              <div className='transaction-agreement'>
-                <Typography variant='body2' className='transaction-title'>
-                  Sign the transaction agreement to view the conversation
+        {!previous.isLoading && previous.data?.length !== 0 && (
+          <div className='container'>
+            <div className='chats'>
+              <div className='chats-header'>
+                <Typography variant='body2'>Your inbox</Typography>
+                <Typography variant='body5'>
+                  Here you can find all your conversations with your matches or Lostfish representatives
                 </Typography>
-
-                <Typography className='transaction-description' variant='body4'>
-                  In order to be compliant with our <a>Terms & Conditions</a> you need to sign the transaction
-                  agreement. This document allows every party involved to have a transparent and legal view
-                  over the entire process. Don’t worry, all your progress will remain saved.
-                </Typography>
-
-                <Button
-                  onClick={() => setTransactionAgreement({ signed: true })}
-                  className='go-to-transaction-button'>
-                  Go to transaction agreement
-                </Button>
               </div>
-            ))}
-        </div>
-      )}
 
-      <Footer />
-    </div>
+              <div className='conversations-list'>
+                {conversations.map((row: IRoom, rowIndex: number) => {
+                  const fullName =
+                    userStore.userDetails?.user_id === row?.author?._id
+                      ? `${row.participant?.first_name} ${row.participant?.last_name}`
+                      : `${row.author?.first_name} ${row.author?.last_name}`;
+
+                  return (
+                    <Conversation
+                      key={rowIndex}
+                      joinRoom={joinRoom}
+                      fullName={fullName}
+                      row={row}
+                      active={room?._id === row?._id}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
+            {room ? (
+              transactionAgreement.signed || 1 == 1 ? (
+                <Chatbox
+                  username={userStore.userDetails?.username}
+                  room={room}
+                  user_id={userStore.userDetails?.user_id}
+                  messages={messages}
+                  socket={socket}
+                  closeDeal={closeChatBox}
+                  updateList={reorderMessages}
+                />
+              ) : (
+                <div className='transaction-agreement'>
+                  <Typography variant='body2' className='transaction-title'>
+                    Sign the transaction agreement to view the conversation
+                  </Typography>
+
+                  <Typography className='transaction-description' variant='body4'>
+                    In order to be compliant with our <a>Terms & Conditions</a> you need to sign the
+                    transaction agreement. This document allows every party involved to have a transparent and
+                    legal view over the entire process. Don’t worry, all your progress will remain saved.
+                  </Typography>
+
+                  <Button
+                    onClick={() => setTransactionAgreement({ signed: true })}
+                    className='go-to-transaction-button'>
+                    Go to transaction agreement
+                  </Button>
+                </div>
+              )
+            ) : (
+              <div />
+            )}
+
+            <div className='about-conversation'></div>
+          </div>
+        )}
+      </div>
+      <BackgroundImage />
+    </>
   );
 })`
   &.messages-page {
+    z-index: 1;
     min-height: 0;
     height: 100vh;
     display: grid;
     box-sizing: border-box;
-    grid-template-rows: min-content auto min-content;
-    background: #ffffff;
+    grid-template-rows: min-content auto;
+    position: relative;
+
+    background: linear-gradient(180deg, rgba(255, 251, 243, 0.99) 18.95%, rgba(255, 255, 255, 0.95) 100%),
+      rgba(255, 255, 255, 0.2);
 
     .no-messages-view {
       display: grid;
@@ -248,16 +261,14 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
     .container {
       display: grid;
-      grid-template-columns: 1fr min-content 2.8fr;
-      column-gap: 69px;
+      grid-template-columns: 0.5fr 0.96fr 0.5fr;
+      column-gap: 24px;
       overflow-y: auto;
-      padding: 44px 36px;
+      padding: 24px 36px 36px 36px;
       min-height: calc(100vh - 108px);
       box-sizing: border-box;
 
-      .line {
-        width: 2px;
-        background: #f3f4f5;
+      .about-conversation {
       }
     }
 
@@ -266,6 +277,11 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       flex-direction: column;
       row-gap: 24px;
       height: 100%;
+
+      .chats-header {
+        display: grid;
+        row-gap: 12px;
+      }
 
       .conversations-list {
         display: flex;
@@ -297,4 +313,13 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       }
     }
   }
+`;
+
+const BackgroundImage = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  return <div className={className} />;
+})`
+  position: fixed;
+  inset: 0;
+
+  background: url(${messagesBackground}) center/cover no-repeat;
 `;

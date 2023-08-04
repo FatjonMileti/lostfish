@@ -1,9 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
-
-import propertyMatchThumbnail from './propertyMatchThumbnail.png';
 import { IRoom } from './messages.interface';
+import { Avatar } from '../../components/Avatar';
+import { avatars } from '../HomeLoggedIn/avatars';
 export function stringToColor(string: string) {
   let hash = 0;
   let i;
@@ -34,21 +34,23 @@ export const Conversation = styled(
   }) => {
     const { joinRoom, fullName, row, className, active } = props;
 
+    const avatar = !isNaN(parseInt(row?.participant?.avatar || ''))
+      ? avatars[parseInt(row?.participant?.avatar || '')]?.image
+      : '';
+
+    console.log('row: ', row, avatar);
     return (
       <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
         <div className='match-avatar-intersection'>
-          <div className='avatar' style={{ backgroundColor: stringToColor(fullName) }}>
-            {fullName.split(' ')[0][0]}
-            {fullName.split(' ')[1][0]}
-          </div>
+          <Avatar image={avatar} />
 
-          <img className='match-thumbnail' src={propertyMatchThumbnail} alt='match thumbnail' />
           {row.unseen_messages > 0 && <span className='unseen-messages-nr'>{row.unseen_messages}</span>}
         </div>
 
         <div className='details'>
           <Typography variant='body4' className='property'>
-            {row?.last_message?.message ?? ''}
+            {fullName}
+            {/*{row?.last_message?.message ?? ''}*/}
           </Typography>
           <Typography variant='body6'>Matched on February 27th 2023</Typography>
         </div>
@@ -62,16 +64,20 @@ export const Conversation = styled(
     padding: 16px;
     align-items: center;
     box-sizing: border-box;
+    background-color: white;
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid white;
 
     &:hover {
-      cursor: pointer;
-      border-radius: 12px;
-      background-color: #f7f1e7;
+      //background-color: #f7f1e7;
     }
 
     &.active {
-      background-color: #f7f1e7;
-      border-radius: 12px;
+      //background-color: #f7f1e7;
+      //border-radius: 12px;
+      border: 2px solid #184d6d;
     }
 
     .avatar {
@@ -90,9 +96,6 @@ export const Conversation = styled(
     &.active {
       .match-avatar-intersection {
         .avatar {
-          :after {
-            background-color: #f7f1e7;
-          }
         }
       }
     }
@@ -102,24 +105,8 @@ export const Conversation = styled(
       position: relative;
 
       .avatar {
-        position: relative;
-        margin-right: -13px;
-        overflow: hidden;
-        :after {
-          background-color: #ffffff;
-          clip-path: circle(50%);
-          width: 100%;
-          height: 100%;
-          content: '';
-          position: absolute;
-          left: calc(100% - 13px);
-        }
-      }
-
-      .match-thumbnail {
-        border-radius: 50%;
-        height: 48px;
-        width: 48px;
+        width: 64px;
+        height: 64px;
       }
 
       .unseen-messages-nr {
@@ -146,6 +133,7 @@ export const Conversation = styled(
     .details {
       display: flex;
       flex-direction: column;
+      row-gap: 8px;
 
       .property {
         color: #0d2a38;

@@ -8,6 +8,7 @@ import { Typography } from '../../components/Typography';
 import { stringToColor } from './Conversation';
 import { IMessageBody, IMessageItem } from './messages.interface';
 import { Socket } from 'socket.io-client';
+import { Avatar } from '../../components/Avatar';
 
 export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
@@ -91,22 +92,6 @@ export const Chatbox = styled(
 
     return (
       <div className={`chat-box ${className}`}>
-        <div className='chatbox-header'>
-          <div className='chatbox-header-texts'>
-            <Typography variant='body4' style={{ fontWeight: 600 }}>
-              Ready to close the deal?
-            </Typography>
-            <Typography variant='body5'>
-              Click the “Close deal” button and you’ll be redirected to complete the transaction.
-            </Typography>
-          </div>
-          <div className='chatbox-header-actions'>
-            <Button startIcon={<Icon icon='close' size={16} />}>Unmatch</Button>
-            <Button inverted startIcon={<Icon icon='checked' size={14} />} onClick={closeDeal}>
-              Close deal
-            </Button>
-          </div>
-        </div>
         <div className='conversation' ref={conversationBoxRef}>
           {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
             const authorId = messageContent?.sender?._id;
@@ -127,6 +112,7 @@ export const Chatbox = styled(
               messageList[messageIndex - 1]?.sender?._id === authorId &&
               (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
 
+            // console.log('messagesenderc content', messageContent.sender);
             return (
               <div
                 className={`message ${fromMe ? 'from-me' : 'from-you'} ${
@@ -145,6 +131,7 @@ export const Chatbox = styled(
                   {messageContent.sender.first_name[0]}
                   {messageContent.sender.last_name[0]}
                 </div>
+                {/*<Avatar image={''} />*/}
 
                 <Typography variant='body5' className='text'>
                   {messageContent.message}
@@ -155,9 +142,10 @@ export const Chatbox = styled(
         </div>
         <div className='write-box'>
           <TextField
+            autoComplete='off'
             placeholder='Type your message here...'
             endAdornment={
-              <IconButton noBackground>
+              <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
                 <Icon icon='attach' color='#184D6D' size={18} />
               </IconButton>
             }
@@ -169,7 +157,7 @@ export const Chatbox = styled(
               event.key === 'Enter' && sendMessage();
             }}
           />
-          <Button className='send-button' variant='secondary' size='small' onClick={sendMessage}>
+          <Button className='send-button' size='medium' onClick={sendMessage}>
             Send
           </Button>
         </div>
@@ -179,30 +167,10 @@ export const Chatbox = styled(
 )`
   &.chat-box {
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.1));
-    border-radius: 16px;
+    border-radius: 12px;
     display: grid;
-    grid-template-rows: min-content auto 80px;
+    grid-template-rows: auto 80px;
     overflow-y: auto;
-
-    .chatbox-header {
-      background-color: #0d2a38;
-      align-items: center;
-
-      display: flex;
-      padding: 16px 24px;
-      justify-content: space-between;
-
-      .chatbox-header-texts {
-        display: flex;
-        flex-direction: column;
-        color: white;
-      }
-
-      .chatbox-header-actions {
-        display: flex;
-        column-gap: 16px;
-      }
-    }
 
     .conversation {
       overflow-y: auto;
@@ -272,7 +240,7 @@ export const Chatbox = styled(
           justify-self: flex-start;
 
           .text {
-            background-color: #e7e7e7;
+            background-color: #f7f1e7;
             color: rgba(13, 42, 56, 1);
             border-radius: 16px 16px 16px 16px;
           }
@@ -309,7 +277,8 @@ export const Chatbox = styled(
           justify-self: flex-end;
 
           .text {
-            background-color: #184d6d;
+            background-color: #c0daff;
+
             color: white;
             border-radius: 16px 16px 16px 16px;
           }
@@ -353,17 +322,18 @@ export const Chatbox = styled(
     .write-box {
       height: 80px;
 
-      background: #e7e7e7;
+      background: white;
+      box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.04);
 
       display: grid;
       grid-template-columns: auto min-content;
       align-items: flex-start;
       padding: 16px 24px;
-      gap: 24px;
+      gap: 16px;
       box-sizing: border-box;
 
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
 
       .text-field {
         border-radius: 8px;
@@ -374,7 +344,7 @@ export const Chatbox = styled(
       }
 
       .send-button {
-        padding-inline: 67px;
+        //padding-inline: 67px;
       }
     }
   }
