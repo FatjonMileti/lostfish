@@ -6,6 +6,8 @@ import MessageModel from './schemas/message.schema';
 import Notification from '../Notification/notification.schema';
 import { RoomDocument } from './room.interface';
 import RoomSchema from './schemas/room.schema';
+import createError from 'http-errors';
+import httpStatus from 'http-status';
 const router: Router = Router();
 
 export class ChatController {
@@ -17,9 +19,10 @@ export class ChatController {
 
   private initializeRoutes() {
     this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/:id', paging({ sort: { created_at: -1 } }), this.getById);
     this.router.post('/create', this.create);
     this.router.put('/read', this.readMessages);
+    this.router.get('/room', this.checkIfRoomExist);
+    this.router.get('/:id', paging({ sort: { created_at: -1 } }), this.getById);
     this.router.delete('/:id', this.delete);
   }
 
@@ -70,6 +73,34 @@ export class ChatController {
     };
 
     const response = await roomService.getMessages(query, res.locals.paging_options, userId);
+    res.send(response);
+  };
+
+  /**
+   * @api {get} /api/chat/check-room Check if room exist
+   * @apiDescription Check if a room exist
+   * @apiGroup Chat
+   * @apiSampleRequest /api/chat/check-room
+   *
+   * @apiQuery {string} participant
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private checkIfRoomExist = async (req: express.Request, res: express.Response) => {
+    const { participant } = req.query;
+
+    const query: any = {
+      $or: [
+        { participant: { $eq: participant }, author: { $eq: res.locals.user_id } },
+        { author: { $eq: participant }, participant: { $eq: res.locals.user_id } }
+      ]
+    };
+
+    const response = await roomService.findOne(query);
+    if (!response) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+    }
+
     res.send(response);
   };
 
