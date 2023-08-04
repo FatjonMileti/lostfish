@@ -14,7 +14,7 @@ const init = async () => {
     await seedUsers(10).then(() => console.log(chalk.bold.green('User seeder: success')));
     await seedAssets(10).then(() => console.log(chalk.bold.green('Asset seeder: success')));
     await seedCriteria(5);
-    await seedRoom();
+    // await seedRoom();
   } catch (error) {
     console.log(chalk.bold.red('failed to seed'));
   } finally {
