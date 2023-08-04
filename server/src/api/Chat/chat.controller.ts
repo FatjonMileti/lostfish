@@ -77,7 +77,7 @@ export class ChatController {
   };
 
   /**
-   * @api {get} /api/chat/check-room Check if room exist
+   * @api {get} /api/chat/room Check if room exist
    * @apiDescription Check if a room exist
    * @apiGroup Chat
    * @apiSampleRequest /api/chat/check-room
