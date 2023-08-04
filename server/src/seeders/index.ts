@@ -4,7 +4,7 @@ import { seedCriteria } from './criteria.seeder';
 import chalk from 'chalk';
 import mongoose from 'mongoose';
 import config from '../config';
-import { seedRoom } from './messageSeeder';
+
 const dbConnect = require('../data');
 dbConnect(config.connection_string);
 
