@@ -105,7 +105,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
   const getMessagesForRoom = async (roomId: string) => {
     const response = await request(userStore.auth.access_token).get(
-      '/api/chat/' + roomId + '?pageSize=10&page=1'
+      '/api/chat/' + roomId + '?pageSize=15&page=1'
     );
     setMessages(response.data.docs.reverse());
     previous.refetch();

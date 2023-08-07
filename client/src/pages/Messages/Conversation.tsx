@@ -3,26 +3,7 @@ import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import { IRoom } from './messages.interface';
 import { Avatar } from '../../components/Avatar';
-import { avatars } from '../HomeLoggedIn/avatars';
-export function stringToColor(string: string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = '#';
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
+import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 
 export const Conversation = styled(
   (props: {
@@ -34,11 +15,8 @@ export const Conversation = styled(
   }) => {
     const { joinRoom, fullName, row, className, active } = props;
 
-    const avatar = !isNaN(parseInt(row?.participant?.avatar || ''))
-      ? avatars[parseInt(row?.participant?.avatar || '')]?.image
-      : '';
+    const avatar = getAvatarFormIndex(row?.participant?.avatar);
 
-    console.log('row: ', row, avatar);
     return (
       <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
         <div className='match-avatar-intersection'>

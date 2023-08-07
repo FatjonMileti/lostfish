@@ -5,10 +5,11 @@ import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import React, { HTMLAttributes, MouseEventHandler, useEffect, useState } from 'react';
 import { Typography } from '../../components/Typography';
-import { stringToColor } from './Conversation';
 import { IMessageBody, IMessageItem } from './messages.interface';
 import { Socket } from 'socket.io-client';
 import { Avatar } from '../../components/Avatar';
+import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
+import classNames from 'classnames';
 
 export interface ChatboxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
@@ -50,10 +51,12 @@ export const Chatbox = styled(
     React.useEffect(() => {
       if (conversationBoxRef.current) {
         conversationBoxRef.current;
-
         conversationBoxRef.current.scrollTop = conversationBoxRef.current.scrollHeight;
       }
     }, [messageList]);
+
+    const authorAvatar = getAvatarFormIndex(room.author.avatar);
+    const participantAvatar = getAvatarFormIndex(room.participant.avatar);
 
     const sendMessage = async () => {
       if (!currentMessage) {
@@ -112,26 +115,20 @@ export const Chatbox = styled(
               messageList[messageIndex - 1]?.sender?._id === authorId &&
               (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
 
-            // console.log('messagesenderc content', messageContent.sender);
+            const avatar = fromMe ? authorAvatar : participantAvatar;
+
             return (
               <div
-                className={`message ${fromMe ? 'from-me' : 'from-you'} ${
-                  isLastMessageFromAuthor ? 'last' : ''
-                } ${isFirstInGroup ? 'first-in-group' : ''} ${inMiddleOfGroup ? 'in-middle-of-group' : ''} ${
-                  lastInGroup ? 'last-in-group' : ''
-                }`}
+                className={classNames('message', {
+                  'from-me': fromMe,
+                  'from-you': !fromMe,
+                  last: isLastMessageFromAuthor,
+                  'first-in-group': isFirstInGroup,
+                  'in-middle-of-group': inMiddleOfGroup,
+                  'last-in-group': lastInGroup
+                })}
                 key={messageIndex}>
-                <div
-                  className='avatar'
-                  style={{
-                    backgroundColor: stringToColor(
-                      messageContent.author.first_name + ' ' + messageContent.author.last_name
-                    )
-                  }}>
-                  {messageContent.sender.first_name[0]}
-                  {messageContent.sender.last_name[0]}
-                </div>
-                {/*<Avatar image={''} />*/}
+                <Avatar image={avatar} />
 
                 <Typography variant='body5' className='text'>
                   {messageContent.message}
@@ -212,16 +209,10 @@ export const Chatbox = styled(
           align-self: flex-end;
           height: 24px;
           width: 24px;
-          border-radius: 50%;
-          display: flex;
           align-items: center;
           justify-content: center;
           text-transform: uppercase;
-
-          font-size: 12px;
-          font-family: 'Roobert';
           font-weight: 600;
-
           visibility: hidden;
         }
 

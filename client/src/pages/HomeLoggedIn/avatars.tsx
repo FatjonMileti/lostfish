@@ -7,6 +7,12 @@ import avatar5 from '../MyAccount/images/fancy-avatar-5.jpg';
 
 export type AvatarType = { image: string; backgroundColor: string };
 
+export const getAvatarFormIndex = (avatarIndex: string = ''): string => {
+  if (isNaN(parseInt(avatarIndex))) return '';
+  const parsedAvatarIndex = parseInt(avatarIndex);
+  return avatars[parsedAvatarIndex]?.image || '';
+};
+
 export const avatars: AvatarType[] = [
   {
     image: avatar0,
