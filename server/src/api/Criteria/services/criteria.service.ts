@@ -163,6 +163,14 @@ const findById = async (id: string): Promise<any | null> => {
   return criteria;
 };
 
+const findByUserId = async (id: string): Promise<any | null> => {
+  return CriteriaModel.findOne({ created_by: id }).populate('created_by', [
+    'first_name',
+    'last_name',
+    'avatar'
+  ]);
+};
+
 const deleteCriteria = async (req: Request, res: Response) => {
   const id = req.params.id;
   await CriteriaModel.findByIdAndDelete(id);
@@ -175,5 +183,6 @@ export default {
   deleteCriteria,
   updateCriteria,
   findById,
-  getByUserId
+  getByUserId,
+  findByUserId
 };

@@ -10,6 +10,8 @@ import createError from 'http-errors';
 import { generateLinksForMatchesImages } from './match.helper';
 import assetService from '../Asset/services/asset.service';
 import { LogAction, MatchLog } from '../../data/logs';
+import criteriaService from '../Criteria/services/criteria.service';
+import { faker } from '@faker-js/faker';
 
 const router: Router = Router();
 
@@ -181,9 +183,19 @@ export class MatchController {
       );
 
       matches.docs = generateLinksForMatchesImages(matches.docs);
+
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < matches.docs.length; i++) {
+        const currentMatch = matches.docs[i];
+        matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
+        matches.docs[i].suggestion_id = i;
+        matches.docs[i].percentage = faker.number.int({ min: 30, max: 100 });
+        matches.docs[i].matchId = currentMatch._id;
+      }
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
       return res.status(200).json(matches);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'Unable to fetch matches.' });
     }
   };
