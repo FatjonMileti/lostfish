@@ -5,7 +5,7 @@ import createError from 'http-errors';
 import mongoose from 'mongoose';
 import moment from 'moment';
 import httpStatus from 'http-status';
-import { hashPassword, isPasswordStrong } from './user.helpers';
+import { handleUserDocuments, hashPassword, isPasswordStrong } from './user.helpers';
 import { LoginLog, LoginLogAction } from '../../data/logs';
 import accountService from '../Account/services/account.service';
 import { validate, ValidationError } from 'class-validator';
@@ -165,7 +165,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 
   if (userBody.documents) {
-    user.documents = userBody.documents;
+    user.documents = handleUserDocuments(user.documents, userBody.documents);
   }
 
   try {

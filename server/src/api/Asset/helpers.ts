@@ -99,7 +99,7 @@ export const handlePropertyImages = (existingImages: any[], incomingImages: any[
         });
       } else {
         imagesToDelete.forEach((img: any) => {
-          fileService.removeFile(img.key, assetId, '');
+          fileService.removeFile(img.key);
         });
       }
     }

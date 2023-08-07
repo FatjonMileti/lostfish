@@ -6,18 +6,8 @@ const createFiles = async (files: any[]) => {
   return await FilesCollection.insertMany(files);
 };
 
-const removeFile = async (
-  imageId: string,
-  propertyId: string = '',
-  userId: string = ''
-): Promise<boolean> => {
-  let filePathString = 'uploads/';
-  if (propertyId) {
-    filePathString = path.join(filePathString, 'asset-images/');
-  }
-  if (userId) {
-    filePathString = path.join(filePathString, 'user-docs/');
-  }
+const removeFile = async (imageId: string): Promise<boolean> => {
+  const filePathString: string = 'uploads/';
 
   const rootDir = process.cwd();
   const filePath = path.resolve(rootDir, filePathString, imageId);

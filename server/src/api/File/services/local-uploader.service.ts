@@ -38,11 +38,7 @@ export default class LocalUploadService {
     return path.resolve(process.cwd(), 'uploads', id);
   }
 
-  async deleteImage(img: string, propertyId: string = '', userId: string = ''): Promise<any> {
-    if (propertyId) {
-      return this.internalFileService.removeFile(img, propertyId);
-    } else if (userId) {
-      return this.internalFileService.removeFile(img, '', userId);
-    }
+  async deleteImage(img: string): Promise<any> {
+    return this.internalFileService.removeFile(img);
   }
 }
