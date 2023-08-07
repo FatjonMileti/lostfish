@@ -7,25 +7,12 @@ import { Icon } from '../../../components/Icon';
 
 import verified from '../../MyAccount/images/verified.svg';
 interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
-  avatar?: string;
   closeViewProfile: () => void;
-  name: string;
-  propertyType: string;
-  propertyPreferences: string;
-  areaOfInterest: string;
-  radius: string;
-  moveIn: string;
-  budget: string;
-  nrOfBedrooms: string;
-  nrOfBathrooms: string;
-  parkingNeeded: string;
-  depositAmount: string;
+  criteria: any;
+  avatar: string;
 }
-export const ViewProfile = styled(
-  ({
-    className,
-    closeViewProfile,
-    name,
+export const ViewProfile = styled(({ className, closeViewProfile, criteria, avatar }: ViewProfileProps) => {
+  const {
     propertyType,
     propertyPreferences,
     areaOfInterest,
@@ -34,152 +21,154 @@ export const ViewProfile = styled(
     budget,
     nrOfBedrooms,
     nrOfBathrooms,
-    parkingNeeded,
-    depositAmount
-  }: ViewProfileProps) => {
-    return (
-      <Modal className={`view-profile-modal ${className}`} open={true} onBackdropClick={closeViewProfile}>
-        <IconButton size='large' className='close-button' onClick={closeViewProfile}>
-          <Icon icon='close' size={16} />
-        </IconButton>
+    specificPropertyFeatures,
+    depositAmount,
+    firstName,
+    lastName
+  } = criteria;
 
-        <div className='details-side'>
-          <div className='header'>
-            <div className='header-left'>
-              <Typography variant='body3' className='tenant-name'>
-                {name}
-              </Typography>
+  return (
+    <Modal className={`view-profile-modal ${className}`} open={true} onBackdropClick={closeViewProfile}>
+      <IconButton size='large' className='close-button' onClick={closeViewProfile}>
+        <Icon icon='close' size={16} />
+      </IconButton>
 
-              <img src={verified} alt='Verified indicator' />
-            </div>
+      <div className='details-side'>
+        <div className='header'>
+          <div className='header-left'>
+            <Typography variant='body3' className='tenant-name'>
+              {`${firstName} ${lastName}`}
+            </Typography>
 
-            <Typography variant='body3' className='match-rate'>
-              34% Match rate
+            <img src={verified} alt='Verified indicator' />
+          </div>
+
+          <Typography variant='body3' className='match-rate'>
+            34% Match rate
+          </Typography>
+        </div>
+        <div className='sections'>
+          <div className='section'>
+            <Typography variant='body4' className='section-title'>
+              About
+            </Typography>
+            <Typography variant='body5'>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+              laboris nisi ut aliquip ex ea commodo consequat.{' '}
             </Typography>
           </div>
-          <div className='sections'>
-            <div className='section'>
-              <Typography variant='body4' className='section-title'>
-                About
-              </Typography>
-              <Typography variant='body5'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                laboris nisi ut aliquip ex ea commodo consequat.{' '}
-              </Typography>
-            </div>
-            <div className='section looking-for-section'>
-              <Typography variant='body4' className='section-title'>
-                Looking for
-              </Typography>
-              <div className='looking-for-content'>
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Property type
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {propertyType}
-                  </Typography>
-                </div>
+          <div className='section looking-for-section'>
+            <Typography variant='body4' className='section-title'>
+              Looking for
+            </Typography>
+            <div className='looking-for-content'>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Property type
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {propertyType}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    budget
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {budget}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  budget
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {budget}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Property class
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {propertyPreferences}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Property class
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {propertyPreferences}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Deposit
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {depositAmount}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Deposit
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {depositAmount}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Location
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {areaOfInterest}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Location
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {areaOfInterest}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Bedrooms
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {nrOfBedrooms}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Bedrooms
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {nrOfBedrooms}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Radius
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {radius}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Radius
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {radius}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Bathrooms
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {nrOfBathrooms}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Bathrooms
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {nrOfBathrooms}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Move in
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {moveIn}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Move in
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {moveIn}
+                </Typography>
+              </div>
 
-                <div className='detail'>
-                  <Typography variant='body5' className='detail-name'>
-                    Parking needed
-                  </Typography>
-                  <Typography variant='body5' className='detail-value'>
-                    {parkingNeeded}
-                  </Typography>
-                </div>
+              <div className='detail'>
+                <Typography variant='body5' className='detail-name'>
+                  Parking needed
+                </Typography>
+                <Typography variant='body5' className='detail-value'>
+                  {specificPropertyFeatures.includes('Parking spot') ? 'Yes' : 'No'}
+                </Typography>
               </div>
             </div>
-            <div className='section social-networks-sections'>
-              <Typography variant='body4' className='section-title'>
-                Social media accounts
-              </Typography>
-              <div className='social-networks-content'>
-                <Icon icon='twitter' size={16} />
-                <Icon icon='instagram' size={16} />
-              </div>
+          </div>
+          <div className='section social-networks-sections'>
+            <Typography variant='body4' className='section-title'>
+              Social media accounts
+            </Typography>
+            <div className='social-networks-content'>
+              <Icon icon='twitter' size={16} />
+              <Icon icon='instagram' size={16} />
             </div>
           </div>
         </div>
-        <div className='avatar-side'></div>
-      </Modal>
-    );
-  }
-)`
+      </div>
+      <div className='avatar-side'></div>
+    </Modal>
+  );
+})`
   &.view-profile-modal {
     position: relative;
     width: 1020px;

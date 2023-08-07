@@ -4,6 +4,8 @@ import authorize from '../../middleware/authorize';
 
 import validateId from '../../middleware/object-id.validator';
 import CriteriaSchema from './schemas/criteria.schema';
+import MatchSchema from '../Match/match.schema';
+import { faker } from '@faker-js/faker';
 
 const router: Router = Router();
 
@@ -49,13 +51,20 @@ export class CriteriaController {
       }
     );
 
-    matchesUsers.docs = matchesUsers.docs.map((item: any) => {
-      const { created_by, ...rest } = item.toObject();
+    const matches = await MatchSchema.find({ created_by: res.locals.user_id }).lean();
+
+    matchesUsers.docs = matchesUsers.docs.map((item: any, index: number) => {
+      const criteria = item.toObject();
+      const matchTenant = matches.find(
+        (match: any) => match.tenant.toString() === criteria?.created_by?._id.toString()
+      );
       return {
-        ...created_by,
-        criteria: {
-          ...rest
-        }
+        suggestion_id: index,
+        criteria,
+        chosen: matchTenant?.chosen ?? false,
+        starred: matchTenant?.starred ?? false,
+        matchId: matchTenant?._id ?? undefined,
+        percentage: faker.number.int({ min: 30, max: 100 })
       };
     });
 
