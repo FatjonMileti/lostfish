@@ -11,6 +11,7 @@ import UsedRefreshToken from '../../../data/usedRefreshToken';
 import RevokedToken from '../../../data/revokedToken';
 import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
+import config from '../../../config';
 
 const login = async (req: express.Request, res: express.Response) => {
   const model = res.locals.model! as { email: string; password: string };
@@ -120,6 +121,20 @@ const getMyProfile = async (req: express.Request, res: express.Response) => {
   const rules = packRules(defineAbilitiesFor(user).rules);
   const data: any = { ...user.toObject(), rules };
 
+  data.documents = data.documents.map((item: any) => {
+    const fileUrl = item.mimetype.startsWith('image')
+      ? `${config.api_url}/api/file/${item.key}`
+      : `${config.api_url}/api/file/pdf/${item.key}`;
+
+    return {
+      key: item.key,
+      type: item.type,
+      approved: item.approved,
+      mimetype: item.mimetype,
+      originalname: item.originalname,
+      link: item.link ? item.link : fileUrl
+    };
+  });
   res.status(httpStatus.OK).json(data);
 };
 

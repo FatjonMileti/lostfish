@@ -4,6 +4,8 @@ import multer, { Multer } from 'multer';
 import multerS3 from 'multer-s3';
 import config from '../../../config';
 import fs from 'fs';
+import path from 'path';
+import process from 'process';
 
 const AWS = require('aws-sdk');
 const s3AWS = new AWS.S3();
@@ -63,6 +65,10 @@ export default class S3FileService {
       })
     });
     return this.uploader;
+  }
+
+  getFilePath(id: string, folder?: string) {
+    return path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
   }
 
   async getImage(filename: string) {

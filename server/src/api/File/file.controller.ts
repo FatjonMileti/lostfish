@@ -6,7 +6,7 @@ import config from '../../config';
 import assetService from '../Asset/services/asset.service';
 const s3UploadService = S3UploadService.getInstance();
 const localUploaderService = LocalUploaderService.getInstance();
-
+import fs from 'fs';
 export class FileController {
   public router = router;
   private fileService = config.uses3Bucket ? s3UploadService : localUploaderService;
@@ -17,6 +17,7 @@ export class FileController {
 
   private initializeRoutes() {
     this.router.get('/:filename', this.getFile);
+    this.router.get('/pdf/:fileId', this.getFilePdf);
     this.router.get('/user-docs/:filename', this.getUserDocs);
     this.router.get('/property-images/:filename', this.getPropertyFiles);
     this.router.delete('/', this.deleteFile);
@@ -67,6 +68,38 @@ export class FileController {
       const file = this.fileService.getImage(filename);
       return response.end(file, 'binary');
     } catch (error: any) {
+      response.status(400).send(error);
+    }
+  };
+
+  /**
+   * @api {get} /api/file/pdf/:fileId Download pdf file
+   * @apiDescription Get file to s3
+   * @apiGroup AWS
+   * @apiSampleRequest /api/file/pdf/:fileId
+   *
+   */
+  protected getFilePdf = async (request: Request, response: Response) => {
+    const fileId = request.params.fileId;
+    const fileName = request.query.fileName;
+    try {
+      if (config.uses3Bucket) {
+        const protectedUrl = (await this.fileService.getImage(fileId)) as string;
+        return response.redirect(protectedUrl);
+      }
+
+      // Set appropriate headers for the PDF response
+      response.setHeader('Content-Type', 'application/pdf');
+      response.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${fileName ? fileName : 'document.pdf'}`
+      );
+      const file = this.fileService.getFilePath(fileId);
+      // Stream the PDF file to the response
+      const stream = fs.createReadStream(file);
+      stream.pipe(response);
+    } catch (error: any) {
+      console.log(error);
       response.status(400).send(error);
     }
   };

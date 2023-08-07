@@ -3,7 +3,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { UserDocument, Role } from './user.interface';
 
 const schema: Schema<UserDocument> = new Schema<UserDocument>({
-  hash: { type: String, default: null },
+  hash: { type: String, default: null, select: false },
   role: {
     type: String,
     default: Role.Client

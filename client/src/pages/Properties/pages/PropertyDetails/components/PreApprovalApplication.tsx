@@ -231,5 +231,5 @@ export const PreApprovalApplication = () => {
     }
   };
 
-  return renderApplicationLifeCycle();
+  return afterPreApprove;
 };

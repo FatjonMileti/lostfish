@@ -1,11 +1,8 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import axios from '../utils/axios';
+import { IUser_Documents } from '../pages/MyAccount/user.interface';
 
-type DocumentType = {
-  type: string;
-  value: string;
-};
 export interface ProfileStoreType {
   id: string;
   avatar?: string;
@@ -14,7 +11,7 @@ export interface ProfileStoreType {
   email: string;
   phone: string;
   description: string;
-  documents: DocumentType[];
+  documents: IUser_Documents[];
   set: (
     partial:
       | ProfileStoreType

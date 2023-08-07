@@ -18,8 +18,8 @@ export default class LocalUploadService {
     return LocalUploadService.instance;
   }
 
-  createLocalUploader(): Multer {
-    this.uploader = multer({ dest: 'uploads/asset-images' });
+  createLocalUploader(dest?: string): Multer {
+    this.uploader = multer({ dest: dest ? dest : 'uploads/asset-images' });
     return this.uploader;
   }
 
@@ -31,6 +31,10 @@ export default class LocalUploadService {
     } catch (error: any) {
       return null;
     }
+  }
+
+  getFilePath(id: string, folder?: string) {
+    return path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
   }
 
   async deleteImage(img: string, propertyId: string = '', userId: string = ''): Promise<any> {

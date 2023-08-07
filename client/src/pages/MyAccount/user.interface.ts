@@ -13,6 +13,44 @@ interface ContactUser extends Document {
   address: string;
 }
 
+export type DocumentType = 'Employer reference' | 'Landlord reference' | 'Proof of ID';
+
+export interface IUser_Documents {
+  type: DocumentType;
+  key: string;
+  approved: boolean;
+  mimetype: string;
+  originalname: string;
+  link?: string;
+}
+
+export const DOCUMENT_TYPES: IUser_Documents[] = [
+  {
+    type: 'Proof of ID',
+    key: '',
+    link: '',
+    approved: false,
+    mimetype: '',
+    originalname: ''
+  },
+  {
+    type: 'Employer reference',
+    key: '',
+    link: '',
+    approved: false,
+    mimetype: '',
+    originalname: ''
+  },
+  {
+    type: 'Landlord reference',
+    key: '',
+    link: '',
+    approved: false,
+    mimetype: '',
+    originalname: ''
+  }
+];
+
 export interface UserDocument extends ContactUser {
   user_id: number;
   hash: string;

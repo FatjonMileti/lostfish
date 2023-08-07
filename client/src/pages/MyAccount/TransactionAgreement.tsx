@@ -3,17 +3,17 @@ import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
 import axios from '../../utils/axios';
-import config from '../../config';
-
+import { DOCUMENT_TYPES, DocumentType, IUser_Documents } from './user.interface';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { Backdrop } from '../../components/Backdrop';
+import { DocumentsView } from './components/DocumentsView';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [fileUrl, setFileUrl] = React.useState<string | null>(null);
+
+  const [documents, setDocuments] = React.useState<IUser_Documents[]>([]);
 
   const [loading, setLoading] = React.useState(false);
 
@@ -27,7 +27,12 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
   const getDocuments = () => {
     const { documents } = profileStore;
     if (documents?.length > 0) {
-      setFileUrl(`${config.apiUrl}/api/file/${documents[0].value}`);
+      setDocuments(
+        DOCUMENT_TYPES.map((doc) => {
+          const exitingDocument = documents.find((item) => item.type === doc.type && item.key && item.link);
+          return exitingDocument ? exitingDocument : doc;
+        })
+      );
     }
   };
 
@@ -37,7 +42,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
     }
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, type: DocumentType) => {
     try {
       setLoading(true);
 
@@ -54,16 +59,19 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
         });
 
         if (response.status === 200) {
-          await updateUserDocs([
-            {
-              type: 'Proof of ID',
-              value: response.data[0].key,
-              approved: false
+          const documentsToSend: IUser_Documents[] = DOCUMENT_TYPES.map((doc) => {
+            if (doc.type === type) {
+              doc.key = response.data[0].key;
+              doc.mimetype = response.data[0].mimetype;
+              doc.originalname = response.data[0].originalname;
+              return doc;
+            } else {
+              return doc;
             }
-          ]);
+          });
+
+          await updateUserDocs(documentsToSend);
           await profileStore.fetchProfile(auth.access_token);
-          const imagePreview = URL.createObjectURL(selectedFile);
-          setFileUrl(imagePreview);
         }
       }
     } catch (err) {
@@ -87,38 +95,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
     <div className={`transaction-agreement ${className}`}>
       <Backdrop open={loading} />
       <div className='body-content'>
-        <div className='section'>
-          <Typography variant='body4' className='title'>
-            ID Verification
-          </Typography>
-          <Typography variant='body4'>
-            Upload a document (jpg, png or pdf) of your valid ID to verify your account. Once verified a badge
-            will be visible on your account to indicate that your account is verified.
-          </Typography>
-
-          <Button
-            size='small'
-            variant='secondary'
-            startIcon={<Icon icon='plus' size={16} />}
-            onClick={handleAddDocumentClick}>
-            Add document
-          </Button>
-          <input
-            type='file'
-            accept='.jpg, .png, .pdf'
-            style={{ display: 'none' }}
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
-          {fileUrl && <img src={fileUrl} alt='preview' height={200} />}
-          <div className='note'>
-            <Typography variant='body5'>
-              <b>Note:</b> ID verification is mandatory to generate the transaction agreement. You can skip
-              this step but remember you won’t be able to message your match and close the deal until you
-              generate and sign the transaction agreement.
-            </Typography>
-          </div>
-        </div>
+        <DocumentsView documents={documents} handleFileChange={handleFileChange} />
 
         <div className='section'>
           <Typography variant='body4' className='title'>
