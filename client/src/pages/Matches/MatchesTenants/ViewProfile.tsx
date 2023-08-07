@@ -6,12 +6,12 @@ import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
 import verified from '../../MyAccount/images/verified.svg';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
   closeViewProfile: () => void;
   criteria: any;
-  avatar: string;
 }
-export const ViewProfile = styled(({ className, closeViewProfile, criteria, avatar }: ViewProfileProps) => {
+export const ViewProfile = styled(({ className, closeViewProfile, criteria }: ViewProfileProps) => {
   const {
     propertyType,
     propertyPreferences,
@@ -24,7 +24,8 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria, avat
     specificPropertyFeatures,
     depositAmount,
     firstName,
-    lastName
+    lastName,
+    avatar
   } = criteria;
 
   return (
@@ -165,7 +166,7 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria, avat
           </div>
         </div>
       </div>
-      <div className='avatar-side'></div>
+      <div className='avatar-side' style={{ backgroundImage: `url(${getAvatarFormIndex(avatar)})` }}></div>
     </Modal>
   );
 })`
@@ -263,7 +264,6 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria, avat
 
       .avatar-side {
         padding: 32px;
-        background-image: url(${(props) => (props.avatar ? props.avatar : 'none')});
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;

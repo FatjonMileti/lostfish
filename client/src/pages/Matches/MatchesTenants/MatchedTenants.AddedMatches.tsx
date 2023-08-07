@@ -11,7 +11,7 @@ import { MatchedSlide, TenantType } from './MatchesTenants';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
-import { avatars } from '../../HomeLoggedIn/avatars';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: any[];
@@ -61,7 +61,7 @@ export const AddedTenants = styled(
         <div className='page-title-section'>
           <div>
             <Typography>
-              Matching with{' '}
+              Matched with{' '}
               <span className='matching-with'>
                 {' '}
                 {tenants.length} potential {tenants.length > 1 ? 'tenants' : 'tenant'}
@@ -100,26 +100,23 @@ export const AddedTenants = styled(
             <div className='slides-wrapper'>
               {tenants.map((addedTenant, tenantIndex) => {
                 const { criteria: tenantCriteria } = addedTenant;
-
-                const avatarImage = !isNaN(parseInt(tenantCriteria.avatar || ''))
-                  ? avatars[parseInt(tenantCriteria.avatar || '')]?.image
-                  : '';
-
                 return (
                   <motion.div
                     animate={{
                       x:
                         tenantIndex < activeSlide
-                          ? `calc(${-100 * tenantIndex}% - ${tenantIndex * 24}px)`
-                          : `calc(${-100 * activeSlide}% - ${24 * activeSlide - tenantIndex}px)`,
+                          ? `calc(${-100 * tenantIndex}% +  ${32 * tenantIndex}px) `
+                          : `calc(${-100 * activeSlide}% + ${32 * activeSlide}px)`,
+
                       scale: tenantIndex < activeSlide ? 0.9 : 1,
                       y: tenantIndex >= activeSlide ? `0` : `32px`,
                       opacity: tenantIndex === activeSlide ? 1 : 0.5
                     }}
-                    transition={{ ease: 'easeOut', duration: 0.5 }}>
+                    transition={{ ease: 'easeOut', duration: 0.5 }}
+                    style={{ marginLeft: '-32px' }}>
                     <MatchedSlide
                       active={tenantIndex === activeSlide}
-                      avatar={avatarImage}
+                      avatar={getAvatarFormIndex(tenantCriteria.avatar)}
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
@@ -177,12 +174,13 @@ export const AddedTenants = styled(
 
     .matches-slider-body {
       display: grid;
-      grid-template-columns: 1fr 3fr;
+      grid-template-columns: 1fr 2fr;
       column-gap: 24px;
 
       .trust-score-section {
         display: grid;
         align-content: center;
+        max-width: 324px;
 
         .improve-trust-score-title {
           margin-top: 16px;
@@ -200,13 +198,14 @@ export const AddedTenants = styled(
 
       .slides-wrapper {
         padding-bottom: 40px;
-        padding-left: 24px;
-        margin-left: -24px;
+
         margin-right: -36px;
         display: flex;
-        column-gap: 24px;
 
         overflow-x: hidden;
+
+        padding-left: calc(32px + 32px);
+        margin-left: -32px;
 
         padding-top: 24px;
         margin-top: -24px;

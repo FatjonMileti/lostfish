@@ -7,8 +7,6 @@ import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
-
-import { avatars } from '../../HomeLoggedIn/avatars';
 import { Backdrop } from '../../../components/Backdrop';
 import { Button } from '../../../components/Button';
 import { ViewProfile } from './ViewProfile';
@@ -130,20 +128,14 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
       />
       {criteriaToView && (
-        <ViewProfile
-          criteria={criteriaToView.criteria}
-          closeViewProfile={() => setCriteriaToView(null)}
-          avatar={avatars[parseInt(criteriaToView.criteria.avatar || '')].image}
-        />
+        <ViewProfile criteria={criteriaToView.criteria} closeViewProfile={() => setCriteriaToView(null)} />
       )}
 
       {!matchedView ? (
         <SuggestedTenants
           tenants={tenants}
           getTenants={getTenants}
-          setProperties={setTenants}
           removeTenantMatch={removeTenantMatch}
-          getCheckedProperties={getCheckedTenants}
           matchedView={matchedView}
           setMatchedView={setMatchedView}
           setTenantToView={setCriteriaToView}
@@ -241,7 +233,11 @@ export const MatchedSlide = styled(
               34%
             </Typography>
           </div>
-          <Button size='small' variant='secondary' onClick={onViewProfileClick}>
+          <Button
+            size='small'
+            variant='secondary'
+            className='view-profile-button'
+            onClick={onViewProfileClick}>
             View profile
           </Button>
         </motion.div>
@@ -257,8 +253,6 @@ export const MatchedSlide = styled(
     flex-shrink: 0;
     align-content: space-between;
     opacity: 0.5;
-
-    margin-left: -32px;
 
     &.active {
       z-index: 1;
@@ -288,6 +282,10 @@ export const MatchedSlide = styled(
         column-gap: 8px;
         padding: 20px 32px;
         font-weight: 700;
+
+        .view-profile-button {
+          flex-shrink: 0;
+        }
 
         .tenant-dot,
         .tenant-match-percentage {

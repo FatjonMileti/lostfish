@@ -8,19 +8,15 @@ import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { MatchedSlide, TenantType } from './MatchesTenants';
-import { Button } from '../../../components/Button';
-import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
-import { avatars } from '../../HomeLoggedIn/avatars';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: TenantType[];
   getTenants: () => void;
-  setProperties: (properties: TenantType[] | ((properties: TenantType[]) => TenantType[])) => void;
   removeTenantMatch: (matchId: string, propertyId?: string) => Promise<void>;
   improveTrustScore: () => void;
-  getCheckedProperties: () => Promise<void>;
   showSwitchToMatchedViewSwitch: boolean;
   matchedView: boolean;
   setMatchedView: (matchedView: boolean) => void;
@@ -33,7 +29,6 @@ export const SuggestedTenants = styled(
     className,
     tenants,
     removeTenantMatch,
-    getCheckedProperties,
     getTenants,
     showSwitchToMatchedViewSwitch,
     matchedView,
@@ -44,8 +39,6 @@ export const SuggestedTenants = styled(
     improveTrustScore
   }: AddedTenantsProps) => {
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
-    const [viewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
-    const navigate = useNavigate();
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
 
@@ -114,25 +107,23 @@ export const SuggestedTenants = styled(
               {tenants.map((addedTenant, tenantIndex) => {
                 const { criteria: tenantCriteria } = addedTenant;
 
-                const avatarImage = !isNaN(parseInt(tenantCriteria.avatar || ''))
-                  ? avatars[parseInt(tenantCriteria.avatar || '')]?.image
-                  : '';
-
                 return (
                   <motion.div
                     animate={{
                       x:
                         tenantIndex < activeSlide
-                          ? `calc(${-100 * tenantIndex}% - ${tenantIndex * 24}px)`
-                          : `calc(${-100 * activeSlide}% - ${24 * activeSlide - tenantIndex}px)`,
+                          ? `calc(${-100 * tenantIndex}% +  ${32 * tenantIndex}px) `
+                          : `calc(${-100 * activeSlide}% + ${32 * activeSlide}px)`,
+
                       scale: tenantIndex < activeSlide ? 0.9 : 1,
                       y: tenantIndex >= activeSlide ? `0` : `32px`,
                       opacity: tenantIndex === activeSlide ? 1 : 0.5
                     }}
-                    transition={{ ease: 'easeOut', duration: 0.5 }}>
+                    transition={{ ease: 'easeOut', duration: 0.5 }}
+                    style={{ marginLeft: '-32px' }}>
                     <MatchedSlide
                       active={tenantIndex === activeSlide}
-                      avatar={avatarImage}
+                      avatar={getAvatarFormIndex(tenantCriteria.avatar)}
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
@@ -186,7 +177,7 @@ export const SuggestedTenants = styled(
               direction='right'
               onClick={next}
               size='large'
-              style={{ visibility: avatars.length === 1 ? 'hidden' : 'initial' }}
+              style={{ visibility: tenants.length === 1 ? 'hidden' : 'initial' }}
             />
           </div>
         </div>
@@ -239,8 +230,12 @@ export const SuggestedTenants = styled(
         overflow-x: hidden;
         margin-right: -36px;
         padding-right: 36px;
+
         padding-left: calc(32px + 32px);
-        padding-bottom: 24px;
+        margin-left: -32px;
+
+        padding-top: 24px;
+        margin-top: -24px;
       }
     }
 
