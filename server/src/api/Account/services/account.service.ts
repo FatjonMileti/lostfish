@@ -20,7 +20,8 @@ const login = async (req: express.Request, res: express.Response) => {
   const user: UserDocument | null = await UserModel.findOne({
     email: model.email,
     is_disabled: false
-  });
+  }).select({ hash: 1, email: 1, is_disabled: 1, first_name: 1, last_name: 1, role: 1 });
+
   if (!user) throw loginError('user_not_found', 'User not found');
 
   const passCheck: boolean = await new Promise((resolve) => {

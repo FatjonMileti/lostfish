@@ -4,6 +4,7 @@ import internalFileService from '../services/file.service';
 
 const fs = require('fs');
 const path = require('path');
+
 export default class LocalUploadService {
   private static instance: LocalUploadService;
   private uploader!: Multer;
@@ -19,12 +20,12 @@ export default class LocalUploadService {
   }
 
   createLocalUploader(dest?: string): Multer {
-    this.uploader = multer({ dest: dest ? dest : 'uploads/asset-images' });
+    this.uploader = multer({ dest: dest ? dest : 'uploads' });
     return this.uploader;
   }
 
-  getImage(id: string, folder?: string) {
-    const imagePath = path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
+  getImage(id: string) {
+    const imagePath = path.resolve(process.cwd(), 'uploads', id);
 
     try {
       return fs.readFileSync(imagePath);
@@ -33,8 +34,8 @@ export default class LocalUploadService {
     }
   }
 
-  getFilePath(id: string, folder?: string) {
-    return path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
+  getFilePath(id: string) {
+    return path.resolve(process.cwd(), 'uploads', id);
   }
 
   async deleteImage(img: string, propertyId: string = '', userId: string = ''): Promise<any> {

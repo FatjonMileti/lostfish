@@ -7,6 +7,7 @@
 node_modules/
 docs/
 uploads/
+logs/
 # Compiled Java class files
 *.class
 

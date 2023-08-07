@@ -3,9 +3,10 @@ const router: Router = Router();
 import S3UploadService from './services/s3-file.service';
 import LocalUploaderService from './services/local-uploader.service';
 import config from '../../config';
-import assetService from '../Asset/services/asset.service';
+
 const s3UploadService = S3UploadService.getInstance();
 const localUploaderService = LocalUploaderService.getInstance();
+
 import fs from 'fs';
 export class FileController {
   public router = router;
@@ -20,34 +21,7 @@ export class FileController {
     this.router.get('/pdf/:fileId', this.getFilePdf);
     this.router.get('/user-docs/:filename', this.getUserDocs);
     this.router.get('/property-images/:filename', this.getPropertyFiles);
-    this.router.delete('/', this.deleteFile);
   }
-
-  protected deleteFile = async (request: Request, response: Response) => {
-    const { propertyId, documentId, fileId } = request.query;
-    if (config.uses3Bucket) {
-      console.log('using s3');
-    }
-
-    if (propertyId) {
-      if (typeof fileId === 'string') {
-        const parts = fileId && fileId.split('/');
-        const id = parts[parts.length - 1];
-        const property = await assetService.findById(propertyId as string);
-        property.property_images = property.property_images.filter((item: any) => item.key !== id);
-        const fileResponse = await this.fileService.deleteImage(id, propertyId as string);
-        if (fileResponse) {
-          await property.save();
-        } else {
-          return response.send({ success: fileResponse, message: 'file_not_deleted' });
-        }
-
-        return response.send({ success: fileResponse, message: 'deleted_with_success' });
-      }
-    }
-
-    return response.send('ok');
-  };
 
   /**
    * @api {get} /api/file/:filename Get any file
@@ -99,7 +73,6 @@ export class FileController {
       const stream = fs.createReadStream(file);
       stream.pipe(response);
     } catch (error: any) {
-      console.log(error);
       response.status(400).send(error);
     }
   };
@@ -120,7 +93,7 @@ export class FileController {
         return response.redirect(protectedUrl);
       }
 
-      const file = this.fileService.getImage(filename, 'user-docs/');
+      const file = this.fileService.getImage(filename);
       return response.end(file, 'binary');
     } catch (error: any) {
       response.status(400).send(error);
@@ -143,7 +116,7 @@ export class FileController {
         return response.redirect(protectedUrl);
       }
 
-      const file = this.fileService.getImage(filename, 'user-docs/');
+      const file = this.fileService.getImage(filename);
 
       return response.end(file, 'binary');
     } catch (error: any) {

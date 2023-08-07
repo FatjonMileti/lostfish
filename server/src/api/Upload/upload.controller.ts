@@ -5,26 +5,14 @@ import S3UploadService from '../File/services/s3-file.service';
 import LocalUploadService from '../File/services/local-uploader.service';
 import internalFileService from '../File/services/file.service';
 import authorize from '../../middleware/authorize';
+import { filesMapper } from './upload.helper';
 
 /*Production services */
-const s3UploaderService = S3UploadService.getInstance();
-const publics3Uploader = s3UploaderService.createPublicUploader();
-const protectedUploader = s3UploaderService.createPrivateUploader();
+const publics3Uploader = S3UploadService.getInstance().createPublicUploader();
+const protectedUploader = S3UploadService.getInstance().createPrivateUploader();
 
 /* Local uploader service */
-const localUploaderService = LocalUploadService.getInstance();
-const localUploader = localUploaderService.createLocalUploader();
-
-/* helper to map files */
-const filesMapper = (files: any) => {
-  return files.map((file: any) => {
-    const { key, filename, ...rest } = file;
-    rest.key = !key ? filename : key;
-    rest.filename = !filename ? key : filename;
-    rest.link = `${config.api_url}/api/file/${key ? key : filename}`;
-    return rest;
-  });
-};
+const localUploader = LocalUploadService.getInstance().createLocalUploader();
 
 export class UploadController {
   public router = router;
