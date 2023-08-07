@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { registerStore, useGlobalState } from './globalState/globalState';
-import { UIProvider } from './context/ui';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
@@ -99,41 +98,39 @@ function App() {
 
   return (
     <>
-      <SessionMaintainer>
+      <SessionMaintainer debug>
         <SocketContext.Provider value={value}>
           <UserProvider>
-            <UIProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path='/login' element={<Login />} />
-                  <Route path='/agreement/:id' element={<AgreementDetails />} />
-                  <Route path='/components' element={<PreviewComponents />} />
-                  <Route path='/about' element={<About />} />
-                  <Route path='/mission' element={<Mission />} />
-                  <Route path='/forgot-password' element={<ForgotPassword />} />
-                  <Route path='/create-account' element={<CreateAccount />} />
-                  <Route path='/google/redirect' element={<RedirectUriPage />} />
-                  <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
-                  <Route path='/activate-account/:token' element={<VerifyAccount />} />
-                  <Route path='/reset-password/:token' element={<ResetPassword />} />
+            <BrowserRouter>
+              <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route path='/agreement/:id' element={<AgreementDetails />} />
+                <Route path='/components' element={<PreviewComponents />} />
+                <Route path='/about' element={<About />} />
+                <Route path='/mission' element={<Mission />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/create-account' element={<CreateAccount />} />
+                <Route path='/google/redirect' element={<RedirectUriPage />} />
+                <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
+                <Route path='/activate-account/:token' element={<VerifyAccount />} />
+                <Route path='/reset-password/:token' element={<ResetPassword />} />
 
-                  <Route path='' element={!!userStore.auth ? <HomeLoggedIn /> : <Home />} />
+                <Route path='' element={!!userStore.auth ? <HomeLoggedIn /> : <Home />} />
 
-                  {userStore?.userDetails?.role === 'Landlord' && (
-                    <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
-                  )}
+                {userStore?.userDetails?.role === 'Landlord' && (
+                  <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
+                )}
 
-                  <Route path='/properties/:id' element={<PrivateProperty />} />
-                  <Route path='/properties/:id/view' element={<PublicProperty />} />
-                  <Route path='/properties/:id/applications' element={<PropertyApplications />} />
-                  <Route path='/matches' element={<Matches />} />
-                  <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
-                  <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
-                  <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
-                  <Route path='*' element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </UIProvider>
+                <Route path='/properties/:id' element={<PrivateProperty />} />
+                <Route path='/properties/:id/view' element={<PublicProperty />} />
+                <Route path='/properties/:id/applications' element={<PropertyApplications />} />
+                <Route path='/matches' element={<Matches />} />
+                <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
+                <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
+                <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </UserProvider>
         </SocketContext.Provider>
       </SessionMaintainer>

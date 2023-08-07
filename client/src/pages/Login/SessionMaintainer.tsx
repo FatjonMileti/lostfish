@@ -1,11 +1,12 @@
 import React from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import config from '../../config';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from './Login';
 import { Backdrop } from '../../components/Backdrop';
 import { useUserStore } from '../../globalState/user';
+import { useProfileStore } from '../../globalState/profile';
 
 export const refreshToken = async (debug = false) => {
   if (debug) console.log('Refreshing token...');
@@ -13,7 +14,7 @@ export const refreshToken = async (debug = false) => {
   const userStore = useUserStore.getState();
 
   try {
-    const response = await axios.post(`${config.apiUrl}/api/account/refresh`, {
+    const response = await axios(null).post(`${config.apiUrl}/api/account/refresh`, {
       refresh_token: userStore.auth.refresh_token
     });
 
@@ -50,6 +51,7 @@ export const SessionMaintainer = ({
 }) => {
   const user = useUserStore();
   const setUser = useUserStore((state) => state.set);
+  const profileStore = useProfileStore();
 
   const [refreshTimeoutId, setRefreshTimeoutId] = React.useState<NodeJS.Timeout | undefined>(undefined);
   const [resumingSession, setResumingSession] = React.useState<boolean>(true);
@@ -84,15 +86,31 @@ export const SessionMaintainer = ({
         });
       }
     } else {
-      setResumingSession(false);
       if (debug)
         console.log('Token has not expired yet, it expires in: ', `${(tokenExpirationTime - now) / 1000}s`);
       const timeoutId = setTimeout(refreshToken, timeUntilRefresh);
       setRefreshTimeoutId(timeoutId);
+
       if (debug)
         console.log(
           `scheduled refresh ${offset / 1000}s before it expires, after: ${timeUntilRefresh / 1000}s`
         );
+
+      // check if user deleted or access denied
+      if (debug) console.log('Checking if user still have access...');
+
+      axios(user.auth.access_token)
+        .get('/api/account/me')
+        .then(() => {
+          if (debug) console.log('User still have access');
+        })
+        .catch((err) => {
+          if (debug) console.log('Error fetching user profile: ', err);
+          setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+        })
+        .finally(() => {
+          setResumingSession(false);
+        });
     }
   }, [user.auth]);
 
