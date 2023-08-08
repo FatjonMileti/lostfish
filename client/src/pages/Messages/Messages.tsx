@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axios';
 
 import messagesBackground from './massages-page-backgroud.png';
+import { Documents } from './Documents/Documents';
 
 registerStore('transactionAgreement', { signed: false });
 
@@ -217,8 +218,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             ) : (
               <div />
             )}
-
-            <div className='about-conversation'></div>
+            {room ? <Documents /> : <div />}
           </div>
         )}
       </div>
@@ -267,9 +267,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       padding: 24px 36px 36px 36px;
       min-height: calc(100vh - 108px);
       box-sizing: border-box;
-
-      .about-conversation {
-      }
     }
 
     .chats {

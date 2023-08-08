@@ -43,14 +43,26 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
         </div>
         <div>
           <Label>Label</Label>
+
           <Label active>Label</Label>
           <Label variant='tertiary'>tertiary</Label>
           <Label variant='tertiary' size='small'>
             tertiary small
           </Label>
 
+          <Label size='medium' variant='primary'>
+            medium primary
+          </Label>
+
+          <Label size='medium' variant='secondary'>
+            medium secondary
+          </Label>
+
           <Label inverted size='medium' variant='secondary'>
             medium secondary inverted
+          </Label>
+          <Label variant='primary' size='medium' disabled>
+            medium primary disabled
           </Label>
         </div>
         <div>

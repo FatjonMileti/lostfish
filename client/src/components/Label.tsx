@@ -7,6 +7,7 @@ export interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   size?: 'small' | 'medium';
   variant?: 'primary' | 'secondary' | 'tertiary';
   inverted?: boolean;
+  disabled?: boolean;
 }
 
 export const Label = styled(
@@ -17,13 +18,15 @@ export const Label = styled(
     children,
     variant = 'primary',
     inverted = false,
+    disabled = false,
     ...otherProps
   }: LabelProps) => {
     return (
       <div
-        className={classNames([className, 'label', `size-${size}`, `variant-${variant}`], {
+        className={classNames(className, 'label', `size-${size}`, `variant-${variant}`, {
           active,
-          inverted
+          inverted,
+          disabled
         })}
         {...otherProps}>
         {children}
@@ -49,6 +52,33 @@ export const Label = styled(
 
     //width: min-content;
     width: max-content;
+
+    justify-content: center;
+
+    &.variant-primary {
+      border: 1px solid #184d6d;
+      background: #184d6d;
+      color: white;
+
+      &:hover {
+        color: white;
+        border: 1px solid #0d2a38;
+        background-color: #0d2a38;
+      }
+
+      &.disabled {
+        border: 1px solid #a7a7a7;
+        background: #a7a7a7;
+        color: white;
+      }
+
+      &.size-medium {
+        height: 48px;
+        padding: 12px 24px;
+        font-size: 16px;
+        line-height: 24px;
+      }
+    }
 
     &.variant-tertiary {
       border: none;
@@ -77,6 +107,13 @@ export const Label = styled(
     &.variant-secondary {
       border: 2px solid #184d6d;
       height: fit-content;
+
+      &:hover {
+        color: #0d2a38;
+        border: 2px solid #0d2a38;
+        background-color: rgba(24, 77, 109, 0.1);
+      }
+
       &.inverted {
         border: 2px solid white;
         color: white;
@@ -88,9 +125,10 @@ export const Label = styled(
       }
 
       &.size-medium {
-        padding: 12px 20px;
-        font-size: 14px;
-        line-height: 20px;
+        height: 48px;
+        padding: 12px 24px;
+        font-size: 16px;
+        line-height: 24px;
       }
     }
 
