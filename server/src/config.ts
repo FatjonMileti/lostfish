@@ -39,7 +39,9 @@ export default {
     privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
     dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
     rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
-    basePath: process.env.BASE_PATH ?? ''
+    basePath: process.env.BASE_PATH ?? '',
+    transactionAgreementTemplate: process.env.LOSTFISH_TRANSACTION_AGREEMENT_TEMPLATE_ID ?? '',
+    privacyAgreementTemplate: process.env.LOSTFISH_PRIVACY_AGREEMENT_TEMPLATE_ID ?? ''
   },
   aws: {
     region: process.env.AWS_REGION ?? '',

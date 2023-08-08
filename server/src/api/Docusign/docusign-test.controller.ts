@@ -26,6 +26,7 @@ export class DocusignController {
       abilityMiddleware(CASLAction.Create, 'SignGenerator'),
       this.createEnvelope
     );
+    this.router.post('/sign-transaction', authorize(), this.createEnvelope);
     this.router.get('/get-consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
@@ -44,10 +45,10 @@ export class DocusignController {
   }
 
   /**
-   * @api {post} /api/docusign/form Create ne wenvelope
+   * @api {post} /api/docusign/create-envelope Create new envelope
    * @apiDescription Add a new envelope as draft
    * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/form
+   * @apiSampleRequest /api/docusign/create-envelope
    *
    * @apiUse CreateDocusignForm
    * @apiUse CreateDocusignFormExample
@@ -55,6 +56,19 @@ export class DocusignController {
    * @apiUse bearer
    */
   private createEnvelope = this.docusignService.createEnvelope;
+
+  /**
+   * @api {post} /api/docusign/create-envelope Create new envelope
+   * @apiDescription Add a new envelope as draft
+   * @apiGroup Docusign
+   * @apiSampleRequest /api/docusign/create-envelope
+   *
+   * @apiUse CreateDocusignForm
+   * @apiUse CreateDocusignFormExample
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private signTransactionAgreement = this.docusignService.createEnvelope;
 
   /**
    * @api {get} /api/docusign/:id Update url

@@ -34,6 +34,7 @@ import { useProfileStore } from './globalState/profile';
 
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
+import { Agreement } from './pages/Agreement/Agreement';
 
 registerStore(
   'notification',
@@ -121,6 +122,7 @@ function App() {
                   <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
                 )}
 
+                <Route path='/agreement' element={<Agreement />} />
                 <Route path='/properties/:id' element={<PrivateProperty />} />
                 <Route path='/properties/:id/view' element={<PublicProperty />} />
                 <Route path='/properties/:id/applications' element={<PropertyApplications />} />

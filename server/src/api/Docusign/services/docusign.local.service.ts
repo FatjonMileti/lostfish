@@ -19,6 +19,7 @@ const createEnvelopeDoc = async (
   return await Envelope.create({
     envelope_id: results.envelopeId,
     status: results.status,
+    document_type: 'Rent Contract',
     status_date_time: results.statusDateTime,
     uri: results.uri,
     land_lord: landlord,

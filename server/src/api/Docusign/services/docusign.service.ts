@@ -396,8 +396,6 @@ const retrieveSignedDocuments = async (envelopeId: string) => {
     const envelopesApi = await getEnvelopesApi();
     const documentsResponse = await envelopesApi.listDocuments(jwtConfig.appAccountId, envelopeId);
 
-    console.log({ documentsResponse: JSON.stringify(documentsResponse) });
-
     if (documentsResponse) {
       documentsResponse.envelopeDocuments
         ?.filter((item: any) => item.type === 'content')
@@ -405,17 +403,6 @@ const retrieveSignedDocuments = async (envelopeId: string) => {
           getSingleDocument(envelopeId, doc);
         });
     }
-
-    // if(documentsResponse){
-    //   // Download the signed document
-    //   const documentId = documentsResponse?.envelopeDocuments[0].documentId; // Assuming there's only one document
-    //   const documentResponse = await envelopesApi.getDocument(jwtConfig.appAccountId, envelopeId, documentId,{});
-    //
-    //   // Save the document to a file
-    //   const filePath = '/envelopes/2a573eba-f8ba-4663-82d6-c33f9134e476'; // Update the file path as per your needs
-    //   const fileStream = require('fs').createWriteStream(filePath);
-    //   documentResponse.pipe(fileStream);
-    // }
 
     console.log('Signed document downloaded successfully.');
   } catch (error) {

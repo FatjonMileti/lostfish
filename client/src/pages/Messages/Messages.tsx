@@ -18,7 +18,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axios';
 
 import messagesBackground from './massages-page-backgroud.png';
-import { Documents } from './Documents/Documents';
+// import { Documents } from './Documents/Documents';
+import { DocumentsTest } from './DocumentsRefail/DocumentsTest';
 
 registerStore('transactionAgreement', { signed: false });
 
@@ -32,6 +33,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const { socket } = useContext(SocketContext);
 
   const [room, setRoom] = useState<IRoom | null>(null);
+
   const [messages, setMessages] = useState<IMessageItem[]>([]);
   const [conversations, setConversations] = useState<IRoom[]>([]);
 
@@ -218,7 +220,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             ) : (
               <div />
             )}
-            {room ? <Documents /> : <div />}
+            {room ? <DocumentsTest room={room} /> : <div />}
           </div>
         )}
       </div>

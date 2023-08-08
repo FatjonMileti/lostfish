@@ -23,9 +23,9 @@ export class UserController {
       this.getAll
     );
     this.router.get('/:id', authorize(), checkUpdateUserPermission, this.getById);
-    this.router.post('/register', this.create);
     this.router.patch('/:id', authorize(), checkUpdateUserPermission, this.updateUser);
     this.router.delete('/', authorize(), ability(CASLAction.Delete, 'User'), this.delete);
+    this.router.post('/register', this.create);
     this.router.post('/forgot-password', this.sendResetPasswordInstructions);
     this.router.post('/reset-password', this.resetPassword);
     this.router.post('/change-password', authorize(), this.sendChangePasswordInstructions);
