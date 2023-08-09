@@ -102,10 +102,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
           />
         </motion.div>
       ) : criteriaStore.lookingFor === 'I own a place' ||
-        (criteriaStore.lookingFor === 'I’m looking for a place' &&
-          criteriaStore.transactionType &&
-          criteriaStore.whenDoYouWantToMove &&
-          criteriaStore.areaOfInterest) ? (
+        (criteriaStore.lookingFor === 'I’m looking for a place' && criteriaStore.areaOfInterest) ? (
         <>
           <div className='container'>
             <>

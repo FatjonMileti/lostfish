@@ -3,7 +3,6 @@ import { Typography } from '../../../components/Typography';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
-import tenantImage from '../../Home/tenant.png';
 import imLookingForPlace from '../../Home/imLookingForPlace.png';
 import { keyframes } from '@emotion/react';
 import React from 'react';
@@ -78,11 +77,11 @@ export const WhatAreYouLookingFor = styled(
               </Typography>
             </motion.div>
           </div>
-          <div className='action-buttons'>
-            <Button variant='secondary' onClick={() => onLookingForChange('I’m looking for a place')}>
-              Skip for now
-            </Button>
-          </div>
+          {/*<div className='action-buttons'>*/}
+          {/*  <Button variant='secondary' onClick={() => onLookingForChange('I’m looking for a place')}>*/}
+          {/*    Skip for now*/}
+          {/*  </Button>*/}
+          {/*</div>*/}
         </div>
       </div>
     );
@@ -177,8 +176,6 @@ export const WhatAreYouLookingFor = styled(
           }
 
           &.second {
-            background-color: ${(props) => avatars[props.avatar].backgroundColor};
-
             background-image: url(${(props) => avatars[props.avatar].image});
 
             background-repeat: no-repeat;

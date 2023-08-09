@@ -5,28 +5,32 @@ import { useNavigate } from 'react-router-dom';
 
 import { Backdrop } from '../../../components/Backdrop';
 import { Button } from '../../../components/Button';
-
-import { TransactionType } from './Mrd.TransactionType';
-import { WhenDoYouWantToMove } from './Mrd.WhenDoYouWantToMove';
 import { AreaOfInterest } from './Mrd.AreaOfInterest';
-
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
+import { Budget } from './Mrd.Budget';
+import { Bedrooms } from './Mrd.Bedrooms';
 
 type MinimumRequiredDataType = {
   transactionType?: string;
   whenDoYouWantToMove?: string;
   areaOfInterest?: string;
+  budget: number[];
+  nrOfBedrooms: number[];
 };
 
 interface MinimumRequiredDetailsProps extends HTMLAttributes<HTMLDivElement> {}
 export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDetailsProps) => {
   const [state, setState] = React.useState<MinimumRequiredDataType>({
-    transactionType: undefined,
+    transactionType: 'Rent',
     whenDoYouWantToMove: undefined,
-    areaOfInterest: undefined
+    areaOfInterest: undefined,
+    budget: [1000, 5200],
+    nrOfBedrooms: [1, 4]
   });
+
+  const [pressedContinue, setPressedContinue] = React.useState(false);
 
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -34,10 +38,6 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
 
   const { auth } = useUserStore();
   const criteriaStore = useCriteriaStore();
-
-  const onTransactionTypeChange = async (transactionType: string) => {
-    setState((state) => ({ ...state, transactionType }));
-  };
 
   const onWhenChange = async (whenDoYouWantToMove: string) => {
     setState((state) => ({ ...state, whenDoYouWantToMove }));
@@ -47,14 +47,26 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, areaOfInterest }));
   };
 
+  const onBudgetChange = (budget: number[]) => {
+    setState((state) => ({ ...state, budget }));
+  };
+
+  const onNrOfBedroomsChange = (nrOfBedrooms: number[]) => {
+    setState((state) => ({ ...state, nrOfBedrooms }));
+  };
+
   const startMatching = async () => {
     setLoading(true);
 
     const { data } = await axios(auth.access_token).patch('/api/criteria', {
       looking_for: criteriaStore.lookingFor,
       transaction_type_string: state.transactionType,
-      moving_time: state.whenDoYouWantToMove,
-      area_of_interest: state.areaOfInterest
+      // moving_time: state.whenDoYouWantToMove,
+      area_of_interest: state.areaOfInterest,
+      room_details: {
+        number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
+      },
+      budget: `${state.budget[0]} - ${state.budget[1]}`
     });
 
     await new Promise((resolve) => {
@@ -70,7 +82,6 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     });
 
     setLoading(false);
-    criteriaStore.set({ startedMatching: true });
 
     navigate('/matches');
   };
@@ -78,44 +89,52 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
   return (
     <>
       <Backdrop open={loading}></Backdrop>
-      <div
-        className={`minimum-requirements ${className}`}
-        style={{ alignContent: state.transactionType ? 'flex-start' : 'center' }}>
+      <div className={`minimum-requirements ${className}`}>
         {criteriaStore.lookingFor === 'I’m looking for a place' && (
           <>
-            <TransactionType
-              transactionType={state.transactionType}
-              onTransactionTypeChange={onTransactionTypeChange}
-            />
+            <motion.div
+              key='areaOfInterest'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}>
+              <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
+            </motion.div>
 
-            {state.transactionType && (
+            {state.areaOfInterest && (
               <motion.div
-                key='whenDoYouWantToMove'
+                key='budget'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}>
-                <WhenDoYouWantToMove onWhenChange={onWhenChange} value={state.whenDoYouWantToMove} />
+                transition={{ duration: 1 }}
+                style={{ display: 'grid', justifyItems: 'center' }}>
+                <Budget value={state.budget} onChange={onBudgetChange} />
+                {!pressedContinue && (
+                  <Button size='large' className='continue-button' onClick={() => setPressedContinue(true)}>
+                    Continue
+                  </Button>
+                )}
               </motion.div>
             )}
 
-            {state.whenDoYouWantToMove && (
-              <motion.div
-                key='areaOfInterest'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}>
-                <AreaOfInterest areaOfInterest={state.areaOfInterest} onAreaChange={onAreaOfInterestChange} />
-              </motion.div>
-            )}
-
-            {state.whenDoYouWantToMove && state.areaOfInterest && (
-              <motion.div
-                key='startMatching'
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}>
-                <Button onClick={startMatching}>Start matching</Button>
-              </motion.div>
+            {state.areaOfInterest && pressedContinue && (
+              <>
+                <motion.div
+                  key='bedrooms'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}>
+                  <Bedrooms value={state.nrOfBedrooms} onChange={onNrOfBedroomsChange} />
+                </motion.div>
+                <motion.div
+                  key='startMatching'
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}>
+                  <Button size='large' onClick={startMatching}>
+                    Start matching
+                  </Button>
+                </motion.div>
+              </>
             )}
           </>
         )}
@@ -124,12 +143,16 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
   );
 })`
   &.minimum-requirements {
-    padding-top: 24px;
+    padding: 24px 36px 36px 36px;
     box-sizing: border-box;
     display: grid;
     justify-items: center;
     height: 100%;
     row-gap: 64px;
     align-content: center;
+
+    .continue-button {
+      margin-top: 20px;
+    }
   }
 `;

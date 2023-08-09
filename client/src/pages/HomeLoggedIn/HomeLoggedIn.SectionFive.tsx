@@ -36,6 +36,7 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
     display: grid;
     gap: 48px;
     box-sizing: border-box;
+    background: #fff;
 
     .title {
       display: flex;
