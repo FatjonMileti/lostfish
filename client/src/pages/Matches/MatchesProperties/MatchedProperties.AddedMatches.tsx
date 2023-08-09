@@ -149,8 +149,7 @@ export const AddedMatches = styled(
                       y: propertyIndex >= activeSlide ? `0` : `32px`,
                       opacity: propertyIndex === activeSlide ? 1 : 0.5
                     }}
-                    transition={{ ease: 'easeOut', duration: 0.5 }}
-                    style={{ marginLeft: '-32px' }}>
+                    transition={{ ease: 'easeOut', duration: 0.5 }}>
                     <MatchedSlide
                       key={propertyIndex}
                       className={classNames({ active: propertyIndex === activeSlide })}
