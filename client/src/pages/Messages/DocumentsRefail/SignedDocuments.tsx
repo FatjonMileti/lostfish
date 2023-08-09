@@ -50,24 +50,32 @@ export const SignedDocuments = () => {
       <Typography variant='body3'>Sign documents</Typography>
       <div></div>
 
-      {list.rows.map((item: any, index) => {
-        return (
-          <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
-            <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Grid item>
-                <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
-                {item.document_type}
+      {list.rows.length > 0 ? (
+        list.rows.map((item: any, index) => {
+          return (
+            <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
+              <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Grid item>
+                  <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
+                  {item.document_type}
+                </Grid>
+                <Grid item style={{ display: 'flex' }}>
+                  <Button onClick={() => {}} style={{ marginRight: '5px' }}>
+                    View
+                  </Button>
+                  {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
+                </Grid>
               </Grid>
-              <Grid item style={{ display: 'flex' }}>
-                <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-                  View
-                </Button>
-                {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
-              </Grid>
-            </Grid>
-          </Paper>
-        );
-      })}
+            </Paper>
+          );
+        })
+      ) : (
+        <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
+          <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography>No signed documents</Typography>
+          </Grid>
+        </Paper>
+      )}
     </div>
   );
 };

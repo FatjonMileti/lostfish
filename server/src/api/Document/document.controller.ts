@@ -1,11 +1,13 @@
 import { Request, Response, Router } from 'express';
-import DocumentModel from './document.schema';
+import DocumentModel, { DocumentInterface } from './document.schema';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import userService from '../User/user.service';
 import { Role } from '../User/user.interface';
 import authorize from '../../middleware/authorize';
 import { handleUploadedDocuments } from './document.helper';
+import abilityMiddleware from '../../middleware/ability.middleware';
+import { CASLAction } from '../../casl/casl.interface';
 
 const router: Router = Router();
 
@@ -21,7 +23,12 @@ export class DocumentController {
     this.router.get('/by-user', authorize(), this.getDocumentByUserIds);
     this.router.get('/:id', authorize(), this.getDocumentById);
     this.router.post('/', authorize(), this.createDocument);
-    this.router.patch('/:id', authorize(), this.updateDocument);
+    this.router.patch(
+      '/:id',
+      authorize(),
+      abilityMiddleware(CASLAction.Update, 'Documents'),
+      this.updateDocument
+    );
     this.router.delete('/:id', authorize(), this.deleteDocument);
   }
 
@@ -84,14 +91,13 @@ export class DocumentController {
       ]
     };
     try {
-      // Replace 'DocumentModel' with your actual model for user documents
-      const document = await DocumentModel.findOne(query);
+      const document: DocumentInterface | null = await DocumentModel.findOne(query);
       if (!document) {
         return response.status(404).json({ message: 'Document not found' });
       }
-      response.status(200).json(document);
+      response.status(httpStatus.OK).json(document);
     } catch (error: any) {
-      response.status(400).send(error);
+      response.status(httpStatus.BAD_REQUEST).send(error);
     }
   };
 
@@ -125,16 +131,18 @@ export class DocumentController {
   };
 
   /**
-   * @api {put} /api/documents/:id Update a user document by ID
+   * @api {patch} /api/documents/:id Update a user document by ID
    * @apiDescription Update a specific user document by its ID
    * @apiGroup Document
    * @apiSampleRequest /api/documents/:id
    */
   protected updateDocument = async (request: Request, response: Response) => {
     const documentId = request.params.id;
-    const { file } = request.body;
+    const { file, fileDoc } = request.body;
     const user_id = response.locals.user_id;
     const me = await userService.findOne({ _id: user_id as string });
+
+    const canApproveDocuments = request.ability.can(CASLAction.Update, 'Documents', 'file.approved');
 
     if (!me) {
       throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
@@ -148,6 +156,12 @@ export class DocumentController {
 
     if (request.body.hasOwnProperty('file')) {
       doc.file = handleUploadedDocuments(doc.file, file, me.documents);
+    }
+
+    if (canApproveDocuments && request.body.hasOwnProperty('fileDoc')) {
+      doc.file = doc.file.map((item: any) => {
+        return item.key === fileDoc.key ? fileDoc : item;
+      });
     }
 
     await doc.save();

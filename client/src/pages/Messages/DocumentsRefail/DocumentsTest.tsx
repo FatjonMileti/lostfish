@@ -10,6 +10,7 @@ import { Tab, Tabs } from '../../../components/Tab';
 import { IRoom } from '../messages.interface';
 import { TenantDocuments } from './TenantDocuments';
 import { SignedDocuments } from './SignedDocuments';
+import { LostfishTermsAndCondition } from './LostfishTermsAndCondition';
 
 interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -53,15 +54,7 @@ export const DocumentsTest = styled(({ room, className }: IDocumentTest) => {
         </div>
         {activeTab === 0 && <TenantDocuments room={room} />}
         {activeTab === 1 && <SignedDocuments />}
-        {activeTab === 2 && (
-          <div className='modal-body'>
-            <Typography variant='body3'>Lostfish T&Cs</Typography>
-            <div></div>
-            <Typography variant='body5'>
-              You can find more information about why we need these documents in the Lostfish T&Cs section.
-            </Typography>
-          </div>
-        )}
+        {activeTab === 2 && <LostfishTermsAndCondition />}
       </Modal>
     </div>
   );

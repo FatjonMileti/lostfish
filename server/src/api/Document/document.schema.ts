@@ -5,9 +5,9 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 export interface DocumentInterface extends Document {
   tenant: Types.ObjectId;
   landlord: Types.ObjectId;
-  approved: boolean;
   file: any[];
   created_at: Date;
+  approved: boolean; // Virtual property
   updated_at?: Date;
   created_by?: Types.ObjectId;
 }
@@ -15,7 +15,6 @@ export interface DocumentInterface extends Document {
 const documentSchema = new Schema<DocumentInterface>({
   tenant: { type: Schema.Types.ObjectId, ref: 'user', required: true },
   landlord: { type: Schema.Types.ObjectId, ref: 'user', required: true },
-  approved: { type: Boolean, default: false },
   file: [{ type: Schema.Types.Mixed }],
   created_at: { type: Date, default: () => new Date() },
   updated_at: { type: Date, default: () => new Date() },
@@ -23,5 +22,11 @@ const documentSchema = new Schema<DocumentInterface>({
 });
 
 documentSchema.plugin(mongoosePaginate);
+
+documentSchema.virtual('approved').get(function (this: DocumentInterface) {
+  return this.file.every((file) => file.approved);
+});
+documentSchema.set('toObject', { virtuals: true });
+documentSchema.set('toJSON', { virtuals: true });
 
 export default model<DocumentInterface, PaginateModel<DocumentInterface>>('document', documentSchema);

@@ -38,6 +38,8 @@ function defineAbilitiesFor(user: UserDocument | IUserAbilityData): PureAbility<
     can(CASLAction.Read, 'SignURL');
     can(CASLAction.Manage, 'Criteria');
     can(CASLAction.Read, 'Matches');
+    can(CASLAction.Manage, 'Documents');
+    cannot(CASLAction.Update, 'Documents', 'file.approved');
   } else if (user.role === Role.Landlord) {
     can(CASLAction.Manage, 'User', user._id.toString());
     can(CASLAction.Manage, 'Asset');
@@ -45,6 +47,7 @@ function defineAbilitiesFor(user: UserDocument | IUserAbilityData): PureAbility<
     can(CASLAction.Manage, 'StarredTenants');
     can(CASLAction.Read, 'SignURL');
     can(CASLAction.Read, 'Matches');
+    can(CASLAction.Update, 'Documents', 'file.approved');
   } else if (user.role === Role.NeWUser) {
     can(CASLAction.Manage, 'User', user._id.toString());
     can(CASLAction.Manage, 'Criteria');

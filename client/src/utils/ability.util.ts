@@ -31,7 +31,8 @@ export type AppSubjects =
   | 'StarredTenants'
   | 'Properties'
   | 'Matches'
-  | 'Message';
+  | 'Message'
+  | 'Documents';
 
 export enum Role {
   Agent = 'Agent',

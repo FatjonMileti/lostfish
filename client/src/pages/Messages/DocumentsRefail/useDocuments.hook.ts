@@ -24,6 +24,7 @@ export const useDocuments = ({
   userDocuments: IUser_Documents[];
   useMyDocument: (document: IUser_Documents) => void;
   handleDocument: (document: IUser_Documents, type: DocumentType) => void;
+  approveOrDisapproveDocument: (documentDetails: IUser_Documents) => void;
 } => {
   const [document, setDocument] = React.useState<IDocument>({
     _id: undefined,
@@ -99,11 +100,26 @@ export const useDocuments = ({
         });
   };
 
+  const approveOrDisapproveDocument = async (documentDetails: IUser_Documents) => {
+    documentDetails.approved = !documentDetails.approved;
+    try {
+      const { data, status } = await axios(auth.access_token).patch('/api/document/' + document._id, {
+        fileDoc: documentDetails
+      });
+
+      if (status === 200) {
+        alert(`Document ${documentDetails.approved ? 'approved' : 'disapproved'}`);
+        setDocument(data);
+      }
+    } catch (error: AxiosError | any) {}
+  };
+
   return {
     documents: document.file,
     setDocument,
     userDocuments,
     useMyDocument,
-    handleDocument
+    handleDocument,
+    approveOrDisapproveDocument
   };
 };

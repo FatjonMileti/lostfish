@@ -18,4 +18,5 @@ export type AppSubjects =
   | 'StarredProperties'
   | 'StarredTenants'
   | 'Criteria'
-  | 'Matches';
+  | 'Matches'
+  | 'Documents';

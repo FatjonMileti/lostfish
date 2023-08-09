@@ -24,6 +24,8 @@ const abilityMiddleware = (action: CASLAction, subject: AppSubjects) => {
       return res.status(httpStatus.FORBIDDEN).json({ message: 'forbidden' });
     }
 
+    req.ability = ability;
+
     next();
   };
 };
@@ -43,6 +45,29 @@ export const checkUpdateUserPermission = async (req: Request, res: Response, nex
   }
 
   next();
+};
+
+const canApproveDocument = (action: CASLAction, subject: AppSubjects) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const { role, user_id } = res.locals;
+
+    if (!role || !user_id) {
+      return res.status(httpStatus.UNAUTHORIZED).json({ error: 'unauthorized' });
+    }
+
+    const user: IUserAbilityData = {
+      _id: res.locals.user_id as string,
+      role: res.locals.role as string
+    };
+
+    const ability = defineAbilitiesFor(user);
+
+    if (!ability.can(action, subject, 'approved')) {
+      return res.status(httpStatus.FORBIDDEN).json({ message: 'forbidden' });
+    }
+
+    next();
+  };
 };
 
 export default abilityMiddleware;
