@@ -1,21 +1,51 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { Header } from '../Home/Header';
+import { SectionOne } from './About.SectionOne';
+import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
+import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
+import { SectionFour } from './About.SectionFour';
+import { Footer } from '../Home/Footer';
+import backgroundImg from './sectionOne.About.png';
+import {SectionZero} from "./About.SectionZero";
+import {SectionImg} from "./About.SectionImg";
 
 export const About = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={`home-page ${className}`}>
+    <div className={`about-page ${className}`}>
       <Header />
+        <SectionZero />
+        <SectionImg />
+      <SectionOne />
+      <SectionThree />
+      <SectionFive />
+      <SectionFour />
+      <Footer />
     </div>
   );
 })`
-  &.home-page {
+  &.about-page {
     position: relative;
     min-height: 100vh;
     display: grid;
-    background-color: #f7f1e7;
-
     grid-template-rows: min-content auto;
+    background: linear-gradient(148deg, #FFFBF3 18.95%, #FFF 100%);
+    z-index: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-image: url(${backgroundImg});
+      background-repeat: no-repeat;
+      opacity: 0.05;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -1;
+    }
 
     .header {
       z-index: 1;
