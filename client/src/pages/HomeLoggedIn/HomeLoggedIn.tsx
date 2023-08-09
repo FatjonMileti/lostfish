@@ -96,7 +96,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
             duration: 1
           }}>
           <WhatAreYouLookingFor
-            avatar={profileStore.avatar ? parseInt(profileStore.avatar) : 0}
+            avatar={profileStore.avatar || ''}
             lookingFor={criteriaStore.lookingFor}
             onLookingForChange={onLookingForChange}
           />

@@ -9,7 +9,7 @@ import React from 'react';
 import { Button } from '../../../components/Button';
 import { motion } from 'framer-motion';
 
-import { avatars } from '../avatars';
+import { getAvatarFormIndex } from '../avatars';
 
 // Create the keyframes
 const scale = keyframes`
@@ -43,13 +43,15 @@ const shapeChange2 = keyframes`
 `;
 
 export interface WhatAreYouLookingForProps extends React.HTMLAttributes<HTMLDivElement> {
-  avatar: number;
+  avatar: string;
   lookingFor?: string;
   onLookingForChange: (lookingFor: string) => Promise<void>;
 }
 
 export const WhatAreYouLookingFor = styled(
-  ({ className, lookingFor, onLookingForChange }: WhatAreYouLookingForProps) => {
+  ({ className, lookingFor, onLookingForChange, avatar }: WhatAreYouLookingForProps) => {
+    const [selected, setSelected] = React.useState('');
+
     return (
       <div className={className}>
         <div className='looking-for-section'>
@@ -60,15 +62,35 @@ export const WhatAreYouLookingFor = styled(
             Start your search by selection one of the options below.
           </Typography>
           <div className='circles'>
-            <div className='circle first' onClick={() => onLookingForChange('I’m looking for a place')}>
+            <motion.div
+              className='circle first'
+              onClick={() => {
+                setSelected('I’m looking for a place');
+                onLookingForChange('I’m looking for a place');
+              }}
+              style={{
+                backgroundImage: `url(${
+                  selected === 'I’m looking for a place' ? getAvatarFormIndex(avatar) : imLookingForPlace
+                })`
+              }}>
               <Typography className='looking-for-text' variant='body4'>
                 I’m looking for a place
               </Typography>
               <IconButton className='plus-button' inverted>
                 <Icon icon='plus' size={24} color='white' />
               </IconButton>
-            </div>
-            <motion.div className='circle second' onClick={() => onLookingForChange('I own a place')}>
+            </motion.div>
+            <motion.div
+              className='circle second'
+              onClick={() => {
+                setSelected('I own a place');
+                onLookingForChange('I own a place');
+              }}
+              style={{
+                backgroundImage: `url(${
+                  selected === 'I own a place' ? getAvatarFormIndex(avatar) : getAvatarFormIndex('0')
+                })`
+              }}>
               <IconButton className='plus-button' inverted>
                 <Icon icon='plus' size={24} color='white' />
               </IconButton>
@@ -123,7 +145,9 @@ export const WhatAreYouLookingFor = styled(
           cursor: pointer;
 
           &.first {
-            background-image: url(${imLookingForPlace});
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             position: absolute;
             left: 0;
 
@@ -176,8 +200,6 @@ export const WhatAreYouLookingFor = styled(
           }
 
           &.second {
-            background-image: url(${(props) => avatars[props.avatar].image});
-
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
