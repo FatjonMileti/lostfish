@@ -28,6 +28,52 @@ const createEnvelopeDoc = async (
   });
 };
 
+const createPrivacyAgreementEnvelopeDoc = async (
+  results: any,
+  user: string | ObjectId,
+  userRole: Role
+): Promise<IEnvelope> => {
+  const newDoc: any = {
+    envelope_id: results.envelopeId,
+    status: results.status,
+    document_type: 'Lostfish privacy agreement',
+    status_date_time: results.statusDateTime,
+    uri: results.uri,
+    created_by: user
+  };
+
+  if (userRole === Role.Landlord) {
+    newDoc.land_lord = user;
+  }
+  if (userRole === Role.Client) {
+    newDoc.tenant = user;
+  }
+  return await Envelope.create(newDoc);
+};
+
+const createTransactionAgreementEnvelopeDoc = async (
+  results: any,
+  user: string | ObjectId,
+  userRole: Role
+): Promise<IEnvelope> => {
+  const newDoc: any = {
+    envelope_id: results.envelopeId,
+    status: results.status,
+    document_type: 'Lostfish transaction agreement',
+    status_date_time: results.statusDateTime,
+    uri: results.uri,
+    created_by: user
+  };
+
+  if (userRole === Role.Landlord) {
+    newDoc.land_lord = user;
+  }
+  if (userRole === Role.Client) {
+    newDoc.tenant = user;
+  }
+  return await Envelope.create(newDoc);
+};
+
 const setSignUrlForUsers = async (
   envelopeId: string,
   signUrlLandlord: SignUrl,
@@ -45,6 +91,27 @@ const setSignUrlForUsers = async (
   return existingEnvelope;
 };
 
+const setLostfishPrivacySignUrlForUsers = async (
+  envelopeId: string,
+  signUrlUser: SignUrl,
+  role: Role
+): Promise<IEnvelope> => {
+  const existingEnvelope: IEnvelope | null = await Envelope.findOne({ envelope_id: envelopeId });
+  if (!existingEnvelope) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
+  }
+
+  if (role === Role.Landlord) {
+    existingEnvelope.sign_url_landlord = signUrlUser ?? '';
+  }
+  if (role === Role.Client) {
+    existingEnvelope.sign_url_tenant = signUrlUser ?? '';
+  }
+
+  await existingEnvelope.save();
+  return existingEnvelope;
+};
+
 const updateEnvelopeById = async (id: string, data: any) => {
   return Envelope.updateOne({ _id: id }, { $set: { ...data } });
 };
@@ -53,13 +120,26 @@ const getEnvelopeById = async (req: Request, res: Response) => {
   try {
     const envelope: any | null = await Envelope.findOne({ _id: req.params.id })
       .populate('land_lord')
-      .populate('tenant');
+      .populate('tenant')
+      .populate('agent');
 
     if (!envelope) {
       throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
     }
 
     if (res.locals.role === Role.Landlord && !envelope.signed_by_landlord) {
+      const newEnvelope = await docusignService.generateNewUrlForLoggedInUser({
+        envelope,
+        user: envelope.land_lord
+      });
+      await updateEnvelopeById(req.params.id, newEnvelope);
+    }
+
+    if (
+      res.locals.role === Role.Agent &&
+      !envelope.sign_url_agent &&
+      envelope.document_type === 'Lostfish transaction agreement'
+    ) {
       const newEnvelope = await docusignService.generateNewUrlForLoggedInUser({
         envelope,
         user: envelope.land_lord
@@ -77,28 +157,35 @@ const getEnvelopeById = async (req: Request, res: Response) => {
 
     res.send(envelope);
   } catch (error: any) {
+    console.log(error);
     res.status(error.status ?? httpStatus.NOT_FOUND).send({ message: error.request.message ?? 'Not found' });
   }
 };
 
 const downloadDocument = async (req: Request, res: Response) => {
+  const fileName = req.query.fileName as string;
   try {
     const file = await docusignService.getSingleDocument(req.params.id, {});
-    // Send the file as a download
-    res.download(file, 'signed_document.pdf', (err) => {
-      if (err) {
-        console.error('Error sending the file:', err);
-      } else {
-        // Clean up the temporary file after it is sent
-        fs.unlink(file, (error: any) => {
-          if (error) {
-            console.error('Error deleting the temporary file:', error);
-          } else {
-            console.log('Temporary file deleted.');
-          }
-        });
-      }
-    });
+
+    if (file) {
+      // Send the file as a download
+      res.download(file, fileName ? fileName : 'signed_document.pdf', (err) => {
+        if (err) {
+          console.error('Error sending the file:', err);
+        } else {
+          // Clean up the temporary file after it is sent
+          fs.unlink(file, (error: any) => {
+            if (error) {
+              console.error('Error deleting the temporary file:', error);
+            } else {
+              console.log('Temporary file deleted.');
+            }
+          });
+        }
+      });
+    } else {
+      return res.redirect(config.front_end_url + '?file_is_not_signed');
+    }
   } catch (error) {
     // Handle error response
     res.status(500).send('Error retrieving the signed document.');
@@ -151,19 +238,33 @@ const successSignRedirect = async (req: Request, res: Response) => {
 };
 
 const getEnvelopeList = async (req: Request, res: Response) => {
-  const query: { $or?: any } = {};
+  const { document_type } = req.query;
+  const query: { $or?: any; document_type?: any } = {};
   if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
     query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
+  }
+
+  if (document_type) {
+    query.document_type = { $in: document_type };
   }
 
   const response = await Envelope.paginate(query, {
     ...res.locals.paging_options,
     populate: [
       { path: 'land_lord', select: ['first_name', 'last_name', '_id'] },
-      { path: 'tenant', select: ['first_name', 'last_name', '_id'] }
+      { path: 'tenant', select: ['first_name', 'last_name', '_id'] },
+      { path: 'agent', select: ['first_name', 'last_name', '_id'] }
     ]
   });
   return res.status(httpStatus.OK).send(response);
+};
+
+const getEnvelopeListDocs = async () => {
+  const query: { $or?: any; document_type: any } = {
+    document_type: { $in: ['Lostfish privacy agreement', 'Lostfish transaction agreement'] }
+  };
+
+  return Envelope.find(query).populate('land_lord').populate('tenant').populate('agent');
 };
 
 const generateConsentUrl = async (req: Request, res: Response) => {
@@ -179,5 +280,9 @@ export default {
   generateNewSignUrls,
   successSignRedirect,
   getEnvelopeList,
-  generateConsentUrl
+  generateConsentUrl,
+  createPrivacyAgreementEnvelopeDoc,
+  setLostfishPrivacySignUrlForUsers,
+  createTransactionAgreementEnvelopeDoc,
+  getEnvelopeListDocs
 };

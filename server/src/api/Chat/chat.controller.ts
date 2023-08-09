@@ -8,6 +8,7 @@ import { RoomDocument } from './room.interface';
 import RoomSchema from './schemas/room.schema';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
+import documentService from '../Document/document.service';
 const router: Router = Router();
 
 export class ChatController {
@@ -73,6 +74,13 @@ export class ChatController {
     };
 
     const response = await roomService.getMessages(query, res.locals.paging_options, userId);
+
+    const room: RoomDocument | null = await roomService.findOne({ _id: id });
+    if (room) {
+      const data = await documentService.canCompleteTransaction(room.author, room.participant);
+      console.log({ data });
+    }
+
     res.send(response);
   };
 
@@ -147,7 +155,7 @@ export class ChatController {
 
     const message = { ...newRoom, room_id: newRoom._id };
     await MessageModel.create(message);
-    const getRoom  = await roomService.findOne({_id: newRoom._id})
+    const getRoom = await roomService.findOne({ _id: newRoom._id });
     res.status(200).send(getRoom);
   };
 

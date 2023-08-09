@@ -31,7 +31,11 @@ export const SignedDocuments = () => {
   }, []);
 
   const getEnvelopes = async () => {
-    const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`);
+    const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
+      params: {
+        document_type: 'Rent Contract'
+      }
+    });
     setList((prevList: any) => ({
       ...prevList,
       rows: data.docs,

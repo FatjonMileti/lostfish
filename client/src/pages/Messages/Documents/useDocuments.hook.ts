@@ -39,11 +39,15 @@ export const useDocuments = ({
 
   React.useEffect(() => {
     getUploadedDocuments();
-    getUserDocuments();
-  }, [profileStore]);
+    if (!document._id) {
+      getUserDocuments();
+    }
+  }, [profileStore.id]);
 
   const getUploadedDocuments = async () => {
     try {
+      console.log(document._id);
+
       const { data, status } = await axios(auth.access_token).get('/api/document/by-user', {
         params: { participant }
       });
@@ -96,6 +100,7 @@ export const useDocuments = ({
           file: docs
         })
       : await axios(auth.access_token).post('/api/document', {
+          participant,
           file: docs
         });
   };

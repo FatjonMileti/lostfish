@@ -22,6 +22,7 @@ const state: IGridState = {
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
   { field: 'status', headerName: 'Status', width: 130 },
+  { field: 'document_type', headerName: 'Document type', flex: 1 },
   {
     field: 'landlord',
     headerName: 'Landlord',
@@ -49,7 +50,7 @@ const columns: GridColDef[] = [
     headerName: 'Details',
     width: 130,
     renderCell: (params: any) => {
-      return <Link to={`/agreement/${params.row.id}`}>Details</Link>;
+      return <Link to={`/dashboard/contracts/${params.row.id}`}>Details</Link>;
     }
   }
 ];

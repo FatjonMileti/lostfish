@@ -26,6 +26,11 @@ interface IViewRequestSigners {
   envelopeId: string;
 }
 
+interface IViewRequestLostfishPrivacySigners {
+  user: UserDocument;
+  envelopeId: string;
+}
+
 const createUserSignUrl = async ({
   envelopeId,
   envelopesApi,
@@ -77,6 +82,20 @@ const createViewRequestForSigners = async ({
   return {
     viewRequestLandlord,
     viewRequestTenant
+  };
+};
+
+const createViewRequestForPrivacySigners = async ({
+  user,
+  envelopeId
+}: IViewRequestLostfishPrivacySigners): Promise<{ viewRequestUser: any }> => {
+  const viewRequestUser = await makeRecipientViewRequest({
+    user,
+    envelopId: envelopeId
+  });
+
+  return {
+    viewRequestUser
   };
 };
 
@@ -195,6 +214,80 @@ const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: As
   });
 
   env.templateRoles = [signer1, signer2];
+  env.status = 'Sent';
+
+  return env;
+};
+
+const makePrivacyAgreementEnvelope = (user: UserDocument) => {
+  // @ts-ignore
+  const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
+  env.templateId = jwtConfig.privacyAgreementTemplate;
+
+  // @ts-ignore
+  const documentCreationDate = docusign.Text.constructFromObject({
+    tabLabel: 'creation_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+
+  // @ts-ignore
+  const userAddress = docusign.Text.constructFromObject({
+    tabLabel: 'user_address',
+    value: user.address ?? 'London, UK'
+  });
+
+  // @ts-ignore
+  const tabsUser = docusign.Tabs.constructFromObject({
+    textTabs: [documentCreationDate, userAddress]
+  });
+
+  // @ts-ignore
+  const signer2 = docusign.TemplateRole.constructFromObject({
+    email: user.email,
+    name: `${user.first_name} ${user.last_name}`,
+    clientUserId: user._id.toString(),
+    tabs: tabsUser,
+    roleName: 'User'
+  });
+
+  env.templateRoles = [signer2];
+  env.status = 'Sent';
+
+  return env;
+};
+
+const makeTransactionAgreementEnvelope = (user: UserDocument) => {
+  // @ts-ignore
+  const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
+  env.templateId = jwtConfig.transactionAgreementTemplate;
+
+  // @ts-ignore
+  const documentCreationDate = docusign.Text.constructFromObject({
+    tabLabel: 'creation_date',
+    value: moment().format('DD/MM/YYYY')
+  });
+
+  // @ts-ignore
+  const userAddress = docusign.Text.constructFromObject({
+    tabLabel: 'user_address',
+    value: user.address ?? 'London, UK'
+  });
+
+  // @ts-ignore
+  const tabsUser = docusign.Tabs.constructFromObject({
+    textTabs: [documentCreationDate, userAddress]
+  });
+
+  // @ts-ignore
+  const signer2 = docusign.TemplateRole.constructFromObject({
+    email: user.email,
+    name: `${user.first_name} ${user.last_name}`,
+    clientUserId: user._id.toString(),
+    tabs: tabsUser,
+    roleName: 'User'
+  });
+
+  env.templateRoles = [signer2];
   env.status = 'Sent';
 
   return env;
@@ -390,6 +483,104 @@ const createEnvelope = async (request: Request, response: Response) => {
   }
 };
 
+const createLostfishPrivacyAgreement = async (userId: string) => {
+  try {
+    const envelopesApi = await getEnvelopesApi();
+
+    const user = await userService.findOne({ _id: userId });
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'User not found' });
+    }
+
+    const envelope = makePrivacyAgreementEnvelope(user);
+
+    const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
+      envelopeDefinition: envelope
+    });
+
+    if (results) {
+      await docusignLocalService.createPrivacyAgreementEnvelopeDoc(results, userId, user.role);
+    }
+
+    if (results && results.envelopeId) {
+      const { viewRequestUser } = await createViewRequestForPrivacySigners({
+        user,
+        envelopeId: results.envelopeId
+      });
+
+      const userUrl = await createUserSignUrl({
+        envelopeId: results.envelopeId,
+        envelopesApi,
+        viewRequest: viewRequestUser
+      });
+
+      const existingEnvelope = await docusignLocalService.setLostfishPrivacySignUrlForUsers(
+        results.envelopeId,
+        userUrl,
+        user.role
+      );
+
+      console.log('Lostfish privacy agreement created');
+
+      return { success: false, existingEnvelope };
+    } else {
+      return { success: false, error: { message: 'something went wrong' } };
+    }
+  } catch (error: any) {
+    console.log({ error });
+    return { success: false, error };
+  }
+};
+
+const createLostfishTransactionAgreement = async (userId: string) => {
+  try {
+    const envelopesApi = await getEnvelopesApi();
+
+    const user = await userService.findOne({ _id: userId });
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'User not found' });
+    }
+
+    const envelope = makeTransactionAgreementEnvelope(user);
+
+    const results = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
+      envelopeDefinition: envelope
+    });
+
+    if (results) {
+      await docusignLocalService.createTransactionAgreementEnvelopeDoc(results, userId, user.role);
+    }
+
+    if (results && results.envelopeId) {
+      const { viewRequestUser } = await createViewRequestForPrivacySigners({
+        user,
+        envelopeId: results.envelopeId
+      });
+
+      const userUrl = await createUserSignUrl({
+        envelopeId: results.envelopeId,
+        envelopesApi,
+        viewRequest: viewRequestUser
+      });
+
+      const existingEnvelope = await docusignLocalService.setLostfishPrivacySignUrlForUsers(
+        results.envelopeId,
+        userUrl,
+        user.role
+      );
+
+      console.log('Lostfish transaction agreement created');
+
+      return { success: false, existingEnvelope };
+    } else {
+      return { success: false, error: { message: 'something went wrong' } };
+    }
+  } catch (error: any) {
+    console.log({ error });
+    return { success: false, error };
+  }
+};
+
 const retrieveSignedDocuments = async (envelopeId: string) => {
   try {
     // Get the envelope documents from the DocuSign API
@@ -432,7 +623,7 @@ const fetchAllEnvelopes = async () => {
     // Set the criteria for fetching envelopes
     const options = {
       count: '100', // Maximum number of envelopes to retrieve in one call (adjust as needed)
-      status: 'completed', // Optional: specify the status of the envelopes to filter,
+      // status: 'completed', // Optional: specify the status of the envelopes to filter,
       fromDate: '2023-01-01',
       toDate: '2023-12-31'
     };
@@ -460,7 +651,7 @@ const fetchAllEnvelopes = async () => {
 
 //retrieveSignedDocuments('2a573eba-f8ba-4663-82d6-c33f9134e476');
 //fetchAllEnvelopes();
-
+['Lostfish privacy agreement', 'Lostfish transaction agreement'];
 export default {
   getConsent,
   getToken,
@@ -471,7 +662,9 @@ export default {
   updateUrl,
   getSingleDocument,
   updateUrlForLoggedInUser,
-  generateNewUrlForLoggedInUser
+  generateNewUrlForLoggedInUser,
+  createLostfishPrivacyAgreement,
+  createLostfishTransactionAgreement
 };
 
 const test = {

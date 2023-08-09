@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, Grid, CardContent, Box, Typography } from '@mui/material';
 import config from '../../../config';
-import { Button } from '../../../components/Button';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import { useParams } from 'react-router-dom';
+
+type IDocumentType = 'Rent Contract' | 'Lostfish transaction agreement' | 'Lostfish privacy agreement';
+
 export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
   const { auth, userDetails } = useUserStore();
 
@@ -12,7 +14,7 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
     envelope_id,
     status,
     status_date_time,
-    uri,
+    document_type,
     signed_by_landlord,
     signed_by_tenant,
     land_lord,
@@ -33,20 +35,6 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
     );
   };
 
-  if (!land_lord || !tenant) {
-    return (
-      <Box display='flex' justifyContent='center'>
-        <Card>
-          <CardContent>
-            <Typography color='textSecondary' gutterBottom>
-              No data
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-  }
-
   return (
     <Box display='flex' justifyContent='center'>
       <Card>
@@ -57,18 +45,28 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
           <Typography color='textSecondary' gutterBottom>
             Status Date: {status_date_time}
           </Typography>
-          <Typography color='textSecondary' gutterBottom>
-            Signed by Landlord: {signed_by_landlord ? 'Yes' : 'No'}
-          </Typography>
-          <Typography color='textSecondary' gutterBottom>
-            Signed by Tenant: {signed_by_tenant ? 'Yes' : 'No'}
-          </Typography>
-          <Typography color='textSecondary' gutterBottom>
-            Landlord: {land_lord.first_name} {land_lord.last_name}
-          </Typography>
-          <Typography color='textSecondary' gutterBottom>
-            Tenant: {tenant.first_name} {tenant.last_name}
-          </Typography>
+
+          {land_lord && (
+            <div>
+              <Typography color='textSecondary' gutterBottom>
+                Signed by Landlord: {signed_by_landlord ? 'Yes' : 'No'}
+              </Typography>
+              <Typography color='textSecondary' gutterBottom>
+                Landlord: {land_lord.first_name} {land_lord.last_name}
+              </Typography>
+            </div>
+          )}
+          {tenant && (
+            <div>
+              <Typography color='textSecondary' gutterBottom>
+                Signed by Tenant: {signed_by_tenant ? 'Yes' : 'No'}
+              </Typography>
+
+              <Typography color='textSecondary' gutterBottom>
+                Tenant: {tenant.first_name} {tenant.last_name}
+              </Typography>
+            </div>
+          )}
           {isLandlord && (
             <Typography color='textSecondary' gutterBottom>
               Sign URL (Landlord):{' '}
@@ -93,17 +91,17 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
               )}
             </Typography>
           )}
+
           <Typography color='textSecondary' gutterBottom>
             Created At: {created_at}
           </Typography>
 
           <Typography color='textSecondary' gutterBottom>
-            Download:{' '}
-            {signed_by_tenant && signed_by_landlord ? (
-              <a href={`${config.apiUrl}/api/docusign/envelope/${envelope_id}/download`}> Click here</a>
-            ) : (
-              <b>Both parties need to sign</b>
-            )}
+            Download:
+            <a
+              href={`${config.apiUrl}/api/docusign/envelope/${envelope_id}/download?fileName=${document_type}.pdf`}>
+              Click here
+            </a>
           </Typography>
         </CardContent>
       </Card>

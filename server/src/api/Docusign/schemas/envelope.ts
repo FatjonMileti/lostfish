@@ -11,6 +11,7 @@ export interface IEnvelope extends Document {
   uri: string;
   sign_url_landlord: string;
   sign_url_tenant: string;
+  sign_url_agent: string;
   signed_by_landlord: boolean;
   signed_by_tenant: boolean;
   signed_by_agent: boolean;
@@ -29,6 +30,7 @@ const schema = new Schema<IEnvelope>({
   document_type: { type: String },
   sign_url_landlord: String,
   sign_url_tenant: String,
+  sign_url_agent: String,
   signed_by_landlord: { type: Boolean, default: false },
   signed_by_tenant: { type: Boolean, default: false },
   signed_by_agent: { type: Boolean, default: false },

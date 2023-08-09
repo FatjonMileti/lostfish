@@ -195,7 +195,6 @@ export class MatchController {
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
       return res.status(200).json(matches);
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: 'Unable to fetch matches.' });
     }
   };

@@ -1,4 +1,3 @@
-import { Header } from '../../HomeLoggedIn/Header';
 import React from 'react';
 import { styled } from '@mui/system';
 import axios from '../../../utils/axios';
@@ -6,6 +5,7 @@ import config from '../../../config';
 import { useUserStore } from '../../../globalState/user';
 import { useParams } from 'react-router-dom';
 import { EnvelopeCard } from './EnvelopeCard';
+import { DashboardHeader } from '../../AgentDashboard/components/DashboardHeader';
 
 export const AgreementDetails = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const { auth } = useUserStore();
@@ -26,7 +26,7 @@ export const AgreementDetails = styled(({ className }: React.HTMLAttributes<HTML
   console.log({ envelope });
   return (
     <div className={`home-page ${className}`}>
-      <Header />
+      <DashboardHeader />
 
       <div className='container'>
         <div className='content'>{envelope && <EnvelopeCard envelope={envelope} />}</div>

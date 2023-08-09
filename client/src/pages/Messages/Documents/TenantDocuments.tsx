@@ -9,20 +9,21 @@ import { IRoom } from '../messages.interface';
 import { useAbility } from '@casl/react';
 import { AbilityContext } from '../../../context/AbilityContext';
 import { CASLAction } from '../../../utils/ability.util';
-import { IUser_Documents } from '../../MyAccount/user.interface';
+import { DocumentType, IUser_Documents } from '../../MyAccount/user.interface';
 
 interface ITenantProps {
   room: IRoom;
 }
 export const TenantDocuments = (props: ITenantProps) => {
   const { room } = props;
-  const { auth, userDetails } = useUserStore();
+  const { userDetails } = useUserStore();
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const participant = userDetails.user_id === room.participant._id ? room.author._id : room.participant._id;
 
-  const { documents, userDocuments, approveOrDisapproveDocument } = useDocuments({
-    participant
-  });
+  const { documents, userDocuments, approveOrDisapproveDocument, useMyDocument, handleDocument } =
+    useDocuments({
+      participant
+    });
 
   const ability = useAbility(AbilityContext);
 
@@ -48,10 +49,11 @@ export const TenantDocuments = (props: ITenantProps) => {
                 <TenantDocumentItem
                   document={document}
                   userDocument={userDocument}
-                  participant={participant}
                   key={index}
                   selectedFile={selectedFile}
                   setSelectedFile={setSelectedFile}
+                  useMyDocument={useMyDocument}
+                  handleDocument={handleDocument}
                 />
               )}
               {canApproveDocuments && (
@@ -73,7 +75,8 @@ interface ITenantDocumentItem {
   selectedFile: any;
   setSelectedFile: React.Dispatch<React.SetStateAction<any>>;
   userDocument: IUser_Documents | undefined;
-  participant: string;
+  useMyDocument: (document: IUser_Documents) => void;
+  handleDocument: (document: IUser_Documents, type: DocumentType) => void;
 }
 
 const TenantDocumentItem = ({
@@ -81,12 +84,9 @@ const TenantDocumentItem = ({
   selectedFile,
   userDocument,
   setSelectedFile,
-  participant
+  useMyDocument,
+  handleDocument
 }: ITenantDocumentItem) => {
-  const { useMyDocument, handleDocument } = useDocuments({
-    participant
-  });
-
   return (
     <Grid item style={{ display: 'flex' }}>
       {document?.key ? (

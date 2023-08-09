@@ -18,7 +18,7 @@ interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
 
 export const DocumentsTest = styled(({ room, className }: IDocumentTest) => {
   const [showModal, setShowModal] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState(1);
+  const [activeTab, setActiveTab] = React.useState(0);
 
   return (
     <div className={classNames('documents', className)}>

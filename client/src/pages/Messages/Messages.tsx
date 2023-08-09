@@ -19,7 +19,7 @@ import axios from '../../utils/axios';
 
 import messagesBackground from './massages-page-backgroud.png';
 // import { Documents } from './Documents/Documents';
-import { DocumentsTest } from './DocumentsRefail/DocumentsTest';
+import { DocumentsTest } from './Documents/DocumentsTest';
 
 registerStore('transactionAgreement', { signed: false });
 

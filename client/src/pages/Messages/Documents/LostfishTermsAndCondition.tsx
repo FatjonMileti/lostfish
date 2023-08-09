@@ -20,6 +20,8 @@ const state: IGridState = {
   search: ''
 };
 
+type IDocumentType = 'Rent Contract' | 'Lostfish transaction agreement' | 'Lostfish privacy agreement';
+
 export const LostfishTermsAndCondition = () => {
   const { auth } = useUserStore();
   const [list, setList] = React.useState<IGridState>({
@@ -31,7 +33,11 @@ export const LostfishTermsAndCondition = () => {
   }, []);
 
   const getEnvelopes = async () => {
-    const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`);
+    const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
+      params: {
+        document_type: ['Lostfish privacy agreement', 'Lostfish transaction agreement']
+      }
+    });
     setList((prevList: any) => ({
       ...prevList,
       rows: data.docs,
@@ -60,9 +66,12 @@ export const LostfishTermsAndCondition = () => {
                   {item.document_type}
                 </Grid>
                 <Grid item style={{ display: 'flex' }}>
-                  <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-                    View
-                  </Button>
+                  {item.signed_by_tenant && (
+                    <a
+                      href={`${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`}>
+                      Download
+                    </a>
+                  )}
                   {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
                 </Grid>
               </Grid>

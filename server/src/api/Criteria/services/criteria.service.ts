@@ -7,6 +7,7 @@ import googleMapService from '../../../external-services/google-map.service';
 import { CurrencyCode } from '../../Asset/asset.interface';
 import userService from '../../User/user.service';
 import { Role } from '../../User/user.interface';
+import docusignService from '../../Docusign/services/docusign.service';
 
 const createCriteria = async (req: Request, res: Response): Promise<any> => {
   const data: CriteriaDocument = req.body;
@@ -38,6 +39,8 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
     if (data.looking_for === LookingForEnum.OWN_A_PLACE) {
       user.role = Role.Landlord;
     }
+    docusignService.createLostfishPrivacyAgreement(user._id).then(() => console.log('ok'));
+    docusignService.createLostfishTransactionAgreement(user._id).then(() => console.log('ok'));
     await user.save();
     const criteria: CriteriaDocument = new CriteriaModel({ ...data });
     await criteria.save();
