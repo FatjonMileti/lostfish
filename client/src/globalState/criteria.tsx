@@ -7,7 +7,8 @@ export interface CriteriaStoreType {
   transactionType?: string;
   whenDoYouWantToMove?: string;
   areaOfInterest?: string;
-  startedMatching: boolean;
+  budget: number[];
+  nrOfBedrooms: number[];
   set: (
     partial:
       | CriteriaStoreType
@@ -24,7 +25,8 @@ const criteriaInitialState = {
   transactionType: 'Rent',
   whenDoYouWantToMove: undefined,
   areaOfInterest: undefined,
-  startedMatching: false
+  budget: [1000, 5200],
+  nrOfBedrooms: [1, 4]
 };
 
 export const useCriteriaStore = create<CriteriaStoreType>()(
@@ -42,8 +44,7 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
               lookingFor: data.looking_for,
               transactionType: data.transaction_type_string,
               whenDoYouWantToMove: data.moving_time,
-              areaOfInterest: data.area_of_interest,
-              startedMatching: true
+              areaOfInterest: data.area_of_interest
             }));
           } catch (err: any) {
             if (err.response.status === 404) {

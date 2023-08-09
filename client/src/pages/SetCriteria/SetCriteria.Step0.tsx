@@ -114,7 +114,7 @@ export const SetCriteriaStep0 = styled(
             </div>
           </div>
 
-          <Button disabled={!form.formState.isValid} onClick={() => setCurrentStep(1)}>
+          <Button disabled={!form.formState.isValid} onClick={() => setCurrentStep(1)} size='large'>
             Refine my search
           </Button>
         </div>

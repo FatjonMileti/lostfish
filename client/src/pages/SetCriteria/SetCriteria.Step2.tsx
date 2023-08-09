@@ -13,11 +13,12 @@ import avatar from '../MyAccount/images/property.png';
 import { Link } from '../../components/Link';
 import { Switch } from '../../components/Switch';
 import { Select } from '../../components/Select/Select';
-import Slider from '@mui/material/Slider';
+
+import { Slider } from '../../components/Slider';
 
 export type Step2FormType = {
   area: number[];
-  nrOfBedrooms: number;
+  nrOfBedrooms: number[];
   nrOfBathrooms: number;
   specificPropertyFeatures: {
     'Parking spot': boolean;
@@ -35,10 +36,7 @@ export type Step2FormType = {
 
 export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
   area: yup.array().required(),
-  nrOfBedrooms: yup
-    .number()
-    .transform((value) => (isNaN(value) ? undefined : value))
-    .required('Number of bedrooms is required'),
+  nrOfBedrooms: yup.array().required(),
   nrOfBathrooms: yup
     .number()
     .transform((value) => (isNaN(value) ? undefined : value))
@@ -58,9 +56,7 @@ export const step2Schema: ObjectSchema<Step2FormType> = yup.object().shape({
 });
 
 //Slider
-function valuetext(value: number) {
-  return `${value}`;
-}
+
 //--------//
 
 export interface SetCriteriaStep2 extends Omit<HTMLProps<HTMLDivElement>, 'form'> {
@@ -72,7 +68,7 @@ export interface SetCriteriaStep2 extends Omit<HTMLProps<HTMLDivElement>, 'form'
 }
 
 export const SetCriteriaStep2 = styled(
-  ({ className, closeModal, form, lookingFor, setCurrentStep, criteriaId }: SetCriteriaStep2) => {
+  ({ className, closeModal, form, lookingFor, setCurrentStep }: SetCriteriaStep2) => {
     React.useEffect(() => {
       form.watch();
     }, []);
@@ -159,9 +155,12 @@ export const SetCriteriaStep2 = styled(
               <Typography className='section-title' variant='body4'>
                 Area preferences
               </Typography>
-              {/* ///////////Slider component////////// */}
               <div className='section-content'>
-                <div style={{ width: 441 }}>
+                <div className='slider-wrapper'>
+                  <Typography variant='body6' className='slider-label'>
+                    Property area (in sqm)
+                  </Typography>
+
                   <Slider
                     value={form.getValues('area')}
                     min={10}
@@ -169,7 +168,8 @@ export const SetCriteriaStep2 = styled(
                     step={10}
                     onChange={(_, value) => form.setValue('area', value)}
                     valueLabelDisplay='on'
-                    valueLabelFormat={valuetext}
+                    valueLabelFormat={(value) => `${value}`}
+                    size='small'
                   />
                 </div>
               </div>
@@ -179,13 +179,22 @@ export const SetCriteriaStep2 = styled(
                 Rooms preferences
               </Typography>
               <div className='section-content'>
-                <Select label='Bedrooms' {...form.register('nrOfBedrooms')}>
-                  <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='5'>5</option>
-                  <option value='10'>10</option>
-                </Select>
+                <div className='slider-wrapper'>
+                  <Typography variant='body6' className='slider-label'>
+                    Bedrooms
+                  </Typography>
+                  <Slider
+                    value={form.getValues('nrOfBedrooms')}
+                    min={0}
+                    max={5}
+                    step={1}
+                    onChange={(_, value) => form.setValue('nrOfBedrooms', value)}
+                    valueLabelDisplay='on'
+                    valueLabelFormat={(value) => `${value}`}
+                    size='small'
+                  />
+                </div>
+
                 <Select label='Bathrooms' {...form.register('nrOfBathrooms')}>
                   <option></option>
                   <option value='1'>1</option>
@@ -403,31 +412,37 @@ export const SetCriteriaStep2 = styled(
 
           &.area-details-section {
             .section-content {
-              display: flex;
-              flex-direction: column;
-              align-items: flex-start;
-              row-gap: 16px;
-            }
+              display: grid;
+              grid-template-columns: 2fr 1fr 1fr;
+              column-gap: 24px;
 
-            /////Slider Range//////
+              .slider-wrapper {
+                display: grid;
+                row-gap: 32px;
 
-            .MuiSlider-root {
-              color: #184d6d;
-            }
-
-            .css-nnid7-MuiSlider-valueLabel {
-              color: #184d6d;
-              background-color: #fff;
-              padding: 0px;
+                .slider-label {
+                  font-weight: 600;
+                }
+              }
             }
           }
 
           &.rooms-details-section {
             .section-content {
               display: grid;
-              grid-template-columns: 1fr 1fr 1fr 1fr;
+              grid-template-columns: 2fr 1fr 1fr;
               column-gap: 24px;
               row-gap: 24px;
+              align-items: center;
+
+              .slider-wrapper {
+                display: grid;
+                row-gap: 32px;
+
+                .slider-label {
+                  font-weight: 600;
+                }
+              }
             }
           }
 

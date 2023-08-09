@@ -76,7 +76,7 @@ export const SetCriteria = styled(
     const step2Form = useForm<Step2FormType>({
       defaultValues: {
         area: [50, 100],
-        nrOfBedrooms: undefined,
+        nrOfBedrooms: [1, 4],
         nrOfBathrooms: undefined,
         specificPropertyFeatures: {
           'Parking spot': false,
@@ -157,7 +157,12 @@ export const SetCriteria = styled(
           parseInt(data.floor_size.split('-')[0]),
           parseInt(data.floor_size.split('-')[1])
         ]);
-        step2Form.setValue('nrOfBedrooms', data.room_details?.number_of_bedrooms);
+
+        step2Form.setValue('nrOfBedrooms', [
+          parseInt(data.room_details?.number_of_bedrooms.split('-')[0]),
+          parseInt(data.room_details?.number_of_bedrooms.split('-')[1])
+        ]);
+
         step2Form.setValue('nrOfBathrooms', data.room_details?.number_of_bathrooms);
         step2Form.setValue(
           'specificPropertyFeatures',
@@ -220,7 +225,9 @@ export const SetCriteria = styled(
           floor_size: `${step2Form.getValues('area')[0]}-${step2Form.getValues('area')[1]}`,
           room_details: {
             number_of_bathrooms: step2Form.getValues('nrOfBathrooms') || undefined,
-            number_of_bedrooms: step2Form.getValues('nrOfBedrooms') || undefined
+            number_of_bedrooms: `${step2Form.getValues('nrOfBedrooms')[0]}-${
+              step2Form.getValues('nrOfBedrooms')[1]
+            }`
           },
           specific_property_features: Object.entries(step2Form.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)

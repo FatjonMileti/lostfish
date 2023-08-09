@@ -3,7 +3,6 @@ import { Typography } from '../../../components/Typography';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
-import tenantImage from '../../Home/tenant.png';
 import imLookingForPlace from '../../Home/imLookingForPlace.png';
 import { keyframes } from '@emotion/react';
 import React from 'react';
