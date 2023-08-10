@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import mongoose, { ConnectOptions } from 'mongoose';
 import config from '../config';
 
-module.exports = (connectionString: string, log: boolean = true) => {
+export default (connectionString: string, log: boolean = true) => {
   mongoose.connect(connectionString, {
     connectTimeoutMS: 30000,
     user: config.mongo.user,

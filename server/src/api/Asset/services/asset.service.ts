@@ -31,10 +31,13 @@ const findAll = async (req: Request, res: Response) => {
   if (status) {
     let filteredStatus: string[] = [];
     if (status === 'published') {
-      filteredStatus = ['Let', 'Live', 'For Let', 'For Sale', 'Let Agreed', 'Sale Agreed'];
+      filteredStatus = ['Live'];
     }
     if (status === 'draft') {
       filteredStatus = ['Draft'];
+    }
+    if (status === 'rented') {
+      filteredStatus = ['Completed'];
     }
 
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
@@ -255,11 +258,19 @@ const findPublishedProperties = async (req: Request, res: Response) => {
           path: 'edited_by',
           select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         }
-      ]
+      ],
+      callback: (err: any, results: any[]) => {
+        console.log(err, results);
+      }
+    }).then((result) => {
+      result.docs = result.docs.filter((asset: any) => !asset.created_by.deleted_at);
+      if (result.docs.length === 0) {
+        result.totalDocs = 0;
+      }
+      return result;
     });
 
     const matches = await MatchSchema.find({ created_by: res.locals.user_id }).lean();
-
     response.docs = generateLinksForImages(response.docs);
     response.docs = response.docs.map((item: any, index: number) => {
       const matchProperty = matches.find((match: any) => match.property.toString() === item._id.toString());

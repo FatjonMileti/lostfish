@@ -243,12 +243,32 @@ const deleteUser = async (req: Request, res: Response): Promise<any> => {
       {
         $set: {
           deleted_at: new Date(),
-          is_disabled: true
+          first_name: 'Lostfish',
+          last_name: 'User',
+          email: '',
+          phone: '',
+          avatar: '',
+          is_disabled: true,
+          documents: [],
+          google: {
+            username: '',
+            google_user_id: '',
+            is_google_verified: false
+          },
+          facebook: {
+            username: '',
+            facebook_user_id: '',
+            is_facebook_verified: false
+          },
+          twitter: {
+            username: '',
+            twitter_user_id: '',
+            is_twitter_verified: false
+          }
         }
       }
     );
-    /*
-    deleteAllUserData(userId); */
+
     res.status(httpStatus.NO_CONTENT).send();
   } catch (error: any) {
     res.status(httpStatus.BAD_REQUEST).send({ message: error?.message ?? 'user_not_deleted' });

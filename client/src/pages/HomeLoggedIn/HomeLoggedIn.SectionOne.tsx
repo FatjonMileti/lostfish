@@ -7,13 +7,15 @@ import { Label } from '../../components/Label';
 import { Icon } from '../../components/Icon';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { IconButton } from '../../components/IconButton';
+import { useProfileStore } from '../../globalState/profile';
 
 export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const profileStore = useProfileStore();
   return (
     <div className={className}>
       <div className='section-content'>
         <div className='wellcome'>
-          <Typography>Hi, James</Typography>
+          <Typography>Hi, {profileStore.first_name}</Typography>
           <Typography variant='body4' className='center texts'>
             Our goal is to revolutionise the property industry by using technology and data to empower and
             inform customers in the buying, selling, and renting process.
