@@ -31,10 +31,13 @@ const findAll = async (req: Request, res: Response) => {
   if (status) {
     let filteredStatus: string[] = [];
     if (status === 'published') {
-      filteredStatus = ['Let', 'Live', 'For Let', 'For Sale', 'Let Agreed', 'Sale Agreed'];
+      filteredStatus = ['Live'];
     }
     if (status === 'draft') {
       filteredStatus = ['Draft'];
+    }
+    if (status === 'rented') {
+      filteredStatus = ['Completed'];
     }
 
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
