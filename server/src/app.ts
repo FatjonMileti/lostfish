@@ -39,7 +39,7 @@ if (config.behind_proxy) {
 }
 
 // Initialize MailService instance for email handling
-const mailService = MailService.getInstance();
+const mailService: MailService = MailService.getInstance();
 
 // Create email connection based on environment
 if (config.node_env === 'development') {
@@ -141,7 +141,7 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   // Respond with error details
   res.status(err.status || 500).json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
+    stack: ['stage', 'production'].includes(config.node_env) ? undefined : err.stack
   });
 });
 
