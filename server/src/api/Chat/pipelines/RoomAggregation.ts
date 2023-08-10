@@ -109,8 +109,8 @@ const PaginationPipeline: PaginationPipelineFunc = (
     {
       $project: {
         last_message: { message: 1, seen: 1, sender: 1 },
-        author: { first_name: 1, last_name: 1, _id: 1, avatar: 1 },
-        participant: { first_name: 1, last_name: 1, _id: 1, avatar: 1 },
+        author: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
+        participant: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
         unseen_messages: 1
       }
     },

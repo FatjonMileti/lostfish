@@ -32,26 +32,37 @@ export default class MatchService {
 
   // Get all matches
   public async getAllMatches(query: IMatchQueryParams, paginateOptions: IPagingOptions): Promise<any> {
-    return this.matchModel.paginate(query, {
-      ...paginateOptions,
-      populate: [
-        {
-          path: 'property',
-          populate: {
-            path: 'created_by',
-            select: ['first_name', 'last_name', '_id', 'avatar']
+    return this.matchModel
+      .paginate(query, {
+        ...paginateOptions,
+        populate: [
+          {
+            path: 'property',
+            populate: {
+              path: 'created_by',
+              select: ['first_name', 'last_name', '_id', 'avatar']
+            }
+          },
+          {
+            path: 'tenant',
+            select: ['first_name', 'last_name', '_id', 'avatar', 'deleted_at']
+          },
+          {
+            path: 'landlord',
+            select: ['first_name', 'last_name', '_id', 'avatar', 'deleted_at']
           }
-        },
-        {
-          path: 'tenant',
-          select: ['first_name', 'last_name', '_id', 'avatar']
-        },
-        {
-          path: 'landlord',
-          select: ['first_name', 'last_name', '_id', 'avatar']
-        }
-      ]
-    });
+        ]
+      })
+      .then((result) => {
+        result.docs = result.docs.map((item: any) => {
+          if (item.landlord.deleted_at) {
+            item.property.has_owner_deleted = true;
+          }
+          return item;
+        });
+
+        return result;
+      });
   }
 
   // Get a single match by ID
