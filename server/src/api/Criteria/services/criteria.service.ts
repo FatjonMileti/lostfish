@@ -39,8 +39,8 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
     if (data.looking_for === LookingForEnum.OWN_A_PLACE) {
       user.role = Role.Landlord;
     }
-    docusignService.createLostfishPrivacyAgreement(user._id).then(() => console.log('ok'));
-    docusignService.createLostfishTransactionAgreement(user._id).then(() => console.log('ok'));
+    // docusignService.createLostfishPrivacyAgreement(user._id).then(() => console.log('ok'));
+    // docusignService.createLostfishTransactionAgreement(user._id).then(() => console.log('ok'));
     await user.save();
     const criteria: CriteriaDocument = new CriteriaModel({ ...data });
     await criteria.save();
