@@ -9,6 +9,9 @@ import RoomSchema from './schemas/room.schema';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import documentService from '../Document/document.service';
+import docusignLocalService from '../Docusign/services/docusign.local.service';
+import { Role } from '../User/user.interface';
+import { IEnvelope } from '../Docusign/schemas/envelope';
 const router: Router = Router();
 
 export class ChatController {
@@ -75,10 +78,23 @@ export class ChatController {
 
     const response = await roomService.getMessages(query, res.locals.paging_options, userId);
 
-    const room: RoomDocument | null = await roomService.findOne({ _id: id });
+    const room: any | null = await roomService.findOne({ _id: id });
     if (room) {
-      const data = await documentService.canCompleteTransaction(room.author, room.participant);
-      console.log({ data });
+      const areDocumentsApproved = await documentService.canCompleteTransaction(
+        room.author,
+        room.participant
+      );
+
+      const landlord = room.author.role === Role.Landlord ? room.author._id : room.participant._id;
+      const tenant = room.author.role === Role.Client ? room.author._id : room.participant._id;
+
+      const isContractGenerated: IEnvelope | null = await docusignLocalService.findEnvelope({
+        tenant,
+        land_lord: landlord,
+        document_type: { $eq: 'Rent Contract' }
+      });
+      response.areDocumentsApproved = areDocumentsApproved ? areDocumentsApproved.approved : false;
+      response.isContractCreated = !!isContractGenerated;
     }
 
     res.send(response);

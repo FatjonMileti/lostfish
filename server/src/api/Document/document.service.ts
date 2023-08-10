@@ -3,7 +3,6 @@ import DocumentModel from './document.schema';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { ObjectId } from 'mongoose';
-import docusignLocalService from '../Docusign/services/docusign.local.service';
 
 const canCompleteTransaction = async (landlord: string | ObjectId, tenant: string | ObjectId) => {
   const query: any = {
@@ -13,10 +12,8 @@ const canCompleteTransaction = async (landlord: string | ObjectId, tenant: strin
     ]
   };
 
-  const data = await findOne(query);
-
-  const signedDocuments = await docusignLocalService.getEnvelopeListDocs();
-  return data;
+  // const signedDocuments = await docusignLocalService.getEnvelopeListDocs();
+  return await findOne(query);
 };
 
 const findOne = async (query: any) => {

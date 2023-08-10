@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
@@ -11,14 +11,37 @@ import { IRoom } from '../messages.interface';
 import { TenantDocuments } from './TenantDocuments';
 import { SignedDocuments } from './SignedDocuments';
 import { LostfishTermsAndCondition } from './LostfishTermsAndCondition';
+import axios from '../../../utils/axios';
+import { useUserStore } from '../../../globalState/user';
+import { AxiosError } from 'axios';
+import { NewRentingContract } from './NewRentingContract';
 
 interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
   room: IRoom;
+  documentState: {
+    areDocumentsApproved: boolean;
+    isContractCreated: boolean;
+  };
 }
 
-export const DocumentsTest = styled(({ room, className }: IDocumentTest) => {
+export const DocumentsTest = styled(({ room, documentState, className }: IDocumentTest) => {
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
+
+  const [showContractCreator, setShowContrCreator] = useState<boolean>(false);
+
+  const { userDetails } = useUserStore();
+
+  React.useEffect(() => {
+    setShowContrCreator(false);
+  }, [room._id]);
+
+  const onFinish = () => {
+    alert('Contract created with success!');
+    setShowContrCreator(false);
+  };
+
+  const tenant = room.participant._id === userDetails.user_id ? room.author : room.participant;
 
   return (
     <div className={classNames('documents', className)}>
@@ -36,7 +59,25 @@ export const DocumentsTest = styled(({ room, className }: IDocumentTest) => {
         <Label variant='secondary' onClick={() => setShowModal(true)}>
           View documents
         </Label>
-        <Label disabled>Complete transaction</Label>
+        {/*<Label disabled>Complete transaction</Label>*/}
+
+        {!documentState.isContractCreated && (
+          <Label
+            onClick={() => setShowContrCreator(!showContractCreator)}
+            disabled={!documentState.areDocumentsApproved}>
+            Create renting contract
+          </Label>
+        )}
+
+        {documentState.isContractCreated && (
+          <Label variant='tertiary' disabled={!documentState.areDocumentsApproved}>
+            Contract is ready to sign
+          </Label>
+        )}
+
+        {showContractCreator && documentState.areDocumentsApproved && (
+          <NewRentingContract tenant={tenant._id} onFinish={onFinish} />
+        )}
       </div>
       <Modal open={showModal} className='view-documents-modal' onBackdropClick={() => setShowModal(false)}>
         <div className='modal-header'>

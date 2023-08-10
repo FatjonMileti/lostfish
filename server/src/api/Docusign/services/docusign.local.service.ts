@@ -239,9 +239,14 @@ const successSignRedirect = async (req: Request, res: Response) => {
 
 const getEnvelopeList = async (req: Request, res: Response) => {
   const { document_type } = req.query;
-  const query: { $or?: any; document_type?: any } = {};
-  if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
-    query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
+  const query: { tenant?: string; land_lord?: string; document_type?: any } = {};
+
+  if (res.locals.role === Role.Client) {
+    query.tenant = res.locals.user_id;
+  }
+
+  if (res.locals.role === Role.Landlord) {
+    query.land_lord = res.locals.user_id;
   }
 
   if (document_type) {
@@ -264,6 +269,9 @@ const getEnvelopeListDocs = async () => {
     document_type: { $in: ['Lostfish privacy agreement', 'Lostfish transaction agreement'] }
   };
 
+  // if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
+  //   query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
+  // }
   return Envelope.find(query).populate('land_lord').populate('tenant').populate('agent');
 };
 
@@ -272,7 +280,12 @@ const generateConsentUrl = async (req: Request, res: Response) => {
   res.redirect(redirectUri);
 };
 
+const findEnvelope = async (query: any = {}) => {
+  return Envelope.findOne(query);
+};
+
 export default {
+  findEnvelope,
   createEnvelopeDoc,
   setSignUrlForUsers,
   getEnvelopeById,
