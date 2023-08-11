@@ -54,7 +54,7 @@ export enum PropertyFeatures {
 
 export enum SpecificPropertyFeatures {
   PARKING_SPOT = 'Parking spot',
-  GARDEV = 'Garden',
+  GARDEN = 'Garden',
   TERRACE = 'Terrace',
   FULLY_FURNISHED = 'Fully furnished',
   PARTIALLY_FURNISHED = 'Partially furnished',
