@@ -40,6 +40,8 @@ export const Typography = styled(
   &.body2 {
     font-size: 32px;
     font-family: 'At Gambit', serif;
+    font-weight: 400;
+    line-height: 40px;
   }
 
   &.body3 {

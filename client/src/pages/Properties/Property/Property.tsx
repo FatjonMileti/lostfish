@@ -8,36 +8,35 @@ import { Icon } from '../../../components/Icon';
 import { Avatar } from '../../../components/Avatar';
 
 import { avatars } from '../../HomeLoggedIn/avatars';
-
-import property from '../../MyAccount/images/property.png';
 import { Slider } from './Slider';
+import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;
   status: string;
   viewDetails: MouseEventHandler;
-  image?: string;
   images: any[];
 }
 
-export const Property = styled(
-  ({
-    className,
-    name = 'Two bedroom apartment for rent',
-    status,
-    viewDetails,
-    image,
-    images
-  }: PropertyProps) => {
-    return (
-      <div className={`property ${className}`}>
-        <Slider images={images.length ? images : [property]} />
+const propertyStatusMap: any = {
+  Draft: 'draft',
+  Live: 'published',
+  Completed: 'rented'
+};
 
+export const Property = styled(
+  ({ className, name = 'Two bedroom apartment for rent', status, viewDetails, images }: PropertyProps) => {
+    const navigate = useNavigate();
+    return (
+      <div className={classNames('property', className)}>
         <div className='details'>
           <div>
-            <Label active className='status'>
-              {status}
-            </Label>
+            <Label className={classNames('status', propertyStatusMap[status] || 'draft')}>{status}</Label>
+
+            <Typography className='property-title' variant='body3'>
+              {name}
+            </Typography>
 
             <div className='property-details'>
               <div className='detail'>
@@ -56,10 +55,6 @@ export const Property = styled(
                 <Icon icon='bathtub' /> <Typography variant='body5'>1</Typography>
               </div>
             </div>
-
-            <Typography className='property-title' variant='body3'>
-              {name}
-            </Typography>
 
             <Typography variant='body4' className='description'>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -85,11 +80,18 @@ export const Property = styled(
                 </div>
               </div>
             </div>
-            <Button size='small' variant='secondary' className='details-button' onClick={viewDetails}>
-              Edit property
-            </Button>
+            <div className='action-buttons'>
+              <Button size='large' onClick={() => navigate('/matches')}>
+                View matches
+              </Button>
+              <Button size='large' variant='secondary' className='details-button' onClick={viewDetails}>
+                Edit property
+              </Button>
+            </div>
           </div>
         </div>
+
+        <Slider images={images} />
       </div>
     );
   }
@@ -97,17 +99,18 @@ export const Property = styled(
   &.property {
     border-radius: 16px;
     display: grid;
-    grid-template-columns: 1fr 0.7fr;
+    grid-template-columns: 1fr 1fr;
     column-gap: 24px;
     min-height: 292px;
     position: relative;
 
-    background: var(--monochrome-pure-white, #fff);
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.15);
+
+    background: #fff;
 
     .property-title {
       margin-top: 24px;
       font-weight: 700;
-      //text-overflow: ellipsis;
     }
 
     .details {
@@ -116,13 +119,31 @@ export const Property = styled(
       display: grid;
       align-content: space-between;
       row-gap: 8px;
+      border-radius: 16px 0 0 16px;
 
       .status {
-        padding: 12px 20px;
+        &.label {
+          padding: 12px 20px !important;
+
+          &.draft {
+            background: rgba(64, 129, 64, 0.1);
+            color: #408140;
+          }
+
+          &.published {
+            background: rgba(192, 218, 255, 0.2);
+            color: #184d6d;
+          }
+
+          &.rented {
+            background: rgba(64, 129, 64, 0.1);
+            color: #408140;
+          }
+        }
       }
 
       .property-details {
-        margin-top: 18px;
+        margin-top: 16px;
         display: flex;
         column-gap: 24px;
 
@@ -178,8 +199,9 @@ export const Property = styled(
               height: 64px;
               width: 64px;
               border-radius: 50%;
-              background-color: #184d6d;
-              color: white;
+              background-color: #f7f1e7;
+
+              color: #0d2a38;
               font-weight: 700;
               display: flex;
               flex-shrink: 0;
@@ -188,6 +210,11 @@ export const Property = styled(
               margin-left: -8px;
             }
           }
+        }
+
+        .action-buttons {
+          display: flex;
+          column-gap: 16px;
         }
       }
     }

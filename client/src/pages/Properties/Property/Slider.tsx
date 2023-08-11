@@ -28,46 +28,70 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
         })}
       </div>
 
-      <div className='slider-footer'>
-        <div className='arrow' onClick={previous}>
-          <Icon icon='arrow-left-1' size={26} />
+      {images?.length === 0 && (
+        <div className='no-images'>
+          <Icon icon='image' size={128} />
         </div>
+      )}
 
-        <div className='dots'>
-          {images.map((_, imageIndex) => (
-            <motion.div
-              key={imageIndex}
-              className={`dot ${activeSlide === imageIndex ? 'active' : ''}`}
-              // animate={{ backgroundColor: i === index ? '32px' : '12px' }}
+      {images?.length > 1 && (
+        <div className='slider-footer'>
+          <div className='arrow' onClick={previous}>
+            <Icon icon='arrow-left-1' size={24} />
+          </div>
 
-              onClick={() => setActiveSlide(imageIndex)}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            />
-          ))}
+          <div className='dots'>
+            {images.map((_, imageIndex) => (
+              <motion.div
+                key={imageIndex}
+                className={`dot ${activeSlide === imageIndex ? 'active' : ''}`}
+                // animate={{ backgroundColor: i === index ? '32px' : '12px' }}
+
+                onClick={() => setActiveSlide(imageIndex)}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+              />
+            ))}
+          </div>
+
+          <div className='arrow' onClick={next}>
+            <Icon icon='arrow-right-1' size={24} />
+          </div>
         </div>
-
-        <div className='arrow' onClick={next}>
-          <Icon icon='arrow-right-1' size={28} />
-        </div>
-      </div>
+      )}
     </div>
   );
 })`
   &.slider {
     position: relative;
     width: 100%;
+    aspect-ratio: 1.36/1;
+    border-radius: 0 16px 16px 0;
+
+    .no-images {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      background-color: #8080800a;
+      border-radius: 0 16px 16px 0;
+
+      .icon {
+        color: #a7a7a7;
+      }
+    }
 
     .slide-list {
       display: flex;
       overflow-x: hidden;
       width: 100%;
-      aspect-ratio: 1.6/1;
-      border-radius: 16px 0 0 16px;
+      aspect-ratio: 1.36/1;
+      border-radius: 0 16px 16px 0;
 
       .image-holder {
         width: 100%;
-        aspect-ratio: 1.6/1;
+        aspect-ratio: 1.36/1;
       }
     }
 
@@ -81,6 +105,8 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       justify-content: space-between;
       column-gap: 16px;
       align-items: center;
+      background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
+      border-radius: 0 0 16px 0;
 
       .arrow {
         color: white;

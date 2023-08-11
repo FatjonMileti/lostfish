@@ -114,7 +114,7 @@ export const NewPropertyStep0 = styled(
             </div>
           </div>
 
-          <Button disabled={!form.formState.isValid} onClick={() => setCurrentStep(1)}>
+          <Button size='large' disabled={!form.formState.isValid} onClick={() => setCurrentStep(1)}>
             Refine my search
           </Button>
         </div>
