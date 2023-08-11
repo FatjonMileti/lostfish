@@ -282,15 +282,16 @@ export const MatchedSlide = styled(
         column-gap: 8px;
         padding: 20px 32px;
         font-weight: 700;
-
-        .view-profile-button {
-          flex-shrink: 0;
-        }
+        align-items: center;
 
         .tenant-dot,
         .tenant-match-percentage {
           color: #c4b1a3;
         }
+      }
+
+      .view-profile-button {
+        flex-shrink: 0;
       }
     }
   }
