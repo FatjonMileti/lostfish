@@ -1,69 +1,38 @@
 import React from 'react';
 import { styled } from '@mui/system';
-
-import { Typography } from '../../components/Typography';
+import classNames from 'classnames';
 import { Header } from './Header';
-
-import lookingFor from './lookingFor.png';
-import cantFindTenants from './cantFindTenants.png';
-import tiredOf from './tiredOf.png';
-
-import { Carousel } from './Carousel';
-import { AnimatePresence, motion } from 'framer-motion';
-// import { CookieConsent } from '../../components/CookieConsent';
+import homeBackground from './home-background.png';
+import { Button } from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { Typography } from '../../components/Typography';
+import { Avatar } from '../../components/Avatar';
+import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const indexStore = React.useState(0);
-  const indexSlide = indexStore[0];
-
+  const navigate = useNavigate();
   return (
-    <div className={`home-page ${className} slide${indexSlide}`}>
-      {[lookingFor, cantFindTenants, tiredOf].map((img, i: number) => (
-        <AnimatePresence key={i}>
-          {indexSlide === i && (
-            <motion.img
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
-              className='background-image'
-              src={img}></motion.img>
-          )}
-        </AnimatePresence>
-      ))}
+    <div className={classNames('home-page', className)}>
       <Header />
+      <div className='container'>
+        <Typography variant='h2'>Looking for your next home?</Typography>
+        <Typography variant='body4' className='description'>
+          Our goal is to revolutionise the property industry by using technology and data to empower and
+          inform customers in the buying, selling, and renting process.
+        </Typography>
 
-      <div className='slider-section'>
-        <Carousel indexStore={indexStore}>
-          <div className='slide'>
-            <Typography variant='h2' className='title'>
-              Looking for your next home?
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to revolutionise the property industry by utilising technology and data to empower
-              and inform customers in the buying, selling, and renting process.
-            </Typography>
-          </div>
-          <div className='slide'>
-            <Typography variant='h2' className='title'>
-              Can’t find perfect tenants?
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to revolutionise the property industry by utilising technology and data to empower
-              and inform customers in the buying, selling, and renting process.
-            </Typography>
-          </div>
-          <div className='slide'>
-            <Typography variant='h2' className='title'>
-              Tired of irrelevant offers?
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to revolutionise the property industry by utilising technology and data to empower
-              and inform customers in the buying, selling, and renting process.
-            </Typography>
-          </div>
-        </Carousel>
-        {/*<CookieConsent />*/}
+        <div className='potential-matches-list'>
+          <Avatar image={getAvatarFormIndex('0')} />
+          <Avatar image={getAvatarFormIndex('1')} />
+          <Avatar image={getAvatarFormIndex('2')} />
+          <Avatar image={getAvatarFormIndex('3')} />
+          <Avatar image={getAvatarFormIndex('4')} />
+          <Avatar image={getAvatarFormIndex('5')} />
+        </div>
+
+        <Button size='large' onClick={() => navigate('/create-account')} className='create-account-button'>
+          Create an account
+        </Button>
       </div>
     </div>
   );
@@ -72,49 +41,72 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     position: relative;
     min-height: 100vh;
     display: grid;
+    z-index: 1;
 
-    grid-template-rows: min-content auto;
+    justify-items: center;
 
-    .header {
-      z-index: 1;
-    }
-
-    .background-image {
+    &::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
-      right: 0;
       width: 100%;
+      height: 100%;
+      background: url(${homeBackground}), lightgray 50% / cover no-repeat;
+      opacity: 0.05;
 
-      background-color: #f7f1e7;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: top;
+      background-size: cover;
+      background-position-y: center;
+      z-index: -1;
     }
 
-    .slider-section {
-      background: white;
-      align-self: flex-end;
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
 
-      padding: 53px 36px;
-      z-index: 1;
+      background: linear-gradient(148deg, #fffbf3 18.95%, #fff 100%), #fff;
 
-      .slide {
-        display: grid;
-        grid-template-rows: 1fr;
-        row-gap: 16px;
-        width: 100%;
-        justify-content: center;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -2;
+    }
 
-        .title {
-          max-width: 904px;
-          text-align: center;
+    .header {
+      position: absolute;
+    }
+
+    .container {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      width: 672px;
+      max-width: 100vw;
+      align-self: center;
+
+      .description {
+        margin-top: 16px;
+      }
+
+      .potential-matches-list {
+        margin-top: 32px;
+        display: flex;
+        .avatar {
+          height: 80px;
+          width: 80px;
+          margin-left: -12px;
+          z-index: 1;
+          &:first-of-type {
+            margin-left: 0;
+          }
         }
+      }
 
-        .description {
-          max-width: 672px;
-          text-align: center;
-        }
+      .create-account-button {
+        margin-top: 48px;
       }
     }
   }

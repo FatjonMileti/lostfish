@@ -22,6 +22,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { refreshToken } from '../Login/SessionMaintainer';
 
+import backgroundImg from '../About/sectionOne.About.png';
+
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -133,8 +135,38 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
-    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+
     box-sizing: border-box;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url(${backgroundImg}), lightgray 50% / cover no-repeat;
+      opacity: 0.05;
+
+      background-size: auto;
+      background-position-x: center;
+      background-position-y: center;
+      z-index: -1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+
+      background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -2;
+    }
 
     .container {
       display: grid;
