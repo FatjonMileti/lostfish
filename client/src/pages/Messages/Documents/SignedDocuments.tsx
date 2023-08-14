@@ -37,11 +37,15 @@ export const SignedDocuments = (props: ISignedDocumentProps) => {
     getEnvelopes();
   }, []);
 
+  const otherUser = room.participant._id === userDetails.user_id ? room.author : room.participant;
+
   const getEnvelopes = async () => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
       params: {
         document_type: 'Rent Contract',
-        property: room.property._id
+        property: room.property._id,
+        participant: otherUser._id,
+        getDataFor: userDetails.role
       }
     });
     setList((prevList: any) => ({

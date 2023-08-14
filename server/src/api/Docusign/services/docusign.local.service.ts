@@ -240,14 +240,16 @@ const successSignRedirect = async (req: Request, res: Response) => {
 };
 
 const getEnvelopeList = async (req: Request, res: Response) => {
-  const { document_type, property } = req.query;
-  const query: { tenant?: string; land_lord?: string; document_type?: any; property?: any } = {};
+  const { document_type, property, getDataFor, participant } = req.query;
+  const query: { tenant?: any; land_lord?: string; document_type?: any; property?: any } = {};
 
-  if (res.locals.role === Role.Client) {
+  if (getDataFor === Role.Client) {
+    query.land_lord = participant as string;
     query.tenant = res.locals.user_id;
   }
 
-  if (res.locals.role === Role.Landlord) {
+  if (getDataFor === Role.Landlord) {
+    query.tenant = participant as string;
     query.land_lord = res.locals.user_id;
   }
 
@@ -258,6 +260,8 @@ const getEnvelopeList = async (req: Request, res: Response) => {
   if (property) {
     query.property = { $eq: property };
   }
+
+  console.log({ query });
 
   const response = await Envelope.paginate(query, {
     ...res.locals.paging_options,

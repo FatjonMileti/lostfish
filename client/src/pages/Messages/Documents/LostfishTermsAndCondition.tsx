@@ -31,6 +31,7 @@ const state: IGridState = {
 
 export const LostfishTermsAndCondition = () => {
   const { auth, userDetails } = useUserStore();
+  const profileStore = useProfileStore();
   const [list, setList] = React.useState<IGridState>({
     ...state
   });
@@ -42,7 +43,8 @@ export const LostfishTermsAndCondition = () => {
   const getEnvelopes = async () => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
       params: {
-        document_type: ['Lostfish transaction agreement']
+        document_type: ['Lostfish transaction agreement'],
+        getDataFor: userDetails.role
       }
     });
     setList((prevList: any) => ({
@@ -60,12 +62,15 @@ export const LostfishTermsAndCondition = () => {
 
   const handlePolicyAccept = async () => {
     try {
-      const { data } = await axios(auth.access_token).patch(
+      const { status } = await axios(auth.access_token).patch(
         `${config.apiUrl}/api/user/${userDetails.user_id}`,
         {
           agreed_application_policy: true
         }
       );
+      if (status === 200) {
+        await profileStore.fetchProfile(auth.access_token);
+      }
     } catch (error: any) {}
   };
 
