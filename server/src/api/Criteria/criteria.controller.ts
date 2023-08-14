@@ -6,6 +6,7 @@ import validateId from '../../middleware/object-id.validator';
 import CriteriaSchema from './schemas/criteria.schema';
 import MatchSchema from '../Match/match.schema';
 import { faker } from '@faker-js/faker';
+import assetService from '../Asset/services/asset.service';
 
 const router: Router = Router();
 
@@ -19,7 +20,6 @@ export class CriteriaController {
 
   private initializeRoutes() {
     this.router.get('/', authorize(), this.getCriteria);
-
     this.router.post('/', authorize(), this.createCriteria);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);
     this.router.get('/user-example-matches', authorize(), this.getMatchedUsers);
@@ -51,6 +51,8 @@ export class CriteriaController {
       }
     );
 
+    const response = await assetService.findPublishedPropertiesExample();
+
     const matches = await MatchSchema.find({ created_by: res.locals.user_id }).lean();
 
     matchesUsers.docs = matchesUsers.docs.map((item: any, index: number) => {
@@ -61,6 +63,7 @@ export class CriteriaController {
       return {
         suggestion_id: index,
         criteria,
+        property: faker.helpers.arrayElement(response),
         chosen: matchTenant?.chosen ?? false,
         starred: matchTenant?.starred ?? false,
         matchId: matchTenant?._id ?? undefined,

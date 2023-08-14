@@ -66,6 +66,20 @@ const PaginationPipeline: PaginationPipelineFunc = (
     },
     {
       $lookup: {
+        from: 'assets',
+        localField: 'property',
+        foreignField: '_id',
+        as: 'property'
+      }
+    },
+    {
+      $unwind: {
+        path: '$property',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
         from: 'users',
         localField: 'participant',
         foreignField: '_id',
@@ -111,6 +125,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
         last_message: { message: 1, seen: 1, sender: 1 },
         author: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
         participant: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
+        property: { area_of_interest: 1, asset_address: 1, property_type: 1, _id: 1 },
         unseen_messages: 1
       }
     },
@@ -234,22 +249,37 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
       }
     },
     {
-      $group: {
-        _id: null,
-        docs: {
-          $push: '$$ROOT'
-        },
-        totalDocs: {
-          $sum: 1
-        }
+      $facet: {
+        total: [
+          {
+            $count: 'created_at'
+          }
+        ],
+        data: [
+          {
+            $addFields: {
+              _id: '$_id'
+            }
+          }
+        ]
       }
+    },
+    {
+      $unwind: '$total'
     },
     {
       $project: {
         docs: {
-          $slice: ['$docs', skip, limit]
+          $slice: [
+            '$data',
+            skip,
+            {
+              $ifNull: [limit, '$total.created_at']
+            }
+          ]
         },
-        totalDocs: '$totalDocs',
+
+        totalDocs: '$total.created_at',
         limit: {
           $literal: limit
         },
@@ -257,12 +287,9 @@ const ChatPagingPipeline: PaginationPipelineFunc = (
           $literal: page
         },
         totalPages: {
-          $add: [
-            { $divide: ['$totalDocs', limit] },
-            {
-              $cond: [{ $gt: [{ $mod: ['$totalDocs', limit] }, 0] }, 1, 0]
-            }
-          ]
+          $ceil: {
+            $divide: ['$total.created_at', limit]
+          }
         }
       }
     }

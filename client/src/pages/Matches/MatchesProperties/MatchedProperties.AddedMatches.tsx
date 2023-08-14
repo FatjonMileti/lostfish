@@ -90,7 +90,7 @@ export const AddedMatches = styled(
 
     const chantWith = (userId: string) => {
       try {
-        navigate(`/messages?userId=${userId}`);
+        navigate(`/messages?userId=${userId}`, { state: { propertyId: property?._id } });
       } catch (err) {}
     };
 

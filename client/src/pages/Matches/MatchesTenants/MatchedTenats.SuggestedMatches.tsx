@@ -21,8 +21,8 @@ interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   matchedView: boolean;
   setMatchedView: (matchedView: boolean) => void;
   setTenantToView: (propertyToView: TenantType) => void;
-  starTenant: (propertyId: string, chosen: boolean, starred: boolean) => void;
-  checkTenant: (propertyId: string, chosen: boolean, starred: boolean) => void;
+  starTenant: (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => void;
+  checkTenant: (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => void;
 }
 export const SuggestedTenants = styled(
   ({
@@ -41,6 +41,7 @@ export const SuggestedTenants = styled(
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
+    const property = suggestedTenant?.property;
 
     React.useEffect(() => {
       getTenants();
@@ -159,7 +160,12 @@ export const SuggestedTenants = styled(
                 inverted
                 className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}
                 onClick={() => {
-                  checkTenant(criteria.tenantId, !suggestedTenant.chosen, suggestedTenant?.starred);
+                  checkTenant(
+                    criteria.tenantId,
+                    !suggestedTenant.chosen,
+                    suggestedTenant?.starred,
+                    property?._id
+                  );
                 }}>
                 <Icon icon='checked' size={28} />
               </IconButton>
@@ -168,7 +174,12 @@ export const SuggestedTenants = styled(
                 className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}
                 size='large'
                 onClick={() => {
-                  starTenant(criteria.tenantId, suggestedTenant?.chosen, !suggestedTenant.starred);
+                  starTenant(
+                    criteria.tenantId,
+                    suggestedTenant?.chosen,
+                    !suggestedTenant.starred,
+                    property?._id
+                  );
                 }}>
                 <Icon icon='star-solid' size={28} />
               </IconButton>

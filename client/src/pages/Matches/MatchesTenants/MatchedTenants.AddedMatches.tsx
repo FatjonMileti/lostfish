@@ -14,7 +14,7 @@ import { Switch } from '../../../components/Switch';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
-  tenants: any[];
+  tenants: TenantType[];
   setTenants: (tenants: TenantType[] | ((tenants: TenantType[]) => TenantType[])) => void;
   removeTenantMatch: (matchId: string) => Promise<void>;
   getCheckedTenants: () => Promise<void>;
@@ -36,8 +36,7 @@ export const AddedTenants = styled(
     const navigate = useNavigate();
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
-
-    console.log({ criteria, suggestedTenant });
+    const property = suggestedTenant?.property;
 
     const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % tenants?.length));
     const previous = () => {
@@ -52,7 +51,7 @@ export const AddedTenants = styled(
 
     const chatWith = (userId: string) => {
       try {
-        navigate(`/messages?userId=${userId}`);
+        navigate(`/messages?userId=${userId}`, { state: { propertyId: property._id } });
       } catch (err) {}
     };
 

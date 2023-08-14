@@ -41,6 +41,7 @@ export class MatchController {
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
    * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} tenant Tenant Id
+   * @apiBody {String} property Property Id
    * @apiUse CreateMatchLandlord
    * @apiSuccess {Object} match Created match object
    * @apiSuccessExample Success-Response:

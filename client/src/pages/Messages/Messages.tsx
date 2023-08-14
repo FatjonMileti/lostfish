@@ -14,7 +14,7 @@ import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 
 import { useUserStore } from '../../globalState/user';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Location } from 'react-router-dom';
 import axios from '../../utils/axios';
 
 import messagesBackground from './massages-page-backgroud.png';
@@ -28,6 +28,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   } = useGlobalState();
 
   const userStore = useUserStore();
+
+  const location: Location = useLocation();
 
   const { socket } = useContext(SocketContext);
 
@@ -61,8 +63,11 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const handleRoomIdInQueryParams = async () => {
     try {
       const userIdInQueryParams = queryParams.get('userId');
-      if (userIdInQueryParams) {
-        const room = (await getRoomWithUser(userIdInQueryParams)) || (await createRoom(userIdInQueryParams));
+
+      if (userIdInQueryParams && location.state.propertyId) {
+        const room =
+          (await getRoomWithUser(userIdInQueryParams)) ||
+          (await createRoom(userIdInQueryParams, location.state.propertyId));
         if (room) {
           joinRoom(room);
         } else {
@@ -85,11 +90,12 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   };
 
-  const createRoom = async (participantId: string): Promise<IRoom | false> => {
+  const createRoom = async (participantId: string, propertyId: string): Promise<IRoom | false> => {
     try {
       const { data } = await axios(userStore.auth.access_token).post('/api/chat/create', {
         author: userStore.userDetails.user_id,
-        participant: participantId
+        participant: participantId,
+        property: propertyId
       });
       return data;
     } catch (err) {

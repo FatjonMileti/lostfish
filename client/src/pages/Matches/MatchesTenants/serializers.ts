@@ -1,5 +1,5 @@
 export const mapTenants = (docs: any) => {
-  return docs.map(({ criteria, chosen, starred, percentage, suggestion_id, matchId }: any) => ({
+  return docs.map(({ criteria, chosen, starred, percentage, suggestion_id, matchId, property }: any) => ({
     id: criteria._id,
     criteria: {
       avatar: criteria.created_by.avatar,
@@ -20,6 +20,7 @@ export const mapTenants = (docs: any) => {
       depositAmount: criteria?.deposit_amount || '',
       tenantId: criteria.created_by._id
     },
+    property,
     chosen,
     starred,
     percentage,
