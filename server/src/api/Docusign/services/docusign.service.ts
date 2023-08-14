@@ -1,4 +1,11 @@
-import docusign, { EnvelopeDefinition, ErrorDetails } from 'docusign-esign';
+import docusign, {
+  EnvelopeDefinition,
+  ApiClient,
+  TemplateRole,
+  Tabs,
+  Text,
+  RecipientViewRequest
+} from 'docusign-esign';
 import config from '../../../config';
 import fs from 'fs';
 import path from 'path';
@@ -18,7 +25,7 @@ import moment from 'moment';
 const jwtConfig = config.docusign;
 
 const SCOPES = ['signature', 'impersonation'];
-const dsApiClient = new docusign.ApiClient();
+const dsApiClient: ApiClient = new docusign.ApiClient();
 
 interface IViewRequestSigners {
   landlord: UserDocument;
@@ -101,8 +108,6 @@ const createViewRequestForPrivacySigners = async ({
 
 const getConsent = () => {
   const urlScopes = SCOPES.join('+');
-
-  // const redirectUri = 'https://developers.docusign.com/platform/auth/consent';
   const redirectUri = `${config.api_url}/api/docusign/callback`;
   const consentUrl =
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
@@ -145,7 +150,6 @@ const getToken = async () => {
 const getEnvelopesApi = async () => {
   const token = await getToken();
   dsApiClient.setBasePath(jwtConfig.basePath);
-  // @ts-ignore
   dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + token);
   return new docusign.EnvelopesApi(dsApiClient);
 };
@@ -153,67 +157,58 @@ const getEnvelopesApi = async () => {
 const makeEnvelope = (landlord: UserDocument, tenant: UserDocument, property: AssetDocument) => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
+
   env.templateId = jwtConfig.rentingTemplateId;
-  // @ts-ignore
-  const propertyAddress = docusign.Text.constructFromObject({
+
+  const propertyAddress: Text = {
     tabLabel: 'property_address',
     value: property.asset_address.text ?? ''
-  });
-  // @ts-ignore
-  const documentSendingDate = docusign.Text.constructFromObject({
+  };
+
+  const documentSendingDate: Text = {
     tabLabel: 'document_sending_date',
     value: moment().format('DD/MM/YYYY')
-  });
+  };
 
-  // @ts-ignore
-  const nrOfMonths = docusign.Text.constructFromObject({
+  const nrOfMonths: Text = {
     tabLabel: 'nr_of_months',
-    value: 12
-  });
-  // @ts-ignore
-  const startingFromDate = docusign.Text.constructFromObject({
+    value: '12'
+  };
+  const startingFromDate: Text = {
     tabLabel: 'starting_from_date',
     value: moment().format('DD/MM/YYYY')
-  });
-  console.log({ rent: property.asset_rent.rental_amount });
+  };
 
-  // @ts-ignore
-  const rentingPrice = docusign.Text.constructFromObject({
+  const rentingPrice: Text = {
     tabLabel: 'renting_price',
-    value: property.asset_rent.rental_amount
-  });
-  // @ts-ignore
-  const depositValue = docusign.Text.constructFromObject({
+    value: property.asset_rent.rental_amount.toString()
+  };
+
+  const depositValue: Text = {
     tabLabel: 'deposit_value',
-    value: property.asset_rent.deposit_amount
-  });
+    value: property.asset_rent.deposit_amount.toString()
+  };
 
-  // Pull together the existing and new tabs in a Tabs object:
-  // @ts-ignore
-  const tabsLandlord = docusign.Tabs.constructFromObject({
+  const tabsLandlord: Tabs = {
     textTabs: [propertyAddress, documentSendingDate, nrOfMonths, startingFromDate, rentingPrice, depositValue]
-  });
+  };
 
-  console.log({ tabsLandlord: tabsLandlord.textTabs[4] });
-
-  // @ts-ignore
-  const signer1 = docusign.TemplateRole.constructFromObject({
+  const signer1: TemplateRole = {
     email: landlord.email,
     name: `${landlord.first_name} ${landlord.last_name}`,
     tabs: tabsLandlord,
     clientUserId: landlord._id.toString(),
     roleName: Role.Landlord
-  });
+  };
 
-  // @ts-ignore
-  const signer2 = docusign.TemplateRole.constructFromObject({
+  const signer2: TemplateRole = {
     email: tenant.email,
     name: `${tenant.first_name} ${tenant.last_name}`,
     clientUserId: tenant._id.toString(),
     roleName: Role.Client
-  });
+  };
 
-  env.templateRoles = [signer1, signer2];
+  env.templateRoles = [signer1, signer2] as TemplateRole[];
   env.status = 'Sent';
 
   return env;
@@ -294,14 +289,13 @@ const makeTransactionAgreementEnvelope = (user: UserDocument) => {
 };
 
 const makeRecipientViewRequest = ({ user, envelopId }: { user: UserDocument; envelopId: string }) => {
-  // @ts-ignore
-  const viewRequest = new docusign.RecipientViewRequest();
-
-  viewRequest.returnUrl = `${config.api_url}/api/docusign/success?userId=${user._id}&userType=${user.role}&envelopId=${envelopId}`;
-  viewRequest.authenticationMethod = 'none';
-  viewRequest.email = user.email;
-  viewRequest.userName = `${user.first_name} ${user.last_name}`;
-  viewRequest.clientUserId = user._id.toString();
+  const viewRequest: RecipientViewRequest = {
+    returnUrl: `${config.api_url}/api/docusign/success?userId=${user._id}&userType=${user.role}&envelopId=${envelopId}`,
+    authenticationMethod: 'none',
+    email: user.email,
+    userName: `${user.first_name} ${user.last_name}`,
+    clientUserId: user._id.toString()
+  };
 
   return viewRequest;
 };
