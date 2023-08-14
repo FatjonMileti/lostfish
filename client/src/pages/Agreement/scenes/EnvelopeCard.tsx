@@ -29,12 +29,6 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
 
   const params = useParams<{ id: string }>();
 
-  const generateSignUrl = async () => {
-    const { data } = await axios(auth.access_token).patch(
-      `${config.apiUrl}/api/docusign/${params.id}/generate-url`
-    );
-  };
-
   return (
     <Box display='flex' justifyContent='center'>
       <Card>

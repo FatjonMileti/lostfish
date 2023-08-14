@@ -20,18 +20,9 @@ export class DocusignController {
   }
 
   private initializeRoutes() {
-    this.router.post(
-      '/create-envelope',
-      authorize(),
-      abilityMiddleware(CASLAction.Create, 'SignGenerator'),
-      this.createEnvelope
-    );
-    this.router.post('/sign-transaction', authorize(), this.createEnvelope);
     this.router.get('/get-consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
-    this.router.get('/:id/update-url', authorize(), this.generateNewSignUrls);
-    this.router.patch('/:id/generate-url', authorize(), this.updateUrlForLoggedInUser);
     this.router.get(
       '/envelope',
       authorize(),
@@ -39,7 +30,13 @@ export class DocusignController {
       abilityMiddleware(CASLAction.Read, 'SignGenerator'),
       this.getEnvelopeList
     );
-
+    this.router.post(
+      '/create-envelope',
+      authorize(),
+      abilityMiddleware(CASLAction.Create, 'SignGenerator'),
+      this.createEnvelope
+    );
+    this.router.post('/create-transaction-envelope', authorize(), this.createTransactionAgreement);
     this.router.get('/envelope/:id/download', this.downloadDocument);
     this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
   }
@@ -58,17 +55,17 @@ export class DocusignController {
   private createEnvelope = this.docusignService.createEnvelope;
 
   /**
-   * @api {post} /api/docusign/create-envelope Create new envelope
-   * @apiDescription Add a new envelope as draft
+   * @api {post} /api/docusign/create-transaction-envelope Create new transaction agreement
+   * @apiDescription Create new transaction agreement
    * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/create-envelope
+   * @apiSampleRequest /api/docusign/create-transaction-envelope
    *
    * @apiUse CreateDocusignForm
    * @apiUse CreateDocusignFormExample
    * @apiPermission admin
    * @apiUse bearer
    */
-  private signTransactionAgreement = this.docusignService.createEnvelope;
+  private createTransactionAgreement = this.docusignService.createLostfishTransactionAgreement;
 
   /**
    * @api {get} /api/docusign/:id Update url
@@ -89,26 +86,6 @@ export class DocusignController {
    * @apiUse bearer
    */
   private downloadDocument = this.docusignLocalService.downloadDocument;
-
-  /**
-   * @api {get} /api/docusign/:id/update-url Update url's for both signers
-   * @apiDescription Update url's for both signers
-   * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/:id/update-url
-   *
-   * @apiUse bearer
-   */
-  private generateNewSignUrls = this.docusignLocalService.generateNewSignUrls;
-
-  /**
-   * @api {patch} /api/docusign/:id/generate-url Generate new url for logged in user
-   * @apiDescription Generate new url for an user
-   * @apiGroup Docusign
-   * @apiSampleRequest /api/docusign/:id/generate-url
-   *
-   * @apiUse bearer
-   */
-  private updateUrlForLoggedInUser = this.docusignService.updateUrlForLoggedInUser;
 
   /**
    * @api {get} /api/docusign/get-consent Generate consent

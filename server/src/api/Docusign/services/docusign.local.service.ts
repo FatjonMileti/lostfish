@@ -8,6 +8,7 @@ import docusignService from './docusign.service';
 import fs from 'fs';
 import userService from '../../User/user.service';
 import config from '../../../config';
+import envelopeService from './envelope.service';
 
 type SignUrl = string | undefined;
 
@@ -130,7 +131,7 @@ const getEnvelopeById = async (req: Request, res: Response) => {
     }
 
     if (res.locals.role === Role.Landlord && !envelope.signed_by_landlord) {
-      const newEnvelope = await docusignService.generateNewUrlForLoggedInUser({
+      const newEnvelope = await envelopeService.generateNewUrl({
         envelope,
         user: envelope.land_lord
       });
@@ -142,7 +143,7 @@ const getEnvelopeById = async (req: Request, res: Response) => {
       !envelope.sign_url_agent &&
       envelope.document_type === 'Lostfish transaction agreement'
     ) {
-      const newEnvelope = await docusignService.generateNewUrlForLoggedInUser({
+      const newEnvelope = await envelopeService.generateNewUrl({
         envelope,
         user: envelope.land_lord
       });
@@ -150,7 +151,7 @@ const getEnvelopeById = async (req: Request, res: Response) => {
     }
 
     if (res.locals.role === Role.Client && !envelope.signed_by_tenant) {
-      const newEnvelope = await docusignService.generateNewUrlForLoggedInUser({
+      const newEnvelope = await envelopeService.generateNewUrl({
         envelope,
         user: envelope.tenant
       });
@@ -260,8 +261,6 @@ const getEnvelopeList = async (req: Request, res: Response) => {
   if (property) {
     query.property = { $eq: property };
   }
-
-  console.log({ query });
 
   const response = await Envelope.paginate(query, {
     ...res.locals.paging_options,
