@@ -66,7 +66,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
       if (userIdInQueryParams && location.state.propertyId) {
         const room =
-          (await getRoomWithUser(userIdInQueryParams)) ||
+          (await getRoomWithUser(userIdInQueryParams, location.state.propertyId)) ||
           (await createRoom(userIdInQueryParams, location.state.propertyId));
         if (room) {
           joinRoom(room);
@@ -79,10 +79,10 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   };
 
-  const getRoomWithUser = async (userId: string): Promise<IRoom | false> => {
+  const getRoomWithUser = async (userId: string, propertyId: string): Promise<IRoom | false> => {
     try {
       const { data } = await axios(userStore.auth.access_token).get('/api/chat/room', {
-        params: { participant: userId }
+        params: { participant: userId, property: propertyId }
       });
       return data;
     } catch (err) {

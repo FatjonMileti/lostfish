@@ -95,17 +95,19 @@ export class ChatController {
    * @apiSampleRequest /api/chat/check-room
    *
    * @apiQuery {string} participant
+   * @apiQuery {string} property
    * @apiPermission authorize
    * @apiUse bearer
    */
   private checkIfRoomExist = async (req: express.Request, res: express.Response) => {
-    const { participant } = req.query;
+    const { participant, property } = req.query;
 
     const query: any = {
       $or: [
         { participant: { $eq: participant }, author: { $eq: res.locals.user_id } },
         { author: { $eq: participant }, participant: { $eq: res.locals.user_id } }
-      ]
+      ],
+      property: { $eq: property }
     };
 
     const response = await roomService.findOne(query);

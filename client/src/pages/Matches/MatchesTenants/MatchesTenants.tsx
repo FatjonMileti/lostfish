@@ -14,7 +14,7 @@ import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
 import { mapTenants } from './serializers';
-import { property } from 'lodash';
+
 export interface TenantType {
   id: string;
   criteria: any;
