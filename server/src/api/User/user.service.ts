@@ -168,6 +168,10 @@ const updateUser = async (req: Request, res: Response) => {
     user.documents = handleUserDocuments(user.documents, userBody.documents);
   }
 
+  if (req.body.hasOwnProperty('agreed_application_policy')) {
+    user.agreed_application_policy = userBody.agreed_application_policy as boolean;
+  }
+
   try {
     await user.save();
 

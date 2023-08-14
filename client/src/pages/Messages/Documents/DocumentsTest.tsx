@@ -87,7 +87,7 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
           </IconButton>
         </div>
         {activeTab === 0 && <TenantDocuments room={room} />}
-        {activeTab === 1 && <SignedDocuments />}
+        {activeTab === 1 && <SignedDocuments room={room} />}
         {activeTab === 2 && <LostfishTermsAndCondition />}
 
         {[0, 1].includes(activeTab) && (

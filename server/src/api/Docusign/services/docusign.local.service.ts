@@ -240,8 +240,8 @@ const successSignRedirect = async (req: Request, res: Response) => {
 };
 
 const getEnvelopeList = async (req: Request, res: Response) => {
-  const { document_type } = req.query;
-  const query: { tenant?: string; land_lord?: string; document_type?: any } = {};
+  const { document_type, property } = req.query;
+  const query: { tenant?: string; land_lord?: string; document_type?: any; property?: any } = {};
 
   if (res.locals.role === Role.Client) {
     query.tenant = res.locals.user_id;
@@ -253,6 +253,10 @@ const getEnvelopeList = async (req: Request, res: Response) => {
 
   if (document_type) {
     query.document_type = { $in: document_type };
+  }
+
+  if (property) {
+    query.property = { $eq: property };
   }
 
   const response = await Envelope.paginate(query, {
@@ -271,9 +275,6 @@ const getEnvelopeListDocs = async () => {
     document_type: { $in: ['Lostfish privacy agreement', 'Lostfish transaction agreement'] }
   };
 
-  // if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
-  //   query.$or = [{ land_lord: { $eq: res.locals.user_id } }, { tenant: { $eq: res.locals.user_id } }];
-  // }
   return Envelope.find(query).populate('land_lord').populate('tenant').populate('agent');
 };
 

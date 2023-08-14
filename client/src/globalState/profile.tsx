@@ -11,6 +11,7 @@ export interface ProfileStoreType {
   email: string;
   phone: string;
   description: string;
+  agreed_application_policy: boolean;
   documents: IUser_Documents[];
   set: (
     partial:
@@ -30,6 +31,7 @@ const profileInitialState = {
   last_name: '',
   email: '',
   phone: '',
+  agreed_application_policy: false,
   description: '',
   documents: []
 };
@@ -53,6 +55,7 @@ export const useProfileStore = create<ProfileStoreType>()(
               email: data.email,
               phone: data.phone,
               description: data.description,
+              agreed_application_policy: data.agreed_application_policy,
               documents: data.documents || []
             }));
           } catch (err: any) {

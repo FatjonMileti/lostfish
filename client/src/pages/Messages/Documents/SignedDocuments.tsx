@@ -3,9 +3,10 @@ import React from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
-import { Checkbox, Grid, Paper } from '@mui/material';
+import { Checkbox, Grid } from '@mui/material';
 import { Button } from '../../../components/Button';
 import { Role } from '../../../utils/ability.util';
+import { IRoom } from '../messages.interface';
 
 const state: IGridState = {
   loading: true,
@@ -21,7 +22,12 @@ const state: IGridState = {
   search: ''
 };
 
-export const SignedDocuments = () => {
+interface ISignedDocumentProps {
+  room: IRoom;
+}
+
+export const SignedDocuments = (props: ISignedDocumentProps) => {
+  const { room } = props;
   const { auth, userDetails } = useUserStore();
   const [list, setList] = React.useState<IGridState>({
     ...state
@@ -34,7 +40,8 @@ export const SignedDocuments = () => {
   const getEnvelopes = async () => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
       params: {
-        document_type: 'Rent Contract'
+        document_type: 'Rent Contract',
+        property: room.property._id
       }
     });
     setList((prevList: any) => ({
@@ -57,15 +64,16 @@ export const SignedDocuments = () => {
       <Typography variant='body3'>Sign documents</Typography>
       <div></div>
 
-      {list.rows.length > 0 ? (
+      {list.rows.length > 0 &&
         list.rows.map((item: any, index) => {
           return isLandlord ? (
             <SignedDocumentLandlord item={item} handleSign={handleSign} key={index} />
           ) : (
             <SignedDocumentTenant item={item} handleSign={handleSign} key={index} />
           );
-        })
-      ) : (
+        })}
+
+      {list.rows.length === 0 && (
         <div className='modal-item'>
           <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography>No signed documents</Typography>

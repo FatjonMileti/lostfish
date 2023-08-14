@@ -50,6 +50,7 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   description: String,
   avatar: String,
   confirmation_token: String,
+  agreed_application_policy: { type: Boolean, default: false },
   last_login: Date,
   address: String,
   edited_at: Date,

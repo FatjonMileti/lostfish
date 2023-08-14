@@ -46,7 +46,7 @@ export interface UserDocument extends Document {
   };
   documents: any[];
   address: string;
-
+  agreed_application_policy: boolean;
   role: Role;
   hash: string;
   last_login: Date;

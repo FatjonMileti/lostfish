@@ -35,6 +35,7 @@ import { useProfileStore } from './globalState/profile';
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 import { Agreement } from './pages/Agreement/Agreement';
+import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
 
 registerStore(
   'notification',
@@ -105,6 +106,7 @@ function App() {
             <BrowserRouter>
               <Routes>
                 <Route path='/login' element={<Login />} />
+                <Route path='/policy-agreement' element={<PolicyAgreement />} />
                 <Route path='/agreement/:id' element={<AgreementDetails />} />
                 <Route path='/components' element={<PreviewComponents />} />
                 <Route path='/about' element={<About />} />
