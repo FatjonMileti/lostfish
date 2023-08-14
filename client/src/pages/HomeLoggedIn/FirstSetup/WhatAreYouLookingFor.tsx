@@ -3,7 +3,7 @@ import { Typography } from '../../../components/Typography';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
-import imLookingForPlace from '../../Home/imLookingForPlace.png';
+import imLookingForPlace from './imLookingForPlace.png';
 import { keyframes } from '@emotion/react';
 import React from 'react';
 import { Button } from '../../../components/Button';

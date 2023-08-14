@@ -14,6 +14,8 @@ import { Property } from './Property/Property';
 import { NewProperty } from './NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
+import propertiesBackground from './properties-background.png';
+import { Tab, Tabs } from '../../components/Tab';
 
 const state: IGridState = {
   loading: true,
@@ -37,18 +39,31 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
+  const [statusTab, setStatusTab] = React.useState(0);
+
   const { auth } = useUserStore();
 
   const queryParams = new URLSearchParams(useLocation().search);
+
+  React.useEffect(() => {
+    setList((list) => ({
+      ...list,
+      search: { '0': undefined, '1': 'published', '2': 'rented' }[statusTab]
+    }));
+  }, [statusTab]);
 
   React.useEffect(() => {
     getAssets();
     if (queryParams.get('newProperty')) {
       setShowNewPropertyModal(true);
     }
-  }, []);
+  }, [list.search]);
 
   const getAssets = async () => {
+    setList((prevList: any) => ({
+      ...prevList,
+      loading: true
+    }));
     try {
       const { search, asc, sort, pageSize, page } = list;
 
@@ -64,7 +79,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
       setList((prevList: any) => ({
         ...prevList,
-        // @ts-ignore
         rows: data.docs,
         totalRows: data.totalDocs,
         loading: false,
@@ -89,7 +103,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       )}
 
       <div className='container'>
-        {!list.loading && list.rows.length === 0 && (
+        {!list.loading && list.rows.length === 0 && list.totalDocsUnfiltered === 0 && (
           <div className='no-properties'>
             <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
             <Button
@@ -105,7 +119,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           </div>
         )}
 
-        {!list.loading && list.rows.length > 0 && (
+        {!list.loading && list?.totalDocsUnfiltered !== 0 && (
           <>
             <div className='manage-properties-bar'>
               <div className='texts'>
@@ -117,7 +131,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
               <Button
                 variant='secondary'
-                size='medium'
+                size='large'
                 className='add-property-button'
                 startIcon={<Icon icon='plus' size={16} />}
                 onClick={() => {
@@ -126,6 +140,14 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 }}>
                 Add Property
               </Button>
+            </div>
+
+            <div className='filter-properties-tabs'>
+              <Tabs value={statusTab} onChange={setStatusTab}>
+                <Tab label='All' />
+                <Tab label='Published' />
+                <Tab label='Under rental' />
+              </Tabs>
             </div>
 
             <div className='properties-list'>
@@ -139,7 +161,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     setEditPropertyId(p._id);
                     setShowNewPropertyModal(true);
                   }}
-                  image={p?.property_images?.[0]?.link}
                   images={p.property_images.length > 0 ? p.property_images : []}
                 />
               ))}
@@ -153,15 +174,49 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   );
 })`
   &.properties-page {
-    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
     min-height: 100vh;
 
+    position: relative;
     display: grid;
     grid-template-rows: min-content auto min-content;
-    row-gap: 32px;
+    z-index: 1;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url(${propertiesBackground}), lightgray 50% / cover no-repeat;
+      opacity: 0.05;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+
+      background-position-y: top;
+      background-size: cover;
+      z-index: -2;
+    }
 
     .container {
-      padding: 24px 36px 48px 36px;
+      padding: 24px 36px 64px 36px;
+      min-height: calc(100vh - 104px);
+      box-sizing: border-box;
+      display: grid;
+      row-gap: 32px;
+      align-content: flex-start;
+      position: relative;
 
       .manage-properties-bar {
         display: flex;
@@ -172,29 +227,53 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           display: grid;
           row-gap: 12px;
         }
+
+        .add-property-button {
+        }
       }
 
-      .status-tabs {
-        margin-top: 52px;
+      .filter-properties-tabs {
+        .tabs {
+          background-color: white;
+          border-radius: 32px;
+          border: 1px solid #e7e7e7;
+          column-gap: 0;
+
+          .tab {
+            border-radius: 32px;
+            background-color: white;
+            padding: 12px 24px;
+            width: 148px;
+            .typography {
+              color: #0d2a38;
+            }
+            &.active {
+              background: #eee0d3;
+              .typography {
+                color: black;
+              }
+            }
+          }
+        }
       }
 
       .properties-list {
-        margin-top: 32px;
         display: grid;
         grid-template-columns: 1fr;
         flex-wrap: wrap;
         column-gap: 24px;
-        row-gap: 24px;
+        row-gap: 32px;
 
         justify-content: center;
       }
     }
 
     .no-properties {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: absolute;
+      inset: 0;
+      display: grid;
+      justify-items: center;
+      align-content: center;
       height: 100%;
 
       .add-property-button {

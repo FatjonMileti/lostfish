@@ -2,7 +2,9 @@ import { Button } from '../../components/Button';
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Icon } from '../../components/Icon';
+
+import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
+import { MenuButton } from '../../components/MenuButton';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -10,41 +12,26 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
   return (
     <div className={`header ${className}`}>
-      <Icon icon='lost-fish-yin' size={64} />
+      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' />
 
       <div className='menu-desktop'>
-        <NavLink to='/'>
-          {({ isActive }) => (
-            <Button active={isActive} inverted>
-              Home
-            </Button>
-          )}
-        </NavLink>
-        <NavLink to='/about'>
-          {({ isActive }) => (
-            <Button active={isActive} inverted>
-              About
-            </Button>
-          )}
-        </NavLink>
+        <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
+        <NavLink to='/about'>{({ isActive }) => <MenuButton active={isActive}>About</MenuButton>}</NavLink>
         <NavLink to='/mission'>
-          {({ isActive }) => (
-            <Button active={isActive} inverted>
-              Mission
-            </Button>
-          )}
+          {({ isActive }) => <MenuButton active={isActive}>Mission</MenuButton>}
         </NavLink>
       </div>
 
       <div className='right'>
-        <Button className='join-button' size='medium' onClick={() => navigate('/login')}>
-          Join
+        <Button variant='secondary' className='join-button' size='small' onClick={() => navigate('/login')}>
+          Sign In
         </Button>
       </div>
     </div>
   );
 })`
   &.header {
+    width: 100%;
     height: 104px;
     align-items: center;
 
@@ -60,22 +47,26 @@ export const Header = styled(({ className }: HeaderProps) => {
       padding: 16px 36px;
     }
 
+    .logo {
+      height: 64px;
+      width: auto;
+    }
+
     .menu-desktop {
       list-style: none;
+      a {
+        text-decoration: none;
+      }
+
       display: flex;
       align-items: center;
-      column-gap: 5px;
+      column-gap: 32px;
       margin: 0;
-
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
       padding: 5px;
-      border-radius: 30px;
-      background: #ffffff;
     }
 
     .right {
       .join-button {
-        padding-inline: 36px;
       }
     }
   }

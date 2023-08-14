@@ -126,7 +126,7 @@ function App() {
                 <Route path='/properties/:id' element={<PrivateProperty />} />
                 <Route path='/properties/:id/view' element={<PublicProperty />} />
                 <Route path='/properties/:id/applications' element={<PropertyApplications />} />
-                <Route path='/matches' element={<Matches />} />
+                <Route path='/matches' element={!!userStore.auth ? <Matches /> : <Login />} />
                 <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
                 <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
                 <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />

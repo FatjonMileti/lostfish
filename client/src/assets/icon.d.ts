@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "image"
   | "folder"
   | "bus"
   | "temperature"

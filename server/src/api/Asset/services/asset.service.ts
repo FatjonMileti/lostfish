@@ -43,7 +43,7 @@ const findAll = async (req: Request, res: Response) => {
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
   }
 
-  const count = await AssetModel.countDocuments();
+  const count = await AssetModel.countDocuments({ created_by: res.locals.user_id });
 
   try {
     const response = await AssetModel.paginate(query, {

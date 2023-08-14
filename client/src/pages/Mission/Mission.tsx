@@ -13,9 +13,10 @@ export const Mission = styled(({ className }: React.HTMLAttributes<HTMLDivElemen
     position: relative;
     min-height: 100vh;
     display: grid;
-    background-color: #f7f1e7;
-
     grid-template-rows: min-content auto;
+
+    background: linear-gradient(148deg, #fffbf3 18.95%, #fff 100%);
+    z-index: 0;
 
     .header {
       z-index: 1;
