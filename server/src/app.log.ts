@@ -1,7 +1,7 @@
 import path from 'path';
 import { Request } from 'express';
-const rfs = require('rotating-file-stream');
-const morgan = require('morgan');
+import * as rfs from 'rotating-file-stream';
+import morgan from 'morgan';
 
 morgan.token('req-body', (req: Request) => JSON.stringify(req.body));
 

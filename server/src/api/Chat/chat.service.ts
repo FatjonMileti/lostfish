@@ -6,7 +6,7 @@ import notificationSender from '../../utils/notification-sender';
 import { NotificationType } from '../Notification/notification.interface';
 import socketApi from '../../utils/socket.io';
 import roomService from './room.service';
-import { Types } from 'mongoose';
+
 const getAll = async (query: any, pagingOptions: any) => {
   return RoomModel.paginate(query, {
     ...pagingOptions,
