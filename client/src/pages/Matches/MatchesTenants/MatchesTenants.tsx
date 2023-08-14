@@ -14,9 +14,11 @@ import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
 import { mapTenants } from './serializers';
+
 export interface TenantType {
   id: string;
   criteria: any;
+  property: any;
   chosen: boolean;
   starred: boolean;
   matchId?: string;
@@ -56,13 +58,19 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   const addOrUpdateTenantMatch = async (
     tenantId: string,
     chosen: boolean = false,
-    starred: boolean = false
+    starred: boolean = false,
+    propertyId: string
   ) => {
     const matchId = tenants.find((t) => t.criteria.tenantId === tenantId)?.matchId || false;
 
     const response = matchId
       ? await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred })
-      : await axios(auth.access_token).post('/api/match/tenant', { tenant: tenantId, chosen, starred });
+      : await axios(auth.access_token).post('/api/match/tenant', {
+          tenant: tenantId,
+          chosen,
+          starred,
+          property: propertyId
+        });
 
     if (response.status === 200 || response.status === 201) {
       setTenants((prevArray) =>
@@ -86,12 +94,12 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     }
   };
 
-  const starTenant = async (tenantId: string, chosen: boolean, starred: boolean) => {
-    await addOrUpdateTenantMatch(tenantId, chosen, starred);
+  const starTenant = async (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => {
+    await addOrUpdateTenantMatch(tenantId, chosen, starred, propertyId);
   };
 
-  const checkTenant = async (tenantId: string, chosen: boolean, starred: boolean) => {
-    await addOrUpdateTenantMatch(tenantId, chosen, starred);
+  const checkTenant = async (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => {
+    await addOrUpdateTenantMatch(tenantId, chosen, starred, propertyId);
   };
 
   const removeTenantMatch = async (matchId: string) => {

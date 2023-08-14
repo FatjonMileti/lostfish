@@ -27,5 +27,6 @@ export interface IRoom {
   author: IChatUser;
   participant: IChatUser;
   last_message: ILastMessage | null;
+  property: object;
   _id: string;
 }

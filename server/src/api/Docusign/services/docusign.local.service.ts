@@ -14,7 +14,8 @@ type SignUrl = string | undefined;
 const createEnvelopeDoc = async (
   results: any,
   landlord: string | ObjectId | undefined,
-  tenant: string | ObjectId
+  tenant: string | ObjectId,
+  propertyId: string | ObjectId
 ): Promise<IEnvelope> => {
   return await Envelope.create({
     envelope_id: results.envelopeId,
@@ -24,6 +25,7 @@ const createEnvelopeDoc = async (
     uri: results.uri,
     land_lord: landlord,
     tenant,
+    property: propertyId,
     created_by: landlord
   });
 };

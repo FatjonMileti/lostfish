@@ -11,10 +11,10 @@ import { IRoom } from '../messages.interface';
 import { TenantDocuments } from './TenantDocuments';
 import { SignedDocuments } from './SignedDocuments';
 import { LostfishTermsAndCondition } from './LostfishTermsAndCondition';
-import axios from '../../../utils/axios';
+import Can from '../../../components/Can';
 import { useUserStore } from '../../../globalState/user';
-import { AxiosError } from 'axios';
 import { NewRentingContract } from './NewRentingContract';
+import { CASLAction } from '../../../utils/ability.util';
 
 interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -22,23 +22,23 @@ interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
     areDocumentsApproved: boolean;
     isContractCreated: boolean;
   };
+  onReload: () => void;
 }
 
-export const DocumentsTest = styled(({ room, documentState, className }: IDocumentTest) => {
+export const DocumentsTest = styled(({ room, documentState, className, onReload }: IDocumentTest) => {
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const [showContractCreator, setShowContrCreator] = useState<boolean>(false);
-
   const { userDetails } = useUserStore();
-
-  React.useEffect(() => {
-    setShowContrCreator(false);
-  }, [room._id]);
 
   const onFinish = () => {
     alert('Contract created with success!');
-    setShowContrCreator(false);
+    onReload();
+  };
+
+  const onModalClose = () => {
+    setShowModal(false);
+    onReload();
   };
 
   const tenant = room.participant._id === userDetails.user_id ? room.author : room.participant;
@@ -59,27 +59,20 @@ export const DocumentsTest = styled(({ room, documentState, className }: IDocume
         <Label variant='secondary' onClick={() => setShowModal(true)}>
           View documents
         </Label>
-        {/*<Label disabled>Complete transaction</Label>*/}
 
-        {!documentState.isContractCreated && (
-          <Label
-            onClick={() => setShowContrCreator(!showContractCreator)}
-            disabled={!documentState.areDocumentsApproved}>
-            Create renting contract
-          </Label>
-        )}
+        <Can do={CASLAction.Create} on='SignGenerator'>
+          {!documentState.isContractCreated && (
+            <NewRentingContract tenant={tenant._id} property={room.property} onFinish={onFinish} />
+          )}
+        </Can>
 
         {documentState.isContractCreated && (
           <Label variant='tertiary' disabled={!documentState.areDocumentsApproved}>
             Contract is ready to sign
           </Label>
         )}
-
-        {showContractCreator && documentState.areDocumentsApproved && (
-          <NewRentingContract tenant={tenant._id} onFinish={onFinish} />
-        )}
       </div>
-      <Modal open={showModal} className='view-documents-modal' onBackdropClick={() => setShowModal(false)}>
+      <Modal open={showModal} className='view-documents-modal' onBackdropClick={() => onModalClose()}>
         <div className='modal-header'>
           <div></div>
           <div className='tabs-wrapper'>
@@ -89,13 +82,21 @@ export const DocumentsTest = styled(({ room, documentState, className }: IDocume
               <Tab label='Lostfish T&Cs' />
             </Tabs>
           </div>
-          <IconButton onClick={() => setShowModal(false)}>
+          <IconButton onClick={() => onModalClose()}>
             <Icon icon='close' />
           </IconButton>
         </div>
         {activeTab === 0 && <TenantDocuments room={room} />}
         {activeTab === 1 && <SignedDocuments />}
         {activeTab === 2 && <LostfishTermsAndCondition />}
+
+        {[0, 1].includes(activeTab) && (
+          <div className='document-footer'>
+            <Typography variant='body4'>
+              You can find more information about why we need these documents in the Lostfish T&Cs section.
+            </Typography>
+          </div>
+        )}
       </Modal>
     </div>
   );
@@ -157,6 +158,21 @@ export const DocumentsTest = styled(({ room, documentState, className }: IDocume
         padding: 16px 32px;
         display: grid;
         row-gap: 24px;
+
+        .modal-item {
+          display: flex;
+          padding: 24px;
+          align-items: center;
+          gap: 16px;
+          align-self: stretch;
+
+          border-radius: 8px;
+          border: 1px solid var(--primary-brand-ocean-blue, #184d6d);
+        }
+      }
+
+      .document-footer {
+        padding: 16px 32px;
       }
     }
   }

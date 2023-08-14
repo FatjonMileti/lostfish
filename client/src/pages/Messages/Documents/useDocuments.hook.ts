@@ -46,8 +46,6 @@ export const useDocuments = ({
 
   const getUploadedDocuments = async () => {
     try {
-      console.log(document._id);
-
       const { data, status } = await axios(auth.access_token).get('/api/document/by-user', {
         params: { participant }
       });

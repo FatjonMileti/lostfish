@@ -59,7 +59,7 @@ export const LostfishTermsAndCondition = () => {
       {list.rows.length > 0 ? (
         list.rows.map((item: any, index) => {
           return (
-            <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
+            <div className='modal-item' key={index}>
               <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Grid item>
                   <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
@@ -75,15 +75,15 @@ export const LostfishTermsAndCondition = () => {
                   {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
                 </Grid>
               </Grid>
-            </Paper>
+            </div>
           );
         })
       ) : (
-        <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
+        <div className='modal-item'>
           <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography>No signed documents</Typography>
           </Grid>
-        </Paper>
+        </div>
       )}
     </div>
   );

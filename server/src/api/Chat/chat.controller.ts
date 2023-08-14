@@ -12,6 +12,7 @@ import documentService from '../Document/document.service';
 import docusignLocalService from '../Docusign/services/docusign.local.service';
 import { Role } from '../User/user.interface';
 import { IEnvelope } from '../Docusign/schemas/envelope';
+import assetService from '../Asset/services/asset.service';
 const router: Router = Router();
 
 export class ChatController {
@@ -80,6 +81,13 @@ export class ChatController {
 
     const room: any | null = await roomService.findOne({ _id: id });
     if (room) {
+      const property = await assetService.findById(room.property as string);
+      response.property = {
+        id: property._id,
+        asset_address: property.asset_address,
+        area_of_interest: property.area_of_interest
+      };
+
       const areDocumentsApproved = await documentService.canCompleteTransaction(
         room.author,
         room.participant
@@ -91,6 +99,7 @@ export class ChatController {
       const isContractGenerated: IEnvelope | null = await docusignLocalService.findEnvelope({
         tenant,
         land_lord: landlord,
+        property: room.property as string,
         document_type: { $eq: 'Rent Contract' }
       });
       response.areDocumentsApproved = areDocumentsApproved ? areDocumentsApproved.approved : false;
@@ -107,17 +116,19 @@ export class ChatController {
    * @apiSampleRequest /api/chat/check-room
    *
    * @apiQuery {string} participant
+   * @apiQuery {string} property
    * @apiPermission authorize
    * @apiUse bearer
    */
   private checkIfRoomExist = async (req: express.Request, res: express.Response) => {
-    const { participant } = req.query;
+    const { participant, property } = req.query;
 
     const query: any = {
       $or: [
         { participant: { $eq: participant }, author: { $eq: res.locals.user_id } },
         { author: { $eq: participant }, participant: { $eq: res.locals.user_id } }
-      ]
+      ],
+      property: { $eq: property }
     };
 
     const response = await roomService.findOne(query);
@@ -166,7 +177,8 @@ export class ChatController {
 
     const newRoom = await RoomSchema.create({
       author: room.author,
-      participant: room.participant
+      participant: room.participant,
+      property: room.property
     });
 
     const message = { ...newRoom, room_id: newRoom._id };

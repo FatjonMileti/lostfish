@@ -258,10 +258,7 @@ const findPublishedProperties = async (req: Request, res: Response) => {
           path: 'edited_by',
           select: ['email', 'username', 'first_name', 'last_name', 'avatar']
         }
-      ],
-      callback: (err: any, results: any[]) => {
-        console.log(err, results);
-      }
+      ]
     }).then((result) => {
       result.docs = result.docs.filter((asset: any) => !asset.created_by.deleted_at);
       if (result.docs.length === 0) {
@@ -288,8 +285,19 @@ const findPublishedProperties = async (req: Request, res: Response) => {
 
     return res.status(httpStatus.OK).send(response);
   } catch (error: any) {
-    console.log(error);
     return res.status(httpStatus.BAD_REQUEST).send(error?.response?.data);
+  }
+};
+
+const findPublishedPropertiesExample = async (): Promise<AssetDocument[]> => {
+  const query: any = {
+    status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
+  };
+
+  try {
+    return await AssetModel.find(query);
+  } catch (error: any) {
+    return [];
   }
 };
 
@@ -301,5 +309,6 @@ export default {
   updateAsset,
   findById,
   sendAssetInvitation,
-  findPublishedProperties
+  findPublishedProperties,
+  findPublishedPropertiesExample
 };

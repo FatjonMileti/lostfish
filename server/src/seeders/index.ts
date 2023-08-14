@@ -5,8 +5,8 @@ import chalk from 'chalk';
 import mongoose from 'mongoose';
 import config from '../config';
 
-const dbConnect = require('../data');
-dbConnect(config.connection_string);
+import dbConnect from '../data';
+dbConnect(config.connection_string as string);
 
 const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));

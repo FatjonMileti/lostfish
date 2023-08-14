@@ -1,11 +1,11 @@
 import { verifyToken } from '../middleware/authorize';
-
 import { Server, Socket } from 'socket.io';
 import chatService from '../api/Chat/chat.service';
 import { JwtPayload } from 'jsonwebtoken';
 
 const users: any = {};
 const io: Server = new Server();
+
 const socketApi: any = {};
 
 socketApi.io = io;

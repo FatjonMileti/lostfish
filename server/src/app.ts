@@ -97,24 +97,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure session management using express-session and MongoStore
-app.use(
-  session({
-    resave: true,
-    rolling: true,
-    saveUninitialized: false,
-    secret: process.env.SESSION_SECRET as string,
-    store: MongoStore.create({
-      mongoUrl: process.env.DB_CONNECTION_STRING as string
-    }),
-    cookie: {
-      maxAge: 1000 * 60 * 60,
-      sameSite: 'lax',
-      httpOnly: true,
-      secure: true
-    },
-    name: 'fsdlm'
-  })
-);
+
+export const sessionMiddleware = session({
+  resave: true,
+  rolling: true,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET as string,
+  store: MongoStore.create({
+    mongoUrl: process.env.DB_CONNECTION_STRING as string
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60,
+    sameSite: 'lax',
+    httpOnly: true,
+    secure: true
+  },
+  name: 'fsdlm'
+});
+app.use(sessionMiddleware);
 
 // Serve documentation files from '/docs' route
 app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));

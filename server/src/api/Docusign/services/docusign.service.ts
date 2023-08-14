@@ -445,7 +445,12 @@ const createEnvelope = async (request: Request, response: Response) => {
     });
 
     if (results) {
-      await docusignLocalService.createEnvelopeDoc(results, request.body.landlord, request.body.tenant);
+      await docusignLocalService.createEnvelopeDoc(
+        results,
+        request.body.landlord,
+        request.body.tenant,
+        property_id
+      );
     }
 
     if (results && results.envelopeId) {
@@ -651,7 +656,7 @@ const fetchAllEnvelopes = async () => {
 
 //retrieveSignedDocuments('2a573eba-f8ba-4663-82d6-c33f9134e476');
 //fetchAllEnvelopes();
-['Lostfish privacy agreement', 'Lostfish transaction agreement'];
+// ['Lostfish privacy agreement', 'Lostfish transaction agreement'];
 export default {
   getConsent,
   getToken,

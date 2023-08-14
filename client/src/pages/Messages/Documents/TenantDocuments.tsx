@@ -39,7 +39,7 @@ export const TenantDocuments = (props: ITenantProps) => {
         const userDocument = userDocuments.find((userDoc) => userDoc.type === document.type);
 
         return (
-          <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }} key={index}>
+          <div className='modal-item' key={index}>
             <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Grid item>
                 <Checkbox checked={Boolean(!!document?.key)} disabled />
@@ -63,7 +63,7 @@ export const TenantDocuments = (props: ITenantProps) => {
                 />
               )}
             </Grid>
-          </Paper>
+          </div>
         );
       })}
     </div>

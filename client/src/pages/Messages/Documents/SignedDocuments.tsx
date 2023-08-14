@@ -5,6 +5,7 @@ import axios from '../../../utils/axios';
 import config from '../../../config';
 import { Checkbox, Grid, Paper } from '@mui/material';
 import { Button } from '../../../components/Button';
+import { Role } from '../../../utils/ability.util';
 
 const state: IGridState = {
   loading: true,
@@ -21,7 +22,7 @@ const state: IGridState = {
 };
 
 export const SignedDocuments = () => {
-  const { auth } = useUserStore();
+  const { auth, userDetails } = useUserStore();
   const [list, setList] = React.useState<IGridState>({
     ...state
   });
@@ -44,9 +45,11 @@ export const SignedDocuments = () => {
     }));
   };
 
+  const isLandlord = userDetails.role === Role.Landlord;
+
   const handleSign = async (item: any) => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope/${item._id}`);
-    window.location.href = data.sign_url_tenant;
+    window.location.href = isLandlord ? data.sign_url_landlord : data.sign_url_tenant;
   };
 
   return (
@@ -56,30 +59,67 @@ export const SignedDocuments = () => {
 
       {list.rows.length > 0 ? (
         list.rows.map((item: any, index) => {
-          return (
-            <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
-              <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Grid item>
-                  <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
-                  {item.document_type}
-                </Grid>
-                <Grid item style={{ display: 'flex' }}>
-                  <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-                    View
-                  </Button>
-                  {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
-                </Grid>
-              </Grid>
-            </Paper>
+          return isLandlord ? (
+            <SignedDocumentLandlord item={item} handleSign={handleSign} key={index} />
+          ) : (
+            <SignedDocumentTenant item={item} handleSign={handleSign} key={index} />
           );
         })
       ) : (
-        <Paper elevation={3} style={{ padding: 10, border: '1px solid #ccc' }}>
+        <div className='modal-item'>
           <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography>No signed documents</Typography>
           </Grid>
-        </Paper>
+        </div>
       )}
+    </div>
+  );
+};
+
+interface ISignedDocumentLandlord {
+  item: any;
+  handleSign: (item: any) => void;
+}
+const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
+  const { item, handleSign } = props;
+  return (
+    <div className='modal-item'>
+      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Grid item>
+          <Checkbox defaultChecked={!!item.signed_by_landlord} disabled />
+          {item.document_type}
+        </Grid>
+        <Grid item style={{ display: 'flex' }}>
+          <Button onClick={() => {}} style={{ marginRight: '5px' }}>
+            View
+          </Button>
+          {!item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
+        </Grid>
+      </Grid>
+    </div>
+  );
+};
+
+interface ISignedDocumentTenant {
+  item: any;
+  handleSign: (item: any) => void;
+}
+const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
+  const { item, handleSign } = props;
+  return (
+    <div className='modal-item'>
+      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Grid item>
+          <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
+          {item.document_type}
+        </Grid>
+        <Grid item style={{ display: 'flex' }}>
+          <Button onClick={() => {}} style={{ marginRight: '5px' }}>
+            View
+          </Button>
+          {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
+        </Grid>
+      </Grid>
     </div>
   );
 };

@@ -17,11 +17,7 @@ const canCompleteTransaction = async (landlord: string | ObjectId, tenant: strin
 };
 
 const findOne = async (query: any) => {
-  const document = await DocumentSchema.findOne(query);
-  if (!document) {
-    throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
-  }
-  return document;
+  return DocumentSchema.findOne(query);
 };
 
 const findAll = async (query: any) => {

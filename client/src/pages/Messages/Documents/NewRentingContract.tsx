@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Backdrop } from '../../../components/Backdrop';
 import { Button } from '../../../components/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,12 +11,6 @@ import config from '../../../config';
 import { useProfileStore } from '../../../globalState/profile';
 import { useUserStore } from '../../../globalState/user';
 
-import FormLabel from '@mui/material/FormLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-
 const schema = yup.object().shape({
   landlord: yup.string().required('Landlord is required'),
   tenant: yup.string().required('Tenant is required'),
@@ -25,21 +19,20 @@ const schema = yup.object().shape({
 
 interface INewRentingContract {
   tenant: string;
+  property: any;
   onFinish: () => void;
 }
 
 export const NewRentingContract = (props: INewRentingContract) => {
   const [loading, setLoading] = React.useState(false);
-  const [properties, setProperties] = useState<any[]>([]);
   const profileStore = useProfileStore();
 
   const { auth } = useUserStore();
 
   const {
-    register,
     handleSubmit,
     setError,
-    formState: { errors, isValid },
+    formState: { errors },
     setValue
   } = useForm({
     defaultValues: {
@@ -62,8 +55,6 @@ export const NewRentingContract = (props: INewRentingContract) => {
           pageSize: 100
         }
       });
-
-      setProperties(data.docs);
     } catch (error: AxiosError | any) {
       //handle error
     }
@@ -73,7 +64,8 @@ export const NewRentingContract = (props: INewRentingContract) => {
     if (profileStore) {
       setValue('landlord', `${profileStore.id}`);
     }
-    setValue('tenant', `${props.tenant}`);
+    setValue('tenant', props.tenant);
+    setValue('property_id', props.property._id);
   }, [props]);
 
   const onSubmit = async (data: any) => {
@@ -101,35 +93,17 @@ export const NewRentingContract = (props: INewRentingContract) => {
       props.onFinish();
     }
   };
-  return (
+  return loading ? (
+    <Backdrop open={loading} />
+  ) : (
     <form className='content' onSubmit={handleSubmit(onSubmit)}>
-      <div className='form-fields'>
-        <FormControl fullWidth>
-          <FormLabel id='demo-simple-select-label-property'>Choose Property</FormLabel>
-          <Select
-            labelId='demo-simple-select-label-property'
-            id='demo-simple-select-property'
-            {...register('property_id')}
-            error={!!errors.property_id}
-            size='small'>
-            {properties.map((property: any) => {
-              return (
-                <MenuItem value={property._id} key={property._id}>
-                  {`${property.area_of_interest}`}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          <FormHelperText>{errors.property_id?.message?.toString()}</FormHelperText>
-        </FormControl>
-      </div>
       <Button
         className='login-button'
         type='submit'
-        disabled={!isValid}
-        size='large'
+        disabled={Object.keys(errors).length > 0}
+        size='small'
         style={{ marginTop: '2rem' }}>
-        Generate contract
+        Create renting contract
       </Button>
     </form>
   );
