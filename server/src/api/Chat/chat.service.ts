@@ -74,6 +74,26 @@ const getLatestMessage = async (query: any) => {
     .sort({ created_at: -1 });
 };
 
+const getMessagesBetweenUsers = async (landlord: string, tenant: string, loggedInUser: string) => {
+  const query: any = {
+    $or: [
+      { participant: { $eq: landlord }, author: { $eq: tenant } },
+      { participant: { $eq: tenant }, author: { $eq: landlord } }
+    ],
+    sender: { $ne: loggedInUser },
+    seen: false
+  };
+
+  const messages = await ChatModel.find({ ...query })
+    .populate('author', ['first_name', 'last_name'])
+    .populate('sender', ['first_name', 'last_name'])
+    .populate('participant', ['first_name', 'last_name'])
+    .sort({ created_at: -1 });
+
+  const unseenMessages = messages.map((message: any) => message.seen === false);
+  return unseenMessages.length;
+};
+
 const findOne = async (query: any) => {
   return ChatModel.findOne({ ...query });
 };
@@ -136,5 +156,6 @@ export default {
   deleteChat,
   getConversations,
   getLatestMessage,
-  handleNewMessage
+  handleNewMessage,
+  getMessagesBetweenUsers
 };

@@ -21,6 +21,7 @@ export interface TenantType {
   property: any;
   chosen: boolean;
   starred: boolean;
+  unread_messages: number;
   matchId?: string;
 }
 

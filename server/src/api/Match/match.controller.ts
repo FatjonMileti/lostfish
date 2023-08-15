@@ -12,6 +12,7 @@ import assetService from '../Asset/services/asset.service';
 import { LogAction, MatchLog } from '../../data/logs';
 import criteriaService from '../Criteria/services/criteria.service';
 import { faker } from '@faker-js/faker';
+import chatService from '../Chat/chat.service';
 
 const router: Router = Router();
 
@@ -188,6 +189,12 @@ export class MatchController {
       // tslint:disable-next-line:prefer-for-of
       for (let i = 0; i < matches.docs.length; i++) {
         const currentMatch = matches.docs[i];
+
+        matches.docs[i].unread_messages = await chatService.getMessagesBetweenUsers(
+          currentMatch.landlord._id.toString(),
+          currentMatch.tenant._id.toString(),
+          res.locals.user_id as string
+        );
         matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
         matches.docs[i].suggestion_id = i;
         matches.docs[i].percentage = faker.number.int({ min: 30, max: 100 });
