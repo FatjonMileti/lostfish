@@ -190,7 +190,7 @@ export class MatchController {
         const currentMatch = matches.docs[i];
         matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
         matches.docs[i].suggestion_id = i;
-        matches.docs[i].percentage = faker.number.int({ min: 30, max: 100 });
+        matches.docs[i].property.percentage = faker.number.int({ min: 30, max: 100 });
         matches.docs[i].matchId = currentMatch._id;
       }
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });

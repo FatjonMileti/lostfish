@@ -15,12 +15,16 @@ import { UploadController } from './Upload/upload.controller';
 import { FileController } from './File/file.controller';
 import { MatchController } from './Match/match.controller';
 import { AdminController } from './Agent/admin.controller';
+import { SuggestionController } from './Suggestions/suggestion.controller';
 
 /* SERVICES */
 import MatchService from './Match/match.service';
 import MatchModel from './Match/match.schema';
 import { LoginLog, AssetLog, MatchLog } from '../data/logs';
 import AdminService from './Agent/admin.service';
+import SuggestionService from './Suggestions/suggestion.service';
+import AssetSchema from './Asset/schemas/asset.schema';
+import CriteriaSchema from './Criteria/schemas/criteria.schema';
 
 const router: Router = Router();
 /**
@@ -53,8 +57,9 @@ const router: Router = Router();
 // Create services instances
 const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
-
+const suggestionService = new SuggestionService(AssetSchema, CriteriaSchema);
 // Create controller instances
+const suggestionController = new SuggestionController(suggestionService);
 const adminController = new AdminController(adminService);
 const matchController = new MatchController(matchService);
 const protectedController = new ProtectedApiController();
@@ -71,6 +76,7 @@ const docusignController = new DocusignController();
 const fileController = new FileController();
 
 router.use('/v1', protectedController.router);
+router.use('/suggestion', suggestionController.router);
 router.use('/admin', adminController.router);
 router.use('/document', documentController.router);
 router.use('/match', matchController.router);

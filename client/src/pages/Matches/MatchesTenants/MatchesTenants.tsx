@@ -46,7 +46,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   const getTenants = async () => {
     try {
       setLoadingTenants(true);
-      const { data } = await axios(auth.access_token).get('/api/criteria/user-example-matches');
+      const { data } = await axios(auth.access_token).get('/api/suggestion/tenant');
       setTenants(mapTenants(data.docs));
     } catch (err) {
       throw err;
