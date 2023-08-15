@@ -180,6 +180,14 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
               <span style={{ marginLeft: '12px', fontSize: '14px', lineHeight: '24px' }}>+44</span>
             }
           />
+          <TextField
+            required
+            label={
+              <>
+                <Icon icon='ruler' /> Ruler
+              </>
+            }
+          />
         </div>
 
         <div className='icon-buttons'>

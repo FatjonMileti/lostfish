@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { useId } from 'react';
 import { Typography } from './Typography';
@@ -7,7 +7,7 @@ import { Icon } from './Icon';
 
 export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'filled' | 'outlined' | 'standard';
-  label?: string;
+  label?: ReactNode;
   required?: boolean;
   endAdornment?: ReactElement;
   startAdornment?: ReactElement;
@@ -38,7 +38,7 @@ export const TextField = styled(
         <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
           {(label || required) && (
             <label htmlFor={elementId}>
-              {label}
+              <>{label}</>
               {required && <span className='required-asterisk'> *</span>}
             </label>
           )}
