@@ -22,57 +22,8 @@ export class CriteriaController {
     this.router.get('/', authorize(), this.getCriteria);
     this.router.post('/', authorize(), this.createCriteria);
     this.router.patch('/', authorize(), validateId, this.updateCriteria);
-    this.router.get('/user-example-matches', authorize(), this.getMatchedUsers);
     this.router.get('/:id', authorize(), validateId, this.getById);
   }
-
-  /**
-   * @api {get} /api/criteria/user-example-matches Get users matches (Example)
-   * @apiDescription Get user matches
-   * @apiGroup Criteria
-   * @apiSampleRequest /api/criteria/user-example-matches
-   *
-   * @apiPermission authorize
-   * @apiUse bearer
-   */
-  private getMatchedUsers = async (req: Request, res: Response) => {
-    const matchesUsers: any = await CriteriaSchema.paginate(
-      {
-        created_by: { $ne: res.locals.user_id }
-      },
-      {
-        ...res.locals.paging_options,
-        populate: [
-          {
-            path: 'created_by',
-            select: ['email', 'username', 'first_name', 'last_name', 'avatar']
-          }
-        ]
-      }
-    );
-
-    const response = await assetService.findPublishedPropertiesExample();
-
-    const matches = await MatchSchema.find({ created_by: res.locals.user_id }).lean();
-
-    matchesUsers.docs = matchesUsers.docs.map((item: any, index: number) => {
-      const criteria = item.toObject();
-      const matchTenant = matches.find(
-        (match: any) => match.tenant.toString() === criteria?.created_by?._id.toString()
-      );
-      return {
-        suggestion_id: index,
-        criteria,
-        property: faker.helpers.arrayElement(response),
-        chosen: matchTenant?.chosen ?? false,
-        starred: matchTenant?.starred ?? false,
-        matchId: matchTenant?._id ?? undefined,
-        percentage: faker.number.int({ min: 30, max: 100 })
-      };
-    });
-
-    res.status(200).send(matchesUsers);
-  };
 
   /**
    * @api {get} /api/criteria Get criteria associated with user
