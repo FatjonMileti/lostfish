@@ -83,6 +83,16 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
             <Tab label='Include' />
             <Tab label='Exclude' />
           </Tabs>
+
+          <Tabs rounded value={activeTab} onChange={(i: number) => setActiveTab(i)}>
+            <Tab label='Include' />
+            <Tab label='Exclude' />
+          </Tabs>
+
+          <Tabs variant='tertiary' rounded value={activeTab} onChange={(i: number) => setActiveTab(i)}>
+            <Tab label='Include' />
+            <Tab label='Exclude' />
+          </Tabs>
         </div>
         <div className='match-ctas'>
           <Typography>Match CTAs</Typography>

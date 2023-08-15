@@ -16,6 +16,10 @@ export const Slider = styled(({ className, ...otherProps }: MuiSliderProps) => {
         .MuiSlider-thumb {
           width: 24px;
           height: 24px;
+
+          .MuiSlider-valueLabel {
+            top: -4px;
+          }
         }
       }
 

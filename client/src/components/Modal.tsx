@@ -1,5 +1,6 @@
 import { styled } from '@mui/system';
 import React, { DialogHTMLAttributes } from 'react';
+import { ScrollLock } from './ScrollLock';
 
 export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
@@ -19,20 +20,9 @@ export const Modal = styled(
     disableScrollLock = false,
     preMount = false
   }: ModalProps) => {
-    React.useEffect(() => {
-      if (disableScrollLock) return;
-      if (open) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'unset';
-      }
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }, [open]);
-
     return (
       <>
+        <ScrollLock lock={open && !disableScrollLock} />
         {(open || preMount) && (
           <div
             onClick={onBackdropClick}

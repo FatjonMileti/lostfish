@@ -1,11 +1,13 @@
 import React, { MouseEventHandler, ReactElement } from 'react';
 import { styled } from '@mui/system';
 import { Typography } from './Typography';
+import classNames from 'classnames';
 export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   children: ReactElement | ReactElement[];
   value?: any;
   onChange?: Function;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  rounded?: boolean;
 }
 
 export const Tabs = styled(
@@ -15,11 +17,12 @@ export const Tabs = styled(
     value,
     onChange = (i: any) => {},
     variant = 'primary',
+    rounded = false,
     ...otherProps
   }: TabsProps) => {
     return (
       <div
-        className={`tabs ${className} ${variant ? `variant-${variant}` : ''}`}
+        className={classNames('tabs', className, `variant-${variant}`, { rounded })}
         {...otherProps}
         style={{ gridTemplateColumns: `repeat(${React.Children.count(children)}, minmax(0, 1fr))` }}>
         {React.Children.map(children, (child: ReactElement, childIndex: number) => {
@@ -27,7 +30,8 @@ export const Tabs = styled(
             return React.cloneElement(child, {
               active: childIndex === value,
               setActive: () => onChange(childIndex),
-              variant
+              variant,
+              rounded
             });
           }
           return null;
@@ -36,19 +40,27 @@ export const Tabs = styled(
     );
   }
 )`
-  display: grid;
-  border-radius: 10px;
-  column-gap: 4px;
-  padding: 4px;
-  box-sizing: border-box;
-  width: fit-content;
+  &.tabs {
+    display: grid;
+    border-radius: 10px;
+    column-gap: 4px;
+    padding: 4px;
+    box-sizing: border-box;
+    width: fit-content;
 
-  &.variant-primary {
-    border: 1px solid #0d2a38;
-  }
+    &.rounded {
+      border-radius: 32px;
+      background-color: white;
+      border: 1px solid #e7e7e7;
+    }
 
-  &.variant-secondary {
-    border: 1px solid #e7e7e7;
+    &.variant-primary {
+      border: 1px solid #0d2a38;
+    }
+
+    &.variant-secondary {
+      border: 1px solid #e7e7e7;
+    }
   }
 `;
 
@@ -56,16 +68,32 @@ export interface TabProps extends React.HTMLAttributes<HTMLElement> {
   label?: string;
   active?: boolean;
   setActive?: MouseEventHandler;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  disabled?: boolean;
+  rounded?: boolean;
 }
 
 export const Tab = styled(
-  ({ className, children, label, active, setActive, variant = 'primary', ...otherProps }: TabProps) => {
+  ({
+    className,
+    children,
+    label,
+    active,
+    setActive,
+    variant = 'primary',
+    disabled = false,
+    rounded = false,
+    ...otherProps
+  }: TabProps) => {
     return (
       <div
-        className={`tab ${className} ${active ? 'active' : ''} ${variant ? `variant-${variant}` : ''}`}
+        className={classNames('tab', className, `variant-${variant}`, {
+          disabled,
+          active,
+          rounded
+        })}
         {...otherProps}
-        onClick={setActive}>
+        onClick={disabled ? undefined : setActive}>
         <Typography className='label' variant='body4'>
           {label || null}
         </Typography>
@@ -82,6 +110,11 @@ export const Tab = styled(
     justify-content: center;
     flex-grow: 1;
     box-sizing: border-box;
+
+    &.rounded {
+      border-radius: 32px;
+    }
+
     .label {
       font-weight: 400;
     }
@@ -90,6 +123,10 @@ export const Tab = styled(
       .label {
         font-weight: 600;
       }
+    }
+
+    &.disabled {
+      cursor: not-allowed;
     }
 
     &.variant-primary {
@@ -107,6 +144,16 @@ export const Tab = styled(
         .label {
           font-weight: 600;
         }
+      }
+    }
+
+    &.variant-tertiary {
+      &.active {
+        background-color: #eee0d3;
+      }
+
+      .label {
+        color: #0d2a38;
       }
     }
   }

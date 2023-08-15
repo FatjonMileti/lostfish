@@ -14,6 +14,7 @@ import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
+import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
 
 export interface PropertyType {
   property: {
@@ -184,15 +185,17 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           setCriteriaModalVisibility(true);
         }}
       />
-      {criteriaModalVisibility && (
-        <SetCriteria
-          setShowModal={setCriteriaModalVisibility}
-          afterRefineSearch={() => {
-            setCriteriaModalVisibility(false);
-            getProperties();
-          }}
-        />
-      )}
+
+      <>
+        <NewSetCriteria open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
+        {/*<SetCriteria*/}
+        {/*  setShowModal={setCriteriaModalVisibility}*/}
+        {/*  afterRefineSearch={() => {*/}
+        {/*    setCriteriaModalVisibility(false);*/}
+        {/*    getProperties();*/}
+        {/*  }}*/}
+        {/*/>*/}
+      </>
     </div>
   );
 })`

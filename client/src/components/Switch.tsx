@@ -44,10 +44,10 @@ export const Switch = styled(
 
     &.MuiSwitch-sizeMedium {
       .MuiSwitch-track {
-        height: 24px;
+        height: 20px;
         width: 48px;
         border-radius: 12px;
-        transform: translateY(4px);
+        transform: translateY(6px);
       }
     }
 
