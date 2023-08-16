@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 import createError from 'http-errors';
 const router: Router = Router();
 import googleMapService from '../../external-services/google-map.service';
+import httpStatus from 'http-status';
 export class MapController {
   public router = router;
   public googleMapService = googleMapService;
@@ -10,6 +11,7 @@ export class MapController {
   }
 
   private initializeRoutes() {
+    this.router.get('/', this.getAddressByLatLong);
     this.router.get('/station', this.getNearestStations);
     this.router.get('/school', this.getNearestSchools);
     this.router.get('/places', this.getNearestImportantPlaces);
@@ -76,6 +78,31 @@ export class MapController {
 
     try {
       const data = await this.googleMapService.getNearestPlacesByType(queryData, 'history');
+
+      return res.json({ ...data });
+    } catch (error: any) {
+      return res.status(400).send(error?.request?.data);
+    }
+  };
+
+  /**
+   * @api {get} /api/map Get
+   * @apiDescription Get address
+   * @apiGroup Map
+   * @apiSampleRequest /api/map
+   *
+   * @apiQuery {string} latitude latitude
+   * @apiQuery {string} longitude longitude
+   *
+   */
+  private getAddressByLatLong = async (req: express.Request, res: express.Response) => {
+    const queryData: any = req.query;
+
+    if (!queryData.longitude || !queryData.longitude) {
+      throw createError(httpStatus.BAD_REQUEST, { message: 'latitude and longitude are required' });
+    }
+    try {
+      const data = await this.googleMapService.getAddress(queryData.latitude, queryData.longitude);
 
       return res.json({ ...data });
     } catch (error: any) {
