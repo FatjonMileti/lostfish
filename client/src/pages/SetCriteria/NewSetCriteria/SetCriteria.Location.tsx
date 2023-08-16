@@ -9,6 +9,7 @@ import { Typography } from '../../../components/Typography';
 import { AreaOfInterest } from '../../Properties/AreaOfInterest';
 import { Icon } from '../../../components/Icon';
 import { Select } from '../../../components/Select/Select';
+import { UseMyLocation } from './UseMyLocation';
 
 interface SetCriteriaLocationProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -47,6 +48,12 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
             <option value='10'>10 mi</option>
             <option value='50'>50 mi</option>
           </Select>
+          <UseMyLocation
+            onLocation={({ formattedAddress, location }) => {
+              form.setValue('areaOfInterest', formattedAddress);
+              form.setValue('location', location);
+            }}
+          />
         </div>
       </div>
       <div className='section moving-preferences-section'>
@@ -96,6 +103,7 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
         display: grid;
         grid-template-columns: 2fr 1fr;
         column-gap: 24px;
+        row-gap: 36px;
       }
     }
     .moving-preferences-section {

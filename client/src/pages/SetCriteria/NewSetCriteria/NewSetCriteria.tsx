@@ -74,6 +74,8 @@ export const NewSetCriteria = styled(
 
         mainForm.setValue('radius', data.radius);
 
+        mainForm.setValue('whenDoYouWantToMove', data.moving_time || undefined);
+
         data.property_type.map((type: keyof CriteriaFormType['propertyType']) => {
           mainForm.setValue(`propertyType.${type}`, true);
         });
@@ -137,6 +139,7 @@ export const NewSetCriteria = styled(
           area_of_interest: mainForm.getValues('areaOfInterest'),
           asset_address: mainForm.getValues('location'),
           radius: mainForm.getValues('radius'),
+          moving_time: mainForm.getValues('whenDoYouWantToMove'),
           property_type: Object.entries(mainForm.getValues('propertyType'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
