@@ -12,6 +12,7 @@ import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import ellipse from '../../../assets/svg/Ellipse.svg';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: TenantType[];
@@ -119,6 +120,7 @@ export const AddedTenants = styled(
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
+                      percentage={property.percentage}
                     />
                   </motion.div>
                 );
@@ -136,11 +138,14 @@ export const AddedTenants = styled(
               <Button
                 startIcon={<Icon icon='email' size={24} />}
                 size='large'
-                className={classNames({ active: false })}
+                className={classNames('message-button', { active: false })}
                 onClick={async () => {
                   chatWith(criteria.tenantId);
                 }}>
                 Messages
+                {suggestedTenant.unread_messages > 0 && (
+                  <img className='unread-message-indicator' src={ellipse} alt='Message indicator' />
+                )}
               </Button>
 
               <Button
@@ -240,6 +245,23 @@ export const AddedTenants = styled(
           :hover {
             border: 2px solid white;
             background-color: white;
+          }
+        }
+
+        .message-button {
+          display: flex;
+          align-items: flex-end;
+          gap: -20px;
+          justify-content: space-between;
+          position: relative;
+
+          .unread-message-indicator {
+            position: absolute;
+            top: 10px;
+            right: -5px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
           }
         }
 

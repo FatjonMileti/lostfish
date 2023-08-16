@@ -11,10 +11,11 @@ import { MatchedSlide, PropertyType } from './MatchesProperties';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
+import ellipse from '../../../assets/svg/Ellipse.svg';
 
 interface AddedMatchedProperty {
   _id: string;
-
+  unread_messages: number;
   property: {
     _id: string;
     property_images: { link: string }[];
@@ -173,11 +174,14 @@ export const AddedMatches = styled(
               <Button
                 startIcon={<Icon icon='email' size={24} />}
                 size='large'
-                className={classNames({ active: false })}
+                className={classNames('message-button', { active: false })}
                 onClick={async () => {
                   chantWith(property.created_by._id);
                 }}>
                 Messages
+                {matchedProperty.unread_messages > 0 && (
+                  <img className='unread-message-indicator' src={ellipse} alt='Message indicator' />
+                )}
               </Button>
 
               <Button
@@ -186,7 +190,6 @@ export const AddedMatches = styled(
                 size='large'
                 className={classNames({ active: false })}
                 onClick={async () => {
-                  console.log('unmatch');
                   await removePropertyMatch(matchedProperty._id, matchedProperty?.property?._id);
                   await getCheckedProperties();
                 }}>
@@ -276,6 +279,23 @@ export const AddedMatches = styled(
           :hover {
             border: 2px solid white;
             background-color: white;
+          }
+        }
+
+        .message-button {
+          display: flex;
+          align-items: flex-end;
+          gap: -20px;
+          justify-content: space-between;
+          position: relative;
+
+          .unread-message-indicator {
+            position: absolute;
+            top: 10px;
+            right: -5px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
           }
         }
 

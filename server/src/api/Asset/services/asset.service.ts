@@ -295,7 +295,7 @@ const findPublishedPropertiesExample = async (): Promise<AssetDocument[]> => {
   };
 
   try {
-    return await AssetModel.find(query);
+    return await AssetModel.find(query).lean();
   } catch (error: any) {
     return [];
   }

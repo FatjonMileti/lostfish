@@ -14,6 +14,7 @@ import {
   TransactionTypeString
 } from '../api/Asset/asset.interface';
 import userService from '../api/User/user.service';
+import { AssetLog } from '../data/logs';
 
 // Define your Unsplash API key here
 const ACCESS_KEY: string = 'jCUSC7UiB67_YlXdPgqHafZjswTiTwvO9aHtA0kWsng';
@@ -94,6 +95,7 @@ const generateAsset = async (index: number) => {
 export const seedAssets = async (numAssets: number): Promise<void> => {
   try {
     await AssetSchema.deleteMany({});
+    await AssetLog.deleteMany({});
 
     const assets: any[] = []; //= await Promise.all(Array.from({ length: numAssets }, generateAsset));
     for (let i = 0; i < numAssets; i++) {
