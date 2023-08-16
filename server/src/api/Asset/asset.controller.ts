@@ -246,7 +246,7 @@ export class AssetController {
  *        "max_budget": 2800,
  *      },
  *      "parking_spot": 1,
-        "EPC_rating": 2,
+        "epc_rating": B,
         "location_details": "",
  *     "property_features": ["Parks Nearby"],
  *     "specific_property_features": ["Garden","Terrace"],
@@ -290,7 +290,7 @@ export class AssetController {
  *        "max_budget": 2800,
  *      },
  *      "parking_spot": 1,
-        "EPC_rating": 2,
+        "epc_rating": A,
         "location_details": "",
  *     "property_features": [""],
  *     "specific_property_features": [],
@@ -335,13 +335,13 @@ export class AssetController {
  * @apiBody {String} floor_size_unit
  * @apiBody {String[]} property_preference An array of property preferences.
  * @apiBody {Object} room_details
- * @apiBody {String} room_details.number_of_bathrooms
- * @apiBody {String} room_details.number_of_bedrooms
+ * @apiBody {Number} room_details.number_of_bathrooms
+ * @apiBody {Number} room_details.number_of_bedrooms
  * @apiBody {Object} budget
- * @apiBody {String} budget.min_budget
- * @apiBody {String} budget.max_budget
+ * @apiBody {Number} budget.min_budget
+ * @apiBody {Number} budget.max_budget
  * @apiBody {Number} parking_spot
- * @apiBody {Number} EPC_rating
+ * @apiBody {String} epc_rating
  * @apiBody {String} location_details
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements

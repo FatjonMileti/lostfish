@@ -191,8 +191,8 @@ export interface AssetDocument extends Document {
     min_budget: number;
     max_budget: number;
   };
-  parking_spot: string;
-  EPC_rating: string;
+  parking_spot: number;
+  epc_rating: string;
   location_details: string;
   floor_size: number;
   floor_size_unit: string;

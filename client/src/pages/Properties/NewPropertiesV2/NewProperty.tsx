@@ -190,7 +190,7 @@ export const NewPropertyV2 = styled(
         form.setValue('min-budget', data.budget.min_budget);
         form.setValue('max-budget', data.budget.max_budget);
         form.setValue('parking-spot', data.parking_spot);
-        form.setValue('EPC-Rating', data.EPC_rating);
+        form.setValue('EPC-Rating', data.epc_rating);
         form.setValue('description', data.description);
         form.setValue('location-details', data.location_details);
       } catch (err) {
@@ -228,12 +228,10 @@ export const NewPropertyV2 = styled(
           },
 
           parking_spot: form.getValues('parking-spot'),
-          EPC_rating: form.getValues('EPC-Rating'),
+          epc_rating: form.getValues('EPC-Rating'),
           description: form.getValues('description'),
           location_details: form.getValues('location-details')
         };
-
-        console.log('paylod', payload);
 
         const { data } = await (propertyId
           ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
@@ -276,7 +274,7 @@ export const NewPropertyV2 = styled(
           },
 
           parking_spot: form.getValues('parking-spot'),
-          EPC_rating: form.getValues('EPC-Rating'),
+          epc_rating: form.getValues('EPC-Rating'),
           description: form.getValues('description'),
           location_details: form.getValues('location-details'),
           status_string: 'Live'

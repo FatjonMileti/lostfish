@@ -108,8 +108,8 @@ const schema = new Schema<AssetDocument>({
     min_budget: Number,
     max_budget: Number
   },
-  parking_spot: String,
-  EPC_rating: String,
+  parking_spot: Number,
+  epc_rating: String,
   location_details: String,
   property_features: [String],
   specific_property_features: [String],

@@ -135,8 +135,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.parking_spot = data.parking_spot;
     }
 
-    if (data.hasOwnProperty('EPC_rating')) {
-      asset.EPC_rating = data.EPC_rating;
+    if (data.hasOwnProperty('epc_rating')) {
+      asset.epc_rating = data.epc_rating;
 
       if (data.hasOwnProperty('location_details')) {
         asset.location_details = data.location_details;
