@@ -211,6 +211,7 @@ interface MatchedSlideProps extends HTMLMotionProps<'div'> {
   onViewProfileClick: () => void;
   setActiveSlide: () => void;
   name: string;
+  percentage: number;
 }
 
 export const MatchedSlide = styled(
@@ -221,6 +222,7 @@ export const MatchedSlide = styled(
     onViewProfileClick,
     setActiveSlide,
     name,
+    percentage,
     ...rest
   }: MatchedSlideProps) => {
     return (
@@ -239,7 +241,7 @@ export const MatchedSlide = styled(
               •
             </Typography>
             <Typography variant='body4' className='tenant-match-percentage'>
-              34%
+              {percentage ?? '34'}%
             </Typography>
           </div>
           <Button

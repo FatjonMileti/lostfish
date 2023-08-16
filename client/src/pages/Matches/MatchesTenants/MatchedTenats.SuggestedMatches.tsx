@@ -128,6 +128,7 @@ export const SuggestedTenants = styled(
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
+                      percentage={property.percentage}
                     />
                   </motion.div>
                 );

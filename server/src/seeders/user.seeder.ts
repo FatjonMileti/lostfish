@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import UserSchema from '../api/User/user.schema';
 import { hashPassword } from '../api/User/user.helpers';
 import { Role, UserDocument } from '../api/User/user.interface';
+import { UserLog } from '../data/logs';
 const password = 'Lostfish1234';
 
 const remainingRoles = Object.values(Role);
@@ -47,7 +48,7 @@ const generateRandomUser = async () => {
 export const seedUsers = async (numUsers: number): Promise<void> => {
   try {
     await UserSchema.deleteMany({});
-
+    await UserLog.deleteMany({});
     const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));
     const defaultUsers = await generateDefaultUsers();
 

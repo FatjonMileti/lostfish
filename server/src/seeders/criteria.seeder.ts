@@ -12,6 +12,7 @@ import {
 import userService from '../api/User/user.service';
 import { Role } from '../api/User/user.interface';
 import CriteriaSchema from '../api/Criteria/schemas/criteria.schema';
+import { MatchLog } from '../data/logs';
 
 const createFakeDataMinDetails = (user: any) => {
   return {
@@ -98,7 +99,7 @@ const generateCriteria = async () => {
 export const seedCriteria = async (numAssets: number): Promise<void> => {
   try {
     await CriteriaSchema.deleteMany({});
-
+    await MatchLog.deleteMany({});
     const criterias = await Promise.all(Array.from({ length: numAssets }, generateCriteria));
 
     const defaultLandlordCriteria = await generateCriteriaLandlord();

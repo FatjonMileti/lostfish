@@ -193,7 +193,8 @@ export class MatchController {
         matches.docs[i].unread_messages = await chatService.getMessagesBetweenUsers(
           currentMatch.landlord._id.toString(),
           currentMatch.tenant._id.toString(),
-          res.locals.user_id as string
+          res.locals.user_id as string,
+          matches.docs[i].property._id
         );
         matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
         matches.docs[i].suggestion_id = i;

@@ -39,8 +39,6 @@ export const AddedTenants = styled(
     const criteria = suggestedTenant?.criteria;
     const property = suggestedTenant?.property;
 
-    console.log({ suggestedTenant });
-
     const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % tenants?.length));
     const previous = () => {
       activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
@@ -122,6 +120,7 @@ export const AddedTenants = styled(
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
+                      percentage={property.percentage}
                     />
                   </motion.div>
                 );

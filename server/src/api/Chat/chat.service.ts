@@ -6,6 +6,7 @@ import notificationSender from '../../utils/notification-sender';
 import { NotificationType } from '../Notification/notification.interface';
 import socketApi from '../../utils/socket.io';
 import roomService from './room.service';
+import { RoomDocument } from './room.interface';
 
 const getAll = async (query: any, pagingOptions: any) => {
   return RoomModel.paginate(query, {
@@ -74,7 +75,12 @@ const getLatestMessage = async (query: any) => {
     .sort({ created_at: -1 });
 };
 
-const getMessagesBetweenUsers = async (landlord: string, tenant: string, loggedInUser: string) => {
+const getMessagesBetweenUsers = async (
+  landlord: string,
+  tenant: string,
+  loggedInUser: string,
+  propertyId: string
+) => {
   const query: any = {
     $or: [
       { participant: { $eq: landlord }, author: { $eq: tenant } },
@@ -83,6 +89,18 @@ const getMessagesBetweenUsers = async (landlord: string, tenant: string, loggedI
     sender: { $ne: loggedInUser },
     seen: false
   };
+
+  const room: RoomDocument | null = await RoomModel.findOne({
+    $or: [
+      { participant: { $eq: landlord }, author: { $eq: tenant } },
+      { participant: { $eq: tenant }, author: { $eq: landlord } }
+    ],
+    property: { $eq: propertyId }
+  });
+
+  if (room) {
+    query.room_id = room._id;
+  }
 
   const messages = await ChatModel.find({ ...query })
     .populate('author', ['first_name', 'last_name'])
