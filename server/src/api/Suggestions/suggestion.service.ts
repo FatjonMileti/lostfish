@@ -48,12 +48,14 @@ export default class SuggestionService {
         ]
       });
 
-      response.docs = response.docs.filter((property: any) => {
-        const percentage = this.calculateSimilarity(criteria, property);
-        property.percentage = percentage;
+      response.docs = response.docs
+        .filter((property: any) => {
+          const percentage = this.calculateSimilarity(criteria, property);
+          property.percentage = percentage.toFixed(0);
 
-        return percentage >= 30;
-      });
+          return percentage >= 20;
+        })
+        .sort((a: any, b: any) => b.percentage - a.percentage);
 
       const matches = await MatchSchema.find({ created_by: userId }).lean();
       response.docs = generateLinksForImages(response.docs);
