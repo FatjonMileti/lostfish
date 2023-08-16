@@ -188,7 +188,13 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       />
 
       <>
-        <NewSetCriteria open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
+        <NewSetCriteria
+          open={criteriaModalVisibility}
+          setOpen={setCriteriaModalVisibility}
+          afterRefineSearch={async () => {
+            await getProperties();
+          }}
+        />
         {/*<SetCriteria*/}
         {/*  setShowModal={setCriteriaModalVisibility}*/}
         {/*  afterRefineSearch={() => {*/}

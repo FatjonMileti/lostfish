@@ -27,12 +27,15 @@ import { ArrowButton } from '../components/ArrowButton';
 import { Label } from '../components/Label';
 import { Avatar } from '../components/Avatar';
 import { avatars } from './HomeLoggedIn/avatars';
+import { Select } from '../components/Select/Select';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
+
+  const [selectValue, setSelectValue] = React.useState<string | undefined>(undefined);
   return (
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
