@@ -14,6 +14,7 @@ import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
+import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
 
 export interface PropertyType {
   property: {
@@ -41,6 +42,7 @@ export interface PropertyType {
     };
 
     asset_address: any;
+    percentage: number;
   };
   matchId?: string;
   chosen: boolean;
@@ -73,7 +75,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
     }
   };
   const getProperties = async () => {
-    const { data } = await axios(auth?.access_token).get('/api/asset/matches-example');
+    const { data } = await axios(auth?.access_token).get('/api/suggestion/asset');
     setProperties(data.docs.map((doc: any) => ({ ...doc, id: doc._id })));
   };
 
@@ -184,15 +186,17 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
           setCriteriaModalVisibility(true);
         }}
       />
-      {criteriaModalVisibility && (
-        <SetCriteria
-          setShowModal={setCriteriaModalVisibility}
-          afterRefineSearch={() => {
-            setCriteriaModalVisibility(false);
-            getProperties();
-          }}
-        />
-      )}
+
+      <>
+        <NewSetCriteria open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
+        {/*<SetCriteria*/}
+        {/*  setShowModal={setCriteriaModalVisibility}*/}
+        {/*  afterRefineSearch={() => {*/}
+        {/*    setCriteriaModalVisibility(false);*/}
+        {/*    getProperties();*/}
+        {/*  }}*/}
+        {/*/>*/}
+      </>
     </div>
   );
 })`
@@ -244,6 +248,8 @@ export const MatchedSlide = styled(
   ({ className, image, viewProperty, property, ...rest }: MatchedSlideProps) => {
     const deleted = !property;
 
+    console.log({ property });
+
     let parsedProperty: any = {};
 
     if (!deleted) {
@@ -276,6 +282,7 @@ export const MatchedSlide = styled(
         }[property?.room_details?.number_of_bedrooms] || property?.room_details?.number_of_bedrooms;
 
       parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
+      parsedProperty.percentage = property?.percentage;
     }
 
     return (
@@ -290,7 +297,9 @@ export const MatchedSlide = styled(
             <>
               <div className='slide-header'>
                 <Avatar image={parsedProperty.avatar} />
-                <Typography variant='body4'>{parsedProperty.propertyOwnerName} • 34%</Typography>
+                <Typography variant='body4'>
+                  {parsedProperty.propertyOwnerName} • {property.percentage}%
+                </Typography>
               </div>
               <div className='slide-footer'>
                 <div className='left-part'>

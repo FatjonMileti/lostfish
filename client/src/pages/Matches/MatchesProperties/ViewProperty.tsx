@@ -50,7 +50,7 @@ export const ViewProperty = styled(
             <Typography variant='body4' className='dot'>
               •
             </Typography>
-            <Typography variant='body4'>34%</Typography>
+            <Typography variant='body4'>{property.percentage}%</Typography>
           </div>
           <IconButton className='close-modal-button' size='large' onClick={closeModal}>
             <Icon icon='close' size={18} />

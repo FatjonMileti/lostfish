@@ -44,8 +44,8 @@ interface AddedMatchedProperty {
       last_name: string;
       avatar: string;
     };
+    percentage: number;
   };
-
   matchId?: string;
   chosen: boolean;
   starred: boolean;

@@ -92,6 +92,18 @@ export const Label = styled(
         border-bottom: 2px solid #0d2a38;
       }
 
+      &.active {
+        color: #184d6d;
+        background-color: unset;
+        border-bottom: 2px solid #184d6d;
+
+        &:hover {
+          color: #0d2a38;
+          border: none;
+          border-bottom: 2px solid #0d2a38;
+        }
+      }
+
       &.size-small {
         font-size: 14px;
         line-height: 20px;
