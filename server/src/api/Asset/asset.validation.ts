@@ -2,6 +2,7 @@ import * as joi from 'joi';
 
 export const createAssetSchemaValidation = joi.object({
   name: joi.string(),
+  title: joi.string(),
   area_of_interest: joi.string(),
   radius: joi.string(),
   description: joi.string().allow(''),
@@ -24,6 +25,13 @@ export const createAssetSchemaValidation = joi.object({
     number_of_bathrooms: joi.number().required(),
     number_of_bedrooms: joi.number().required()
   }),
+  budget: joi.object({
+    min_budget: joi.number().required(),
+    max_budget: joi.number().required(),
+  }),
+  parking_spot: joi.string(),
+  EPC_rating: joi.string().required(),
+  location_details: joi.string().required(),
   property_features: joi.array().items(joi.string()),
   property_preference: joi.string(),
   specific_property_features: joi.array().items(joi.string()),
@@ -34,6 +42,7 @@ export const createAssetSchemaValidation = joi.object({
 
 export const createAssetSchemaValidationDraft = joi.object({
   name: joi.string().allow(''),
+  title: joi.string().allow(''),
   area_of_interest: joi.string().allow(''),
   radius: joi.string().allow(''),
   description: joi.string().allow(''),
@@ -51,11 +60,18 @@ export const createAssetSchemaValidationDraft = joi.object({
     interest_by: joi.date().allow(''),
     available_from: joi.date().allow('')
   }),
-  floor_size: joi.number(),
+  floor_size: joi.number().allow(''),
   room_details: joi.object({
-    number_of_bathrooms: joi.number(),
-    number_of_bedrooms: joi.number()
+    number_of_bathrooms: joi.number().allow(''),
+    number_of_bedrooms: joi.number().allow('')
   }),
+  budget: joi.object({
+    min_budget: joi.number().allow(''),
+    max_budget: joi.number().allow(''),
+  }),
+  parking_spot: joi.string().allow(''),
+  EPC_rating: joi.string().allow(''),
+  location_details: joi.string().allow(''),
   property_features: joi.array().items(joi.string().allow('')),
   property_preference: joi.string().allow(''),
   specific_property_features: joi.array().items(joi.string()),

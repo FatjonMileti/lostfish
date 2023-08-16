@@ -49,6 +49,7 @@ const schema = new Schema<AssetDocument>({
   name: { type: String },
   area_of_interest: String,
   description: { type: String },
+  title: { type: String },
   radius: String,
   asset_address: {
     latitude: { type: Number },
@@ -103,6 +104,13 @@ const schema = new Schema<AssetDocument>({
     number_of_bathrooms: String,
     number_of_bedrooms: String
   },
+  budget: {
+    min_budget: Number,
+    max_budget: Number
+  },
+  parking_spot: String,
+  EPC_rating: String,
+  location_details: String,
   property_features: [String],
   specific_property_features: [String],
   credit_score_requirements: String,

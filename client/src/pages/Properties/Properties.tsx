@@ -11,7 +11,8 @@ import { Header } from '../HomeLoggedIn/Header';
 import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
 import { Property } from './Property/Property';
-import { NewProperty } from './NewProperty';
+// import { NewProperty } from './NewProperty';
+import { NewPropertyV2 } from './NewPropertiesV2/NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from './properties-background.png';
@@ -94,7 +95,13 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       <Header />
       <Backdrop open={list.loading}></Backdrop>
       {showNewPropertyModal && (
-        <NewProperty
+        // <NewProperty
+        //   showStore={[showNewPropertyModal, setShowNewPropertyModal]}
+        //   propertyId={editPropertyId}
+        //   setEditPropertyId={setEditPropertyId}
+        //   fetchAssets={() => getAssets()}
+        // />
+        <NewPropertyV2
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={editPropertyId}
           setEditPropertyId={setEditPropertyId}

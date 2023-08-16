@@ -217,6 +217,8 @@ export class AssetController {
  * @apiExample {json} Example request body:
  *    {
  *     "name": "",
+ *      "title": "",
+ *      "description": "",
  *     "area_of_interest": "",
  *     "radius": "0",
  *     "asset_address": {
@@ -239,6 +241,13 @@ export class AssetController {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
+ *      "budget": {
+ *        "min_budget": 1500,
+ *        "max_budget": 2800,
+ *      },
+ *      "parking_spot": 1,
+        "EPC_rating": 2,
+        "location_details": "",
  *     "property_features": ["Parks Nearby"],
  *     "specific_property_features": ["Garden","Terrace"],
  *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
@@ -252,6 +261,8 @@ export class AssetController {
  * @apiExample {json} Example request body:
  *    {
  *     "name": "",
+ *      "title": "",
+ *      "description": "",
  *     "area_of_interest": "",
  *     "radius": "0",
  *     "status_string": "Draft",
@@ -274,6 +285,13 @@ export class AssetController {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
+ *      "budget": {
+ *        "min_budget": 1500,
+ *        "max_budget": 2800,
+ *      },
+ *      "parking_spot": 1,
+        "EPC_rating": 2,
+        "location_details": "",
  *     "property_features": [""],
  *     "specific_property_features": [],
  *     "property_images": [],
@@ -298,6 +316,7 @@ export class AssetController {
 /**
  * @apiDefine CreateAsset
  * @apiBody {String} name
+ * @apiBody {String} title
  * @apiBody {String} area_of_interest
  * @apiBody {String} radius
  * @apiBody {Object} asset_address
@@ -318,6 +337,12 @@ export class AssetController {
  * @apiBody {Object} room_details
  * @apiBody {String} room_details.number_of_bathrooms
  * @apiBody {String} room_details.number_of_bedrooms
+ * @apiBody {Object} budget
+ * @apiBody {String} budget.min_budget
+ * @apiBody {String} budget.max_budget
+ * @apiBody {Number} parking_spot
+ * @apiBody {Number} EPC_rating
+ * @apiBody {String} location_details
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements
  * @apiBody {Object[]} property_images An array of property images

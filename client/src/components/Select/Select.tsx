@@ -1,68 +1,76 @@
 import { styled } from '@mui/system';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { useId } from 'react';
 import { Typography } from '../Typography';
 import { Icon } from '../Icon';
 
 import chevron from './chevron.svg';
+import classNames from 'classnames';
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  variant?: 'filled' | 'outlined' | 'standard';
-  label?: string;
-  required?: boolean;
-  endAdornment?: ReactElement;
-  startAdornment?: ReactElement;
-  helperText?: string;
-  error?: boolean;
+    variant?: 'filled' | 'outlined' | 'standard';
+    label?: ReactNode;
+    required?: boolean;
+    endAdornment?: ReactElement;
+    startAdornment?: ReactElement;
+    helperText?: string;
+    error?: boolean;
 }
 
 export const Select = styled(
-  React.forwardRef<HTMLSelectElement, SelectProps>(
-    (
-      {
-        className,
-        id,
-        label,
-        required = false,
-        endAdornment,
-        startAdornment,
-        helperText,
-        error,
-        variant = 'outlined',
-        children,
-        ...rest
-      },
-      ref
-    ) => {
-      const elementId = id || useId();
-      return (
-        <div className={`select ${className} ${error ? 'error' : ''} variant-${variant}`}>
-          {(label || required) && (
-            <label htmlFor={elementId}>
-              {label}
-              {required && <span className='required-asterisk'> *</span>}
-            </label>
-          )}
+    React.forwardRef<HTMLSelectElement, SelectProps>(
+        (
+            {
+                className,
+                id,
+                label,
+                required = false,
+                endAdornment,
+                startAdornment,
+                helperText,
+                error,
+                variant = 'outlined',
+                children,
+                placeholder,
+                value,
+                ...rest
+            },
+            ref
+        ) => {
+            const elementId = id || useId();
+            return (
+                <div className={classNames('select', className, { error, 'no-value': !value }, `variant-${variant}`)}>
+                    {(label || required) && (
+                        <label htmlFor={elementId}>
+                            <>{label}</>
+                            {required && <span className='required-asterisk'> *</span>}
+                        </label>
+                    )}
 
-          <div className='input-wrapper'>
-            {startAdornment || null}
-            <select id={elementId} {...rest} ref={ref}>
-              {children}
-            </select>
-            {endAdornment || null}
-          </div>
+                    <div className='input-wrapper'>
+                        {startAdornment || null}
+                        <select id={elementId} {...rest} ref={ref} value={value}>
+                            {placeholder && (
+                                <option hidden className='placeholder'>
+                                    {placeholder}
+                                </option>
+                            )}
+                            {children}
+                        </select>
+                        {endAdornment || null}
+                    </div>
 
-          {helperText && (
-            <span className='helper-text'>
+                    {helperText && (
+                        <span className='helper-text'>
               {error && <Icon icon='warning' size={12} color='#b4263b' />}
-              <Typography variant='body4'>{helperText || ''}</Typography>
+                            <Typography variant='body4'>{helperText || ''}</Typography>
             </span>
-          )}
-        </div>
-      );
-    }
-  )
+                    )}
+                </div>
+            );
+        }
+    )
 )`
   &.select {
     display: flex;
@@ -122,7 +130,7 @@ export const Select = styled(
       select {
         width: 100%;
         height: 48px;
-        padding: 12px;
+        padding: 12px 24px 12px 12px;
         box-sizing: border-box;
 
         border: none;
@@ -142,6 +150,14 @@ export const Select = styled(
         background-size: 12px;
         background-repeat: no-repeat;
         background-position: calc(100% - 8px) center;
+      }
+    }
+
+    &.no-value {
+      .input-wrapper {
+        select:not(:focus) {
+          color: #a7a7a7;
+        }
       }
     }
 
