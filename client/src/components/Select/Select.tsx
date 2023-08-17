@@ -6,7 +6,6 @@ import { Typography } from '../Typography';
 import { Icon } from '../Icon';
 
 import chevron from './chevron.svg';
-import classNames from 'classnames';
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
     variant?: 'filled' | 'outlined' | 'standard';
@@ -32,15 +31,13 @@ export const Select = styled(
                 error,
                 variant = 'outlined',
                 children,
-                placeholder,
-                value,
                 ...rest
             },
             ref
         ) => {
             const elementId = id || useId();
             return (
-                <div className={classNames('select', className, { error, 'no-value': !value }, `variant-${variant}`)}>
+                <div className={`select ${className} ${error ? 'error' : ''} variant-${variant}`}>
                     {(label || required) && (
                         <label htmlFor={elementId}>
                             <>{label}</>
@@ -50,12 +47,7 @@ export const Select = styled(
 
                     <div className='input-wrapper'>
                         {startAdornment || null}
-                        <select id={elementId} {...rest} ref={ref} value={value}>
-                            {placeholder && (
-                                <option hidden className='placeholder'>
-                                    {placeholder}
-                                </option>
-                            )}
+                        <select id={elementId} {...rest} ref={ref}>
                             {children}
                         </select>
                         {endAdornment || null}
@@ -130,7 +122,7 @@ export const Select = styled(
       select {
         width: 100%;
         height: 48px;
-        padding: 12px 24px 12px 12px;
+        padding: 12px;
         box-sizing: border-box;
 
         border: none;
@@ -150,14 +142,6 @@ export const Select = styled(
         background-size: 12px;
         background-repeat: no-repeat;
         background-position: calc(100% - 8px) center;
-      }
-    }
-
-    &.no-value {
-      .input-wrapper {
-        select:not(:focus) {
-          color: #a7a7a7;
-        }
       }
     }
 

@@ -286,9 +286,10 @@ export const NewPropertyV2 = styled(
 
         if (!propertyId) {
           setEditPropertyId(data._id);
-
-          navigate('/matches');
         }
+
+        navigate('/matches');
+
       } catch (err) {
         throw err;
       }
@@ -505,10 +506,10 @@ export const NewPropertyV2 = styled(
                   </>
                 }
                   required
+                  {...register('building-type')}
                   placeholder='Select building type'
                   error={!!form.formState.errors['building-type']}
                   helperText={form.formState.errors['building-type']?.message?.toString()}
-                  {...register('building-type')}
                 >
                   <option></option>
                   <option value='Detached'>Detached</option>
@@ -534,7 +535,6 @@ export const NewPropertyV2 = styled(
                 />
 
                 <Select
-                  {...register('parking-spot')}
                   required
                   label={
                     <>
@@ -542,6 +542,7 @@ export const NewPropertyV2 = styled(
                         Parking spot
                     </>
                   }
+                  {...register('parking-spot')}
                   error={!!form.formState.errors['parking-spot']}
                   helperText={form.formState.errors['parking-spot']?.message?.toString()}>
                   <option></option>
@@ -876,16 +877,14 @@ export const NewPropertyV2 = styled(
               align-items: center;
               gap: 4px;
             }
+            .area-icon {
+              transform: rotate(-90deg);
+            }
           }
           
           .property-wrapper {
             display: grid;
             row-gap: 4px;
-            
-
-            .area-icon {
-              transform: rotate(-90deg);
-            }
             
             .label {
               display: flex;
