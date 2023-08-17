@@ -9,16 +9,17 @@ import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { Backdrop } from '../../components/Backdrop';
 import { DocumentsView } from './components/DocumentsView';
+import { useAgreement } from './useAgreement';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
   const [documents, setDocuments] = React.useState<IUser_Documents[]>([]);
 
   const [loading, setLoading] = React.useState(false);
 
   const { userDetails, auth } = useUserStore();
   const profileStore = useProfileStore();
+
+  const { buttonLabel, handleTransactionAgreement } = useAgreement();
 
   React.useEffect(() => {
     getDocuments();
@@ -33,12 +34,6 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
           return exitingDocument ? exitingDocument : doc;
         })
       );
-    }
-  };
-
-  const handleAddDocumentClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
     }
   };
 
@@ -59,7 +54,8 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
         });
 
         if (response.status === 200) {
-          const documentsToSend: IUser_Documents[] = DOCUMENT_TYPES.map((doc) => {
+          const documentsToMap = documents.length > 0 ? documents : DOCUMENT_TYPES;
+          const documentsToSend: IUser_Documents[] = documentsToMap.map((doc) => {
             if (doc.type === type) {
               doc.key = response.data[0].key;
               doc.mimetype = response.data[0].mimetype;
@@ -106,8 +102,12 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
             will be handled according with the UK in force laws.
           </Typography>
 
-          <Button disabled size='small' variant='secondary'>
-            Generate agreement
+          <Button
+            disabled={!profileStore.signed_transaction_agreement}
+            size='small'
+            variant='secondary'
+            onClick={() => handleTransactionAgreement()}>
+            {buttonLabel()}
           </Button>
           <div className='note'>
             <Typography variant='body5'>

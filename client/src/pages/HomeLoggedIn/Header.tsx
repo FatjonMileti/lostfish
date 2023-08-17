@@ -28,7 +28,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const canReadMatchesMenuItem = ability.can(CASLAction.Read, 'Menu', 'Match');
   const canReadMessageMenuItem = ability.can(CASLAction.Read, 'Menu', 'Message');
 
-  const trustScore = 20;
+  const trustScore = profileStore.trust_score;
 
   return (
     <div className={`header ${className}`}>

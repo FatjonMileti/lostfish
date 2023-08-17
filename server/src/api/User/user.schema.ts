@@ -2,6 +2,28 @@ import { model, PaginateModel, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { UserDocument, Role } from './user.interface';
 
+function calculateProfileCompleteness(user: UserDocument): number {
+  let completeness = 0;
+
+  // Calculate completeness based on each criterion
+  if (user.signed_transaction_agreement) completeness += 30;
+  if (user.avatar) completeness += 5;
+  if (user.first_name && user.last_name && user.email) completeness += 10;
+  if (user.agreed_application_policy) completeness += 20;
+  if (user.address) completeness += 5;
+
+  // Calculate completeness based on the number of documents
+  const numDocuments = user.documents ? user.documents.length : 0;
+  if (numDocuments >= 1 && user.documents[0].key) completeness += 10;
+  if (numDocuments >= 2 && user.documents[1].key) completeness += 10;
+  if (numDocuments >= 3 && user.documents[2].key) completeness += 10;
+
+  // Ensure completeness is within the range of 0 to 100
+  completeness = Math.min(100, completeness);
+
+  return completeness;
+}
+
 const schema: Schema<UserDocument> = new Schema<UserDocument>({
   hash: { type: String, default: null, select: false },
   role: {
@@ -51,6 +73,8 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   avatar: String,
   confirmation_token: String,
   agreed_application_policy: { type: Boolean, default: false },
+  signed_transaction_agreement: { type: Boolean, default: false },
+  transaction_agreement_link: { type: String, default: undefined },
   last_login: Date,
   address: String,
   edited_at: Date,
@@ -60,9 +84,19 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   deleted_at: { type: Date, default: undefined }
 });
 
-schema.virtual('isDeleted').get(function () {
+schema.virtual('is_deleted').get(function () {
   return this.deleted_at !== undefined;
 });
+
+schema.virtual('has_transaction_agreement').get(function () {
+  return !!this.transaction_agreement_link;
+});
+
+schema.virtual('trust_score').get(function (this: UserDocument) {
+  return calculateProfileCompleteness(this);
+});
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
 
 schema.plugin(mongoosePaginate);
 

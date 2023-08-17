@@ -20,6 +20,7 @@ export class DocusignController {
   }
 
   private initializeRoutes() {
+    this.router.get('/', authorize(), this.getEnvelopeByUserFilter);
     this.router.get('/get-consent', this.getConsent);
     this.router.get('/callback', this.redirectCallback);
     this.router.get('/success', this.successSign);
@@ -38,7 +39,7 @@ export class DocusignController {
     );
     this.router.post('/create-transaction-envelope', authorize(), this.createTransactionAgreement);
     this.router.get('/envelope/:id/download', this.downloadDocument);
-    this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
+    this.router.get('/:id', authorize(), this.getEnvelopeById);
   }
 
   /**
@@ -76,6 +77,17 @@ export class DocusignController {
    * @apiUse bearer
    */
   private getEnvelopeById = this.docusignLocalService.getEnvelopeById;
+
+  /**
+   * @api {get} /api/docusign Get updated envelope details by filters
+   * @apiDescription Get envelope details
+   * @apiGroup Docusign
+   * @apiQuery {string} document_type
+   * @apiSampleRequest /api/docusign
+   *
+   * @apiUse bearer
+   */
+  private getEnvelopeByUserFilter = this.docusignLocalService.getEnvelopeByUserFilter;
 
   /**
    * @api {get} /api/docusign/:id/download Download signed document

@@ -1,5 +1,5 @@
+import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
 
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
@@ -11,14 +11,21 @@ import property from './images/property.png';
 import verified from './images/verified.svg';
 
 import { avatars } from '../HomeLoggedIn/avatars';
+import { useProfileStore } from '../../globalState/profile';
+import { useUserStore } from '../../globalState/user';
+import { Backdrop } from '../../components/Backdrop';
+import { useAgreement } from './useAgreement';
 
 export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const { loading, getTransactionAgreementStatus, buttonLabel, handleTransactionAgreement } = useAgreement();
+
   return (
     <div className={`dashboard ${className}`}>
+      <Backdrop open={loading}></Backdrop>
       <div className='transaction-agreement'>
         <div className='left-part'>
           <Typography className='title' variant='body4'>
-            Sign the transaction agreement
+            {getTransactionAgreementStatus()}
           </Typography>
 
           <Typography variant='body5' className='description'>
@@ -26,8 +33,12 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             everything will be covered following the ongoing UK laws.
           </Typography>
 
-          <Button size='small' variant='secondary' className='sign-button'>
-            Sign agreement
+          <Button
+            size='small'
+            variant='secondary'
+            className='sign-button'
+            onClick={() => handleTransactionAgreement()}>
+            {buttonLabel()}
           </Button>
         </div>
       </div>

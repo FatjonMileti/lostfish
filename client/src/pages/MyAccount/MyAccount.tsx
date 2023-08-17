@@ -69,7 +69,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                   Trust score:
                 </Typography>
                 <Typography variant='body4' className='trust-score-percentage'>
-                  60%
+                  {profileStore.trust_score}%
                 </Typography>
               </div>
             </div>

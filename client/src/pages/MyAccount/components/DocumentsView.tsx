@@ -81,7 +81,7 @@ export const DocumentsView = (props: IDocumentView) => {
                 <a
                   href={`${selectedDocument.link}?fileName=${selectedDocument.originalname}`}
                   target='_blank'>
-                  {selectedDocument.originalname})
+                  {selectedDocument.originalname}
                 </a>
               </>
             )}
