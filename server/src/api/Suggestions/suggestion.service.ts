@@ -4,10 +4,10 @@ import { AssetDocument } from '../Asset/asset.interface';
 import { CriteriaDocument } from '../Criteria/criteria.interface';
 import MatchSchema from '../Match/match.schema';
 import { generateLinksForImages } from '../Asset/helpers';
-import { faker } from '@faker-js/faker';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
 import assetService from '../Asset/services/asset.service';
+import { MatchDocument } from '../Match/match.interface';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<AssetDocument>;
@@ -78,7 +78,7 @@ export default class SuggestionService {
     }
   }
 
-  public async getFilteredTenantsByUser(pagingOptions: IPagingOptions, userId: string) {
+  public async getFilteredTenantsByUser(pagingOptions: IPagingOptions, userId: string, propertyId: string) {
     try {
       const matchesUsers: any = await this.criteriaModel.paginate(
         {
@@ -95,33 +95,51 @@ export default class SuggestionService {
         }
       );
 
-      const response = await assetService.findPublishedPropertiesExample();
+      const myProperties: AssetDocument[] | null = await assetService.findPublishedPropertiesExample(userId);
+      const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
 
-      const matches = await MatchSchema.find({ created_by: userId }).lean();
+      const data: any[] = [];
 
-      matchesUsers.docs = matchesUsers.docs.map((item: any, index: number) => {
-        const criteria = item;
-        const matchTenant = matches.find(
-          (match: any) => match.tenant.toString() === criteria?.created_by?._id.toString()
-        );
-        return {
-          suggestion_id: index,
-          criteria,
-          property: faker.helpers.arrayElement(response),
-          chosen: matchTenant?.chosen ?? false,
-          starred: matchTenant?.starred ?? false,
-          matchId: matchTenant?._id ?? undefined,
-          percentage: faker.number.int({ min: 30, max: 100 })
-        };
-      });
+      for (const property of myProperties) {
+        const processedProperties = matchesUsers.docs.map((item: MatchDocWithCreatedBY) => {
+          return this.makeSuggestionObject(item, matches, property);
+        });
+
+        data.push(...processedProperties);
+      }
+
+      matchesUsers.docs = data.sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
-      console.log(error);
       return { response: error, success: false };
     }
   }
 
-  private calculateSimilarity(clientCriteria: any, property: any): number {
+  private makeSuggestionObject = (
+    item: MatchDocWithCreatedBY,
+    matches: MatchDocument[],
+    property: AssetDocument
+  ) => {
+    const matchTenant: MatchDocument | undefined = matches.find(
+      (match: any) => match.tenant.toString() === item?.created_by?._id.toString()
+    );
+
+    const percentage = this.calculateSimilarity(item, property);
+    const propertyWithPercentage = {
+      ...property,
+      percentage: parseInt(percentage.toFixed(0), 10)
+    };
+
+    return {
+      criteria: item,
+      property: propertyWithPercentage,
+      chosen: matchTenant?.chosen ?? false,
+      starred: matchTenant?.starred ?? false,
+      matchId: matchTenant?._id ?? undefined
+    };
+  };
+
+  public calculateSimilarity(clientCriteria: any, property: any): number {
     let matchingCriteria = 0;
 
     if (clientCriteria.room_details.number_of_bathrooms === property.room_details.number_of_bathrooms) {
@@ -158,4 +176,8 @@ export default class SuggestionService {
 
     return (matchingCriteria / totalCriteria) * 100;
   }
+}
+
+interface MatchDocWithCreatedBY extends MatchDocument {
+  created_by: any;
 }

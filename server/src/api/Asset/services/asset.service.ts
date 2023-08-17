@@ -227,6 +227,10 @@ const findById = async (id: string): Promise<any | null> => {
   return asset;
 };
 
+const findPropertyById = async (id: string): Promise<any | null> => {
+  return AssetModel.findOne({ _id: id }).lean();
+};
+
 const deleteAsset = async (req: Request, res: Response) => {
   const id = req.params.id;
   await AssetModel.findByIdAndDelete(id);
@@ -309,10 +313,14 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   }
 };
 
-const findPublishedPropertiesExample = async (): Promise<AssetDocument[]> => {
+const findPublishedPropertiesExample = async (userId?: string): Promise<AssetDocument[]> => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
   };
+
+  if (userId) {
+    query.created_by = { $eq: userId };
+  }
 
   try {
     return await AssetModel.find(query).lean();
@@ -330,5 +338,6 @@ export default {
   findById,
   sendAssetInvitation,
   findPublishedProperties,
-  findPublishedPropertiesExample
+  findPublishedPropertiesExample,
+  findPropertyById
 };

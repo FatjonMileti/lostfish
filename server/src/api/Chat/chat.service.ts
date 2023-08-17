@@ -6,7 +6,9 @@ import notificationSender from '../../utils/notification-sender';
 import { NotificationType } from '../Notification/notification.interface';
 import socketApi from '../../utils/socket.io';
 import roomService from './room.service';
-import { RoomDocument } from './room.interface';
+import { PopulatedRoomDocument, RoomDocument } from './room.interface';
+import httpStatus from 'http-status';
+import { Socket } from 'socket.io';
 
 const getAll = async (query: any, pagingOptions: any) => {
   return RoomModel.paginate(query, {
@@ -37,6 +39,7 @@ const getById = async (id: string): Promise<ChatDocument | undefined> => {
       }
     ]
   });
+
   if (!chat) {
     throw createError(404, 'The item does not exist');
   }
@@ -117,7 +120,7 @@ const findOne = async (query: any) => {
 };
 
 const create = async (chat: ChatDocument): Promise<ChatDocument> => {
-  const chatDocument = new ChatModel({
+  const chatDocument: ChatDocument = new ChatModel({
     ...chat
   });
 
@@ -128,41 +131,52 @@ const deleteChat = async (id: string): Promise<any> => {
   return ChatModel.findByIdAndDelete(id);
 };
 
-const handleNewMessage = async (socket: any, data: any) => {
-  let room: any | null = null;
-  if (!data.room_id) {
-    const createRoom = await RoomModel.create({ ...data });
-    room = await roomService.getRoomDetails({ _id: createRoom._id });
-    socket.emit('receive_room_id', room);
-    data.room_id = createRoom._id;
-  } else {
-    room = await roomService.getRoomDetails({ _id: data.room_id });
-  }
-  data.participant = room.participant._id;
-  data.author = room.author._id;
+const handleNewMessage = async (socket: Socket, data: any) => {
+  try {
+    let room: PopulatedRoomDocument | null = null;
+    if (!data.room_id) {
+      const createRoom: RoomDocument = await RoomModel.create({ ...data });
+      room = await roomService.getRoomDetails({ _id: createRoom._id });
+      socket.emit('receive_room_id', room);
+      data.room_id = createRoom._id;
+    } else {
+      room = await roomService.getRoomDetails({ _id: data.room_id });
+    }
 
-  const newMessage: ChatDocument = await create(data);
-  if (newMessage && newMessage?.room_id) {
-    const userToBeNotified =
-      data.sender.toString() === data.participant.toString()
-        ? data.author.toString()
-        : data.participant.toString();
+    if (!room) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'room not found' });
+    }
 
-    await notificationSender.notifyUser({
-      user: userToBeNotified,
-      entity: 'Message',
-      entity_id: newMessage._id,
-      data: newMessage,
-      type: NotificationType.CHAT
-    });
+    const { participant, author } = room;
 
-    const messagesData = await getLatestMessage({ room_id: { $eq: newMessage.room_id } });
-    socket.to(data.room_id).emit('receive_message', messagesData);
+    data.participant = participant._id;
+    data.author = author._id;
 
-    const roomDetails = await roomService.findWithAggregate(data.room_id);
-    socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
-      socket.to(socketId).emit('update_message_list', roomDetails);
-    });
+    const newMessage: ChatDocument = await create(data);
+    if (newMessage && newMessage?.room_id) {
+      const userToBeNotified =
+        data.sender.toString() === data.participant.toString()
+          ? data.author.toString()
+          : data.participant.toString();
+
+      await notificationSender.notifyUser({
+        user: userToBeNotified,
+        entity: 'Message',
+        entity_id: newMessage._id,
+        data: newMessage,
+        type: NotificationType.CHAT
+      });
+
+      const messagesData = await getLatestMessage({ room_id: { $eq: newMessage.room_id } });
+      socket.to(data.room_id).emit('receive_message', messagesData);
+
+      const roomDetails = await roomService.findWithAggregate(data.room_id);
+      socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
+        socket.to(socketId).emit('update_message_list', roomDetails);
+      });
+    }
+  } catch (error: any) {
+    throw createError(httpStatus.BAD_REQUEST, { ...error });
   }
 };
 
