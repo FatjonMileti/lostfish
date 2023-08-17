@@ -1,29 +1,29 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, HTMLProps, useState } from 'react';
-import { Modal } from '../../../components/Modal';
+import React, { HTMLAttributes } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { ObjectSchema } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-import axios from '../../../utils/axios';
-import { Controller, useForm, UseFormReturn } from 'react-hook-form';
+import { Modal } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import { Backdrop } from '../../../components/Backdrop';
-
-import { useUserStore } from '../../../globalState/user';
-import { useNavigate } from 'react-router-dom';
-import { TextField } from '../../../components/TextField';
-import multimedia from './image.svg';
-import { Select } from '../../../components/Select/Select';
 import { Textarea } from '../../../components/Textarea';
-import { Upload } from '../../../components/Upload';
-import { Map } from '../../Matches/MatchesProperties/ViewProperty.Map';
+import { Select } from '../../../components/Select/Select';
+import { TextField } from '../../../components/TextField';
+
+import { Map } from './NewProperty.Map';
 import { NearestThings } from '../../Matches/MatchesProperties/ViewProperty.NearestThings';
 import { AreaOfInterest } from '../AreaOfInterest';
-import { ObjectSchema } from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import request from '../../../utils/axios';
+
+import { useUserStore } from '../../../globalState/user';
+import axios from '../../../utils/axios';
+
+import { ImageUpload } from './NewProperty.ImageUpload';
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
@@ -170,9 +170,7 @@ export const NewPropertyV2 = styled(
     };
     const loadProperty = async () => {
       try {
-        const { data } = await request(auth.access_token).get(`/api/asset/${propertyId}`);
-
-        // form.setValue('lookingFor', data.transaction_type_string);
+        const { data } = await axios(auth.access_token).get(`/api/asset/${propertyId}`);
 
         form.setValue('areaOfInterest', data.area_of_interest);
 
@@ -187,8 +185,8 @@ export const NewPropertyV2 = styled(
         form.setValue('bedrooms', data.room_details.number_of_bedrooms);
         form.setValue('bathrooms', data.room_details.number_of_bathrooms);
         form.setValue('propertyImages', data.property_images);
-        form.setValue('min-budget', data.budget.min_budget);
-        form.setValue('max-budget', data.budget.max_budget);
+        form.setValue('min-budget', data?.budget?.min_budget);
+        form.setValue('max-budget', data?.budget?.max_budget);
         form.setValue('parking-spot', data.parking_spot);
         form.setValue('EPC-Rating', data.epc_rating);
         form.setValue('description', data.description);
@@ -199,6 +197,8 @@ export const NewPropertyV2 = styled(
     };
 
     const saveAsDraft = async () => {
+      setState((state) => ({ ...state, savingProperty: true }));
+
       try {
         if (state.newImages.length > 0) {
           const newImagesLinks = await uploadImages(state.newImages);
@@ -214,7 +214,7 @@ export const NewPropertyV2 = styled(
           asset_address: form.getValues('location'),
           title: form.getValues('title'),
           property_type: form.getValues('building-type'),
-          floor_size: form.getValues('area'),
+          floor_size: form.getValues('area') || undefined,
           room_details: {
             number_of_bathrooms: form.getValues('bathrooms'),
             number_of_bedrooms: form.getValues('bedrooms')
@@ -223,11 +223,11 @@ export const NewPropertyV2 = styled(
           property_images: form.getValues('propertyImages'),
 
           budget: {
-            min_budget: form.getValues('min-budget'),
-            max_budget: form.getValues('max-budget')
+            min_budget: form.getValues('min-budget') || undefined,
+            max_budget: form.getValues('max-budget') || undefined
           },
 
-          parking_spot: form.getValues('parking-spot'),
+          parking_spot: form.getValues('parking-spot') || undefined,
           epc_rating: form.getValues('EPC-Rating'),
           description: form.getValues('description'),
           location_details: form.getValues('location-details')
@@ -242,6 +242,8 @@ export const NewPropertyV2 = styled(
         }
       } catch (err) {
         throw err;
+      } finally {
+        setState((state) => ({ ...state, savingProperty: false }));
       }
     };
     const startMatching = async () => {
@@ -289,14 +291,17 @@ export const NewPropertyV2 = styled(
         }
 
         navigate('/matches');
-
       } catch (err) {
         throw err;
       }
     };
 
     const deleteProperty = async () => {
-      await axios(auth.access_token).delete(`/api/asset/${propertyId}`);
+      try {
+        await axios(auth.access_token).delete(`/api/asset/${propertyId}`);
+      } catch (err) {
+        throw err;
+      }
     };
     const onDeleteConfirm = async () => {
       try {
@@ -319,7 +324,6 @@ export const NewPropertyV2 = styled(
 
     return (
       <Modal
-        // disableScrollLock
         className={`new-property-modal ${className}`}
         open={modalVisibility}
         onBackdropClick={() => setModalVisibility(false)}
@@ -336,14 +340,21 @@ export const NewPropertyV2 = styled(
                 Delete property
               </Button>
             )}
-            <Button variant='secondary' onClick={saveAsDraft}>
+            <Button
+              variant='secondary'
+              onClick={async () => {
+                await saveAsDraft();
+                fetchAssets();
+              }}>
               Save as draft
             </Button>
             <Button
               variant='secondary'
               disabled={!form.formState.isValid}
               active={form.formState.isValid}
-              onClick={startMatching}>
+              onClick={async () => {
+                await startMatching();
+              }}>
               Start matching
             </Button>
             <IconButton size='large' noBackground onClick={() => setModalVisibility(false)}>
@@ -368,25 +379,12 @@ export const NewPropertyV2 = styled(
                   Media <span className='required-asterisk'> *</span>
                 </Typography>
               </div>
-              <div className='upload'>
-                <div className='drag-drop'>
-                  <div className='img' style={{ backgroundImage: `url(${multimedia})` }}></div>
-                  <Typography variant='body4'>
-                    Upload photos and videos or drag & drop them in here
-                  </Typography>
-                </div>
-                <Upload
-                  multiple
-                  accept='image/*'
-                  onFiles={(files) => {
-                    setNewImages([...state.newImages, ...files]);
-                  }}
-                  button={
-                    <Button variant='secondary' size='large' startIcon={<Icon icon='plus' size={14} />}>
-                      Upload media
-                    </Button>
-                  }></Upload>
-              </div>
+              <ImageUpload
+                className='upload'
+                onNewImages={(files) => {
+                  setNewImages([...state.newImages, ...files]);
+                }}
+              />
               <Controller
                 render={({ field: { value = [], onChange } }) => (
                   <>
@@ -448,7 +446,7 @@ export const NewPropertyV2 = styled(
               />
               <div className='property-wrapper'>
                 <div className='label'>
-                  <Icon icon='banknote' size={24}/>
+                  <Icon icon='banknote' size={24} />
                   <Typography variant='body5'>
                     Budget <span className='required-asterisk'> *</span>
                   </Typography>
@@ -472,103 +470,105 @@ export const NewPropertyV2 = styled(
                   />
                 </div>
               </div>
-                <TextField
-                  placeholder='No. of bedrooms'
-                  {...register('bedrooms')}
-                  required
-                  label={
-                    <>
-                      <Icon icon='double-bed' />  Bedrooms
-                    </>
-                  }
-                  error={!!form.formState.errors.bedrooms}
-                  helperText={form.formState.errors.bedrooms?.message?.toString()}
-                  type='number'
-                />
-                <TextField
-                  placeholder='No. of bathrooms'
-                  {...register('bathrooms')}
-                  required
-                  label={
-                    <>
-                      <Icon icon='bathtub' />  Bathrooms
-                    </>
-                  }
-                  error={!!form.formState.errors.bathrooms}
-                  helperText={form.formState.errors.bathrooms?.message?.toString()}
-                  type='number'
-                />
-                <Select
-                  label={
+              <TextField
+                placeholder='No. of bedrooms'
+                {...register('bedrooms')}
+                required
+                label={
                   <>
-                    <Icon icon='building' />
-                      Building type
+                    <Icon icon='double-bed' /> Bedrooms
                   </>
                 }
-                  required
-                  {...register('building-type')}
-                  placeholder='Select building type'
-                  error={!!form.formState.errors['building-type']}
-                  helperText={form.formState.errors['building-type']?.message?.toString()}
-                >
-                  <option></option>
-                  <option value='Detached'>Detached</option>
-                  <option value='Semi-Detached'>Semi-Detached</option>
-                  <option value='Terraced'>Terraced</option>
-                  <option value='Flats'>Flats</option>
-                  <option value='Bungalows'>Bungalows</option>
-                  <option value='Farms/Land'>Farms/Land</option>
-                </Select>
+                error={!!form.formState.errors.bedrooms}
+                helperText={form.formState.errors.bedrooms?.message?.toString()}
+                type='number'
+              />
+              <TextField
+                placeholder='No. of bathrooms'
+                {...register('bathrooms')}
+                required
+                label={
+                  <>
+                    <Icon icon='bathtub' /> Bathrooms
+                  </>
+                }
+                error={!!form.formState.errors.bathrooms}
+                helperText={form.formState.errors.bathrooms?.message?.toString()}
+                type='number'
+              />
+              <Select
+                label={
+                  <>
+                    <Icon icon='building' />
+                    Building type
+                  </>
+                }
+                required
+                {...register('building-type')}
+                placeholder='Select building type'
+                error={!!form.formState.errors['building-type']}
+                helperText={form.formState.errors['building-type']?.message?.toString()}>
+                <option></option>
+                <option value='Detached'>Detached</option>
+                <option value='Semi-Detached'>Semi-Detached</option>
+                <option value='Terraced'>Terraced</option>
+                <option value='Flats'>Flats</option>
+                <option value='Bungalows'>Bungalows</option>
+                <option value='Farms/Land'>Farms/Land</option>
+              </Select>
 
-                <TextField
-                  placeholder='Enter the area'
-                  {...register('area')}
-                  required
-                  label={
-                    <>
-                      <Icon className='area-icon' icon='ruler' /> Area
-                    </>
-                  }
-                  error={!!form.formState.errors.area}
-                  helperText={form.formState.errors.area?.message?.toString()}
-                  type='number'
-                />
+              <TextField
+                placeholder='Enter the area'
+                {...register('area')}
+                required
+                label={
+                  <>
+                    <Icon className='area-icon' icon='ruler' /> Area
+                  </>
+                }
+                error={!!form.formState.errors.area}
+                helperText={form.formState.errors.area?.message?.toString()}
+                type='number'
+              />
 
-                <Select
-                  required
-                  label={
-                    <>
-                      <Icon icon='car' />
-                        Parking spot
-                    </>
-                  }
-                  {...register('parking-spot')}
-                  error={!!form.formState.errors['parking-spot']}
-                  helperText={form.formState.errors['parking-spot']?.message?.toString()}>
-                  <option></option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                </Select>
-                <Select
-                    label={
-                      <>
-                        <Icon icon='temperature' />
-                          EPC Rating
-                      </>
-                    }
-                  {...register('EPC-Rating')}
-                  required
-                  error={!!form.formState.errors['EPC-Rating']}
-                  helperText={form.formState.errors['EPC-Rating']?.message?.toString()}>
-                  <option></option>
-                  <option value='A'>A</option>
-                  <option value='B'>B</option>
-                  <option value='C'>C</option>
-                  <option value='D'>D</option>
-                  <option value='E'>E</option>
-                  <option value='F'>F</option>
-                  <option value='G'>G</option>
-                </Select>
+              <Select
+                required
+                label={
+                  <>
+                    <Icon icon='car' />
+                    Parking spot
+                  </>
+                }
+                {...register('parking-spot')}
+                error={!!form.formState.errors['parking-spot']}
+                helperText={form.formState.errors['parking-spot']?.message?.toString()}>
+                <option></option>
+                <option value='1'>1</option>
+                <option value='2'>2</option>
+                <option value='2'>3</option>
+                <option value='2'>4</option>
+                <option value='2'>5</option>
+              </Select>
+              <Select
+                label={
+                  <>
+                    <Icon icon='temperature' />
+                    EPC Rating
+                  </>
+                }
+                {...register('EPC-Rating')}
+                required
+                error={!!form.formState.errors['EPC-Rating']}
+                helperText={form.formState.errors['EPC-Rating']?.message?.toString()}>
+                <option></option>
+                <option value='A'>A</option>
+                <option value='B'>B</option>
+                <option value='C'>C</option>
+                <option value='D'>D</option>
+                <option value='E'>E</option>
+                <option value='F'>F</option>
+                <option value='G'>G</option>
+              </Select>
             </div>
             <Textarea
               placeholder='Enter description'
@@ -745,7 +745,7 @@ export const NewPropertyV2 = styled(
 
       .right-side {
         display: flex;
-        column-gap: 32px;
+        column-gap: 16px;
 
         .delete-button {
           color: #e5155a;
@@ -810,33 +810,6 @@ export const NewPropertyV2 = styled(
             }
           }
           .upload {
-            width: 100%;
-            display: grid;
-            padding: 64px 0px;
-            border-radius: 8px;
-            border: 1px dashed #cfd5d5;
-            align-items: center;
-            justify-items: center;
-            gap: 24px;
-
-            .drag-drop {
-              display: grid;
-              align-items: center;
-              gap: 24px;
-
-              .img {
-                width: 64px;
-                height: 64px;
-                background-repeat: no-repeat;
-                background-size: cover;
-                margin: 0 auto;
-              }
-
-              .typography {
-                font-size: 18px;
-                font-weight: 700;
-              }
-            }
           }
           .images-list {
             display: flex;
@@ -881,11 +854,11 @@ export const NewPropertyV2 = styled(
               transform: rotate(-90deg);
             }
           }
-          
+
           .property-wrapper {
             display: grid;
             row-gap: 4px;
-            
+
             .label {
               display: flex;
               gap: 4px;
@@ -962,14 +935,16 @@ export const NewPropertyV2 = styled(
             }
 
             .red {
+              font-family: Roobert, serif;
               font-size: 48px;
               color: #e5155a;
               font-weight: 700;
               line-height: 64px;
             }
           }
+
           .body3 {
-            font-weight: 400;
+            font-family: At Gambit, serif;
           }
         }
         .sections-progress-list {
@@ -993,15 +968,12 @@ export const NewPropertyV2 = styled(
             }
 
             .progress-item-text {
-              color: #a7a7a7;
+              color: #0d2a38;
             }
 
             &.active {
               .progress-item-indicator {
                 background-color: #184d6d;
-              }
-              .progress-item-text {
-                color: black;
               }
             }
           }

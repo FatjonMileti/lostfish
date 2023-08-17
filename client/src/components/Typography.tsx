@@ -48,6 +48,7 @@ export const Typography = styled(
     font-size: 24px;
     line-height: 32px;
     font-family: 'Roobert', serif;
+    font-weight: 400;
   }
 
   &.body4 {
