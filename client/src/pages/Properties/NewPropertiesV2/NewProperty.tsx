@@ -757,7 +757,7 @@ export const NewPropertyV2 = styled(
         }
 
         .button {
-          //width: 141px;
+          padding: 12px 20px;
           &.active {
             color: #fff;
             background-color: #184d6d;
