@@ -50,6 +50,7 @@ export class SuggestionController {
    * @apiDescription Get all tenants suggestions
    * @apiGroup Suggestion
    * @apiSampleRequest /api/suggestion/tenant
+   * @apiQuery {string} propertyId
    * @apiUse bearer
    * @apiPermission authorize
    * @apiUse paging
@@ -57,10 +58,11 @@ export class SuggestionController {
   public getTenantsSuggestions = async (req: Request, res: Response) => {
     const userId = res.locals.user_id as string;
     const paginateOptions = res.locals.paging_options as IPagingOptions;
-
+    const { propertyId } = req.query;
     const { response, success } = await this.suggestionService.getFilteredTenantsByUser(
       paginateOptions,
-      userId
+      userId,
+      propertyId as string
     );
 
     if (success) {
