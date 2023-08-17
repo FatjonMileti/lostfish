@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import { useDocuments } from './useDocuments.hook';
 import { Typography } from '../../../components/Typography';
-import { Checkbox, Grid, Paper } from '@mui/material';
+import { Checkbox, Grid } from '@mui/material';
 import { UploadComponent } from './UploadComponent';
 import { Button } from '../../../components/Button';
 import { IRoom } from '../messages.interface';
@@ -10,11 +10,14 @@ import { useAbility } from '@casl/react';
 import { AbilityContext } from '../../../context/AbilityContext';
 import { CASLAction } from '../../../utils/ability.util';
 import { DocumentType, IUser_Documents } from '../../MyAccount/user.interface';
+import { styled } from '@mui/system';
+import classNames from 'classnames';
+import { Icon } from '../../../components/Icon';
 
-interface ITenantProps {
+interface TenantDocumentsProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
 }
-export const TenantDocuments = (props: ITenantProps) => {
+export const TenantDocuments = styled((props: TenantDocumentsProps) => {
   const { room } = props;
   const { userDetails } = useUserStore();
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
@@ -31,20 +34,25 @@ export const TenantDocuments = (props: ITenantProps) => {
   const canApproveDocuments = ability.can(CASLAction.Update, 'Documents', 'file.approved');
 
   return (
-    <div className='modal-body'>
-      <Typography variant='body3'>Tenant documents</Typography>
-      <div></div>
+    <div className={classNames(props.className, 'tenant-documents')}>
+      <Typography className='tenant-documents-title' variant='body3'>
+        Tenant documents
+      </Typography>
 
-      {documents.map((document, index) => {
-        const userDocument = userDocuments.find((userDoc) => userDoc.type === document.type);
+      <div className='tenant-documents-list'>
+        {documents.map((document, index) => {
+          const userDocument = userDocuments.find((userDoc) => userDoc.type === document.type);
 
-        return (
-          <div className='modal-item' key={index}>
-            <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Grid item>
-                <Checkbox checked={Boolean(!!document?.key)} disabled />
-                {document.type}
-              </Grid>
+          return (
+            <div className='document-item' key={index}>
+              <div className='document-status'>
+                <div className={classNames('completion-bullet', { active: !!document?.key })}>
+                  <Icon icon='checked' size={12} />
+                </div>
+                <Typography variant='body4' className='document-name'>
+                  {document.type}
+                </Typography>
+              </div>
               {canManageDocs && (
                 <TenantDocumentItem
                   document={document}
@@ -62,13 +70,73 @@ export const TenantDocuments = (props: ITenantProps) => {
                   approveOrDisapproveDocument={approveOrDisapproveDocument}
                 />
               )}
-            </Grid>
-          </div>
-        );
-      })}
+            </div>
+          );
+        })}
+      </div>
+
+      <Typography variant='body4'>
+        You can find more information about why we need these documents in the Lostfish T&Cs section.
+      </Typography>
     </div>
   );
-};
+})`
+  &.tenant-documents {
+    display: grid;
+    row-gap: 24px;
+
+    .tenant-documents-title {
+      font-family: At Gambit, serif;
+    }
+
+    .tenant-documents-list {
+      display: grid;
+      row-gap: 16px;
+      .document-item {
+        display: flex;
+        padding: 24px;
+        align-items: center;
+        gap: 16px;
+        align-self: stretch;
+        justify-content: space-between;
+
+        border-radius: 8px;
+        border: 1px solid var(--primary-brand-ocean-blue, #184d6d);
+
+        .document-status {
+          display: flex;
+          column-gap: 8px;
+          .completion-bullet {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            background-color: #cfd5d5;
+
+            border-radius: 50%;
+            .icon {
+              visibility: hidden;
+              color: white;
+            }
+
+            &.active {
+              background-color: #184d6d;
+              .icon {
+                visibility: visible;
+              }
+            }
+          }
+
+          .document-name {
+            font-weight: 700;
+            color: #0d2a38;
+          }
+        }
+      }
+    }
+  }
+`;
 
 interface ITenantDocumentItem {
   document: IUser_Documents;
@@ -116,7 +184,7 @@ const TenantDocumentItem = ({
                   </a>
                 </>
               )}
-              <Button sx={{ marginRight: '5px' }} onClick={() => setSelectedFile(document)}>
+              <Button variant='secondary' onClick={() => setSelectedFile(document)}>
                 Edit
               </Button>
             </div>
@@ -146,9 +214,7 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
       ) : (
         <>
           {document.key ? (
-            <Button sx={{ marginRight: '5px' }} onClick={() => approveOrDisapproveDocument(document)}>
-              Approve
-            </Button>
+            <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>
           ) : (
             <p>No document uploaded by tenant</p>
           )}

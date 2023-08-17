@@ -1,5 +1,5 @@
 import { Typography } from '../../../components/Typography';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
@@ -7,6 +7,8 @@ import { Checkbox, Grid } from '@mui/material';
 import { Button } from '../../../components/Button';
 import { Role } from '../../../utils/ability.util';
 import { IRoom } from '../messages.interface';
+import { styled } from '@mui/system';
+import classNames from 'classnames';
 
 const state: IGridState = {
   loading: true,
@@ -22,11 +24,11 @@ const state: IGridState = {
   search: ''
 };
 
-interface ISignedDocumentProps {
+interface SignedDocumentsProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
 }
 
-export const SignedDocuments = (props: ISignedDocumentProps) => {
+export const SignedDocuments = styled((props: SignedDocumentsProps) => {
   const { room } = props;
   const { auth, userDetails } = useUserStore();
   const [list, setList] = React.useState<IGridState>({
@@ -64,8 +66,10 @@ export const SignedDocuments = (props: ISignedDocumentProps) => {
   };
 
   return (
-    <div className='modal-body'>
-      <Typography variant='body3'>Sign documents</Typography>
+    <div className={classNames(props.className, 'signed-documents')}>
+      <Typography variant='body3' className='signed-documents-title'>
+        Sign documents
+      </Typography>
       <div></div>
 
       {list.rows.length > 0 &&
@@ -84,9 +88,23 @@ export const SignedDocuments = (props: ISignedDocumentProps) => {
           </Grid>
         </div>
       )}
+
+      <div className='document-footer'>
+        <Typography variant='body4'>
+          You can find more information about why we need these documents in the Lostfish T&Cs section.
+        </Typography>
+      </div>
     </div>
   );
-};
+})`
+  &.signed-documents {
+    display: grid;
+    row-gap: 24px;
+    .signed-documents-title {
+      font-family: At Gambit, serif;
+    }
+  }
+`;
 
 interface ISignedDocumentLandlord {
   item: any;

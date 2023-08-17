@@ -49,9 +49,7 @@ export const UploadComponent = (props: IUploadDocument) => {
         ref={inputRef}
         onChange={(event) => handleFileChange(event)}
       />
-      <Button sx={{ marginRight: '5px' }} onClick={handleAddDocumentClick}>
-        Upload
-      </Button>
+      <Button onClick={handleAddDocumentClick}>Upload</Button>
     </>
   );
 };

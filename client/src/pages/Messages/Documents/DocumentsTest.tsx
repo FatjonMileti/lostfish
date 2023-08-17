@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
@@ -16,7 +16,7 @@ import { useUserStore } from '../../../globalState/user';
 import { NewRentingContract } from './NewRentingContract';
 import { CASLAction } from '../../../utils/ability.util';
 
-interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
+interface DocumentsTestProps extends React.HTMLAttributes<HTMLDivElement> {
   room: IRoom;
   documentState: {
     areDocumentsApproved: boolean;
@@ -25,7 +25,7 @@ interface IDocumentTest extends React.HTMLAttributes<HTMLDivElement> {
   onReload: () => void;
 }
 
-export const DocumentsTest = styled(({ room, documentState, className, onReload }: IDocumentTest) => {
+export const DocumentsTest = styled(({ room, documentState, className, onReload }: DocumentsTestProps) => {
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
 
@@ -74,29 +74,23 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
       </div>
       <Modal open={showModal} className='view-documents-modal' onBackdropClick={() => onModalClose()}>
         <div className='modal-header'>
-          <div></div>
+          <div />
           <div className='tabs-wrapper'>
-            <Tabs value={activeTab} onChange={setActiveTab}>
+            <Tabs value={activeTab} onChange={setActiveTab} rounded variant='tertiary'>
               <Tab label='Tenant documents' />
               <Tab label='Signed documents' />
               <Tab label='Lostfish T&Cs' />
             </Tabs>
           </div>
-          <IconButton onClick={() => onModalClose()}>
-            <Icon icon='close' />
+          <IconButton size='large' onClick={() => onModalClose()}>
+            <Icon icon='close' size={12} />
           </IconButton>
         </div>
-        {activeTab === 0 && <TenantDocuments room={room} />}
-        {activeTab === 1 && <SignedDocuments room={room} />}
-        {activeTab === 2 && <LostfishTermsAndCondition />}
-
-        {[0, 1].includes(activeTab) && (
-          <div className='document-footer'>
-            <Typography variant='body4'>
-              You can find more information about why we need these documents in the Lostfish T&Cs section.
-            </Typography>
-          </div>
-        )}
+        <div className='modal-body'>
+          {activeTab === 0 && <TenantDocuments room={room} />}
+          {activeTab === 1 && <SignedDocuments room={room} />}
+          {activeTab === 2 && <LostfishTermsAndCondition />}
+        </div>
       </Modal>
     </div>
   );
@@ -152,27 +146,20 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
         padding: 20px 36px;
 
         align-items: center;
+
+        .tabs-wrapper {
+          .tabs {
+            .tab {
+              padding: 12px 24px;
+            }
+          }
+        }
       }
 
       .modal-body {
         padding: 16px 32px;
         display: grid;
         row-gap: 24px;
-
-        .modal-item {
-          display: flex;
-          padding: 24px;
-          align-items: center;
-          gap: 16px;
-          align-self: stretch;
-
-          border-radius: 8px;
-          border: 1px solid var(--primary-brand-ocean-blue, #184d6d);
-        }
-      }
-
-      .document-footer {
-        padding: 16px 32px;
       }
     }
   }

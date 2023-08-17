@@ -96,15 +96,13 @@ export const NewRentingContract = (props: INewRentingContract) => {
   return loading ? (
     <Backdrop open={loading} />
   ) : (
-    <form className='content' onSubmit={handleSubmit(onSubmit)}>
-      <Button
-        className='login-button'
-        type='submit'
-        disabled={Object.keys(errors).length > 0}
-        size='small'
-        style={{ marginTop: '2rem' }}>
-        Create renting contract
-      </Button>
-    </form>
+    <Button
+      className='login-button'
+      type='submit'
+      disabled={Object.keys(errors).length > 0}
+      onClick={handleSubmit(onSubmit)}
+      size='small'>
+      Create renting contract
+    </Button>
   );
 };

@@ -1,5 +1,5 @@
 import { Typography } from '../../../components/Typography';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
@@ -8,6 +8,9 @@ import { Button } from '../../../components/Button';
 import { Role } from '../../../utils/ability.util';
 import { useProfileStore } from '../../../globalState/profile';
 import { Link } from 'react-router-dom';
+import { styled } from '@mui/system';
+import classNames from 'classnames';
+import { Icon } from '../../../components/Icon';
 
 enum DocumentType {
   PRIVACY_AGREEMENT = 'Lostfish privacy agreement',
@@ -29,7 +32,7 @@ const state: IGridState = {
   search: ''
 };
 
-export const LostfishTermsAndCondition = () => {
+export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { auth, userDetails } = useUserStore();
   const profileStore = useProfileStore();
   const [list, setList] = React.useState<IGridState>({
@@ -75,28 +78,86 @@ export const LostfishTermsAndCondition = () => {
   };
 
   return (
-    <div className='modal-body'>
-      <Typography variant='body3'>Lostfish T&Cs</Typography>
-      <div></div>
-
-      {list.rows.length > 0 &&
-        list.rows.map((item: any, index) => {
-          return item.document_type === DocumentType.PRIVACY_AGREEMENT ? (
-            <SignedDocumentAgreementPolicy item={item} handleSign={handlePolicyAccept} />
-          ) : (
-            <SignedDocumentAgreement item={item} handleSign={handleSign} />
-          );
-        })}
-      {list.rows.length === 0 && (
-        <div className='modal-item'>
-          <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography>Empty</Typography>
-          </Grid>
-        </div>
-      )}
+    <div className={classNames(className, 'terms-and-conditions')}>
+      <Typography variant='body3' className='terms-and-conditions-title'>
+        Lostfish T&Cs
+      </Typography>
+      <div className='documents-list'>
+        {list.rows.length > 0 &&
+          list.rows.map((item: any, index) => {
+            return item.document_type === DocumentType.PRIVACY_AGREEMENT ? (
+              <SignedDocumentAgreementPolicy item={item} handleSign={handlePolicyAccept} />
+            ) : (
+              <SignedDocumentAgreement item={item} handleSign={handleSign} />
+            );
+          })}
+        {list.rows.length === 0 && (
+          <div className='document-item'>
+            <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography>Empty</Typography>
+            </Grid>
+          </div>
+        )}
+      </div>
     </div>
   );
-};
+})`
+  &.terms-and-conditions {
+    display: grid;
+    row-gap: 24px;
+
+    .terms-and-conditions-title {
+      font-family: At Gambit, serif;
+    }
+
+    .documents-list {
+      display: grid;
+      row-gap: 16px;
+      .document-item {
+        display: flex;
+        padding: 24px;
+        align-items: center;
+        gap: 16px;
+        align-self: stretch;
+        justify-content: space-between;
+
+        border-radius: 8px;
+        border: 1px solid var(--primary-brand-ocean-blue, #184d6d);
+
+        .document-status {
+          display: flex;
+          column-gap: 8px;
+          .completion-bullet {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            background-color: #cfd5d5;
+
+            border-radius: 50%;
+            .icon {
+              visibility: hidden;
+              color: white;
+            }
+
+            &.active {
+              background-color: #184d6d;
+              .icon {
+                visibility: visible;
+              }
+            }
+          }
+
+          .document-name {
+            font-weight: 700;
+            color: #0d2a38;
+          }
+        }
+      }
+    }
+  }
+`;
 
 interface IAgreementDocument {
   item: any;
@@ -110,22 +171,28 @@ const SignedDocumentAgreement = (props: IAgreementDocument) => {
   const isLandlord = userDetails.role === Role.Landlord;
 
   return (
-    <div className='modal-item'>
-      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Grid item>
-          <Checkbox defaultChecked={isLandlord ? item.signed_by_landlord : item.signed_by_tenant} disabled />
+    <div className='document-item'>
+      <div className='document-status'>
+        <div
+          className={classNames('completion-bullet', {
+            active: isLandlord ? item.signed_by_landlord : item.signed_by_tenant
+          })}>
+          <Icon icon='checked' size={12} />
+        </div>
+        <Typography variant='body4' className='document-name'>
           {item.document_type}
-        </Grid>
-        <Grid item style={{ display: 'flex' }}>
-          {item.signed_by_tenant && (
-            <a
-              href={`${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`}>
-              Download
-            </a>
-          )}
-          {isLandlord && !item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
-          {!isLandlord && !item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
-        </Grid>
+        </Typography>
+      </div>
+
+      <Grid item style={{ display: 'flex' }}>
+        {item.signed_by_tenant && (
+          <a
+            href={`${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`}>
+            Download
+          </a>
+        )}
+        {isLandlord && !item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
+        {!isLandlord && !item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
       </Grid>
     </div>
   );
@@ -141,21 +208,25 @@ const SignedDocumentAgreementPolicy = (props: IAgreementPolicyDocument) => {
   const user = useProfileStore();
 
   return (
-    <div className='modal-item'>
-      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Grid item style={{ marginTop: '10px' }}>
+    <div className='document-item'>
+      <div className='document-status'>
+        <div className={classNames('completion-bullet', { active: user.agreed_application_policy })}>
+          <Icon icon='checked' size={12} />
+        </div>
+        <Typography variant='body4' className='document-name'>
           {item.document_type}
-        </Grid>
-        <Grid item style={{ display: 'flex' }}>
-          <Link style={{ marginTop: '10px' }} to='/policy-agreement'>
-            Read policy agreement
-          </Link>
-          <Checkbox
-            defaultChecked={user.agreed_application_policy}
-            onClick={handleSign}
-            disabled={user.agreed_application_policy}
-          />
-        </Grid>
+        </Typography>
+      </div>
+
+      <Grid item style={{ display: 'flex' }}>
+        <Link style={{ marginTop: '10px' }} to='/policy-agreement'>
+          Read policy agreement
+        </Link>
+        <Checkbox
+          defaultChecked={user.agreed_application_policy}
+          onClick={handleSign}
+          disabled={user.agreed_application_policy}
+        />
       </Grid>
     </div>
   );
