@@ -3,6 +3,8 @@ import UserSchema from '../api/User/user.schema';
 import { hashPassword } from '../api/User/user.helpers';
 import { Role, UserDocument } from '../api/User/user.interface';
 import { UserLog } from '../data/logs';
+import RoomSchema from '../api/Chat/schemas/room.schema';
+import MessageSchema from '../api/Chat/schemas/message.schema';
 const password = 'Lostfish1234';
 
 const remainingRoles = Object.values(Role);
@@ -47,8 +49,13 @@ const generateRandomUser = async () => {
 // Function to seed users
 export const seedUsers = async (numUsers: number): Promise<void> => {
   try {
-    await UserSchema.deleteMany({});
-    await UserLog.deleteMany({});
+    await Promise.all([
+      UserSchema.deleteMany({}),
+      UserLog.deleteMany({}),
+      RoomSchema.deleteMany({}),
+      MessageSchema.deleteMany({})
+    ]);
+
     const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));
     const defaultUsers = await generateDefaultUsers();
 

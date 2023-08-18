@@ -8,7 +8,8 @@ function calculateProfileCompleteness(user: UserDocument): number {
   // Calculate completeness based on each criteria
   if (user.signed_transaction_agreement) completeness += 30;
   if (user.avatar) completeness += 5;
-  if (user.first_name && user.last_name && user.email) completeness += 10;
+  if (user.first_name && user.last_name && user.email) completeness += 5;
+  if (user.description) completeness += 5;
   if (user.agreed_application_policy) completeness += 20;
   if (user.address) completeness += 5;
 
@@ -70,7 +71,7 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   description: String,
   avatar: String,
   confirmation_token: String,
-  agreed_application_policy: { type: Boolean, default: false },
+  agreed_application_policy: { type: Boolean, default: false, immutable: true },
   signed_transaction_agreement: { type: Boolean, default: false },
   transaction_agreement_link: { type: String, default: undefined },
   last_login: Date,
