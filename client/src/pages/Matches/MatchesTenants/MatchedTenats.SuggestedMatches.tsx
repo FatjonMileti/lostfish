@@ -110,7 +110,10 @@ export const SuggestedTenants = styled(
             <div className='slides-wrapper'>
               {tenants.length === 0 && (
                 <div className='no-matches'>
-                  <Typography variant='body1'>You haven’t got any new matches.</Typography>
+                  <Typography variant='body1'>
+                    {`You haven’t got any new matches. 
+                    [TO DO - Find better behaviour]`}
+                  </Typography>
                 </div>
               )}
 
@@ -264,6 +267,7 @@ export const SuggestedTenants = styled(
           display: grid;
           align-items: center;
           justify-items: center;
+          max-width: 100%;
           .typography {
             text-align: center;
             max-width: 60%;

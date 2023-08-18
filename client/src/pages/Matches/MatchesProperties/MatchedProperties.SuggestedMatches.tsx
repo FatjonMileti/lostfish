@@ -106,7 +106,10 @@ export const SuggestedMatches = styled(
             <div className='slides-wrapper'>
               {properties.length === 0 && (
                 <div className='no-matches'>
-                  <Typography variant='body1'>You haven’t got any new matches.</Typography>
+                  <Typography variant='body1'>
+                    {`You haven’t got any new matches. 
+                    [TO DO - Find better behaviour]`}
+                  </Typography>
                 </div>
               )}
               {properties.map((suggestedProperty, propertyIndex) => {
