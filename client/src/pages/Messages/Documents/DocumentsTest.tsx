@@ -55,7 +55,7 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
         all the documents uploaded you can complete the transaction.
       </Typography>
 
-      <div className='action-buttons'>
+      <div className='documents-action-buttons'>
         <Label variant='secondary' onClick={() => setShowModal(true)}>
           View documents
         </Label>
@@ -117,11 +117,11 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
       margin-top: 16px;
     }
 
-    .action-buttons {
-      margin-top: 24px;
+    .documents-action-buttons {
       display: flex;
       flex-direction: column;
       row-gap: 16px;
+      margin-top: 24px;
 
       .button,
       .label {

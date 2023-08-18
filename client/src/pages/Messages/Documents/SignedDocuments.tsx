@@ -9,6 +9,7 @@ import { Role } from '../../../utils/ability.util';
 import { IRoom } from '../messages.interface';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
+import { Icon } from '../../../components/Icon';
 
 const state: IGridState = {
   loading: true,
@@ -70,30 +71,26 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
       <Typography variant='body3' className='signed-documents-title'>
         Sign documents
       </Typography>
-      <div></div>
+      <div className='tenant-documents-list'>
+        {list.rows.length > 0 &&
+          list.rows.map((item: any, index) => {
+            return isLandlord ? (
+              <SignedDocumentLandlord item={item} handleSign={handleSign} key={index} />
+            ) : (
+              <SignedDocumentTenant item={item} handleSign={handleSign} key={index} />
+            );
+          })}
 
-      {list.rows.length > 0 &&
-        list.rows.map((item: any, index) => {
-          return isLandlord ? (
-            <SignedDocumentLandlord item={item} handleSign={handleSign} key={index} />
-          ) : (
-            <SignedDocumentTenant item={item} handleSign={handleSign} key={index} />
-          );
-        })}
-
-      {list.rows.length === 0 && (
-        <div className='modal-item'>
-          <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {list.rows.length === 0 && (
+          <div className='document-item'>
             <Typography>No signed documents</Typography>
-          </Grid>
-        </div>
-      )}
-
-      <div className='document-footer'>
-        <Typography variant='body4'>
-          You can find more information about why we need these documents in the Lostfish T&Cs section.
-        </Typography>
+          </div>
+        )}
       </div>
+
+      <Typography variant='body4'>
+        You can find more information about why we need these documents in the Lostfish T&Cs section.
+      </Typography>
     </div>
   );
 })`
@@ -102,6 +99,58 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
     row-gap: 24px;
     .signed-documents-title {
       font-family: At Gambit, serif;
+    }
+
+    .tenant-documents-list {
+      display: grid;
+      row-gap: 16px;
+      .document-item {
+        display: flex;
+        padding: 24px;
+        align-items: center;
+        gap: 16px;
+        align-self: stretch;
+        justify-content: space-between;
+
+        border-radius: 8px;
+        border: 1px solid var(--primary-brand-ocean-blue, #184d6d);
+
+        .document-status {
+          display: flex;
+          column-gap: 8px;
+          .completion-bullet {
+            width: 24px;
+            height: 24px;
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            background-color: #cfd5d5;
+
+            border-radius: 50%;
+            .icon {
+              visibility: hidden;
+              color: white;
+            }
+
+            &.active {
+              background-color: #184d6d;
+              .icon {
+                visibility: visible;
+              }
+            }
+          }
+
+          .document-name {
+            font-weight: 700;
+            color: #0d2a38;
+          }
+        }
+
+        .document-action-buttons {
+          display: flex;
+          column-gap: 16px;
+        }
+      }
     }
   }
 `;
@@ -113,19 +162,22 @@ interface ISignedDocumentLandlord {
 const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
   const { item, handleSign } = props;
   return (
-    <div className='modal-item'>
-      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Grid item>
-          <Checkbox defaultChecked={!!item.signed_by_landlord} disabled />
+    <div className='document-item'>
+      <div className='document-status'>
+        <div className={classNames('completion-bullet', { active: !!item.signed_by_landlord })}>
+          <Icon icon='checked' size={12} />
+        </div>
+        <Typography variant='body4' className='document-name'>
           {item.document_type}
-        </Grid>
-        <Grid item style={{ display: 'flex' }}>
-          <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-            View
-          </Button>
-          {!item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
-        </Grid>
-      </Grid>
+        </Typography>
+      </div>
+
+      <div className='document-action-buttons'>
+        <Button onClick={() => {}} style={{ marginRight: '5px' }}>
+          View
+        </Button>
+        {!item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
+      </div>
     </div>
   );
 };
@@ -137,19 +189,20 @@ interface ISignedDocumentTenant {
 const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
   const { item, handleSign } = props;
   return (
-    <div className='modal-item'>
-      <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Grid item>
-          <Checkbox defaultChecked={!!item.signed_by_tenant} disabled />
+    <div className='document-item'>
+      <div className='document-status'>
+        <div className={classNames('completion-bullet', { active: !!item.signed_by_tenant })}>
+          <Icon icon='checked' size={12} />
+        </div>
+        <Typography variant='body4' className='document-name'>
           {item.document_type}
-        </Grid>
-        <Grid item style={{ display: 'flex' }}>
-          <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-            View
-          </Button>
-          {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
-        </Grid>
-      </Grid>
+        </Typography>
+      </div>
+
+      <div className='document-action-buttons'>
+        <Button onClick={() => {}}>Download</Button>
+        {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
+      </div>
     </div>
   );
 };

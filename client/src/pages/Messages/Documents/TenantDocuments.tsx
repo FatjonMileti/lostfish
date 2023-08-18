@@ -13,6 +13,7 @@ import { DocumentType, IUser_Documents } from '../../MyAccount/user.interface';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
+import { Label } from '../../../components/Label';
 
 interface TenantDocumentsProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -133,6 +134,11 @@ export const TenantDocuments = styled((props: TenantDocumentsProps) => {
             color: #0d2a38;
           }
         }
+
+        .document-action-buttons {
+          display: flex;
+          column-gap: 16px;
+        }
       }
     }
   }
@@ -156,16 +162,16 @@ const TenantDocumentItem = ({
   handleDocument
 }: ITenantDocumentItem) => {
   return (
-    <Grid item style={{ display: 'flex' }}>
-      {document?.key ? (
-        <div>
+    <div className='document-action-buttons'>
+      {document?.key && (
+        <>
           {selectedFile && selectedFile.key === document.key ? (
-            <div>
+            <>
               <UploadComponent handleDocument={(file: any) => handleDocument(file, document.type)} />
               {userDocument && (
                 <Button onClick={() => useMyDocument(userDocument)}>Use my {document.type}</Button>
               )}
-            </div>
+            </>
           ) : (
             <div style={{ display: 'flex' }}>
               {document.mimetype.startsWith('image') && (
@@ -189,16 +195,18 @@ const TenantDocumentItem = ({
               </Button>
             </div>
           )}
-        </div>
-      ) : (
-        <div>
+        </>
+      )}
+
+      {!document?.key && (
+        <>
           <UploadComponent handleDocument={(file: any) => handleDocument(file, document.type)} />
           {userDocument && (
             <Button onClick={() => useMyDocument(userDocument)}>Use my {document.type}</Button>
           )}
-        </div>
+        </>
       )}
-    </Grid>
+    </div>
   );
 };
 
@@ -208,18 +216,18 @@ interface ILandlordDocumentItem {
 }
 const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlordDocumentItem) => {
   return (
-    <Grid item style={{ display: 'flex' }}>
+    <div className='document-action-buttons'>
       {document?.approved ? (
-        'Approved'
+        <Label variant='tertiary'>Approved</Label>
       ) : (
         <>
           {document.key ? (
             <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>
           ) : (
-            <p>No document uploaded by tenant</p>
+            <Label variant='tertiary'>No document uploaded by tenant</Label>
           )}
         </>
       )}
-    </Grid>
+    </div>
   );
 };
