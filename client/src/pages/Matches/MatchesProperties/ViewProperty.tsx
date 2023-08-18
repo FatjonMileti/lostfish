@@ -5,7 +5,7 @@ import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import React, { useState } from 'react';
 import { Avatar } from '../../../components/Avatar';
-import { Map } from './ViewProperty.Map';
+import { Map } from '../../../components/Map';
 import classNames from 'classnames';
 import { Carousel } from './MatchesProperties.Carousel';
 import { NearestThings } from './ViewProperty.NearestThings';
@@ -165,7 +165,7 @@ export const ViewProperty = styled(
               Arts Centre, a celebrated fringe venue.
             </Typography>
           </div>
-          <Map address={parsedProperty.address} />
+          <Map className='view-property-map' address={parsedProperty.address} />
 
           <NearestThings location={parsedProperty.address} />
 
@@ -353,9 +353,8 @@ export const ViewProperty = styled(
             font-weight: 400;
           }
         }
-        .map {
+        .view-property-map {
           height: 240px;
-          align-self: stretch;
         }
 
         .facilities-wrapper {

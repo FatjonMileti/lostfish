@@ -16,7 +16,7 @@ import { Textarea } from '../../../components/Textarea';
 import { Select } from '../../../components/Select/Select';
 import { TextField } from '../../../components/TextField';
 
-import { Map } from './NewProperty.Map';
+import { Map } from '../../../components/Map';
 import { NearestThings } from '../../Matches/MatchesProperties/ViewProperty.NearestThings';
 import { AreaOfInterest } from '../AreaOfInterest';
 
