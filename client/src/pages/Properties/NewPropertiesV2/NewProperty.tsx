@@ -37,16 +37,16 @@ type FormValues = {
     latitude?: number;
     longitude?: number;
   };
-  'min-budget': number;
-  'max-budget': number;
+  minBudget: number;
+  maxBudget: number;
   bedrooms: number;
   bathrooms: number;
-  'building-type': string;
+  buildingType: string;
   area: number;
-  'parking-spot': string;
-  'EPC-Rating': string;
+  parkingSpot: string;
+  epcRating: string;
   description: string;
-  'location-details': string;
+  locationDetails: string;
   areaOfInterest: string;
   propertyImages: any[];
 };
@@ -94,11 +94,11 @@ export const NewPropertyV2 = styled(
         latitude: yup.number().optional(),
         longitude: yup.number().optional()
       }),
-      'min-budget': yup
+      minBudget: yup
         .number()
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Minimum budget is a required'),
-      'max-budget': yup
+      maxBudget: yup
         .number()
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Maximum budget is a required'),
@@ -110,16 +110,16 @@ export const NewPropertyV2 = styled(
         .number()
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Number of bathrooms is required'),
-      'building-type': yup.string().required('Building type is required'),
+      buildingType: yup.string().required('Building type is required'),
       area: yup
         .number()
         .transform((value) => (isNaN(value) ? undefined : value))
         .min(1)
         .required('Area is required'),
-      'parking-spot': yup.string().required('Parking spot is required'),
-      'EPC-Rating': yup.string().required('EPC Rating is required'),
+      parkingSpot: yup.string().required('Parking spot is required'),
+      epcRating: yup.string().required('EPC Rating is required'),
       description: yup.string().required('Description is required'),
-      'location-details': yup.string().required('Description is required'),
+      locationDetails: yup.string().required('Description is required'),
       areaOfInterest: yup.string().required('Location is required'),
       propertyImages: yup.array().required()
     });
@@ -131,16 +131,16 @@ export const NewPropertyV2 = styled(
           latitude: undefined,
           longitude: undefined
         },
-        'min-budget': undefined,
-        'max-budget': undefined,
+        minBudget: undefined,
+        maxBudget: undefined,
         bedrooms: undefined,
         bathrooms: undefined,
-        'building-type': '',
+        buildingType: '',
         area: undefined,
-        'parking-spot': undefined,
-        'EPC-Rating': '',
+        parkingSpot: undefined,
+        epcRating: '',
         description: '',
-        'location-details': '',
+        locationDetails: '',
         areaOfInterest: '',
         propertyImages: []
       },
@@ -179,18 +179,18 @@ export const NewPropertyV2 = styled(
           longitude: data?.asset_address?.longitude
         });
         form.setValue('title', data.title);
-        form.setValue('building-type', data.property_type);
+        form.setValue('buildingType', data.property_type);
 
         form.setValue('area', data.floor_size);
         form.setValue('bedrooms', data.room_details.number_of_bedrooms);
         form.setValue('bathrooms', data.room_details.number_of_bathrooms);
         form.setValue('propertyImages', data.property_images);
-        form.setValue('min-budget', data?.budget?.min_budget);
-        form.setValue('max-budget', data?.budget?.max_budget);
-        form.setValue('parking-spot', data.parking_spot);
-        form.setValue('EPC-Rating', data.epc_rating);
+        form.setValue('minBudget', data?.budget?.min_budget);
+        form.setValue('maxBudget', data?.budget?.max_budget);
+        form.setValue('parkingSpot', data.parking_spot);
+        form.setValue('epcRating', data.epc_rating);
         form.setValue('description', data.description);
-        form.setValue('location-details', data.location_details);
+        form.setValue('locationDetails', data.location_details);
       } catch (err) {
         throw err;
       }
@@ -213,7 +213,7 @@ export const NewPropertyV2 = styled(
 
           asset_address: form.getValues('location'),
           title: form.getValues('title'),
-          property_type: form.getValues('building-type'),
+          property_type: form.getValues('buildingType'),
           floor_size: form.getValues('area') || undefined,
           room_details: {
             number_of_bathrooms: form.getValues('bathrooms'),
@@ -223,14 +223,14 @@ export const NewPropertyV2 = styled(
           property_images: form.getValues('propertyImages'),
 
           budget: {
-            min_budget: form.getValues('min-budget') || undefined,
-            max_budget: form.getValues('max-budget') || undefined
+            min_budget: form.getValues('minBudget') || undefined,
+            max_budget: form.getValues('maxBudget') || undefined
           },
 
-          parking_spot: form.getValues('parking-spot') || undefined,
-          epc_rating: form.getValues('EPC-Rating'),
+          parking_spot: form.getValues('parkingSpot') || undefined,
+          epc_rating: form.getValues('epcRating'),
           description: form.getValues('description'),
-          location_details: form.getValues('location-details')
+          location_details: form.getValues('locationDetails')
         };
 
         const { data } = await (propertyId
@@ -261,7 +261,7 @@ export const NewPropertyV2 = styled(
 
           asset_address: form.getValues('location'),
           title: form.getValues('title'),
-          property_type: form.getValues('building-type'),
+          property_type: form.getValues('buildingType'),
           floor_size: form.getValues('area'),
           room_details: {
             number_of_bathrooms: form.getValues('bathrooms'),
@@ -271,14 +271,14 @@ export const NewPropertyV2 = styled(
           property_images: form.getValues('propertyImages'),
 
           budget: {
-            min_budget: form.getValues('min-budget'),
-            max_budget: form.getValues('max-budget')
+            min_budget: form.getValues('minBudget'),
+            max_budget: form.getValues('maxBudget')
           },
 
-          parking_spot: form.getValues('parking-spot'),
-          epc_rating: form.getValues('EPC-Rating'),
+          parking_spot: form.getValues('parkingSpot'),
+          epc_rating: form.getValues('epcRating'),
           description: form.getValues('description'),
-          location_details: form.getValues('location-details'),
+          location_details: form.getValues('locationDetails'),
           status_string: 'Live'
         };
 
@@ -455,17 +455,17 @@ export const NewPropertyV2 = styled(
                   <TextField
                     startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
                     placeholder='Min'
-                    {...register('min-budget')}
-                    error={!!form.formState.errors['min-budget']}
-                    helperText={form.formState.errors['min-budget']?.message?.toString()}
+                    {...register('minBudget')}
+                    error={!!form.formState.errors['minBudget']}
+                    helperText={form.formState.errors['minBudget']?.message?.toString()}
                     type='number'
                   />
                   <TextField
                     startAdornment={<div style={{ color: '#A7A7A7', margin: '0 0 0 12px' }}>£</div>}
                     placeholder='Max'
-                    {...register('max-budget')}
-                    error={!!form.formState.errors['max-budget']}
-                    helperText={form.formState.errors['max-budget']?.message?.toString()}
+                    {...register('maxBudget')}
+                    error={!!form.formState.errors['maxBudget']}
+                    helperText={form.formState.errors['maxBudget']?.message?.toString()}
                     type='number'
                   />
                 </div>
@@ -504,10 +504,10 @@ export const NewPropertyV2 = styled(
                   </>
                 }
                 required
-                {...register('building-type')}
+                {...register('buildingType')}
                 placeholder='Select building type'
-                error={!!form.formState.errors['building-type']}
-                helperText={form.formState.errors['building-type']?.message?.toString()}>
+                error={!!form.formState.errors['buildingType']}
+                helperText={form.formState.errors['buildingType']?.message?.toString()}>
                 <option></option>
                 <option value='Detached'>Detached</option>
                 <option value='Semi-Detached'>Semi-Detached</option>
@@ -539,9 +539,9 @@ export const NewPropertyV2 = styled(
                     Parking spot
                   </>
                 }
-                {...register('parking-spot')}
-                error={!!form.formState.errors['parking-spot']}
-                helperText={form.formState.errors['parking-spot']?.message?.toString()}>
+                {...register('parkingSpot')}
+                error={!!form.formState.errors['parkingSpot']}
+                helperText={form.formState.errors['parkingSpot']?.message?.toString()}>
                 <option></option>
                 <option value='1'>1</option>
                 <option value='2'>2</option>
@@ -556,10 +556,10 @@ export const NewPropertyV2 = styled(
                     EPC Rating
                   </>
                 }
-                {...register('EPC-Rating')}
+                {...register('epcRating')}
                 required
-                error={!!form.formState.errors['EPC-Rating']}
-                helperText={form.formState.errors['EPC-Rating']?.message?.toString()}>
+                error={!!form.formState.errors['epcRating']}
+                helperText={form.formState.errors['epcRating']?.message?.toString()}>
                 <option></option>
                 <option value='A'>A</option>
                 <option value='B'>B</option>
@@ -582,11 +582,11 @@ export const NewPropertyV2 = styled(
             <Textarea
               placeholder='Enter location details'
               label='Location details'
-              {...register('location-details')}
+              {...register('locationDetails')}
               required
               rows={4}
-              error={!!form.formState.errors['location-details']}
-              helperText={form.formState.errors['location-details']?.message?.toString()}
+              error={!!form.formState.errors['locationDetails']}
+              helperText={form.formState.errors['locationDetails']?.message?.toString()}
             />
             <Map
               address={{
@@ -655,21 +655,21 @@ export const NewPropertyV2 = styled(
                 },
                 {
                   name: ' Enter budget details',
-                  checked: !!form.getValues('min-budget') && !!form.getValues('max-budget')
+                  checked: !!form.getValues('minBudget') && !!form.getValues('maxBudget')
                 },
                 {
                   name: ' Enter property details',
                   checked:
-                    !!form.getValues('building-type') &&
+                    !!form.getValues('buildingType') &&
                     !!form.getValues('bedrooms') &&
                     !!form.getValues('bathrooms') &&
                     !!form.getValues('area') &&
-                    !!form.getValues('parking-spot') &&
-                    !!form.getValues('EPC-Rating')
+                    !!form.getValues('parkingSpot') &&
+                    !!form.getValues('epcRating')
                 },
                 {
                   name: ' Select points of interest',
-                  checked: !!form.getValues('description') && !!form.getValues('location-details')
+                  checked: !!form.getValues('description') && !!form.getValues('locationDetails')
                 },
                 {
                   name: ' Enter facilities & amenities',
