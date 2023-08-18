@@ -108,6 +108,12 @@ export const SuggestedTenants = styled(
               </Label>
             </div>
             <div className='slides-wrapper'>
+              {tenants.length === 0 && (
+                <div className='no-matches'>
+                  <Typography variant='body1'>You haven’t got any new matches.</Typography>
+                </div>
+              )}
+
               {tenants.map((addedTenant, tenantIndex) => {
                 const { criteria: tenantCriteria } = addedTenant;
 
@@ -139,62 +145,64 @@ export const SuggestedTenants = styled(
             </div>
           </div>
 
-          <div className='matches-slider-footer'>
-            <ArrowButton
-              direction='left'
-              onClick={previous}
-              style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
-              size='large'
-            />
-            <div className='match-actions'>
-              <IconButton
-                className='remove-button'
+          {tenants.length > 0 && (
+            <div className='matches-slider-footer'>
+              <ArrowButton
+                direction='left'
+                onClick={previous}
+                style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
                 size='large'
-                disabled={!suggestedTenant?.matchId}
-                onClick={() => {
-                  if (suggestedTenant?.matchId) {
-                    removeTenantMatch(suggestedTenant?.matchId);
-                  }
-                }}>
-                <Icon icon='close' size={28} />
-              </IconButton>
+              />
+              <div className='match-actions'>
+                <IconButton
+                  className='remove-button'
+                  size='large'
+                  disabled={!suggestedTenant?.matchId}
+                  onClick={() => {
+                    if (suggestedTenant?.matchId) {
+                      removeTenantMatch(suggestedTenant?.matchId);
+                    }
+                  }}>
+                  <Icon icon='close' size={28} />
+                </IconButton>
 
-              <IconButton
-                size='large'
-                inverted
-                className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}
-                onClick={() => {
-                  checkTenant(
-                    criteria.tenantId,
-                    !suggestedTenant.chosen,
-                    suggestedTenant?.starred,
-                    matchedProperty?._id
-                  );
-                }}>
-                <Icon icon='checked' size={28} />
-              </IconButton>
+                <IconButton
+                  size='large'
+                  inverted
+                  className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}
+                  onClick={() => {
+                    checkTenant(
+                      criteria.tenantId,
+                      !suggestedTenant.chosen,
+                      suggestedTenant?.starred,
+                      matchedProperty?._id
+                    );
+                  }}>
+                  <Icon icon='checked' size={28} />
+                </IconButton>
 
-              <IconButton
-                className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}
+                <IconButton
+                  className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}
+                  size='large'
+                  onClick={() => {
+                    starTenant(
+                      criteria.tenantId,
+                      suggestedTenant?.chosen,
+                      !suggestedTenant.starred,
+                      matchedProperty?._id
+                    );
+                  }}>
+                  <Icon icon='star-solid' size={28} />
+                </IconButton>
+              </div>
+              <ArrowButton
+                direction='right'
+                onClick={next}
                 size='large'
-                onClick={() => {
-                  starTenant(
-                    criteria.tenantId,
-                    suggestedTenant?.chosen,
-                    !suggestedTenant.starred,
-                    matchedProperty?._id
-                  );
-                }}>
-                <Icon icon='star-solid' size={28} />
-              </IconButton>
+                style={{ visibility: tenants.length === 1 ? 'hidden' : 'initial' }}
+              />
             </div>
-            <ArrowButton
-              direction='right'
-              onClick={next}
-              size='large'
-              style={{ visibility: tenants.length === 1 ? 'hidden' : 'initial' }}
-            />
-          </div>
+          )}
         </div>
       </>
     );
@@ -251,6 +259,18 @@ export const SuggestedTenants = styled(
 
         padding-top: 24px;
         margin-top: -24px;
+
+        .no-matches {
+          display: grid;
+          align-items: center;
+          justify-items: center;
+          .typography {
+            text-align: center;
+            max-width: 60%;
+            color: lightgray;
+            font-family: Roobert, serif;
+          }
+        }
       }
     }
 

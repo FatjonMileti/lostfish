@@ -41,8 +41,6 @@ export const SuggestedMatches = styled(
   }: SuggestedMatchesProps) => {
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
-    const [viewPropertyModalVisibility, setViewPropertyModalVisibility] = React.useState(false);
-
     const suggestedMatch = properties[activeSlide];
     const property = suggestedMatch?.property;
 
@@ -106,8 +104,14 @@ export const SuggestedMatches = styled(
               </Label>
             </div>
             <div className='slides-wrapper'>
+              {properties.length === 0 && (
+                <div className='no-matches'>
+                  <Typography variant='body1'>You haven’t got any new matches.</Typography>
+                </div>
+              )}
               {properties.map((suggestedProperty, propertyIndex) => {
                 const { property } = suggestedProperty;
+
                 return (
                   <motion.div
                     key={propertyIndex}
@@ -132,52 +136,54 @@ export const SuggestedMatches = styled(
               })}
             </div>
           </div>
-          <div className='matches-slider-footer'>
-            <ArrowButton
-              direction='left'
-              onClick={previous}
-              style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
-              size='large'
-            />
-            <div className='match-actions'>
-              <IconButton
-                className='remove-button'
+          {properties.length > 0 && (
+            <div className='matches-slider-footer'>
+              <ArrowButton
+                direction='left'
+                onClick={previous}
+                style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
                 size='large'
-                onClick={() => {
-                  if (suggestedMatch?.matchId) {
-                    removePropertyMatch(suggestedMatch?.matchId, property._id);
-                  }
-                }}
-                disabled={!suggestedMatch?.matchId}>
-                <Icon icon='close' size={28} />
-              </IconButton>
+              />
+              <div className='match-actions'>
+                <IconButton
+                  className='remove-button'
+                  size='large'
+                  onClick={() => {
+                    if (suggestedMatch?.matchId) {
+                      removePropertyMatch(suggestedMatch?.matchId, property._id);
+                    }
+                  }}
+                  disabled={!suggestedMatch?.matchId}>
+                  <Icon icon='close' size={28} />
+                </IconButton>
 
-              <IconButton
-                size='large'
-                inverted
-                className={`check-button ${suggestedMatch?.chosen ? 'active' : ''}`}
-                onClick={() => {
-                  checkProperty(property._id, !suggestedMatch?.chosen, suggestedMatch.starred);
-                }}>
-                <Icon icon='checked' size={28} />
-              </IconButton>
+                <IconButton
+                  size='large'
+                  inverted
+                  className={`check-button ${suggestedMatch?.chosen ? 'active' : ''}`}
+                  onClick={() => {
+                    checkProperty(property._id, !suggestedMatch?.chosen, suggestedMatch.starred);
+                  }}>
+                  <Icon icon='checked' size={28} />
+                </IconButton>
 
-              <IconButton
+                <IconButton
+                  size='large'
+                  className={`star-button ${suggestedMatch?.starred ? 'active' : ''}`}
+                  onClick={() => {
+                    starProperty(property._id, suggestedMatch.chosen, !suggestedMatch.starred);
+                  }}>
+                  <Icon icon='star-solid' size={28} />
+                </IconButton>
+              </div>
+              <ArrowButton
+                direction='right'
+                onClick={next}
                 size='large'
-                className={`star-button ${suggestedMatch?.starred ? 'active' : ''}`}
-                onClick={() => {
-                  starProperty(property._id, suggestedMatch.chosen, !suggestedMatch.starred);
-                }}>
-                <Icon icon='star-solid' size={28} />
-              </IconButton>
+                style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
+              />
             </div>
-            <ArrowButton
-              direction='right'
-              onClick={next}
-              size='large'
-              style={{ visibility: properties.length === 1 ? 'hidden' : 'initial' }}
-            />
-          </div>
+          )}
         </div>
       </>
     );
@@ -235,6 +241,18 @@ export const SuggestedMatches = styled(
 
         padding-top: 24px;
         margin-top: -24px;
+
+        .no-matches {
+          display: grid;
+          align-items: center;
+          justify-items: center;
+          .typography {
+            text-align: center;
+            max-width: 60%;
+            color: lightgray;
+            font-family: Roobert, serif;
+          }
+        }
       }
     }
 

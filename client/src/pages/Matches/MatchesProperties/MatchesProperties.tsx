@@ -9,13 +9,11 @@ import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
-import { SetCriteria } from '../../SetCriteria/SetCriteria';
 import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
-import { useProfileStore } from '../../../globalState/profile';
 
 export interface PropertyType {
   property: {
@@ -196,13 +194,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
             await getProperties();
           }}
         />
-        {/*<SetCriteria*/}
-        {/*  setShowModal={setCriteriaModalVisibility}*/}
-        {/*  afterRefineSearch={() => {*/}
-        {/*    setCriteriaModalVisibility(false);*/}
-        {/*    getProperties();*/}
-        {/*  }}*/}
-        {/*/>*/}
       </>
     </div>
   );
