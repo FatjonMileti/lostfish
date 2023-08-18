@@ -32,6 +32,7 @@ export const Avatar = styled(({ className, ...rest }: AvatarProps) => {
     .icon {
       width: 50% !important;
       height: 50% !important;
+      color: black;
     }
   }
 `;
