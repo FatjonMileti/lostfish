@@ -11,6 +11,7 @@ import { MatchedSlide, TenantType } from './MatchesTenants';
 import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { useProfileStore } from '../../../globalState/profile';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: TenantType[];
@@ -41,7 +42,9 @@ export const SuggestedTenants = styled(
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
-    const property = suggestedTenant?.property;
+    const matchedProperty = suggestedTenant?.property;
+
+    const profileStore = useProfileStore();
 
     React.useEffect(() => {
       getTenants();
@@ -64,7 +67,7 @@ export const SuggestedTenants = styled(
           <div>
             <Typography>
               Matching with{' '}
-              <span className='matching-with'>renters in {criteria?.area_of_interest ?? ''} +</span>
+              <span className='matching-with'>renters in {matchedProperty?.area_of_interest ?? ''} +</span>
             </Typography>
             <Typography variant='body5' className='sub-title'>
               Displaying 1240 matches. Enter more details to refine your search.
@@ -89,7 +92,7 @@ export const SuggestedTenants = styled(
                 Your trust score
               </Typography>
               <Typography variant='h3' className='trust-score'>
-                45%
+                {profileStore.trust_score}%
               </Typography>
               <Typography variant='body3' className='improve-trust-score-title'>
                 Improve your trust score and find better matches
@@ -128,7 +131,7 @@ export const SuggestedTenants = styled(
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
-                      percentage={property.percentage}
+                      percentage={matchedProperty.percentage}
                     />
                   </motion.div>
                 );
@@ -165,7 +168,7 @@ export const SuggestedTenants = styled(
                     criteria.tenantId,
                     !suggestedTenant.chosen,
                     suggestedTenant?.starred,
-                    property?._id
+                    matchedProperty?._id
                   );
                 }}>
                 <Icon icon='checked' size={28} />
@@ -179,7 +182,7 @@ export const SuggestedTenants = styled(
                     criteria.tenantId,
                     suggestedTenant?.chosen,
                     !suggestedTenant.starred,
-                    property?._id
+                    matchedProperty?._id
                   );
                 }}>
                 <Icon icon='star-solid' size={28} />

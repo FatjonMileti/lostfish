@@ -34,6 +34,24 @@ const makeRecipientViewRequest = ({
   };
 };
 
+const createTransactionAgreementEnvelope = (user: UserDocument) => {
+  // @ts-ignore
+  const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
+  env.templateId = jwtConfig.transactionAgreementTemplate;
+
+  const signer1: TemplateRole = {
+    email: user.email,
+    name: `${user.first_name} ${user.last_name}`,
+    clientUserId: user._id.toString(),
+    roleName: 'User'
+  };
+
+  env.templateRoles = [signer1] as TemplateRole[];
+  env.status = 'Sent';
+
+  return env;
+};
+
 const createContractEnvelope = (
   landlord: UserDocument,
   tenant: UserDocument,
@@ -257,6 +275,7 @@ export default {
   createViewRequestForSigners,
   createViewRequestForPrivacySigners,
   createAndSaveEnvelopeSignUrl,
+  createTransactionAgreementEnvelope,
   //NOT USED FUNCTIONS
   retrieveSignedDocuments,
   fetchAllEnvelopes

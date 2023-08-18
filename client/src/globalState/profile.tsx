@@ -12,7 +12,11 @@ export interface ProfileStoreType {
   phone: string;
   description: string;
   agreed_application_policy: boolean;
+  signed_transaction_agreement: boolean;
+  has_transaction_agreement: boolean;
+  transaction_agreement_link: string | undefined;
   documents: IUser_Documents[];
+  trust_score: number;
   set: (
     partial:
       | ProfileStoreType
@@ -32,8 +36,12 @@ const profileInitialState = {
   email: '',
   phone: '',
   agreed_application_policy: false,
+  signed_transaction_agreement: false,
+  has_transaction_agreement: false,
+  transaction_agreement_link: undefined,
   description: '',
-  documents: []
+  documents: [],
+  trust_score: 0
 };
 
 export const useProfileStore = create<ProfileStoreType>()(
@@ -56,7 +64,11 @@ export const useProfileStore = create<ProfileStoreType>()(
               phone: data.phone,
               description: data.description,
               agreed_application_policy: data.agreed_application_policy,
-              documents: data.documents || []
+              signed_transaction_agreement: data.signed_transaction_agreement,
+              has_transaction_agreement: data.has_transaction_agreement,
+              transaction_agreement_link: data.transaction_agreement_link,
+              documents: data.documents || [],
+              trust_score: data.trust_score
             }));
           } catch (err: any) {
             if (err.response.code === 404) {

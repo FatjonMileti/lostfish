@@ -9,11 +9,12 @@ import fs from 'fs';
 import userService from '../../User/user.service';
 import config from '../../../config';
 import envelopeService from './envelope.service';
+import { EnvelopeSummary } from 'docusign-esign';
 
 type SignUrl = string | undefined;
 
 const createEnvelopeDoc = async (
-  results: any,
+  results: EnvelopeSummary,
   landlord: string | ObjectId | undefined,
   tenant: string | ObjectId,
   propertyId: string | ObjectId
@@ -32,7 +33,7 @@ const createEnvelopeDoc = async (
 };
 
 const createPrivacyAgreementEnvelopeDoc = async (
-  results: any,
+  results: EnvelopeSummary,
   user: string | ObjectId,
   userRole: Role
 ): Promise<IEnvelope> => {
@@ -55,7 +56,7 @@ const createPrivacyAgreementEnvelopeDoc = async (
 };
 
 const createTransactionAgreementEnvelopeDoc = async (
-  results: any,
+  results: EnvelopeSummary,
   user: string | ObjectId,
   userRole: Role
 ): Promise<IEnvelope> => {
@@ -89,6 +90,24 @@ const setSignUrlForUsers = async (
 
   existingEnvelope.sign_url_landlord = signUrlLandlord ?? '';
   existingEnvelope.sign_url_tenant = signUrlTenant ?? '';
+
+  await existingEnvelope.save();
+  return existingEnvelope;
+};
+
+const setSignUrlForAnyUser = async (envelopeId: string, url: SignUrl, role: Role): Promise<IEnvelope> => {
+  const existingEnvelope: IEnvelope | null = await Envelope.findOne({ envelope_id: envelopeId });
+  if (!existingEnvelope) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
+  }
+
+  if (role === Role.Landlord) {
+    existingEnvelope.sign_url_landlord = url ?? '';
+  }
+
+  if (role === Role.Client) {
+    existingEnvelope.sign_url_tenant = url ?? '';
+  }
 
   await existingEnvelope.save();
   return existingEnvelope;
@@ -165,6 +184,31 @@ const getEnvelopeById = async (req: Request, res: Response) => {
   }
 };
 
+const getEnvelopeByUserFilter = async (req: Request, res: Response) => {
+  const { document_type } = req.query;
+
+  const envelope: any | null = await Envelope.findOne({
+    created_by: res.locals.user_id as string,
+    document_type
+  })
+    .populate('land_lord')
+    .populate('tenant')
+    .populate('agent');
+
+  if (!envelope) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+  }
+
+  const newEnvelope = await envelopeService.generateNewUrl({
+    envelope,
+    user: res.locals.role === Role.Landlord ? envelope.land_lord : envelope.tenant
+  });
+
+  await updateEnvelopeById(envelope._id, newEnvelope);
+
+  return res.send(newEnvelope);
+};
+
 const downloadDocument = async (req: Request, res: Response) => {
   const fileName = req.query.fileName as string;
   try {
@@ -211,7 +255,7 @@ const successSignRedirect = async (req: Request, res: Response) => {
       }
     }
     if (event && event === 'signing_complete') {
-      const existingEnvelope = await Envelope.findOne({ envelope_id: envelopId });
+      const existingEnvelope: IEnvelope | null = await Envelope.findOne({ envelope_id: envelopId });
 
       if (!existingEnvelope) {
         throw createError(httpStatus.NOT_FOUND, { message: 'Envelope not found' });
@@ -222,6 +266,10 @@ const successSignRedirect = async (req: Request, res: Response) => {
       }
       if (userType && userType === Role.Landlord) {
         existingEnvelope.signed_by_landlord = true;
+      }
+
+      if (existingEnvelope.document_type === 'Lostfish transaction agreement') {
+        await userService.findAndUpdateUser(userId as string, { signed_transaction_agreement: true });
       }
 
       if (existingEnvelope.signed_by_landlord && existingEnvelope.signed_by_tenant) {
@@ -303,5 +351,7 @@ export default {
   createPrivacyAgreementEnvelopeDoc,
   setLostfishPrivacySignUrlForUsers,
   createTransactionAgreementEnvelopeDoc,
-  getEnvelopeListDocs
+  getEnvelopeListDocs,
+  setSignUrlForAnyUser,
+  getEnvelopeByUserFilter
 };

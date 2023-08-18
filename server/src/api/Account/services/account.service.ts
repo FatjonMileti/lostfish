@@ -133,7 +133,7 @@ const getMyProfile = async (req: express.Request, res: express.Response) => {
       approved: item.approved,
       mimetype: item.mimetype,
       originalname: item.originalname,
-      link: item.link ? item.link : fileUrl
+      link: fileUrl
     };
   });
   res.status(httpStatus.OK).json(data);
@@ -169,7 +169,6 @@ const generateTokens = (user: UserDocument): { token: string; refresh: string } 
     {
       iss: 'lost.fish',
       aud: 'lost.fish:api',
-      sub: user._id.toString(),
       fname: user.first_name,
       user_id: user._id.toString(),
       username: user.first_name,
@@ -184,8 +183,7 @@ const generateTokens = (user: UserDocument): { token: string; refresh: string } 
   const refresh = jwt.sign(
     {
       iss: 'lost.fish',
-      aud: 'lost.fish:token',
-      sub: user._id.toString()
+      aud: 'lost.fish:token'
     },
     <jwt.Secret>process.env.REFRESH_SECRET,
     {

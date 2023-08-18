@@ -13,14 +13,19 @@ import { LogAction, MatchLog } from '../../data/logs';
 import criteriaService from '../Criteria/services/criteria.service';
 import { faker } from '@faker-js/faker';
 import chatService from '../Chat/chat.service';
+import SuggestionService from '../Suggestions/suggestion.service';
+import AssetSchema from '../Asset/schemas/asset.schema';
+import CriteriaSchema from '../Criteria/schemas/criteria.schema';
 
 const router: Router = Router();
 
 export class MatchController {
   private matchService: MatchService;
+  private suggestionService: SuggestionService;
   public router = router;
   constructor(matchService: MatchService) {
     this.matchService = matchService;
+    this.suggestionService = new SuggestionService(AssetSchema, CriteriaSchema);
     this.initializeRoutes();
   }
 
@@ -198,7 +203,11 @@ export class MatchController {
         );
         matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
         matches.docs[i].suggestion_id = i;
-        matches.docs[i].property.percentage = faker.number.int({ min: 30, max: 100 });
+        const percentage = this.suggestionService.calculateSimilarity(
+          matches.docs[i].criteria,
+          matches.docs[i].property
+        );
+        matches.docs[i].property.percentage = parseInt(percentage.toFixed(0), 10);
         matches.docs[i].matchId = currentMatch._id;
       }
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });

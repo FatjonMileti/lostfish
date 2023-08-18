@@ -83,7 +83,6 @@ export function useUser() {
 export function UserProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(JWTReducer, initialState);
   const [error, setError] = useState<any>(null);
-  const params = useParams<{ id: string }>();
 
   const user = useUserStore();
   const setUser = useUserStore((state) => state.set);

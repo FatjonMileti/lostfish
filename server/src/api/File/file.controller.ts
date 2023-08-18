@@ -8,6 +8,9 @@ const s3UploadService = S3UploadService.getInstance();
 const localUploaderService = LocalUploaderService.getInstance();
 
 import fs from 'fs';
+import FilesCollection from '../../data/files.collection';
+import createError from 'http-errors';
+import httpStatus from 'http-status';
 export class FileController {
   public router = router;
   private fileService = config.uses3Bucket ? s3UploadService : localUploaderService;
@@ -39,7 +42,16 @@ export class FileController {
         return response.redirect(protectedUrl);
       }
 
+      const addedFile = await FilesCollection.findOne({ $or: [{ filename }, { key: filename }] });
+      if (!addedFile) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+      }
       const file = this.fileService.getImage(filename);
+      if (addedFile.mimetype === 'image/svg+xml') {
+        response.setHeader('Content-Type', 'image/svg+xml');
+        return response.send(file);
+      }
+
       return response.end(file, 'binary');
     } catch (error: any) {
       response.status(400).send(error);

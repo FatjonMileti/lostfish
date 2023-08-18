@@ -19,10 +19,12 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
   const [importantPlaces, setImportantPlaces] = React.useState<{ name: string }[]>([]);
 
   React.useEffect(() => {
-    getNearestStations();
-    getNearestSchools();
-    getImportantPlaces();
-  }, [location]);
+    if (location.lat && location.lng) {
+      getNearestStations();
+      getNearestSchools();
+      getImportantPlaces();
+    }
+  }, [location.lat, location.lng]);
 
   const getNearestStations = async () => {
     try {

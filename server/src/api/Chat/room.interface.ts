@@ -7,3 +7,8 @@ export interface RoomDocument extends Document {
   last_message?: any;
   created_at?: Date;
 }
+
+export interface PopulatedRoomDocument extends RoomDocument {
+  author: any;
+  participant: any;
+}

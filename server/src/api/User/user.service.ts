@@ -122,7 +122,6 @@ const getById = async (req: Request, res: Response): Promise<any | undefined> =>
 
     res.status(httpStatus.OK).send(mapToUser(user));
   } catch (error: any) {
-    console.log(error);
     throw createError(400, error);
   }
 };
@@ -432,9 +431,8 @@ const findByQuery = (query: any) => {
   return UserModel.find(query).lean();
 };
 
-const deleteAllUserData = async (userId: string) => {
-  await MatchSchema.deleteMany({ created_by: userId });
-  await AssetSchema.deleteMany({ created_by: userId });
+const findAndUpdateUser = (id: string, data: any) => {
+  return UserModel.findByIdAndUpdate(id, { ...data });
 };
 
 export default {
@@ -448,5 +446,6 @@ export default {
   sendResetPasswordInstructions,
   sendChangePasswordInstructions,
   getUserPublicData,
-  findByQuery
+  findByQuery,
+  findAndUpdateUser
 };

@@ -1,49 +1,53 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { styled } from '@mui/system';
+import classNames from 'classnames';
 
-const containerStyle = {
-  width: '100%',
-  height: '240px'
-};
-
-interface MapProps {
+interface MapProps extends HTMLAttributes<HTMLDivElement> {
   address: {
     lat: number;
     lng: number;
   };
-  zoom?: number;
 }
-export const Map = React.memo(({ address, zoom }: MapProps) => {
+export const Map = styled(({ address, className }: MapProps) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyCQxF8nCU-lhv4Wn6THabdieN_m1EAk9tQ'
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY || ''
   });
 
-  const [map, setMap] = React.useState(null);
+  const mapRef = React.useRef<any>(undefined);
+
+  React.useEffect(() => {
+    if (mapRef.current) {
+      const bounds = new window.google.maps.LatLngBounds(address);
+      mapRef.current?.fitBounds(bounds);
+    }
+  }, [address.lat, address.lng]);
 
   const onLoad = React.useCallback(function callback(map: any) {
-    // @ts-ignore
-    const bounds = new window.google.maps.LatLngBounds(address);
-    map.fitBounds(bounds);
-
-    setMap(map);
+    mapRef.current = map;
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map: any) {
-    setMap(null);
-  }, []);
-
-  return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={address}
-      zoom={zoom || 8}
-      onLoad={onLoad}
-      onUnmount={onUnmount}>
-      {/* Child components, such as markers, info windows, etc. */}
-      <Marker position={address} title='Description' draggable={false} />
-    </GoogleMap>
-  ) : (
-    <></>
+  return (
+    <div className={classNames(className, 'google-maps-wrapper')}>
+      {isLoaded && (
+        <GoogleMap
+          options={{ minZoom: 1, maxZoom: 20 }}
+          mapContainerClassName='google-maps-component'
+          center={address}
+          zoom={15}
+          onLoad={onLoad}>
+          <Marker position={address} title='Description' draggable={false} />
+        </GoogleMap>
+      )}
+    </div>
   );
-});
+})`
+  &.google-maps-wrapper {
+    height: 200px;
+    width: 100%;
+    display: grid;
+    .google-maps-component {
+    }
+  }
+`;

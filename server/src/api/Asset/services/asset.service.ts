@@ -123,6 +123,26 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.asset_address = data.asset_address;
     }
 
+    if (data.hasOwnProperty('title')) {
+      asset.title = data.title;
+    }
+
+    if (data.hasOwnProperty('budget')) {
+      asset.budget = data.budget;
+    }
+
+    if (data.hasOwnProperty('parking_spot')) {
+      asset.parking_spot = data.parking_spot;
+    }
+
+    if (data.hasOwnProperty('epc_rating')) {
+      asset.epc_rating = data.epc_rating;
+    }
+
+    if (data.hasOwnProperty('location_details')) {
+        asset.location_details = data.location_details;
+      }
+
     if (data.hasOwnProperty('status_string')) {
       asset.status_string = data.status_string;
     }
@@ -207,6 +227,10 @@ const findById = async (id: string): Promise<any | null> => {
   return asset;
 };
 
+const findPropertyById = async (id: string): Promise<any | null> => {
+  return AssetModel.findOne({ _id: id }).lean();
+};
+
 const deleteAsset = async (req: Request, res: Response) => {
   const id = req.params.id;
   await AssetModel.findByIdAndDelete(id);
@@ -289,10 +313,14 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   }
 };
 
-const findPublishedPropertiesExample = async (): Promise<AssetDocument[]> => {
+const findPublishedPropertiesExample = async (userId?: string): Promise<AssetDocument[]> => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
   };
+
+  if (userId) {
+    query.created_by = { $eq: userId };
+  }
 
   try {
     return await AssetModel.find(query).lean();
@@ -310,5 +338,6 @@ export default {
   findById,
   sendAssetInvitation,
   findPublishedProperties,
-  findPublishedPropertiesExample
+  findPublishedPropertiesExample,
+  findPropertyById
 };
