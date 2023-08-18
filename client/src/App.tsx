@@ -87,9 +87,6 @@ function App() {
 
   const value = useMemo(() => ({ socket }), [socket]);
 
-  const initialSetupFinished =
-    profileStore.avatar && criteriaStore.lookingFor && criteriaStore.areaOfInterest;
-
   return (
     <>
       <SessionMaintainer debug>
@@ -114,7 +111,15 @@ function App() {
                   path=''
                   element={
                     !!userStore.auth ? (
-                      <>{initialSetupFinished ? <HomeLoggedIn /> : <InitialSetup />}</>
+                      <>
+                        {!profileStore.avatar ||
+                        !criteriaStore.lookingFor ||
+                        !criteriaStore.areaOfInterest ? (
+                          <InitialSetup />
+                        ) : (
+                          <HomeLoggedIn />
+                        )}
+                      </>
                     ) : (
                       <Home />
                     )
