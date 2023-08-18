@@ -27,6 +27,9 @@ export const ViewProperty = styled(
       ? avatars[parseInt(property.created_by.avatar || '')]?.image
       : '';
     parsedProperty.areaOfInterest = property.area_of_interest;
+    parsedProperty.title = property?.title;
+    parsedProperty.description = property?.description;
+    parsedProperty.locationDetails = property?.location_details;
     parsedProperty.numberOfBedrooms = property?.room_details?.number_of_bedrooms;
     parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
     parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
@@ -64,7 +67,7 @@ export const ViewProperty = styled(
         <div className='description'>
           <div className='description-header'>
             <div className='title'>
-              <Typography variant='body2'>Two bedroom apartment for rent</Typography>
+              <Typography variant='body2'>{parsedProperty.title}</Typography>
               <IconButton
                 size='large'
                 className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}
@@ -146,9 +149,7 @@ export const ViewProperty = styled(
               Description
             </Typography>
             <Typography variant='body4' className='section-description'>
-              One bed room large FF Flat available to rent, situated 7 minutes walk to Hainault tube station,
-              the property is fully furnished. Having a separate large reception, the property comes with one
-              allocated parking.
+              {parsedProperty.description}
             </Typography>
           </div>
           <div className='section'>
@@ -156,13 +157,7 @@ export const ViewProperty = styled(
               Location details
             </Typography>
             <Typography variant='body4' className='section-description'>
-              Sitting midway between Battersea Park and Clapham Junction, The Set offers an enviable variety
-              of entertainment, dining, drinking and shopping opportunities alongside excellent schools and
-              first rate transport connections.Battersea is an intimate residential area, with great
-              restaurants and bars, all close by. Just down the road is Battersea Square. Its unique setting
-              and continental style dining add a laid-back, village feel to this very special area of London.
-              Battersea itself is a veritable cultural haven, home to the Pump House Gallery and the Battersea
-              Arts Centre, a celebrated fringe venue.
+              {parsedProperty.locationDetails}
             </Typography>
           </div>
           <Map className='view-property-map' address={parsedProperty.address} />

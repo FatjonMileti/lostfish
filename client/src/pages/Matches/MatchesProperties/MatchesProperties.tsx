@@ -20,6 +20,9 @@ export interface PropertyType {
     _id: string;
     property_images: { link: string }[];
     area_of_interest: string;
+    title: string;
+    description: string;
+    location_details: string;
     property_type?: string;
     floor_size: string;
     specific_property_features?: string[];
@@ -253,6 +256,8 @@ export const MatchedSlide = styled(
         ? avatars[parseInt(property.created_by.avatar || '')]?.image
         : '';
 
+      parsedProperty.title = property.title;
+
       parsedProperty.image = property?.property_images[0].link || '';
 
       parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
@@ -299,9 +304,7 @@ export const MatchedSlide = styled(
               </div>
               <div className='slide-footer'>
                 <div className='left-part'>
-                  <Typography className='property-name'>
-                    {parsedProperty.numberOfBedroomsWord} bedroom apartment for rent
-                  </Typography>
+                  <Typography className='property-name'>{parsedProperty.title}</Typography>
                   <div className='property-details'>
                     <div className='detail'>
                       <Icon icon='location' />
