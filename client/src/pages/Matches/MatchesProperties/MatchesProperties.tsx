@@ -255,8 +255,6 @@ export const MatchedSlide = styled(
   ({ className, image, viewProperty, property, ...rest }: MatchedSlideProps) => {
     const deleted = !property;
 
-    console.log({ property });
-
     let parsedProperty: any = {};
 
     if (!deleted) {

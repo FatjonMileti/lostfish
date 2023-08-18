@@ -7,6 +7,8 @@ import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { TenantProfile } from './components/TenantProfile';
 import { PropertyView } from './components/PropertyView';
+import { ViewProperty } from '../Matches/MatchesProperties/ViewProperty';
+import { PropertyType } from '../Matches/MatchesProperties/MatchesProperties';
 
 const state: IGridState = {
   loading: true,
@@ -27,6 +29,9 @@ export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivEleme
   const [list, setList] = useState<IGridState>({
     ...state
   });
+
+  const [propertyToView, setPropertyToView] = React.useState<PropertyType | null>(null);
+
   const { auth } = useUserStore();
 
   React.useEffect(() => {
@@ -73,12 +78,23 @@ export const StarredMatches = styled(({ className }: HTMLAttributes<HTMLDivEleme
           <Typography variant='body5'>You will only see starred matches from your current search.</Typography>
           <div className='properties'>
             {list.rows.map((match: any, idx) => {
-              const { property } = match;
-              return property ? <PropertyView property={property} key={idx} /> : null;
+              return match.property ? (
+                <PropertyView match={match} key={idx} setPropertyToView={setPropertyToView} />
+              ) : null;
             })}
           </div>
         </div>
       </Can>
+
+      {propertyToView && (
+        <ViewProperty
+          open={true}
+          starProperty={() => {}}
+          closeModal={() => setPropertyToView(null)}
+          onBackdropClick={() => setPropertyToView(null)}
+          propertyToView={propertyToView}
+        />
+      )}
     </div>
   );
 })`

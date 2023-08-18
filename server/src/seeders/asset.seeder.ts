@@ -55,7 +55,7 @@ const generateAsset = async (index: number) => {
   await getImages();
 
   const asset: any = {
-    title: faker.lorem.sentence(),
+    title: faker.lorem.sentence(4),
     description: faker.lorem.paragraph({ min: 1, max: 2 }),
     location_details: faker.lorem.text(),
     area_of_interest: faker.location.streetAddress(),
