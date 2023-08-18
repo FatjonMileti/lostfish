@@ -158,7 +158,6 @@ export const ViewProperty = styled(
             </Typography>
             <Typography variant='body4' className='section-description'>
               {parsedProperty.locationDetails}
-              {console.log('parsedProp', parsedProperty)}
             </Typography>
           </div>
           <Map className='view-property-map' address={parsedProperty.address} />

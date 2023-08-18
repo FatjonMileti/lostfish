@@ -37,8 +37,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     ...state
   });
 
-  console.log('list', list.rows);
-
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
