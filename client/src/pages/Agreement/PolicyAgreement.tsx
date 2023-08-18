@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import React from 'react';
-import { Header } from '../Home/Header';
+import { Header } from './Agreement.Header';
 import { Footer } from '../Home/Footer';
 import { ContentAgreement } from './ContentAgreement';
 
