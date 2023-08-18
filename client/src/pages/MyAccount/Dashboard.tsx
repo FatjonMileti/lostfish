@@ -11,8 +11,6 @@ import property from './images/property.png';
 import verified from './images/verified.svg';
 
 import { avatars } from '../HomeLoggedIn/avatars';
-import { useProfileStore } from '../../globalState/profile';
-import { useUserStore } from '../../globalState/user';
 import { Backdrop } from '../../components/Backdrop';
 import { useAgreement } from './useAgreement';
 

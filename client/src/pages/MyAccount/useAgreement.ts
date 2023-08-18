@@ -38,7 +38,7 @@ export const useAgreement = () => {
       setLoading(true);
       await axiosWithToken(user.auth.access_token).post('/api/docusign/create-transaction-envelope', {});
       await profileUser.fetchProfile(user.auth.access_token);
-      setLoading(false);
+      return setLoading(false);
     }
 
     if (!signed_transaction_agreement) {
@@ -51,6 +51,7 @@ export const useAgreement = () => {
         window.location.href = isLandlord ? data.sign_url_landlord : data.sign_url_tenant;
       }
       setLoading(false);
+      return;
     } else {
       window.open(transaction_agreement_link + '?fileName=LostfishTransactionAgreement.pdf', '_blank');
     }

@@ -5,20 +5,18 @@ import { UserDocument, Role } from './user.interface';
 function calculateProfileCompleteness(user: UserDocument): number {
   let completeness = 0;
 
-  // Calculate completeness based on each criterion
+  // Calculate completeness based on each criteria
   if (user.signed_transaction_agreement) completeness += 30;
   if (user.avatar) completeness += 5;
   if (user.first_name && user.last_name && user.email) completeness += 10;
   if (user.agreed_application_policy) completeness += 20;
   if (user.address) completeness += 5;
 
-  // Calculate completeness based on the number of documents
   const numDocuments = user.documents ? user.documents.length : 0;
   if (numDocuments >= 1 && user.documents[0].key) completeness += 10;
   if (numDocuments >= 2 && user.documents[1].key) completeness += 10;
   if (numDocuments >= 3 && user.documents[2].key) completeness += 10;
 
-  // Ensure completeness is within the range of 0 to 100
   completeness = Math.min(100, completeness);
 
   return completeness;

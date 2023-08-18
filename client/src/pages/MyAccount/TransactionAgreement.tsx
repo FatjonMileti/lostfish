@@ -102,11 +102,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
             will be handled according with the UK in force laws.
           </Typography>
 
-          <Button
-            disabled={!profileStore.signed_transaction_agreement}
-            size='small'
-            variant='secondary'
-            onClick={() => handleTransactionAgreement()}>
+          <Button size='small' variant='secondary' onClick={() => handleTransactionAgreement()}>
             {buttonLabel()}
           </Button>
           <div className='note'>
