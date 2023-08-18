@@ -31,6 +31,8 @@ import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
+import { InitialSetup } from './pages/InitialSetup/InitialSetup';
+import { useProfileStore } from './globalState/profile';
 
 registerStore(
   'notification',
@@ -44,6 +46,7 @@ registerStore(
 function App() {
   const userStore = useUserStore();
   const criteriaStore = useCriteriaStore();
+  const profileStore = useProfileStore();
 
   const {
     notification: [notification, setNotification]
@@ -84,6 +87,9 @@ function App() {
 
   const value = useMemo(() => ({ socket }), [socket]);
 
+  const initialSetupFinished =
+    profileStore.avatar && criteriaStore.lookingFor && criteriaStore.areaOfInterest;
+
   return (
     <>
       <SessionMaintainer debug>
@@ -104,7 +110,16 @@ function App() {
                 <Route path='/activate-account/:token' element={<VerifyAccount />} />
                 <Route path='/reset-password/:token' element={<ResetPassword />} />
 
-                <Route path='' element={!!userStore.auth ? <HomeLoggedIn /> : <Home />} />
+                <Route
+                  path=''
+                  element={
+                    !!userStore.auth ? (
+                      <>{initialSetupFinished ? <HomeLoggedIn /> : <InitialSetup />}</>
+                    ) : (
+                      <Home />
+                    )
+                  }
+                />
 
                 {userStore?.userDetails?.role === 'Landlord' && (
                   <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
