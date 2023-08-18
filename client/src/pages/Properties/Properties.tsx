@@ -37,6 +37,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     ...state
   });
 
+  console.log('list', list.rows);
+
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
@@ -161,8 +163,16 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
               {list.rows.map((p, pIndex) => (
                 <Property
                   key={pIndex}
-                  name={p.name}
+                  name={p.title}
                   status={p.status_string}
+                  description={p.description}
+                  location={p.area_of_interest}
+                  area={p.floor_size}
+                  budget={p.budget}
+                  roomsDetails={p.room_details}
+                  propertyType={p.property_type}
+                  parkingSpot={p.parking_spot}
+                  epcRating={p.epc_rating}
                   viewDetails={() => {
                     // viewDetails(p.id)
                     setEditPropertyId(p._id);
