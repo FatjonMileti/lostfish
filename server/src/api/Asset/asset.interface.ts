@@ -158,6 +158,7 @@ export interface AssetDocument extends Document {
   area_of_interest: string;
   radius: string;
   description: string;
+  title: string;
   asset_address: {
     latitude: number;
     longitude: number;
@@ -186,6 +187,13 @@ export interface AssetDocument extends Document {
     number_of_bathrooms: string;
     number_of_bedrooms: string;
   };
+  budget: {
+    min_budget: number;
+    max_budget: number;
+  };
+  parking_spot: number;
+  epc_rating: string;
+  location_details: string;
   floor_size: number;
   floor_size_unit: string;
   property_features: PropertyFeatures[];
