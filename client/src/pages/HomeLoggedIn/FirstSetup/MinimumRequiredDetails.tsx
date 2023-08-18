@@ -16,6 +16,10 @@ type MinimumRequiredDataType = {
   transactionType?: string;
   whenDoYouWantToMove?: string;
   areaOfInterest?: string;
+  location?: {
+    latitude?: number;
+    longitude?: number;
+  };
   budget: number[];
   nrOfBedrooms: number[];
 };
@@ -43,8 +47,14 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, whenDoYouWantToMove }));
   };
 
-  const onAreaOfInterestChange = (areaOfInterest: string) => {
-    setState((state) => ({ ...state, areaOfInterest }));
+  const onAreaOfInterestChange = ({
+    formattedAddress,
+    location
+  }: {
+    formattedAddress: string;
+    location: { latitude?: number; longitude?: number };
+  }) => {
+    setState((state) => ({ ...state, areaOfInterest: formattedAddress, location }));
   };
 
   const onBudgetChange = (budget: number[]) => {
@@ -63,6 +73,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       transaction_type_string: state.transactionType,
       // moving_time: state.whenDoYouWantToMove,
       area_of_interest: state.areaOfInterest,
+      asset_address: state.location,
       room_details: {
         number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
       },

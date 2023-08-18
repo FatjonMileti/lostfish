@@ -27,7 +27,7 @@ export const ImproveTrustScoreModal = styled(
             <Typography variant='body2'>Improve trust score</Typography>
             <Typography variant='body2'>•</Typography>
             <Typography variant='body2' className='percentage'>
-              45%
+              {profileStore.trust_score}%
             </Typography>
           </div>
           <IconButton size='large' onClick={closeModal}>

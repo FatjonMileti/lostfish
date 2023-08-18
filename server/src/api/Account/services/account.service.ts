@@ -83,7 +83,7 @@ const refreshToken = async (req: express.Request, res: express.Response) => {
   if (used) throw createError(401, 'refresh_token is already used');
 
   const user = await UserModel.findOne({
-    _id: payload.sub!,
+    _id: payload.user_id!,
     is_disabled: false
   });
 
@@ -183,7 +183,8 @@ const generateTokens = (user: UserDocument): { token: string; refresh: string } 
   const refresh = jwt.sign(
     {
       iss: 'lost.fish',
-      aud: 'lost.fish:token'
+      aud: 'lost.fish:token',
+      user_id: user._id.toString()
     },
     <jwt.Secret>process.env.REFRESH_SECRET,
     {

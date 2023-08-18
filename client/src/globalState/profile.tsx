@@ -74,6 +74,7 @@ export const useProfileStore = create<ProfileStoreType>()(
             if (err.response.code === 404) {
               set((profile) => ({ ...profileInitialState }));
             }
+            throw err;
           }
         }
       }),

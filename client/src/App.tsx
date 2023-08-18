@@ -26,7 +26,6 @@ import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
 import { useUserStore } from './globalState/user';
 import { useCriteriaStore } from './globalState/criteria';
-import { useProfileStore } from './globalState/profile';
 
 import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
@@ -45,7 +44,6 @@ registerStore(
 function App() {
   const userStore = useUserStore();
   const criteriaStore = useCriteriaStore();
-  const profileStore = useProfileStore();
 
   const {
     notification: [notification, setNotification]
@@ -58,14 +56,6 @@ function App() {
       criteriaStore.fetchCriteria(userStore.auth.access_token);
     } else {
       criteriaStore.reset();
-    }
-  }, [userStore.auth]);
-
-  React.useEffect(() => {
-    if (userStore.auth) {
-      profileStore.fetchProfile(userStore.auth.access_token);
-    } else {
-      profileStore.reset();
     }
   }, [userStore.auth]);
 

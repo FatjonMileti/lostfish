@@ -99,8 +99,8 @@ export const SessionMaintainer = ({
       // check if user deleted or access denied
       if (debug) console.log('Checking if user still have access...');
 
-      axios(user.auth.access_token)
-        .get('/api/account/me')
+      profileStore
+        .fetchProfile(user.auth.access_token)
         .then(() => {
           if (debug) console.log('User still have access');
         })
@@ -111,6 +111,19 @@ export const SessionMaintainer = ({
         .finally(() => {
           setResumingSession(false);
         });
+
+      // axios(user.auth.access_token)
+      //   .get('/api/account/me')
+      //   .then(() => {
+      //     if (debug) console.log('User still have access');
+      //   })
+      //   .catch((err) => {
+      //     if (debug) console.log('Error fetching user profile: ', err);
+      //     setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+      //   })
+      //   .finally(() => {
+      //     setResumingSession(false);
+      //   });
     }
   }, [user.auth]);
 
