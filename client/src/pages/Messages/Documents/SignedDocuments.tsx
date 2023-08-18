@@ -66,6 +66,13 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
     window.location.href = isLandlord ? data.sign_url_landlord : data.sign_url_tenant;
   };
 
+  const downloadContract = (item: any) => {
+    return window.open(
+      `${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`,
+      '_blank'
+    );
+  };
+
   return (
     <div className={classNames(props.className, 'signed-documents')}>
       <Typography variant='body3' className='signed-documents-title'>
@@ -75,9 +82,19 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
         {list.rows.length > 0 &&
           list.rows.map((item: any, index) => {
             return isLandlord ? (
-              <SignedDocumentLandlord item={item} handleSign={handleSign} key={index} />
+              <SignedDocumentLandlord
+                item={item}
+                handleSign={handleSign}
+                key={index}
+                downloadContract={downloadContract}
+              />
             ) : (
-              <SignedDocumentTenant item={item} handleSign={handleSign} key={index} />
+              <SignedDocumentTenant
+                item={item}
+                handleSign={handleSign}
+                key={index}
+                downloadContract={downloadContract}
+              />
             );
           })}
 
@@ -158,13 +175,17 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
 interface ISignedDocumentLandlord {
   item: any;
   handleSign: (item: any) => void;
+  downloadContract: (item: any) => void;
 }
 const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
-  const { item, handleSign } = props;
+  const { item, handleSign, downloadContract } = props;
+
+  const can_download = item.signed_by_landlord && item.signed_by_tenant;
+
   return (
     <div className='document-item'>
       <div className='document-status'>
-        <div className={classNames('completion-bullet', { active: !!item.signed_by_landlord })}>
+        <div className={classNames('completion-bullet', { active: item.signed_by_landlord })}>
           <Icon icon='checked' size={12} />
         </div>
         <Typography variant='body4' className='document-name'>
@@ -173,8 +194,11 @@ const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
       </div>
 
       <div className='document-action-buttons'>
-        <Button onClick={() => {}} style={{ marginRight: '5px' }}>
-          View
+        <Button
+          onClick={() => downloadContract(item)}
+          style={{ marginRight: '5px' }}
+          disabled={!can_download}>
+          Download
         </Button>
         {!item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
       </div>
@@ -185,13 +209,17 @@ const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
 interface ISignedDocumentTenant {
   item: any;
   handleSign: (item: any) => void;
+  downloadContract: (item: any) => void;
 }
 const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
-  const { item, handleSign } = props;
+  const { item, handleSign, downloadContract } = props;
+
+  const can_download = item.signed_by_landlord && item.signed_by_tenant;
+
   return (
     <div className='document-item'>
       <div className='document-status'>
-        <div className={classNames('completion-bullet', { active: !!item.signed_by_tenant })}>
+        <div className={classNames('completion-bullet', { active: item.signed_by_tenant })}>
           <Icon icon='checked' size={12} />
         </div>
         <Typography variant='body4' className='document-name'>
@@ -200,7 +228,12 @@ const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
       </div>
 
       <div className='document-action-buttons'>
-        <Button onClick={() => {}}>Download</Button>
+        <Button
+          onClick={() => downloadContract(item)}
+          style={{ marginRight: '5px' }}
+          disabled={!can_download}>
+          Download
+        </Button>
         {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
       </div>
     </div>

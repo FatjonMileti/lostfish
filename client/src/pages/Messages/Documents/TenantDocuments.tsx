@@ -222,7 +222,25 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
       ) : (
         <>
           {document.key ? (
-            <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>
+            <div style={{ display: 'flex' }}>
+              {document.mimetype.startsWith('image') && (
+                <img
+                  src={document.link}
+                  width={40}
+                  height={40}
+                  style={{ marginRight: '10px', marginTop: '5px' }}
+                  alt={''}
+                />
+              )}
+              {document.mimetype.startsWith('application/pdf') && (
+                <>
+                  <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
+                    {document.originalname})
+                  </a>
+                </>
+              )}
+              <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>
+            </div>
           ) : (
             <Label variant='tertiary'>No document uploaded by tenant</Label>
           )}

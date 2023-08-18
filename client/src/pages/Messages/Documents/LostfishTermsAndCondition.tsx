@@ -46,7 +46,7 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
   const getEnvelopes = async () => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
       params: {
-        document_type: ['Lostfish transaction agreement'],
+        document_type: 'Lostfish transaction agreement',
         getDataFor: userDetails.role
       }
     });
@@ -58,9 +58,11 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
     }));
   };
 
+  const isLandlord = userDetails.role === Role.Landlord;
+
   const handleSign = async (item: any) => {
     const { data } = await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope/${item._id}`);
-    window.location.href = data.sign_url_tenant;
+    window.location.href = isLandlord ? data.sign_url_landlord : data.sign_url_tenant;
   };
 
   const handlePolicyAccept = async () => {
@@ -77,6 +79,13 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
     } catch (error: any) {}
   };
 
+  const downloadContract = (item: any) => {
+    return window.open(
+      `${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`,
+      '_blank'
+    );
+  };
+
   return (
     <div className={classNames(className, 'terms-and-conditions')}>
       <Typography variant='body3' className='terms-and-conditions-title'>
@@ -88,7 +97,11 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
             return item.document_type === DocumentType.PRIVACY_AGREEMENT ? (
               <SignedDocumentAgreementPolicy item={item} handleSign={handlePolicyAccept} />
             ) : (
-              <SignedDocumentAgreement item={item} handleSign={handleSign} />
+              <SignedDocumentAgreement
+                item={item}
+                handleSign={handleSign}
+                downloadContract={downloadContract}
+              />
             );
           })}
         {list.rows.length === 0 && (
@@ -162,10 +175,11 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
 interface IAgreementDocument {
   item: any;
   handleSign: (item: any) => void;
+  downloadContract: (item: any) => void;
 }
 
 const SignedDocumentAgreement = (props: IAgreementDocument) => {
-  const { item, handleSign } = props;
+  const { item, handleSign, downloadContract } = props;
   const { userDetails } = useUserStore();
 
   const isLandlord = userDetails.role === Role.Landlord;
@@ -186,11 +200,16 @@ const SignedDocumentAgreement = (props: IAgreementDocument) => {
 
       <Grid item style={{ display: 'flex' }}>
         {item.signed_by_tenant && (
-          <a
-            href={`${config.apiUrl}/api/docusign/envelope/${item.envelope_id}/download?fileName=${item.document_type}.pdf`}>
+          <Button onClick={() => downloadContract(item)} style={{ marginRight: '5px' }}>
             Download
-          </a>
+          </Button>
         )}
+        {item.signed_by_landlord && (
+          <Button onClick={() => downloadContract(item)} style={{ marginRight: '5px' }}>
+            Download
+          </Button>
+        )}
+
         {isLandlord && !item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
         {!isLandlord && !item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
       </Grid>
