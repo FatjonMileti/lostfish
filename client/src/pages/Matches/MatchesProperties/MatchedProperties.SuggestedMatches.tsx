@@ -11,6 +11,7 @@ import { MatchedSlide, PropertyType } from './MatchesProperties';
 import { Switch } from '../../../components/Switch';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { motion } from 'framer-motion';
+import { useProfileStore } from '../../../globalState/profile';
 
 interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   properties: PropertyType[];
@@ -46,6 +47,8 @@ export const SuggestedMatches = styled(
     const property = suggestedMatch?.property;
 
     const criteriaStore = useCriteriaStore();
+
+    const profileStore = useProfileStore();
 
     React.useEffect(() => {
       getProperties();
@@ -87,7 +90,7 @@ export const SuggestedMatches = styled(
                 Your trust score
               </Typography>
               <Typography variant='h3' className='trust-score'>
-                45%
+                {profileStore.trust_score}%
               </Typography>
               <Typography variant='body3' className='improve-trust-score-title'>
                 Improve your trust score and find better matches

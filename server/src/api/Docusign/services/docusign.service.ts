@@ -256,12 +256,52 @@ const createEnvelope = async (request: Request, response: Response) => {
 
 const createLostfishTransactionAgreement = async (request: Request, response: Response) => {
   try {
-    const envelopesApi = await getEnvelopesApi();
+    const userId = response.locals.user_id as string;
 
-    return response.send('ok');
+    const user = await userService.findOne({ _id: userId });
+
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'user_not_found' });
+    }
+    const envelopesApi: EnvelopesApi = await getEnvelopesApi();
+
+    const envelope: EnvelopeDefinition = envelopeService.createTransactionAgreementEnvelope(user);
+
+    const results: EnvelopeSummary = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {
+      envelopeDefinition: envelope
+    });
+
+    if (results && results.envelopeId) {
+      await docusignLocalService.createTransactionAgreementEnvelopeDoc(results, user._id, user.role);
+
+      const { viewRequestUser } = await envelopeService.createViewRequestForUser({
+        user,
+        envelopeId: results.envelopeId
+      });
+
+      const userUrl = await envelopeService.createUserSignUrl({
+        envelopeId: results.envelopeId,
+        envelopesApi,
+        viewRequest: viewRequestUser
+      });
+
+      const updatedEnvelope = await docusignLocalService.setSignUrlForAnyUser(
+        results.envelopeId,
+        userUrl,
+        user.role
+      );
+
+      await userService.findAndUpdateUser(userId, {
+        transaction_agreement_link: `${config.api_url}/api/docusign/envelope/${results.envelopeId}/download`
+      });
+
+      return response.send(updatedEnvelope);
+    }
+
+    throw createError(httpStatus.BAD_REQUEST, { message: 'transaction_generation_failed' });
   } catch (error: any) {
-    console.log({ error });
-    return { success: false, error };
+    console.log(error);
+    return response.status(error.status || 400).send({ ...error });
   }
 };
 

@@ -7,12 +7,14 @@ export enum ContactType {
   Unknown = 'Unknown'
 }
 
-interface ContactUser extends Document {
-  contact_id: string;
-  legal_name: string;
-  company: string;
-  contact_type: ContactType;
-  address: string;
+export type DocumentType = 'Employer reference' | 'Landlord reference' | 'Proof of ID';
+
+export interface IUserDocuments {
+  type: DocumentType;
+  key: string;
+  approved: boolean;
+  mimetype: string;
+  link?: string;
 }
 
 export interface UserDocument extends Document {
@@ -44,9 +46,11 @@ export interface UserDocument extends Document {
     email_when_someone_accept_my_match: boolean;
     text_when_someone_accept_my_match: boolean;
   };
-  documents: any[];
+  documents: IUserDocuments[];
   address: string;
   agreed_application_policy: boolean;
+  signed_transaction_agreement: boolean;
+  transaction_agreement_link: string;
   role: Role;
   hash: string;
   last_login: Date;

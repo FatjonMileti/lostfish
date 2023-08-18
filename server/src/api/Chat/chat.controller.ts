@@ -102,8 +102,11 @@ export class ChatController {
         property: room.property as string,
         document_type: { $eq: 'Rent Contract' }
       });
-      response.areDocumentsApproved = areDocumentsApproved ? areDocumentsApproved.approved : false;
-      response.isContractCreated = !!isContractGenerated;
+
+      if (res.locals.role === Role.Landlord) {
+        response.areDocumentsApproved = areDocumentsApproved ? areDocumentsApproved.approved : false;
+        response.isContractCreated = !!isContractGenerated;
+      }
     }
 
     res.send(response);

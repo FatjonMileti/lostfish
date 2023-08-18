@@ -12,7 +12,6 @@ const canCompleteTransaction = async (landlord: string | ObjectId, tenant: strin
     ]
   };
 
-  // const signedDocuments = await docusignLocalService.getEnvelopeListDocs();
   return await findOne(query);
 };
 

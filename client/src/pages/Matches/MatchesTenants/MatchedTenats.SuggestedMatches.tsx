@@ -11,6 +11,7 @@ import { MatchedSlide, TenantType } from './MatchesTenants';
 import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { useProfileStore } from '../../../globalState/profile';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: TenantType[];
@@ -42,6 +43,8 @@ export const SuggestedTenants = styled(
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
     const matchedProperty = suggestedTenant?.property;
+
+    const profileStore = useProfileStore();
 
     React.useEffect(() => {
       getTenants();
@@ -89,7 +92,7 @@ export const SuggestedTenants = styled(
                 Your trust score
               </Typography>
               <Typography variant='h3' className='trust-score'>
-                45%
+                {profileStore.trust_score}%
               </Typography>
               <Typography variant='body3' className='improve-trust-score-title'>
                 Improve your trust score and find better matches

@@ -15,6 +15,7 @@ import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { useProfileStore } from '../../../globalState/profile';
 
 export interface PropertyType {
   property: {

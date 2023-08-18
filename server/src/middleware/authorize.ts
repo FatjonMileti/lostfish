@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import jwt from 'jsonwebtoken';
-import RevokedToken from '../data/revokedToken';
+import RevokedToken, { IRevokedToken } from '../data/revokedToken';
 
 export const verifyToken = async (token: string): Promise<jwt.JwtPayload | false> => {
   return await new Promise((resolve) => {
@@ -35,12 +35,12 @@ export default () => {
 
     if (!payload) throw createError(401, 'invalid token');
 
-    const revoked = await RevokedToken.findOne({ token });
+    const revoked: IRevokedToken | null = await RevokedToken.findOne({ token });
     if (revoked) throw createError(401, 'token was revoked');
 
     res.locals.token = token;
     res.locals.claims = payload;
-    res.locals.user_id = res.locals.claims.sub;
+    res.locals.user_id = res.locals.claims.user_id;
     res.locals.username = payload.username;
     res.locals.role = payload.role;
     return next();
