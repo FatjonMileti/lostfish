@@ -322,6 +322,24 @@ export const NewPropertyV2 = styled(
       setState((state) => ({ ...state, deletePropertyConfirmationModal: false }));
     };
 
+    const propertyScore = (
+      (100 / 7) *
+      [
+        !!form.getValues('title'),
+        !!state.newImages.length || form.getValues('propertyImages').length,
+        !!form.getValues('areaOfInterest'),
+        !!form.getValues('minBudget') && !!form.getValues('maxBudget'),
+        !!form.getValues('buildingType') &&
+          !!form.getValues('bedrooms') &&
+          !!form.getValues('bathrooms') &&
+          !!form.getValues('area') &&
+          !!form.getValues('parkingSpot') &&
+          !!form.getValues('epcRating'),
+        !!form.getValues('description') && !!form.getValues('locationDetails'),
+        true
+      ].filter((d) => d).length
+    ).toFixed(0);
+
     return (
       <Modal
         className={`new-property-modal ${className}`}
@@ -635,7 +653,7 @@ export const NewPropertyV2 = styled(
             <div className='top'>
               <div className='property-score'>
                 <Typography variant='body5'>Property score</Typography>
-                <Typography className='red'>20%</Typography>
+                <Typography className='red'>{propertyScore}%</Typography>
               </div>
               <Typography variant='body3'>Improve your property’s score by adding more details</Typography>
             </div>
