@@ -17,6 +17,20 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   status: string;
   viewDetails: MouseEventHandler;
   images: any[];
+  description: string;
+  location: string;
+  area: number;
+  budget: {
+    min_budget: number;
+    max_budget: number;
+  };
+  roomsDetails: {
+    number_of_bedrooms: number;
+    number_of_bathrooms: number;
+  };
+  propertyType: string;
+  parkingSpot: number;
+  epcRating: string;
 }
 
 const propertyStatusMap: any = {
@@ -26,7 +40,21 @@ const propertyStatusMap: any = {
 };
 
 export const Property = styled(
-  ({ className, name = 'Two bedroom apartment for rent', status, viewDetails, images }: PropertyProps) => {
+  ({
+    className,
+    name,
+    status,
+    viewDetails,
+    images,
+    description,
+    location,
+    area,
+    budget,
+    roomsDetails,
+    propertyType,
+    parkingSpot,
+    epcRating
+  }: PropertyProps) => {
     const navigate = useNavigate();
     return (
       <div className={classNames('property', className)}>
@@ -34,34 +62,66 @@ export const Property = styled(
           <div>
             <Label className={classNames('status', propertyStatusMap[status] || 'draft')}>{status}</Label>
 
-            <Typography className='property-title' variant='body3'>
-              {name}
-            </Typography>
+            {name && (
+              <Typography className='property-title' variant='body3'>
+                {name}
+              </Typography>
+            )}
 
             <div className='property-details'>
-              <div className='detail'>
-                <Icon icon='location' /> <Typography variant='body5'>Bristol</Typography>
-              </div>
-              <div className='detail'>
-                <Icon icon='banknote' /> <Typography variant='body5'>£1,150 PCM</Typography>
-              </div>
-              <div className='detail'>
-                <Icon icon='ruler' /> <Typography variant='body5'>796 sqft/74 sqm </Typography>
-              </div>
-              <div className='detail'>
-                <Icon icon='double-bed' /> <Typography variant='body5'>2</Typography>
-              </div>
-              <div className='detail'>
-                <Icon icon='bathtub' /> <Typography variant='body5'>1</Typography>
-              </div>
+              {location && (
+                <div className='detail'>
+                  <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
+                </div>
+              )}
+              {budget && (
+                <div className='detail'>
+                  <Icon icon='banknote' />{' '}
+                  <Typography variant='body5'>
+                    £ {budget.min_budget} / {budget.max_budget} PCM
+                  </Typography>
+                </div>
+              )}
+              {area && (
+                <div className='detail'>
+                  <Icon icon='ruler' /> <Typography variant='body5'>{area} sqm </Typography>
+                </div>
+              )}
+              {roomsDetails.number_of_bedrooms && (
+                <div className='detail'>
+                  <Icon icon='double-bed' />
+                  <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
+                </div>
+              )}
+              {roomsDetails.number_of_bathrooms && (
+                <div className='detail'>
+                  <Icon icon='bathtub' />{' '}
+                  <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
+                </div>
+              )}
+              {propertyType && (
+                <div className='detail'>
+                  <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
+                </div>
+              )}
+              {parkingSpot && (
+                <div className='detail'>
+                  <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
+                </div>
+              )}
+              {epcRating && (
+                <div className='detail'>
+                  <Icon icon='temperature' />{' '}
+                  <Typography variant='body5'>EPC Rating: {epcRating}*</Typography>
+                </div>
+              )}
             </div>
 
-            <Typography variant='body4' className='description'>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-              laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-              voluptate velit esse cillum dolore eu fugiat nulla...
-            </Typography>
+            {description && (
+              <Typography variant='body4' className='description'>
+                {description}
+              </Typography>
+            )}
           </div>
 
           <div className='line' />

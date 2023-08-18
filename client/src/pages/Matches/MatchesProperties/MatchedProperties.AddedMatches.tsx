@@ -28,7 +28,9 @@ interface AddedMatchedProperty {
       number_of_bathrooms: string;
       number_of_bedrooms: string;
     };
-
+    title: string;
+    description: string;
+    location_details: string;
     asset_rent: {
       rental_amount?: string;
     };
