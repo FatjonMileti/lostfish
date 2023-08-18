@@ -39,7 +39,7 @@ export class DocusignController {
     );
     this.router.post('/create-transaction-envelope', authorize(), this.createTransactionAgreement);
     this.router.get('/envelope/:id/download', this.downloadDocument);
-    this.router.get('/:id', authorize(), this.getEnvelopeById);
+    this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
   }
 
   /**

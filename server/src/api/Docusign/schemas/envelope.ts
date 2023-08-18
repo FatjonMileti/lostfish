@@ -43,5 +43,12 @@ const schema = new Schema<IEnvelope>({
   created_by: { type: Schema.Types.ObjectId, ref: 'user' }
 });
 
+schema.virtual('can_download').get(function (this: IEnvelope) {
+  return this.signed_by_landlord && this.signed_by_tenant;
+});
+
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
+
 schema.plugin(mongoosePaginate);
 export default model<IEnvelope, PaginateModel<IEnvelope>>('envelope', schema);

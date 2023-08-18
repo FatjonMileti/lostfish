@@ -292,22 +292,32 @@ const getEnvelopeList = async (req: Request, res: Response) => {
   const { document_type, property, getDataFor, participant } = req.query;
   const query: { tenant?: any; land_lord?: string; document_type?: any; property?: any } = {};
 
-  if (getDataFor === Role.Client) {
-    query.land_lord = participant as string;
-    query.tenant = res.locals.user_id;
-  }
+  if (document_type && document_type === 'Lostfish transaction agreement') {
+    if (getDataFor === Role.Client) {
+      query.tenant = res.locals.user_id;
+    }
 
-  if (getDataFor === Role.Landlord) {
-    query.tenant = participant as string;
-    query.land_lord = res.locals.user_id;
+    if (getDataFor === Role.Landlord) {
+      query.land_lord = res.locals.user_id;
+    }
+  } else {
+    if (getDataFor === Role.Client) {
+      query.land_lord = participant as string;
+      query.tenant = res.locals.user_id;
+    }
+
+    if (getDataFor === Role.Landlord) {
+      query.tenant = participant as string;
+      query.land_lord = res.locals.user_id;
+    }
+
+    if (property) {
+      query.property = { $eq: property };
+    }
   }
 
   if (document_type) {
-    query.document_type = { $in: document_type };
-  }
-
-  if (property) {
-    query.property = { $eq: property };
+    query.document_type = { $eq: document_type };
   }
 
   const response = await Envelope.paginate(query, {

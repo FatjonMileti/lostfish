@@ -60,15 +60,20 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
           View documents
         </Label>
 
-        <Can do={CASLAction.Create} on='SignGenerator'>
-          {!documentState.isContractCreated && (
-            <NewRentingContract tenant={tenant._id} property={room.property} onFinish={onFinish} />
-          )}
-        </Can>
+        {!documentState.isContractCreated && (
+          <Can do={CASLAction.Create} on='SignGenerator'>
+            <NewRentingContract
+              tenant={tenant._id}
+              property={room.property}
+              onFinish={onFinish}
+              canCreate={documentState.areDocumentsApproved}
+            />
+          </Can>
+        )}
 
         {documentState.isContractCreated && (
-          <Label variant='tertiary' disabled={!documentState.areDocumentsApproved}>
-            Contract is ready to sign
+          <Label variant='tertiary' disabled={true}>
+            Contract is created
           </Label>
         )}
       </div>

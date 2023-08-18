@@ -20,6 +20,7 @@ const schema = yup.object().shape({
 interface INewRentingContract {
   tenant: string;
   property: any;
+  canCreate: boolean;
   onFinish: () => void;
 }
 
@@ -68,6 +69,7 @@ export const NewRentingContract = (props: INewRentingContract) => {
     setValue('property_id', props.property._id);
   }, [props]);
 
+  console.log({ props });
   const onSubmit = async (data: any) => {
     setLoading(true);
     const { tenant, property_id, landlord } = data;
@@ -99,7 +101,7 @@ export const NewRentingContract = (props: INewRentingContract) => {
     <Button
       className='login-button'
       type='submit'
-      disabled={Object.keys(errors).length > 0}
+      disabled={!props.canCreate}
       onClick={handleSubmit(onSubmit)}
       size='small'>
       Create renting contract

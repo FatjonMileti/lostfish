@@ -74,7 +74,6 @@ export const useDocuments = ({
 
       const response = await postOrUpdateDocs(documentsToSend);
       setDocument(response.data);
-      alert('Added with success');
     } catch (err: AxiosError | any) {}
   };
 
@@ -85,7 +84,6 @@ export const useDocuments = ({
       const documentsToSend: IUser_Documents[] = mapDocumentToSend(document.file, currentDoc);
       const response = await postOrUpdateDocs(documentsToSend);
       setDocument(response.data);
-      alert('Uploaded with success');
     } catch (error: AxiosError | any) {
       console.log(error);
     }
@@ -111,7 +109,6 @@ export const useDocuments = ({
       });
 
       if (status === 200) {
-        alert(`Document ${documentDetails.approved ? 'approved' : 'disapproved'}`);
         setDocument(data);
       }
     } catch (error: AxiosError | any) {}
