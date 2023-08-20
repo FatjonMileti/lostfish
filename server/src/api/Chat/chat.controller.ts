@@ -4,7 +4,6 @@ import paging from '../../middleware/paging';
 import mongoose, { Types } from 'mongoose';
 import MessageModel from './schemas/message.schema';
 import Notification from '../Notification/notification.schema';
-import { RoomDocument } from './room.interface';
 import RoomSchema from './schemas/room.schema';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
@@ -13,7 +12,12 @@ import docusignLocalService from '../Docusign/services/docusign.local.service';
 import { Role } from '../User/user.interface';
 import { IEnvelope } from '../Docusign/schemas/envelope';
 import assetService from '../Asset/services/asset.service';
+
 const router: Router = Router();
+
+const isValidObjectId = (id: string): boolean => {
+  return Types.ObjectId.isValid(id);
+};
 
 export class ChatController {
   public router = router;
@@ -32,8 +36,8 @@ export class ChatController {
   }
 
   /**
-   * @api {get} /api/chat Get
-   * @apiDescription Get all chats
+   * @api {get} /api/chat Get all chats
+   * @apiDescription Get all chats (also filter by property)
    * @apiGroup Chat
    * @apiSampleRequest /api/chat
    *
@@ -41,20 +45,24 @@ export class ChatController {
    * @apiUse bearer
    * @apiUse paging
    *
-   * @apiQuery {string} [search] search by ...
-   *
-   * @apiQuery {boolean} [isDisabled] filter
-   * @apiQuery {string} [role] filter
-   * @apiQuery {date} [createdAtSince] filter
-   * @apiQuery {date} [createdAtUntil] filter
+   * @apiQuery {string} [property] search by property
    */
 
   private getAll = async (req: express.Request, res: express.Response) => {
-    const { search } = req.query;
+    const { property } = req.query;
     const userId = new Types.ObjectId(res.locals.user_id);
+
     const query: any = {
       $or: [{ author: { $eq: userId } }, { participant: { $eq: userId } }]
     };
+
+    if (!isValidObjectId(property as string)) {
+      throw createError(httpStatus.BAD_REQUEST, { message: 'Invalid property id' });
+    }
+
+    if (property) {
+      query.property = new Types.ObjectId(property as string);
+    }
 
     const response = await roomService.getAll(query, res.locals.paging_options, userId);
     res.send(response);
