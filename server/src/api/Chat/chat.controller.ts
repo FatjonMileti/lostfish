@@ -56,7 +56,7 @@ export class ChatController {
       $or: [{ author: { $eq: userId } }, { participant: { $eq: userId } }]
     };
 
-    if (!isValidObjectId(property as string)) {
+    if (property && !isValidObjectId(property as string)) {
       throw createError(httpStatus.BAD_REQUEST, { message: 'Invalid property id' });
     }
 
