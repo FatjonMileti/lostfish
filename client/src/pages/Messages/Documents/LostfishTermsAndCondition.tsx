@@ -3,14 +3,16 @@ import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
-import { Checkbox, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Button } from '../../../components/Button';
 import { Role } from '../../../utils/ability.util';
 import { useProfileStore } from '../../../globalState/profile';
-import { Link } from 'react-router-dom';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
+import { Checkbox } from '../../../components/Checkbox';
+import {Label} from '../../../components/Label'
+import { useNavigate } from 'react-router-dom';
 
 enum DocumentType {
   PRIVACY_AGREEMENT = 'Lostfish privacy agreement',
@@ -106,9 +108,7 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
           })}
         {list.rows.length === 0 && (
           <div className='document-item'>
-            <Grid container style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography>Empty</Typography>
-            </Grid>
           </div>
         )}
       </div>
@@ -167,6 +167,12 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
             color: #0d2a38;
           }
         }
+
+        .document-action-buttons {
+          display: flex;
+          column-gap: 16px;
+          align-items: center;
+        }
       }
     }
   }
@@ -198,21 +204,21 @@ const SignedDocumentAgreement = (props: IAgreementDocument) => {
         </Typography>
       </div>
 
-      <Grid item style={{ display: 'flex' }}>
+      <div className='document-action-buttons'>
         {item.signed_by_tenant && (
-          <Button onClick={() => downloadContract(item)} style={{ marginRight: '5px' }}>
+          <Button onClick={() => downloadContract(item)}>
             Download
           </Button>
         )}
         {item.signed_by_landlord && (
-          <Button onClick={() => downloadContract(item)} style={{ marginRight: '5px' }}>
+          <Button onClick={() => downloadContract(item)}>
             Download
           </Button>
         )}
 
         {isLandlord && !item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
         {!isLandlord && !item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}
-      </Grid>
+      </div>
     </div>
   );
 };
@@ -225,6 +231,7 @@ const SignedDocumentAgreementPolicy = (props: IAgreementPolicyDocument) => {
   const { item, handleSign } = props;
 
   const user = useProfileStore();
+  const navigate = useNavigate();
 
   return (
     <div className='document-item'>
@@ -237,16 +244,16 @@ const SignedDocumentAgreementPolicy = (props: IAgreementPolicyDocument) => {
         </Typography>
       </div>
 
-      <Grid item style={{ display: 'flex' }}>
-        <Link style={{ marginTop: '10px' }} to='/policy-agreement'>
+      <div className='document-action-buttons'>
+        <Label variant='tertiary' onClick={() => navigate('/policy-agreement')}>
           Read policy agreement
-        </Link>
+        </Label>
         <Checkbox
           defaultChecked={user.agreed_application_policy}
           onClick={handleSign}
           disabled={user.agreed_application_policy}
         />
-      </Grid>
+      </div>
     </div>
   );
 };

@@ -2,7 +2,6 @@ import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import { useDocuments } from './useDocuments.hook';
 import { Typography } from '../../../components/Typography';
-import { Checkbox, Grid } from '@mui/material';
 import { UploadComponent } from './UploadComponent';
 import { Button } from '../../../components/Button';
 import { IRoom } from '../messages.interface';
@@ -138,6 +137,15 @@ export const TenantDocuments = styled((props: TenantDocumentsProps) => {
         .document-action-buttons {
           display: flex;
           column-gap: 16px;
+          
+          .button-img-wrapper {
+            display: flex;
+            
+            img {
+              margin-right: 10px;
+              margin-top: 5px;
+            }
+          }
         }
       }
     }
@@ -173,13 +181,12 @@ const TenantDocumentItem = ({
               )}
             </>
           ) : (
-            <div style={{ display: 'flex' }}>
+            <div className='button-img-wrapper' >
               {document.mimetype.startsWith('image') && (
                 <img
                   src={document.link}
                   width={40}
                   height={40}
-                  style={{ marginRight: '10px', marginTop: '5px' }}
                   alt={''}
                 />
               )}
@@ -222,13 +229,12 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
       ) : (
         <>
           {document.key ? (
-            <div style={{ display: 'flex' }}>
+            <div className='button-img-wrapper'>
               {document.mimetype.startsWith('image') && (
                 <img
                   src={document.link}
                   width={40}
                   height={40}
-                  style={{ marginRight: '10px', marginTop: '5px' }}
                   alt={''}
                 />
               )}
