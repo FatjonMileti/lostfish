@@ -4,6 +4,7 @@ import { Typography } from '../../components/Typography';
 import { IRoom } from './messages.interface';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
+import moment from 'moment';
 
 export const Conversation = styled(
   (props: {
@@ -28,9 +29,10 @@ export const Conversation = styled(
         <div className='details'>
           <Typography variant='body4' className='property'>
             {fullName}
-            {/*{row?.last_message?.message ?? ''}*/}
           </Typography>
-          <Typography variant='body6'>Matched on February 27th 2023</Typography>
+          <Typography variant='body6'>
+            {moment(row.last_message.created_at).format('dddd, MMMM Do YYYY')}
+          </Typography>
         </div>
       </div>
     );

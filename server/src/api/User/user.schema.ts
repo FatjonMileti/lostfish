@@ -71,7 +71,7 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   description: String,
   avatar: String,
   confirmation_token: String,
-  agreed_application_policy: { type: Boolean, default: false, immutable: true },
+  agreed_application_policy: { type: Boolean, default: false },
   signed_transaction_agreement: { type: Boolean, default: false },
   transaction_agreement_link: { type: String, default: undefined },
   last_login: Date,
