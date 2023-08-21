@@ -24,6 +24,7 @@ interface IResponse {
   page: number;
   totalDocs: number;
   totalPages: number;
+  properties?: any[];
 }
 
 const getAll = async (
@@ -77,6 +78,10 @@ const findOne = async (query: any) => {
     .populate('participant', ['first_name', 'last_name', 'avatar', 'role']);
 };
 
+const findAllProperties = async (query: any) => {
+  return RoomModel.find({ ...query }).populate('property', ['title', 'area_of_interest', 'property_type']);
+};
+
 const findWithAggregate = async (id: string) => {
   const userId = new Types.ObjectId(id);
 
@@ -110,5 +115,6 @@ export default {
   getRoomDetails,
   deleteRoom,
   findWithAggregate,
-  getMessages
+  getMessages,
+  findAllProperties
 };

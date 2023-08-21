@@ -31,7 +31,6 @@ export class MatchController {
 
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
-    router.get('/check', authorize(), this.getMatchByUserOrPropertyId);
     router.get('/:id', authorize(), this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
@@ -214,41 +213,6 @@ export class MatchController {
       return res.status(200).json(matches);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch matches.' });
-    }
-  };
-
-  /**
-   * @api {get} /api/match/check Check if a match exist
-   * @apiDescription  Get match by tenant or property
-   * @apiGroup Matches
-   * @apiSampleRequest /api/match/check
-   * @apiQuery {String} [tenant] Tenant id
-   * @apiQuery {String} [property] Property id
-   * @apiUse bearer
-   */
-  private getMatchByUserOrPropertyId = async (req: Request, res: Response) => {
-    const { tenant, property } = req.query;
-
-    try {
-      let response: any = null;
-      if (tenant) {
-        response = await MatchSchema.findOne({ created_by: res.locals.user_id, tenant });
-        if (!response) {
-          throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
-        }
-      }
-
-      if (property) {
-        response = await MatchSchema.findOne({ created_by: res.locals.user_id, property });
-        if (!response) {
-          throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
-        }
-      }
-
-      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: req.query });
-      return res.send(response);
-    } catch (error) {
-      res.status(httpStatus.NOT_FOUND).send({ message: 'not_found' });
     }
   };
 

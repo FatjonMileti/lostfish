@@ -64,7 +64,13 @@ export class ChatController {
       query.property = new Types.ObjectId(property as string);
     }
 
+    const properties = await roomService.findAllProperties({
+      $or: [{ author: { $eq: userId } }, { participant: { $eq: userId } }]
+    });
+
     const response = await roomService.getAll(query, res.locals.paging_options, userId);
+    response.properties = properties.map((item: any) => item.property);
+
     res.send(response);
   };
 

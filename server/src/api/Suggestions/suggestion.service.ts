@@ -120,9 +120,12 @@ export default class SuggestionService {
     matches: MatchDocument[],
     property: AssetDocument
   ) => {
-    const matchTenant: MatchDocument | undefined = matches.find(
-      (match: any) => match.tenant.toString() === item?.created_by?._id.toString()
-    );
+    const matchTenant: MatchDocument | undefined = matches.find((match: any) => {
+      return (
+        match.tenant.toString() === item?.created_by?._id.toString() &&
+        match.property.toString() === property._id.toString()
+      );
+    });
 
     const percentage = this.calculateSimilarity(item, property);
     const propertyWithPercentage = {

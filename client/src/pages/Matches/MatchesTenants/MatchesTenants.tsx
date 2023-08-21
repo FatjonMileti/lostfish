@@ -62,7 +62,12 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     starred: boolean = false,
     propertyId: string
   ) => {
-    const matchId = tenants.find((t) => t.criteria.tenantId === tenantId)?.matchId || false;
+    console.log({ propertyId });
+    const matchId =
+      tenants.find((t) => {
+        console.log({ prop: t.property });
+        return t.criteria.tenantId === tenantId && t.property._id === propertyId;
+      })?.matchId || false;
 
     const response = matchId
       ? await axios(auth.access_token).put(`/api/match/${matchId}`, { chosen, starred })
