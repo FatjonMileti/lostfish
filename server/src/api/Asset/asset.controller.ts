@@ -28,7 +28,7 @@ export class AssetController {
       ability(CASLAction.Read, 'Asset'),
       this.findAll
     );
-    this.router.get('/:id/get-applications', authorize(), this.getAssetApplications);
+    this.router.get('/:id/get-applications', authorize(), validateId, this.getAssetApplications);
     this.router.get('/:id/application', authorize(), validateId, this.getOneAssetApplication);
     this.router.post('/:id/send-application', authorize(), validateId, this.sendApplication);
     this.router.patch('/:id/approve-application', authorize(), validateId, this.approveApplication);

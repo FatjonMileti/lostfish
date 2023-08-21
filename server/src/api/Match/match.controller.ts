@@ -3,7 +3,7 @@ import { MatchDocument, MatchingType } from './match.interface';
 import MatchService from './match.service';
 import authorize from '../../middleware/authorize';
 import paging, { IPagingOptions } from '../../middleware/paging';
-import MatchSchema, { IMatchQueryParams } from './match.schema';
+import { IMatchQueryParams } from './match.schema';
 import { Role } from '../User/user.interface';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
@@ -11,11 +11,11 @@ import { generateLinksForMatchesImages } from './match.helper';
 import assetService from '../Asset/services/asset.service';
 import { LogAction, MatchLog } from '../../data/logs';
 import criteriaService from '../Criteria/services/criteria.service';
-import { faker } from '@faker-js/faker';
 import chatService from '../Chat/chat.service';
 import SuggestionService from '../Suggestions/suggestion.service';
 import AssetSchema from '../Asset/schemas/asset.schema';
 import CriteriaSchema from '../Criteria/schemas/criteria.schema';
+import validateId from '../../middleware/object-id.validator';
 
 const router: Router = Router();
 
@@ -31,11 +31,11 @@ export class MatchController {
 
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
-    router.get('/:id', authorize(), this.getMatchById);
+    router.get('/:id', authorize(), validateId, this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
-    router.put('/:id', authorize(), this.updateMatch);
-    router.delete('/:id', authorize(), this.deleteMatch);
+    router.put('/:id', authorize(), validateId, this.updateMatch);
+    router.delete('/:id', authorize(), validateId, this.deleteMatch);
   }
 
   /**

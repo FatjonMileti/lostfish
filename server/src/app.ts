@@ -20,12 +20,16 @@ import config from './config';
 import dbConnect from './data';
 import MailService from './utils/email/index';
 import { logFormat, logStream } from './app.log';
+import { generalLimiter } from './middleware/rateLimiter';
 
 // Create Express app instance
 const app: Application = express();
 
 // Apply compression middleware for response compression
 app.use(compression());
+
+// Apply rateLimiter to all endpoints
+app.use(generalLimiter);
 
 // Connect to the database if not in 'test' environment
 if (config.node_env !== 'test') {

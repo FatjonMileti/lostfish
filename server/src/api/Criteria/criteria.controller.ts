@@ -1,12 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import criteriaService from './services/criteria.service';
 import authorize from '../../middleware/authorize';
-
 import validateId from '../../middleware/object-id.validator';
-import CriteriaSchema from './schemas/criteria.schema';
-import MatchSchema from '../Match/match.schema';
-import { faker } from '@faker-js/faker';
-import assetService from '../Asset/services/asset.service';
 
 const router: Router = Router();
 
@@ -21,7 +16,7 @@ export class CriteriaController {
   private initializeRoutes() {
     this.router.get('/', authorize(), this.getCriteria);
     this.router.post('/', authorize(), this.createCriteria);
-    this.router.patch('/', authorize(), validateId, this.updateCriteria);
+    this.router.patch('/', authorize(), this.updateCriteria);
     this.router.get('/:id', authorize(), validateId, this.getById);
   }
 

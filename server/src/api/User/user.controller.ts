@@ -4,6 +4,7 @@ import paging from '../../middleware/paging';
 import ability, { checkUpdateUserPermission } from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 import authorize from '../../middleware/authorize';
+import validateId from '../../middleware/object-id.validator';
 
 const router: Router = Router();
 
@@ -22,8 +23,8 @@ export class UserController {
       paging({ sort: { created_at: -1 } }),
       this.getAll
     );
-    this.router.get('/:id', authorize(), checkUpdateUserPermission, this.getById);
-    this.router.patch('/:id', authorize(), checkUpdateUserPermission, this.updateUser);
+    this.router.get('/:id', authorize(), validateId, checkUpdateUserPermission, this.getById);
+    this.router.patch('/:id', authorize(), validateId, checkUpdateUserPermission, this.updateUser);
     this.router.delete('/', authorize(), ability(CASLAction.Delete, 'User'), this.delete);
     this.router.post('/register', this.create);
     this.router.post('/forgot-password', this.sendResetPasswordInstructions);

@@ -12,7 +12,7 @@ import docusignLocalService from '../Docusign/services/docusign.local.service';
 import { Role } from '../User/user.interface';
 import { IEnvelope } from '../Docusign/schemas/envelope';
 import assetService from '../Asset/services/asset.service';
-
+import validateId from '../../middleware/object-id.validator';
 const router: Router = Router();
 
 const isValidObjectId = (id: string): boolean => {
@@ -31,8 +31,8 @@ export class ChatController {
     this.router.post('/create', this.create);
     this.router.put('/read', this.readMessages);
     this.router.get('/room', this.checkIfRoomExist);
-    this.router.get('/:id', paging({ sort: { created_at: -1 } }), this.getById);
-    this.router.delete('/:id', this.delete);
+    this.router.get('/:id', paging({ sort: { created_at: -1 } }), validateId, this.getById);
+    this.router.delete('/:id', validateId, this.delete);
   }
 
   /**

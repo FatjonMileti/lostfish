@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import docusignService from './services/docusign.service';
 import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
-
+import validateId from '../../middleware/object-id.validator';
 import docusignLocalService from './services/docusign.local.service';
 import config from '../../config';
 import abilityMiddleware from '../../middleware/ability.middleware';
@@ -39,7 +39,7 @@ export class DocusignController {
     );
     this.router.post('/create-transaction-envelope', authorize(), this.createTransactionAgreement);
     this.router.get('/envelope/:id/download', this.downloadDocument);
-    this.router.get('/envelope/:id', authorize(), this.getEnvelopeById);
+    this.router.get('/envelope/:id', authorize(), validateId, this.getEnvelopeById);
   }
 
   /**

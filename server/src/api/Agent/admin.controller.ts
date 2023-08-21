@@ -3,7 +3,7 @@ import authorize from '../../middleware/authorize';
 import paging, { IPagingOptions } from '../../middleware/paging';
 import AdminService from './admin.service';
 import { getFilters } from './helpers/filters';
-
+import validateId from '../../middleware/object-id.validator';
 const router: Router = Router();
 
 export class AdminController {
@@ -18,9 +18,9 @@ export class AdminController {
     router.get('/session', authorize(), paging({ sort: { date: -1 } }), this.getAllSessions);
     router.get('/property', authorize(), paging({ sort: { date: -1 } }), this.getAllPropertyInteractions);
     router.get('/match', authorize(), paging({ sort: { date: -1 } }), this.getAllMatchesInteractions);
-    router.get('/property-log/:id', authorize(), this.getPropertyLogById);
-    router.get('/session-log/:id', authorize(), this.getSessionLogById);
-    router.get('/match-log/:id', authorize(), this.getMatchById);
+    router.get('/property-log/:id', authorize(), validateId, this.getPropertyLogById);
+    router.get('/session-log/:id', authorize(), validateId, this.getSessionLogById);
+    router.get('/match-log/:id', authorize(), validateId, this.getMatchById);
   }
 
   /**
