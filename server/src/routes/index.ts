@@ -3,7 +3,7 @@ const router: Router = Router();
 import { csrfProtection, parseForm } from '../middleware/csrf';
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Lostfish Api' });
 });
 
 router.get('/form', csrfProtection, (req: Request, res: Response) => {

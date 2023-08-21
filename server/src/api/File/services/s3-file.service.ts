@@ -29,6 +29,11 @@ export default class S3FileService {
   }
 
   createPublicUploader(): Multer {
+    this.uploader = this.createUploader();
+    return this.uploader;
+  }
+
+  createUploader(folder?: string): Multer {
     this.uploader = multer({
       storage: multerS3({
         s3,
@@ -38,28 +43,22 @@ export default class S3FileService {
         },
         key: (req: Request, file: Express.Multer.File, cb: (error: any, key?: string) => void) => {
           const fileName = Date.now() + '-' + file.originalname;
-          cb(null, fileName);
+          let filePath: string | null = fileName;
+          if (folder) {
+            filePath = `${folder}/${fileName}`;
+          }
+          cb(null, filePath);
         }
-      })
+      }),
+      limits: {
+        fileSize: 10 * (1024 * 1024)
+      }
     });
     return this.uploader;
   }
 
   createPrivateUploader(): Multer {
-    this.uploader = multer({
-      storage: multerS3({
-        s3,
-        bucket: config.aws.awsBucket,
-        metadata: (req: Request, file: Express.Multer.File, cb: (error: any, metadata?: any) => void) => {
-          cb(null, { fieldName: file.fieldname });
-        },
-        key: (req: Request, file: Express.Multer.File, cb: (error: any, key?: string) => void) => {
-          const fileName = Date.now() + '-' + file.originalname; // Generate a unique file name
-          const filePath = 'user-docs/' + fileName;
-          cb(null, filePath);
-        }
-      })
-    });
+    this.uploader = this.createUploader('user-docs');
     return this.uploader;
   }
 

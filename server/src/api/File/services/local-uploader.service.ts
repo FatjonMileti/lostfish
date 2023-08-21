@@ -20,7 +20,12 @@ export default class LocalUploadService {
   }
 
   createLocalUploader(dest?: string): Multer {
-    this.uploader = multer({ dest: dest ? dest : 'uploads' });
+    this.uploader = multer({
+      dest: dest ? dest : 'uploads',
+      limits: {
+        fileSize: 10 * (1024 * 1024)
+      }
+    });
     return this.uploader;
   }
 
