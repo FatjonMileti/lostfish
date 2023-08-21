@@ -96,18 +96,22 @@ export const NewPropertyV2 = styled(
       }),
       minBudget: yup
         .number()
+        .min(0, 'Must be greater then or equal to 0')
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Minimum budget is a required'),
       maxBudget: yup
         .number()
+        .min(0, 'Must be greater then or equal to 0')
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Maximum budget is a required'),
       bedrooms: yup
         .number()
+        .min(0, 'Must be greater then or equal to 0')
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Number of bedrooms is required'),
       bathrooms: yup
         .number()
+        .min(0, 'Must be greater then or equal to 0')
         .transform((value) => (isNaN(value) ? undefined : value))
         .required('Number of bathrooms is required'),
       buildingType: yup.string().required('Building type is required'),
@@ -168,6 +172,7 @@ export const NewPropertyV2 = styled(
         throw err;
       }
     };
+
     const loadProperty = async () => {
       try {
         const { data } = await axios(auth.access_token).get(`/api/asset/${propertyId}`);
@@ -360,6 +365,7 @@ export const NewPropertyV2 = styled(
             )}
             <Button
               variant='secondary'
+              disabled={Object.values(formState.errors).length > 0}
               onClick={async () => {
                 await saveAsDraft();
                 fetchAssets();

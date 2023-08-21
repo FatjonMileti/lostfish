@@ -184,8 +184,8 @@ export interface AssetDocument extends Document {
   videos: [{ name: string; url: string }];
   asset_attribute: any[];
   room_details: {
-    number_of_bathrooms: string;
-    number_of_bedrooms: string;
+    number_of_bathrooms: number;
+    number_of_bedrooms: number;
   };
   budget: {
     min_budget: number;
@@ -217,23 +217,6 @@ export interface AssetDocument extends Document {
   solicitor_id: number;
   client?: ContactDocument;
   solicitor?: ContactDocument;
-  asset_sale?: {
-    asking_price: number;
-    minimum_offer: number;
-    offer_increment_amount: number;
-    date_go_live: Date;
-    date_offer_deadline: Date;
-    date_exchanged: Date;
-    date_completion: Date;
-    offers_extension: number;
-    contract_deposit_percent: number;
-    booking_deposit_amount: number;
-    special_conditions: string;
-    show_all_offers: boolean;
-    show_highest_offer: boolean;
-    enable_downward_bidding: boolean;
-    downward_bidding_allowed_percentage: number;
-  };
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

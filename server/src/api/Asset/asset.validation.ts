@@ -14,22 +14,22 @@ export const createAssetSchemaValidation = joi.object({
   transaction_type_string: joi.string().required(),
   property_type: joi.string().optional(),
   asset_rent: joi.object({
-    rental_amount: joi.number().allow(''),
+    rental_amount: joi.number().min(0).allow(''),
     rental_frequency: joi.string().allow(''),
-    deposit_amount: joi.number().allow(''),
+    deposit_amount: joi.number().min(0).allow(''),
     interest_by: joi.date().allow(''),
     available_from: joi.date().allow('')
   }),
   floor_size: joi.number().required(),
   room_details: joi.object({
-    number_of_bathrooms: joi.number().required(),
-    number_of_bedrooms: joi.number().required()
+    number_of_bathrooms: joi.number().min(0),
+    number_of_bedrooms: joi.number().min(0)
   }),
   budget: joi.object({
-    min_budget: joi.number().required(),
-    max_budget: joi.number().required(),
+    min_budget: joi.number().min(0).required(),
+    max_budget: joi.number().min(0).required()
   }),
-  parking_spot: joi.number(),
+  parking_spot: joi.number().min(0),
   epc_rating: joi.string().required(),
   location_details: joi.string().required(),
   property_features: joi.array().items(joi.string()),
@@ -54,22 +54,22 @@ export const createAssetSchemaValidationDraft = joi.object({
   transaction_type_string: joi.string().allow(''),
   property_type: joi.string().allow(''),
   asset_rent: joi.object({
-    rental_amount: joi.number().allow(''),
+    rental_amount: joi.number().min(0).allow(''),
     rental_frequency: joi.string().allow(''),
-    deposit_amount: joi.number().allow(''),
+    deposit_amount: joi.number().min(0).allow(''),
     interest_by: joi.date().allow(''),
     available_from: joi.date().allow('')
   }),
   floor_size: joi.number().allow(''),
   room_details: joi.object({
-    number_of_bathrooms: joi.number().allow(''),
-    number_of_bedrooms: joi.number().allow('')
+    number_of_bathrooms: joi.number().min(0).allow(''),
+    number_of_bedrooms: joi.number().min(0).allow('')
   }),
   budget: joi.object({
-    min_budget: joi.number().allow(''),
-    max_budget: joi.number().allow(''),
+    min_budget: joi.number().min(0).allow(''),
+    max_budget: joi.number().min(0).allow('')
   }),
-  parking_spot: joi.number().allow(''),
+  parking_spot: joi.number().min(0).allow(''),
   epc_rating: joi.string().allow(''),
   location_details: joi.string().allow(''),
   property_features: joi.array().items(joi.string().allow('')),

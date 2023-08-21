@@ -30,6 +30,7 @@ export const step3Schema: ObjectSchema<Step3FormType> = yup.object().shape({
   idealBudget: yup.array().required(),
   depositAmount: yup
     .number()
+    .min(0, 'Must be greater then or equal to 0')
     .transform((value) => (isNaN(value) ? undefined : value))
     .optional(),
   creditScore: yup.string().required(),

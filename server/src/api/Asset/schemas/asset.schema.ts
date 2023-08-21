@@ -25,25 +25,6 @@ const Contact = {
   },
   address: { type: String, default: null }
 };
-
-const AssetSale = {
-  asking_price: { type: Number },
-  minimum_offer: { type: Number, default: 0 },
-  offer_increment_amount: { type: Number, default: 1000 },
-  date_go_live: Date,
-  date_offer_deadline: Date,
-  date_exchanged: Date,
-  date_completion: Date,
-  offers_extension: { type: Number, default: 1 },
-  contract_deposit_percent: Number,
-  booking_deposit_amount: Number,
-  special_conditions: String,
-  show_all_offers: { type: Boolean, default: true },
-  show_highest_offer: { type: Boolean, default: true },
-  enable_downward_bidding: { type: Boolean, default: true },
-  downward_bidding_allowed_percentage: { type: Number, default: 5 }
-};
-
 const schema = new Schema<AssetDocument>({
   asset_id: Number,
   name: { type: String },
@@ -101,8 +82,8 @@ const schema = new Schema<AssetDocument>({
   asset_files: [Object],
   asset_attribute: [Object],
   room_details: {
-    number_of_bathrooms: String,
-    number_of_bedrooms: String
+    number_of_bathrooms: Number,
+    number_of_bedrooms: Number
   },
   budget: {
     min_budget: Number,
@@ -116,7 +97,6 @@ const schema = new Schema<AssetDocument>({
   credit_score_requirements: String,
   contract_details: [String],
   property_preference: String,
-  asset_sale: { type: AssetSale, default: null },
   asset_rent: {
     rental_amount: Number,
     rental_frequency: String,
