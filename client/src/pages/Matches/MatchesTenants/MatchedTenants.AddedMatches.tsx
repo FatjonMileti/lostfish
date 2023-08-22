@@ -120,7 +120,7 @@ export const AddedTenants = styled(
                       name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                       onViewProfileClick={() => setTenantToView(suggestedTenant)}
                       setActiveSlide={() => {}}
-                      percentage={property.percentage}
+                      percentage={property?.percentage}
                     />
                   </motion.div>
                 );
@@ -143,7 +143,7 @@ export const AddedTenants = styled(
                   chatWith(criteria.tenantId);
                 }}>
                 Messages
-                {suggestedTenant.unread_messages > 0 && (
+                {suggestedTenant?.unread_messages > 0 && (
                   <img className='unread-message-indicator' src={ellipse} alt='Message indicator' />
                 )}
               </Button>

@@ -16,6 +16,7 @@ export const PropertyView = (props: IPropertyProps) => {
         alt='property-image'
         src={match.property.property_images[0].link}
         width='100%'
+        height='100%'
       />
       <div className='property-footer'>
         <Typography className='property-title' variant='body4'>

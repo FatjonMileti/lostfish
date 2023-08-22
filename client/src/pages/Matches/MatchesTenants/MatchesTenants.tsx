@@ -62,10 +62,8 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     starred: boolean = false,
     propertyId: string
   ) => {
-    console.log({ propertyId });
     const matchId =
       tenants.find((t) => {
-        console.log({ prop: t.property });
         return t.criteria.tenantId === tenantId && t.property._id === propertyId;
       })?.matchId || false;
 
@@ -81,7 +79,9 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     if (response.status === 200 || response.status === 201) {
       setTenants((prevArray) =>
         prevArray.map((obj) =>
-          obj.criteria.tenantId === tenantId ? { ...obj, chosen, starred, matchId: response.data._id } : obj
+          obj.criteria.tenantId === tenantId && obj.property._id === propertyId
+            ? { ...obj, chosen, starred, matchId: response.data._id }
+            : obj
         )
       );
       if (criteriaToView && criteriaToView?.criteria.tenantId === tenantId) {

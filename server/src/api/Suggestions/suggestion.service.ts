@@ -8,6 +8,7 @@ import httpStatus from 'http-status';
 import createError from 'http-errors';
 import assetService from '../Asset/services/asset.service';
 import { MatchDocument } from '../Match/match.interface';
+import { Role } from '../User/user.interface';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<AssetDocument>;
@@ -89,11 +90,13 @@ export default class SuggestionService {
           populate: [
             {
               path: 'created_by',
-              select: ['email', 'username', 'first_name', 'last_name', 'avatar']
+              select: ['email', 'username', 'first_name', 'last_name', 'avatar', 'role']
             }
           ]
         }
       );
+
+      matchesUsers.docs = matchesUsers.docs.filter((item: any) => item.created_by.role === Role.Client);
 
       const myProperties: AssetDocument[] | null = await assetService.findPublishedPropertiesExample(userId);
       const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
@@ -108,7 +111,9 @@ export default class SuggestionService {
         data.push(...processedProperties);
       }
 
-      matchesUsers.docs = data.sort((a: any, b: any) => b.property.percentage - a.property.percentage);
+      matchesUsers.docs = data
+        .filter((item: any) => item.property.percentage > 20)
+        .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
       return { response: error, success: false };

@@ -1,8 +1,10 @@
 import { RateLimiterMongo, IRateLimiterMongoOptions, IRateLimiterRes } from 'rate-limiter-flexible';
-import { connection } from 'mongoose';
+import mongoose, { connection } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import config from '../config';
+
+// const mongoConn = mongoose.createConnection(config.mongo.connection_string);
 
 //1000 req/hour/IP
 const general: RateLimiterMongo = new RateLimiterMongo(<IRateLimiterMongoOptions>{
