@@ -69,7 +69,7 @@ export const NewRentingContract = (props: INewRentingContract) => {
     setValue('property_id', props.property._id);
   }, [props]);
 
-  console.log({ props });
+  // console.log({ props });
   const onSubmit = async (data: any) => {
     setLoading(true);
     const { tenant, property_id, landlord } = data;
