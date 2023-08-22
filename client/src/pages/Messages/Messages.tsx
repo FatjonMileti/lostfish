@@ -19,6 +19,7 @@ import axios from '../../utils/axios';
 
 import messagesBackground from './massages-page-backgroud.png';
 import { DocumentsTest } from './Documents/DocumentsTest';
+import { MessagesProperties } from './Messages.Properties';
 
 registerStore('transactionAgreement', { signed: false });
 
@@ -42,6 +43,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
   const [messages, setMessages] = useState<IMessageItem[]>([]);
   const [conversations, setConversations] = useState<IRoom[]>([]);
+
+  const [filterByProperty, setFilterByProperty] = React.useState('');
 
   const queryParams = new URLSearchParams(useLocation().search);
   const navigate = useNavigate();
@@ -109,12 +112,26 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   };
 
-  const previous = useQuery<IRoom[]>(['messages'], async (): Promise<any[]> => {
-    const response = await request(userStore.auth.access_token).get('/api/chat');
+  const chatRooms = useQuery<IRoom[]>(
+    ['messages'],
+    async (): Promise<any[]> => {
+      const response = await request(userStore.auth.access_token).get('/api/chat', {
+        params: {
+          property: filterByProperty || undefined
+        }
+      });
 
-    setConversations(response.data.docs);
-    return response.data.docs;
-  });
+      setConversations(response.data.docs);
+      return response.data.docs;
+    },
+    {
+      refetchOnWindowFocus: false
+    }
+  );
+
+  React.useEffect(() => {
+    chatRooms.refetch();
+  }, [filterByProperty]);
 
   const getMessagesForRoom = async (roomId: string) => {
     const response = await request(userStore.auth.access_token).get(
@@ -126,7 +143,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       isContractCreated: response.data.isContractCreated,
       areDocumentsApproved: response.data.areDocumentsApproved
     }));
-    previous.refetch();
   };
 
   const handleReadMessages = async (room: IRoom) => {
@@ -153,12 +169,12 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     <>
       <div
         className={`messages-page ${
-          !previous.isLoading && previous.data?.length === 0 ? 'no-messages' : ''
+          !chatRooms.isLoading && chatRooms.data?.length === 0 ? 'no-messages' : ''
         } ${className}`}>
         <Header />
-        <Backdrop open={previous.isLoading || previous.isFetching}></Backdrop>
+        <Backdrop open={chatRooms.isLoading || chatRooms.isFetching}></Backdrop>
 
-        {!previous.isLoading && previous.data?.length === 0 && (
+        {!chatRooms.isLoading && chatRooms.data?.length === 0 && (
           <div className='no-messages-view'>
             <img src={noMessages} alt='no messages' />
             <Typography variant='body2' className='title'>
@@ -170,17 +186,24 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           </div>
         )}
 
-        {previous.isLoading && <div />}
+        {chatRooms.isLoading && <div />}
 
-        {!previous.isLoading && previous.data?.length !== 0 && (
+        {!chatRooms.isLoading && chatRooms.data?.length !== 0 && (
           <div className='container'>
             <div className='chats'>
               <div className='chats-header'>
                 <Typography variant='body2'>Your inbox</Typography>
+
                 <Typography variant='body5'>
                   Here you can find all your conversations with your matches or Lostfish representatives
                 </Typography>
               </div>
+
+              <MessagesProperties
+                onPropertySelect={(propertyId) => {
+                  setFilterByProperty(propertyId);
+                }}
+              />
 
               <div className='conversations-list'>
                 {conversations.map((row: IRoom, rowIndex: number) => {
@@ -299,10 +322,11 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
 
     .chats {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-rows: min-content min-content auto;
       row-gap: 24px;
       height: 100%;
+      overflow-y: auto;
 
       .chats-header {
         display: grid;
@@ -310,9 +334,11 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       }
 
       .conversations-list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
         row-gap: 8px;
+        height: 100%;
+        overflow-y: auto;
+        align-content: flex-start;
       }
     }
 
