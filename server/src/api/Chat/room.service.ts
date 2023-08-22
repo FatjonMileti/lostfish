@@ -95,6 +95,7 @@ const findAllProperties = async (query: any) => {
         _id: '$propertyDetails._id',
         property: {
           $first: {
+            _id: '$propertyDetails._id',
             title: '$propertyDetails.title',
             area_of_interest: '$propertyDetails.area_of_interest',
             property_type: '$propertyDetails.property_type',
