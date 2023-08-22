@@ -28,6 +28,7 @@ export class ChatController {
 
   private initializeRoutes() {
     this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
+    this.router.get('/started-conversations', this.getAllProperties);
     this.router.post('/create', this.create);
     this.router.put('/read', this.readMessages);
     this.router.get('/room', this.checkIfRoomExist);
@@ -64,6 +65,24 @@ export class ChatController {
       query.property = new Types.ObjectId(property as string);
     }
 
+    const response = await roomService.getAll(query, res.locals.paging_options, userId);
+
+    res.send(response);
+  };
+
+  /**
+   * @api {get} /api/started-conversations Get all started conversations (by properties)
+   * @apiDescription Get all started conversations ( by properties)
+   * @apiGroup Chat
+   * @apiSampleRequest /api/started-conversations
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+
+  private getAllProperties = async (req: express.Request, res: express.Response) => {
+    const userId = new Types.ObjectId(res.locals.user_id);
+
     const properties = await roomService.findAllProperties({
       $or: [
         { author: { $eq: new Types.ObjectId(userId) } },
@@ -71,10 +90,7 @@ export class ChatController {
       ]
     });
 
-    const response = await roomService.getAll(query, res.locals.paging_options, userId);
-    response.properties = properties; //properties.map((item: any) => item.properties);
-
-    res.send(response);
+    res.send(properties);
   };
 
   /**
