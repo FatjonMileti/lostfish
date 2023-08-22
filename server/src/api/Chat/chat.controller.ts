@@ -28,7 +28,7 @@ export class ChatController {
 
   private initializeRoutes() {
     this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
-    this.router.get('/started-conversations', this.getAllProperties);
+    this.router.get('/started-conversations', this.getAllConversationsByProperties);
     this.router.post('/create', this.create);
     this.router.put('/read', this.readMessages);
     this.router.get('/room', this.checkIfRoomExist);
@@ -80,7 +80,7 @@ export class ChatController {
    * @apiUse bearer
    */
 
-  private getAllProperties = async (req: express.Request, res: express.Response) => {
+  private getAllConversationsByProperties = async (req: express.Request, res: express.Response) => {
     const userId = new Types.ObjectId(res.locals.user_id);
 
     const properties = await roomService.findAllProperties({
