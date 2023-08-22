@@ -79,12 +79,47 @@ const findOne = async (query: any) => {
 };
 
 const findAllProperties = async (query: any) => {
-  return RoomModel.find({ ...query }).populate('property', [
-    'title',
-    'area_of_interest',
-    'property_type',
-    'property_images'
-  ]);
+  const aggregationPipeline = [
+    { $match: { ...query } },
+    {
+      $lookup: {
+        from: 'assets',
+        localField: 'property',
+        foreignField: '_id',
+        as: 'propertyDetails'
+      }
+    },
+    { $unwind: '$propertyDetails' },
+    {
+      $group: {
+        _id: '$propertyDetails._id',
+        property: {
+          $first: {
+            title: '$propertyDetails.title',
+            area_of_interest: '$propertyDetails.area_of_interest',
+            property_type: '$propertyDetails.property_type',
+            property_images: '$propertyDetails.property_images'
+          }
+        }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        properties: { $push: '$property' }
+      }
+    },
+    {
+      $project: {
+        _id: 0, // Exclude _id field from the final result
+        properties: 1
+      }
+    }
+  ];
+
+  const uniqueProperties = await RoomModel.aggregate(aggregationPipeline);
+
+  return uniqueProperties[0]?.properties || [];
 };
 
 const findWithAggregate = async (id: string) => {
