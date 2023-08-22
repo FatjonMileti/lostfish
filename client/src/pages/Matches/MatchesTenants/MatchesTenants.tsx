@@ -92,7 +92,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     } else if (response.status === 204) {
       setTenants((prevArray) =>
         prevArray.map((obj) =>
-          obj.criteria.tenantId === tenantId
+          obj.criteria.tenantId === tenantId && obj.property._id === propertyId
             ? { ...obj, chosen: false, starred: false, matchId: undefined }
             : obj
         )
