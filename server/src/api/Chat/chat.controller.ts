@@ -71,10 +71,10 @@ export class ChatController {
   };
 
   /**
-   * @api {get} /api/started-conversations Get all started conversations (by properties)
+   * @api {get} /api/chat/started-conversations Get all started conversations (by properties)
    * @apiDescription Get all started conversations ( by properties)
    * @apiGroup Chat
-   * @apiSampleRequest /api/started-conversations
+   * @apiSampleRequest /api/chat/started-conversations
    *
    * @apiPermission admin
    * @apiUse bearer
