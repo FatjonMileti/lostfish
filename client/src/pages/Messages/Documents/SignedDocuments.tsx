@@ -3,7 +3,6 @@ import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
-import { Checkbox, Grid } from '@mui/material';
 import { Button } from '../../../components/Button';
 import { Role } from '../../../utils/ability.util';
 import { IRoom } from '../messages.interface';
@@ -166,6 +165,11 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
         .document-action-buttons {
           display: flex;
           column-gap: 16px;
+          
+          .button {
+            marginRight: '5px';
+          }
+          
         }
       }
     }
@@ -196,7 +200,6 @@ const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
       <div className='document-action-buttons'>
         <Button
           onClick={() => downloadContract(item)}
-          style={{ marginRight: '5px' }}
           disabled={!can_download}>
           Download
         </Button>
@@ -230,7 +233,6 @@ const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
       <div className='document-action-buttons'>
         <Button
           onClick={() => downloadContract(item)}
-          style={{ marginRight: '5px' }}
           disabled={!can_download}>
           Download
         </Button>
