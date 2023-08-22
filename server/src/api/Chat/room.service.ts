@@ -79,7 +79,12 @@ const findOne = async (query: any) => {
 };
 
 const findAllProperties = async (query: any) => {
-  return RoomModel.find({ ...query }).populate('property', ['title', 'area_of_interest', 'property_type']);
+  return RoomModel.find({ ...query }).populate('property', [
+    'title',
+    'area_of_interest',
+    'property_type',
+    'property_images'
+  ]);
 };
 
 const findWithAggregate = async (id: string) => {
