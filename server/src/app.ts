@@ -29,7 +29,7 @@ const app: Application = express();
 app.use(compression());
 
 // Apply rateLimiter to all endpoints
-app.use(generalLimiter);
+// app.use(generalLimiter);
 
 // Connect to the database if not in 'test' environment
 if (config.node_env !== 'test') {
