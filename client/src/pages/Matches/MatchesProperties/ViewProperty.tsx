@@ -202,7 +202,7 @@ export const ViewProperty = styled(
   &.view-property-modal {
     overflow-y: auto;
     max-height: calc(100vh - 80px);
-    height: max-content;
+    height: auto;
     width: 1020px;
 
     && {

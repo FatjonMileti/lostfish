@@ -746,7 +746,7 @@ export const NewPropertyV2 = styled(
   &.new-property-modal {
     overflow-y: auto;
     max-height: calc(100vh - 80px);
-    height: max-content;
+    height: auto;
     width: 100vw;
     top: calc(50% + 40px);
 

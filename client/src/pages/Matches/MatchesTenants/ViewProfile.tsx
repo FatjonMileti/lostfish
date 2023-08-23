@@ -177,6 +177,7 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria }: Vi
     overflow-y: auto;
     max-height: 100vh;
     max-width: 100vw;
+    height: auto;
     .modal-container {
       padding: 0 !important;
       display: grid;
