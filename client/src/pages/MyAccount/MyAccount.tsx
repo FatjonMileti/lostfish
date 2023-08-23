@@ -22,9 +22,12 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
+import backgroundImg from './images/background.png'
+import {Button} from "../../components/Button";
+
 
 const submenus: any[] = [
-  { icon: 'dashboard', text: 'Dashboard', link: '' },
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'user', text: 'Profile details', link: '/profile-details' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
@@ -73,6 +76,9 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 </Typography>
               </div>
             </div>
+            <Button size='small' variant='secondary' inverted className='details-button'>
+              Improve
+            </Button>
           </div>
           <div className='menu-body'>
             {submenus.map(({ icon, text, link }, menuItemIndex) => (
@@ -83,7 +89,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                     <Typography variant='body4' className='text'>
                       {text}
                     </Typography>
-                    <Icon icon='chevron-right' color='black' className='arrow' size={14} />
+                    {/*<Icon icon='chevron-right' color='black' className='arrow' size={14} />*/}
                   </motion.div>
                 )}
               </NavLink>
@@ -123,6 +129,37 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
     background-color: white;
 
     grid-template-rows: min-content auto;
+    z-index: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: url(${backgroundImg});
+      opacity: 0.05;
+
+      background-size: auto;
+      background-position-x: right;
+      background-position-y: bottom;
+      background-repeat: no-repeat;
+      z-index: -1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+
+      background-position-y: top;
+      background-size: cover;
+      z-index: -2;
+    }
 
     .container {
       display: grid;
@@ -130,7 +167,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       padding: 36px;
 
       grid-template-columns: 1fr min-content 2.79fr;
-
+      
       .left-menu {
         display: grid;
         grid-template-rows: min-content auto min-content;
@@ -162,6 +199,13 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               color: #e5155a;
               font-weight: 700;
             }
+          }
+          
+          .details-button {
+            padding: 12px 16px;
+            gap: 8px;
+            border: 2px solid #184D6D;
+            color: #184D6D;
           }
         }
 
@@ -199,12 +243,17 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
         .menu-footer {
           .menu-item {
+            color: #B4263B;
             display: grid;
             grid-template-columns: min-content auto;
             align-items: center;
             padding: 12px 14px;
             .text {
               margin-left: 10px;
+            }
+            
+            .icon {
+              color: #B4263B;
             }
 
             :hover {

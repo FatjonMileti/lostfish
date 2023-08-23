@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "layer"
   | "direction-tool"
   | "image"
   | "folder"
