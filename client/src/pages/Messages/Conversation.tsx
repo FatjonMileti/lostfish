@@ -31,7 +31,7 @@ export const Conversation = styled(
             {fullName}
           </Typography>
           <Typography variant='body6'>
-            {moment(row.last_message.created_at).format('dddd, MMMM Do YYYY')}
+            {row.last_message?.created_at && moment(row.last_message.created_at).format('dddd, MMMM Do YYYY')}
           </Typography>
         </div>
       </div>
