@@ -70,7 +70,7 @@ export const Drawer = styled(
       top: 0;
       bottom: 0;
       width: 50vw;
-      max-width: 720px;
+      min-width: 720px;
       background: white;
       overflow-y: auto;
     }
