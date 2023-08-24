@@ -118,6 +118,7 @@ export default class SuggestionService {
         .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
+      console.log(error);
       return { response: error, success: false };
     }
   }
@@ -158,12 +159,12 @@ export default class SuggestionService {
       matchingCriteria++;
     }
     if (
-      clientCriteria.room_details.number_of_bathrooms.toString() ===
-      property.room_details.number_of_bathrooms.toString()
+      clientCriteria?.room_details.number_of_bathrooms?.toString() ===
+      property?.room_details?.number_of_bathrooms?.toString()
     )
       matchingCriteria++;
 
-    const floorSize: string[] = clientCriteria.floor_size.split('-');
+    const floorSize: string[] = clientCriteria?.floor_size.split('-');
 
     if (
       property.floor_size >= parseInt(floorSize[0], 10) &&
