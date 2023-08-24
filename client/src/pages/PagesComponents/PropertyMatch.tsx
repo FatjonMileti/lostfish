@@ -16,7 +16,7 @@ interface PropertyMatchProps extends HTMLAttributes<HTMLDivElement> {
 export const PropertyMatch = styled(
   ({ className, title, address, price, viewProperty }: PropertyMatchProps) => {
     return (
-      <div className={classNames(className, 'your-property')}>
+      <div className={classNames(className, 'match-property')}>
         <div className='property-footer'>
           <Typography className='property-title' variant='body4'>
             {title}
@@ -46,14 +46,15 @@ export const PropertyMatch = styled(
     );
   }
 )`
-  &.your-property {
+  &.match-property {
     background-image: url('${(props) => props.image}');
     border-radius: 12px;
     display: flex;
     aspect-ratio: 1.34 / 1;
     background-repeat: no-repeat;
     background-size: cover;
-
+    width: 100%;
+    height: 100%;
     .property-footer {
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.8) 43.75%);
       align-self: flex-end;

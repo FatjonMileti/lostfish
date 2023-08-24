@@ -45,7 +45,7 @@ export const TenantMatch = styled(
     background-image: url(${(props) => props.avatar});
 
     height: 100%;
-    //width: 100%;
+    width: 100%;
 
     .content {
       display: flex;

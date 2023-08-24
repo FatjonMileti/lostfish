@@ -77,6 +77,7 @@ export const RecentMatchesProperties = styled(({ className }: HTMLAttributes<HTM
 
     .recent-match {
       min-width: 464px;
+      max-width: 464px;
     }
   }
 `;

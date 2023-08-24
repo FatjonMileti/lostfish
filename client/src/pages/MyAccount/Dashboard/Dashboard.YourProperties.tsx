@@ -45,12 +45,12 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
           Your properties
         </Typography>
 
-        {property && (
+        {!!property && (
           <YourProperty
-            title={property.title}
+            title={property?.title}
             price={`${property?.budget?.min_budget} - ${property?.budget?.max_budget}`}
-            address={property.area_of_interest}
-            image={property.property_images[0]?.link}
+            address={property?.area_of_interest}
+            image={property?.property_images?.[0]?.link}
             editProperty={editProperty}
           />
         )}

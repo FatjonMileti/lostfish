@@ -78,6 +78,7 @@ export const RecentMatchesTenants = styled(({ className }: HTMLAttributes<HTMLDi
 
     .recent-match {
       min-width: 232px;
+      max-width: 232px;
     }
   }
 `;
