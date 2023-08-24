@@ -10,6 +10,7 @@ export interface ProfileStoreType {
   last_name: string;
   email: string;
   phone: string;
+  role: string;
   description: string;
   agreed_application_policy: boolean;
   signed_transaction_agreement: boolean;
@@ -35,6 +36,7 @@ const profileInitialState = {
   last_name: '',
   email: '',
   phone: '',
+  role: '',
   agreed_application_policy: false,
   signed_transaction_agreement: false,
   has_transaction_agreement: false,
@@ -62,6 +64,7 @@ export const useProfileStore = create<ProfileStoreType>()(
               last_name: data.last_name,
               email: data.email,
               phone: data.phone,
+              role: data.role,
               description: data.description,
               agreed_application_policy: data.agreed_application_policy,
               signed_transaction_agreement: data.signed_transaction_agreement,

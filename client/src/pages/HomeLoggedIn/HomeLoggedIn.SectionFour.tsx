@@ -1,87 +1,24 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
-import { Avatar } from '../../components/Avatar';
-import { avatars } from './avatars';
+
 import { Button } from '../../components/Button';
-import verified from '../MyAccount/images/verified.svg';
 import { useNavigate } from 'react-router-dom';
+import { RecentMatchesTenants } from './RecentMatches/RecentMatches.Tenants';
+import { useProfileStore } from '../../globalState/profile';
+import { RecentMatchesProperties } from './RecentMatches/RecentMatches.Properties';
 
 export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const navigate = useNavigate();
-
-  const matches = [
-    {
-      id: 0,
-      first_name: 'Nancy',
-      last_name: 'Jones',
-      email: 'Sincere@april.biz',
-      avatar: '0'
-    },
-    {
-      id: 1,
-      first_name: 'Nick',
-      last_name: 'Young',
-      email: 'Sincere@april.biz',
-      avatar: '1'
-    },
-    {
-      id: 2,
-      first_name: 'Marcus',
-      last_name: 'Korsgaard',
-      email: 'Sincere@april.biz',
-      avatar: '2'
-    },
-    {
-      id: 3,
-      first_name: 'Lindsey',
-      last_name: 'Siphron',
-      email: 'Sincere@april.biz',
-      avatar: '3'
-    },
-    {
-      id: 4,
-      first_name: 'Leo',
-      last_name: 'Korsgaard',
-      email: 'Sincere@april.biz',
-      avatar: '4'
-    },
-    {
-      id: 5,
-      first_name: 'Phillip',
-      last_name: 'Dokidis',
-      email: 'Sincere@april.biz',
-      avatar: '5'
-    }
-  ];
+  const profileStore = useProfileStore();
 
   return (
     <div className={className}>
       <div className='title'>
         <Typography>Your recent matches</Typography>
       </div>
-      <div className='avatars'>
-        {matches.map((match, i) => (
-          <div
-            className='avatar'
-            key={i}
-            style={{ backgroundImage: `url(${avatars[Number(match.avatar)].image})` }}>
-            <div className='content'>
-              <div className='username'>
-                <Typography variant='body4'>
-                  {`${match.first_name} ${match.last_name}`}
-                  <img src={verified} alt='verified' />
-                </Typography>
-              </div>
-              <div className='bottom'>
-                <Button active={false} inverted>
-                  View profile
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {profileStore.role === 'Landlord' && <RecentMatchesTenants />}
+      {profileStore.role === 'Tenant' && <RecentMatchesProperties />}
       <div className='bottom'>
         <Button active={false} inverted size='large' onClick={() => navigate('/matches')}>
           View all matches
@@ -106,70 +43,6 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
       .typography {
         font-weight: 400;
         line-height: 48px;
-      }
-    }
-
-    .avatars {
-      display: flex;
-      width: 100%;
-      align-items: flex-start;
-      gap: 16px;
-      overflow-x: hidden;
-      box-sizing: border-box;
-      align-self: stretch;
-      margin-right: -36px;
-
-      .avatar {
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        width: 232px;
-        height: 328px;
-        flex-direction: column-reverse;
-        align-items: center;
-        gap: -120px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
-
-        .content {
-          display: flex;
-          padding: 16px;
-          flex-direction: column;
-          align-items: center;
-          gap: 16px;
-          width: 200px;
-          border-radius: 12px;
-          background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
-
-          .username {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-
-            .typography {
-              color: #fff;
-              font-weight: 700;
-              display: grid;
-              grid-template-columns: max-content min-content;
-              align-items: center;
-              column-gap: 8px;
-            }
-          }
-          .bottom {
-            .button {
-              color: #fff;
-              background: none;
-              padding: 12px 20px;
-              border: 2px solid #fff;
-              border-radius: 250px;
-              font-family: Roobert;
-              font-size: 14px;
-              font-weight: 600;
-            }
-          }
-        }
       }
     }
 

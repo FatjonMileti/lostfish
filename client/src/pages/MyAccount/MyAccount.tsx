@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 
-import { Dashboard } from './Dashboard';
+import { Dashboard } from './Dashboard/Dashboard';
 import { ProfileDetails } from './ProfileDetails';
 import { AccountSettings } from './AccountSettings';
-import { StarredMatches } from './StarredMatches';
+import { StarredMatches } from './StarredMatches/StarredMatches';
 import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
@@ -22,9 +22,8 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
-import backgroundImg from './images/background.png'
-import {Button} from "../../components/Button";
-
+import backgroundImg from './images/background.png';
+import { Button } from '../../components/Button';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
@@ -167,7 +166,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       padding: 36px;
 
       grid-template-columns: 1fr min-content 2.79fr;
-      
+
       .left-menu {
         display: grid;
         grid-template-rows: min-content auto min-content;
@@ -200,12 +199,12 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               font-weight: 700;
             }
           }
-          
+
           .details-button {
             padding: 12px 16px;
             gap: 8px;
-            border: 2px solid #184D6D;
-            color: #184D6D;
+            border: 2px solid #184d6d;
+            color: #184d6d;
           }
         }
 
@@ -243,7 +242,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
         .menu-footer {
           .menu-item {
-            color: #B4263B;
+            color: #b4263b;
             display: grid;
             grid-template-columns: min-content auto;
             align-items: center;
@@ -251,9 +250,9 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             .text {
               margin-left: 10px;
             }
-            
+
             .icon {
-              color: #B4263B;
+              color: #b4263b;
             }
 
             :hover {

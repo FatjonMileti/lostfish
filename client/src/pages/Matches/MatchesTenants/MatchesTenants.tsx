@@ -13,7 +13,7 @@ import { ViewProfile } from './ViewProfile';
 import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
-import { mapTenants } from './serializers';
+import { mapTenant } from './serializers';
 
 export interface TenantType {
   id: string;
@@ -48,7 +48,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
     try {
       setLoadingTenants(true);
       const { data } = await axios(auth.access_token).get('/api/suggestion/tenant');
-      setTenants(mapTenants(data.docs));
+      setTenants(data.docs.map(mapTenant));
     } catch (err) {
       throw err;
     } finally {
@@ -128,7 +128,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   const getCheckedTenants = async () => {
     try {
       const { data } = await axios(auth.access_token).get('/api/match', { params: { chosen: true } });
-      setCheckedTenants(mapTenants(data.docs));
+      setCheckedTenants(data.docs.map(mapTenant));
     } catch (err) {
       throw err;
     }
