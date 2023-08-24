@@ -48,7 +48,7 @@ export const StarredMatchesProperties = styled(({ className }: HTMLAttributes<HT
 
       {propertyToView && (
         <ViewProperty
-          open={true}
+          open={!!propertyToView}
           starProperty={() => {}}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}

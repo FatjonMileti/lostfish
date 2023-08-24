@@ -49,7 +49,7 @@ export const RecentMatchesProperties = styled(({ className }: HTMLAttributes<HTM
 
       {propertyToView && (
         <ViewProperty
-          open={true}
+          open={!!propertyToView}
           starProperty={() => {}}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
