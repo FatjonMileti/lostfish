@@ -114,7 +114,7 @@ function App() {
                       <>
                         {!profileStore.avatar ||
                         !criteriaStore.lookingFor ||
-                        !criteriaStore.areaOfInterest ? (
+                        (userStore?.userDetails?.role === 'Tenant' && !criteriaStore.areaOfInterest) ? (
                           <InitialSetup />
                         ) : (
                           <HomeLoggedIn />
