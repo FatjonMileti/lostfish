@@ -65,6 +65,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
   &.slider {
     position: relative;
     width: 100%;
+    height: 100%;
     aspect-ratio: 1.36/1;
     border-radius: 0 16px 16px 0;
 
@@ -86,12 +87,14 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       display: flex;
       overflow-x: hidden;
       width: 100%;
-      aspect-ratio: 1.36/1;
+      height: 100%;
+      //aspect-ratio: 1.36/1;
       border-radius: 0 16px 16px 0;
 
       .image-holder {
-        width: 100%;
+        height: 100%;
         aspect-ratio: 1.36/1;
+        width: 100%;
       }
     }
 
