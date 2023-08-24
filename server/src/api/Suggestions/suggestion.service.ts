@@ -164,9 +164,10 @@ export default class SuggestionService {
     )
       matchingCriteria++;
 
-    const floorSize: string[] = clientCriteria?.floor_size.split('-');
+    const floorSize: string[] = clientCriteria?.floor_size?.split('-') || [];
 
     if (
+      floorSize.length > 0 &&
       property.floor_size >= parseInt(floorSize[0], 10) &&
       property.floor_size <= parseInt(floorSize[1], 10)
     ) {
