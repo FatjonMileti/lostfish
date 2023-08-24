@@ -219,6 +219,7 @@ const downloadDocument = async (req: Request, res: Response) => {
       res.download(file, fileName ? fileName : 'signed_document.pdf', (err) => {
         if (err) {
           console.error('Error sending the file:', err);
+          throw createError(httpStatus.BAD_REQUEST, { message: 'Error downloading file' });
         } else {
           // Clean up the temporary file after it is sent
           fs.unlink(file, (error: any) => {

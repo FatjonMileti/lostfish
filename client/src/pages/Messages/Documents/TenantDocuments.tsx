@@ -137,13 +137,18 @@ export const TenantDocuments = styled((props: TenantDocumentsProps) => {
         .document-action-buttons {
           display: flex;
           column-gap: 16px;
-          
+
           .button-img-wrapper {
             display: flex;
-            
+
             img {
               margin-right: 10px;
               margin-top: 5px;
+            }
+
+            a {
+              margin-right: 10px;
+              margin-top: 16px;
             }
           }
         }
@@ -181,21 +186,14 @@ const TenantDocumentItem = ({
               )}
             </>
           ) : (
-            <div className='button-img-wrapper' >
+            <div className='button-img-wrapper'>
               {document.mimetype.startsWith('image') && (
-                <img
-                  src={document.link}
-                  width={40}
-                  height={40}
-                  alt={''}
-                />
+                <img src={document.link} width={40} height={40} alt={''} />
               )}
               {document.mimetype.startsWith('application/pdf') && (
-                <>
-                  <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
-                    {document.originalname})
-                  </a>
-                </>
+                <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
+                  {document.originalname}
+                </a>
               )}
               <Button variant='secondary' onClick={() => setSelectedFile(document)}>
                 Edit
@@ -231,19 +229,12 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
           {document.key ? (
             <div className='button-img-wrapper'>
               {document.mimetype.startsWith('image') && (
-                <img
-                  src={document.link}
-                  width={40}
-                  height={40}
-                  alt={''}
-                />
+                <img src={document.link} width={40} height={40} alt={''} />
               )}
               {document.mimetype.startsWith('application/pdf') && (
-                <>
-                  <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
-                    {document.originalname})
-                  </a>
-                </>
+                <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
+                  {document.originalname}
+                </a>
               )}
               <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>
             </div>

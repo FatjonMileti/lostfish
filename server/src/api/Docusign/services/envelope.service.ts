@@ -1,7 +1,9 @@
 import { Role, UserDocument } from '../../User/user.interface';
 import docusign, {
   EnvelopeDefinition,
+  EnvelopeDocumentsResult,
   EnvelopesApi,
+  EnvelopesInformation,
   EnvelopeSummary,
   RecipientViewRequest,
   Tabs,
@@ -241,7 +243,10 @@ const retrieveSignedDocuments = async (envelopeId: string) => {
   try {
     // Get the envelope documents from the DocuSign API
     const envelopesApi = await docusignService.getEnvelopesApi();
-    const documentsResponse = await envelopesApi.listDocuments(jwtConfig.appAccountId, envelopeId);
+    const documentsResponse: EnvelopeDocumentsResult = await envelopesApi.listDocuments(
+      jwtConfig.appAccountId,
+      envelopeId
+    );
 
     console.log('Signed document downloaded successfully.');
   } catch (error) {
@@ -251,7 +256,7 @@ const retrieveSignedDocuments = async (envelopeId: string) => {
 
 const fetchAllEnvelopes = async () => {
   try {
-    const envelopesApi = await docusignService.getEnvelopesApi();
+    const envelopesApi: EnvelopesApi = await docusignService.getEnvelopesApi();
 
     const options = {
       count: '100',
@@ -259,7 +264,10 @@ const fetchAllEnvelopes = async () => {
       toDate: '2023-12-31'
     };
 
-    const envelopesResponse = await envelopesApi.listStatusChanges(jwtConfig.appAccountId, options);
+    const envelopesResponse: EnvelopesInformation = await envelopesApi.listStatusChanges(
+      jwtConfig.appAccountId,
+      options
+    );
     return envelopesResponse.envelopes;
   } catch (error) {
     console.error('Error fetching envelopes:', error);
