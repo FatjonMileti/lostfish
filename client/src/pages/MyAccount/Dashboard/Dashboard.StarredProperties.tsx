@@ -56,7 +56,7 @@ export const DashboardStarredProperties = styled(({ className }: HTMLAttributes<
 
       {propertyToView && (
         <ViewProperty
-          open={true}
+          open={!!propertyToView}
           starProperty={() => {}}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
