@@ -74,6 +74,13 @@ const getEnvelopesApi = async () => {
   return new docusign.EnvelopesApi(dsApiClient);
 };
 
+const getTemplatesApi = async () => {
+  const token = await getToken();
+  dsApiClient.setBasePath(jwtConfig.basePath);
+  dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + token);
+  return new docusign.TemplatesApi(dsApiClient);
+};
+
 const makeTransactionAgreementEnvelope = (user: UserDocument) => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();

@@ -44,7 +44,7 @@ export const UploadComponent = (props: IUploadDocument) => {
     <>
       <input
         type='file'
-        accept='.jpg, .png, .pdf'
+        accept='image/*, .pdf'
         style={{ display: 'none' }}
         ref={inputRef}
         onChange={(event) => handleFileChange(event)}

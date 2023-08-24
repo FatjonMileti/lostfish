@@ -67,7 +67,7 @@ export const DocumentsView = (props: IDocumentView) => {
             </Button>
             <input
               type='file'
-              accept='.jpg, .png, .pdf'
+              accept='image/*, .pdf'
               style={{ display: 'none' }}
               ref={fileInputRefs[document.type]}
               onChange={(event) => handleFileChange(event, document.type)}

@@ -20,7 +20,6 @@ import config from './config';
 import dbConnect from './data';
 import MailService from './utils/email/index';
 import { logFormat, logStream } from './app.log';
-import { generalLimiter } from './middleware/rateLimiter';
 
 // Create Express app instance
 const app: Application = express();
