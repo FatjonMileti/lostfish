@@ -19,6 +19,7 @@ import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
+import {AccountSettings} from "./AccountSettings";
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -101,47 +102,8 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     <>
       <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
         <Backdrop open={loading} />
-        <div className='left-part'>
-          <div className='section'>
-            <Typography className='section-title' variant='body4'>
-              Contact information
-            </Typography>
-            <div className='contact-information'>
-              <TextField
-                label='First Name'
-                {...profileDetailsForm.register('first_name')}
-                error={!!profileDetailsForm.formState.errors?.first_name}
-                helperText={profileDetailsForm.formState.errors?.first_name?.message}
-              />
-              <TextField
-                label='Last Name'
-                {...profileDetailsForm.register('last_name')}
-                error={!!profileDetailsForm.formState.errors?.last_name}
-                helperText={profileDetailsForm.formState.errors?.last_name?.message}
-              />
-              <TextField
-                label='Email'
-                {...profileDetailsForm.register('email')}
-                error={!!profileDetailsForm.formState.errors?.email}
-                helperText={profileDetailsForm.formState.errors?.email?.message}
-              />
-              <TextField label='Phone' {...profileDetailsForm.register('phone')} />
-            </div>
-          </div>
-
-          <div className='section'>
-            <Typography className='section-title' variant='body4'>
-              Personal details
-            </Typography>
-            <div className='personal-details'>
-              <Textarea
-                rows={6}
-                label='Describe yourself (your matches will see this)'
-                {...profileDetailsForm.register('description')}
-                defaultValue=''></Textarea>
-            </div>
-          </div>
-
+        <div className='account-settings'>
+          <Typography variant='body3' className='account-settings-title'> Account settings </Typography>
           <div className='section'>
             <Typography className='section-title' variant='body4'>
               Setup avatar
@@ -151,22 +113,67 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 const active = avatarIndex === parseInt(profileDetailsForm.getValues('avatar') || '');
 
                 return (
-                  <Avatar
-                    image={avatars[avatarIndex].image}
-                    onClick={() => handleSelectedAvatar(avatarIndex)}
-                    key={avatarIndex}
-                    className={`${active ? 'active' : ''}`}>
-                    <Icon icon='checked' color='black' size={10} />
-                  </Avatar>
+                    <Avatar
+                        image={avatars[avatarIndex].image}
+                        onClick={() => handleSelectedAvatar(avatarIndex)}
+                        key={avatarIndex}
+                        className={`${active ? 'active' : ''}`}>
+                      <Icon icon='checked' color='black' size={10} />
+                    </Avatar>
                 );
               })}
             </div>
           </div>
-        </div>
-        <div className='right-part'>
-          <Can do={CASLAction.Update} on='User'>
-            <Button type='submit'>Save changes</Button>
-          </Can>
+          <div className="sections-wrapper">
+            <div className="left-part">
+              <div className='section'>
+                <Typography className='section-title' variant='body4'>
+                  Contact information
+                </Typography>
+                <div className='contact-information'>
+                  <TextField
+                      label='First Name'
+                      {...profileDetailsForm.register('first_name')}
+                      error={!!profileDetailsForm.formState.errors?.first_name}
+                      helperText={profileDetailsForm.formState.errors?.first_name?.message}
+                      required
+                  />
+                  <TextField
+                      label='Last Name'
+                      {...profileDetailsForm.register('last_name')}
+                      error={!!profileDetailsForm.formState.errors?.last_name}
+                      helperText={profileDetailsForm.formState.errors?.last_name?.message}
+                      required
+                  />
+                  <TextField
+                      label='Email'
+                      {...profileDetailsForm.register('email')}
+                      error={!!profileDetailsForm.formState.errors?.email}
+                      helperText={profileDetailsForm.formState.errors?.email?.message}
+                      required
+                  />
+                  <TextField label='Phone' {...profileDetailsForm.register('phone')} />
+                </div>
+              </div>
+              <div className='section'>
+                <Typography className='section-title' variant='body4'>
+                  Personal details
+                </Typography>
+                <div className='personal-details'>
+                  <Textarea
+                      rows={6}
+                      label='Describe yourself (your matches will see this)'
+                      {...profileDetailsForm.register('description')}
+                      defaultValue=''></Textarea>
+                </div>
+              </div>
+            </div>
+              <AccountSettings />
+
+          </div>
+            <Can do={CASLAction.Update} on='User'>
+              <Button type='submit' size='large' disabled={!profileDetailsForm.formState.isValid}>Save changes</Button>
+            </Can>
         </div>
       </form>
     </>
@@ -174,19 +181,30 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 })`
   &.profile-details {
     display: grid;
-    grid-template-columns: 50% 50%;
     min-height: 100%;
 
-    .left-part {
+    .account-settings {
       display: grid;
       row-gap: 32px;
       align-content: flex-start;
-    }
 
-    .right-part {
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
+      .account-settings-title {
+        font-family: At Gambit, sans-serif;
+      }
+      
+      .sections-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: space-between;
+        align-items: flex-start;
+        column-gap: 24px;
+
+        .left-part {
+          display: grid;
+          gap: 32px;
+          max-width: 441px;
+        }
+      }
     }
 
     .section {

@@ -62,7 +62,6 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
 
   return (
     <div className={`account-settings ${className}`}>
-      <div className='left-part'>
         <div className='section'>
           <Typography className='section-title' variant='body4'>
             Password reset
@@ -73,7 +72,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
               password you will have to login again.
             </Typography>
 
-            <Button variant='secondary' onClick={() => resetPassword()}>
+            <Button variant='secondary' size='medium' onClick={() => resetPassword()}>
               Reset password
             </Button>
           </div>
@@ -91,27 +90,16 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
             <Link onClick={() => closeAccount()}>Close my Lostfish account</Link>
           </div>
         </div>
-      </div>
-      <div className='right-part'></div>
     </div>
   );
 })`
   &.account-settings {
     display: grid;
-    grid-template-columns: 50% 50%;
     min-height: 100%;
-
-    .left-part {
-      display: grid;
-      row-gap: 32px;
-      align-content: flex-start;
-    }
-
-    .right-part {
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-    }
+    max-width: 325px;
+    row-gap: 32px;
+    justify-self: flex-end;
+    
 
     .section {
       display: grid;
@@ -124,6 +112,10 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     .password-reset {
       display: grid;
       row-gap: 16px;
+      
+      .button {
+        padding: 12px 20px;
+      }
     }
 
     .close-account {

@@ -28,7 +28,6 @@ import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModa
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'user', text: 'Profile details', link: '/profile-details' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
@@ -123,8 +122,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           <div>
             <Routes>
               <Route path='/' element={<Dashboard />} />
-              <Route path='/profile-details' element={<ProfileDetails />} />
-              <Route path='/account-settings' element={<AccountSettings />} />
+              <Route path='/account-settings' element={<ProfileDetails />} />
               <Route path='/starred-matches' element={<StarredMatches />} />
               <Route path='/notification-settings' element={<NotificationSettings />} />
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />
