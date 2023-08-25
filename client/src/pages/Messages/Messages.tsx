@@ -79,6 +79,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           (await createRoom(userIdInQueryParams, location.state.propertyId));
         if (room) {
           joinRoom(room);
+          chatRooms.refetch();
         } else {
           navigate(`/messages`);
         }
