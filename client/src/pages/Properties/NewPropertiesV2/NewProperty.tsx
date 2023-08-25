@@ -221,8 +221,8 @@ export const NewPropertyV2 = styled(
           property_type: form.getValues('buildingType'),
           floor_size: form.getValues('area') || undefined,
           room_details: {
-            number_of_bathrooms: form.getValues('bathrooms'),
-            number_of_bedrooms: form.getValues('bedrooms')
+            number_of_bathrooms: form.getValues('bathrooms') || undefined,
+            number_of_bedrooms: form.getValues('bedrooms') || undefined
           },
 
           property_images: form.getValues('propertyImages'),
