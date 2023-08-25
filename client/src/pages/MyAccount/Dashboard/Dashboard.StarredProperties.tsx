@@ -47,7 +47,9 @@ export const DashboardStarredProperties = styled(({ className }: HTMLAttributes<
                 title={match?.property?.title}
                 image={match?.property?.property_images?.[0]?.link}
                 address={match?.property?.area_of_interest}
-                price={`${match.property?.budget?.min_budget} - ${match.property?.budget?.max_budget}`}
+                price={`${match.property?.budget?.min_budget || ''} - ${
+                  match.property?.budget?.max_budget || ''
+                }`}
               />
             );
           })}
