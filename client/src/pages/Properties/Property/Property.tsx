@@ -205,7 +205,8 @@ export const Property = styled(
       .property-details {
         margin-top: 16px;
         display: flex;
-        column-gap: 24px;
+        gap: 24px;
+        flex-wrap: wrap;
 
         .detail {
           display: flex;
