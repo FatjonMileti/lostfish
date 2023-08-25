@@ -32,8 +32,8 @@ interface ProfileDetails {
   first_name: string;
   last_name: string;
   email: string;
-  phone: string;
-  description: string;
+  phone?: string;
+  description?: string;
   avatar?: string;
 }
 
@@ -53,7 +53,8 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       phone: '',
       description: '',
       avatar: profileStore.avatar ? profileStore.avatar : undefined
-    }
+    },
+    mode: 'all'
   });
 
   const handleSelectedAvatar = (index: number) => {
