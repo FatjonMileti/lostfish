@@ -96,7 +96,9 @@ export default class SuggestionService {
         }
       );
 
-      matchesUsers.docs = matchesUsers.docs.filter((item: any) => item.created_by.role === Role.Client);
+      matchesUsers.docs = matchesUsers.docs.filter(
+        (item: any) => item.created_by && item.created_by.role === Role.Client
+      );
 
       const myProperties: AssetDocument[] | null = await assetService.findPublishedPropertiesExample(userId);
       const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
@@ -116,6 +118,7 @@ export default class SuggestionService {
         .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
+      console.log(error);
       return { response: error, success: false };
     }
   }
@@ -150,39 +153,48 @@ export default class SuggestionService {
   public calculateSimilarity(clientCriteria: any, property: any): number {
     let matchingCriteria = 0;
 
-    if (clientCriteria.room_details.number_of_bathrooms === property.room_details.number_of_bathrooms) {
-      matchingCriteria++;
-    }
-
+    if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 4;
+    if (clientCriteria.credit_score_requirements === property.credit_score_requirements) matchingCriteria++;
     if (clientCriteria.room_details.number_of_bedrooms === property.room_details.number_of_bedrooms) {
       matchingCriteria++;
     }
+    if (
+      clientCriteria?.room_details.number_of_bathrooms?.toString() ===
+      property?.room_details?.number_of_bathrooms?.toString()
+    )
+      matchingCriteria++;
 
-    for (const preference of clientCriteria.property_preferences) {
-      if (property.property_preference === preference) {
+    const floorSize: string[] = clientCriteria?.floor_size?.split('-') || [];
+
+    if (
+      floorSize.length > 0 &&
+      property.floor_size >= parseInt(floorSize[0], 10) &&
+      property.floor_size <= parseInt(floorSize[1], 10)
+    ) {
+      matchingCriteria++;
+    }
+
+    for (const propertyType of clientCriteria.property_type) {
+      if (property.property_type === propertyType) {
         matchingCriteria++;
       }
     }
 
-    for (const feature of clientCriteria.property_features) {
-      if (property.property_features.includes(feature)) {
-        matchingCriteria++;
-      }
+    const [minBudget, maxBudget] = clientCriteria.budget.split(' - ').map(Number);
+
+    if (
+      property.budget &&
+      property.budget.min_budget >= minBudget &&
+      property.budget.max_budget <= maxBudget
+    ) {
+      matchingCriteria++;
     }
 
-    for (const specificFeature of clientCriteria.specific_property_features) {
-      if (property.specific_property_features.includes(specificFeature)) {
-        matchingCriteria++;
-      }
+    if (clientCriteria.specific_property_features.includes('Parking spot') && property.parking_spot > 0) {
+      matchingCriteria++;
     }
 
-    const totalCriteria =
-      2 +
-      clientCriteria.property_preferences.length +
-      clientCriteria.property_features.length +
-      clientCriteria.specific_property_features.length;
-
-    return (matchingCriteria / totalCriteria) * 100;
+    return (matchingCriteria / 10) * 100;
   }
 }
 
