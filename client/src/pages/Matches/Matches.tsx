@@ -3,17 +3,17 @@ import { Header } from '../HomeLoggedIn/Header';
 import React, { HTMLAttributes } from 'react';
 import { MatchesProperties } from './MatchesProperties/MatchesProperties';
 import { MatchesTenants } from './MatchesTenants/MatchesTenants';
-import { useCriteriaStore } from '../../globalState/criteria';
+import { useProfileStore } from '../../globalState/profile';
 
 export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const criteriaStore = useCriteriaStore();
+  const profileStore = useProfileStore();
 
   return (
     <div className={`matches-page ${className}`}>
       <Header />
       <div className='page-body'>
-        {criteriaStore.lookingFor === 'I’m looking for a place' && <MatchesProperties />}
-        {criteriaStore.lookingFor === 'I own a place' && <MatchesTenants />}
+        {profileStore.role === 'Tenant' && <MatchesProperties />}
+        {profileStore.role === 'Landlord' && <MatchesTenants />}
       </div>
     </div>
   );

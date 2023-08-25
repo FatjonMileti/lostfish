@@ -24,6 +24,7 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from './images/background.png';
 import { Button } from '../../components/Button';
+import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
@@ -39,8 +40,8 @@ const submenus: any[] = [
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const profileStore = useProfileStore();
-
   const navigate = useNavigate();
+  const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
 
   const logOut = async () => {
     try {
@@ -55,70 +56,85 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
   };
 
   return (
-    <div className={`my-account-page ${className}`}>
-      <Header />
-      <div className='container'>
-        <div className='left-menu'>
-          <div className='menu-header'>
-            <Avatar image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined} />
+    <>
+      <ImproveTrustScoreModal
+        open={improveTrustScoreModalVisibility}
+        closeModal={() => setImproveTrustScoreModalVisibility(false)}
+      />
+      <div className={`my-account-page ${className}`}>
+        <Header />
+        <div className='container'>
+          <div className='left-menu'>
+            <div className='menu-header'>
+              <Avatar
+                image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined}
+              />
 
-            <div>
-              <Typography variant='body3' className='name'>
-                {`${profileStore.first_name} ${profileStore.last_name}`}
-              </Typography>
-              <div className='trust-score'>
-                <Typography variant='body4' className='trust-score-title'>
-                  Trust score:
+              <div>
+                <Typography variant='body3' className='name'>
+                  {`${profileStore.first_name} ${profileStore.last_name}`}
                 </Typography>
-                <Typography variant='body4' className='trust-score-percentage'>
-                  {profileStore.trust_score}%
-                </Typography>
+                <div className='trust-score'>
+                  <Typography variant='body4' className='trust-score-title'>
+                    Trust score:
+                  </Typography>
+                  <Typography variant='body4' className='trust-score-percentage'>
+                    {profileStore.trust_score}%
+                  </Typography>
+                </div>
               </div>
+              <Button
+                size='small'
+                variant='secondary'
+                inverted
+                className='details-button'
+                onClick={() => setImproveTrustScoreModalVisibility(true)}>
+                Improve
+              </Button>
             </div>
-            <Button size='small' variant='secondary' inverted className='details-button'>
-              Improve
-            </Button>
-          </div>
-          <div className='menu-body'>
-            {submenus.map(({ icon, text, link }, menuItemIndex) => (
-              <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
-                {({ isActive }) => (
-                  <motion.div whileTap={{ scale: 0.98 }} className={`menu-item ${isActive ? 'active' : ''}`}>
-                    <Icon icon={icon} color='black' size={20} />
-                    <Typography variant='body4' className='text'>
-                      {text}
-                    </Typography>
-                    {/*<Icon icon='chevron-right' color='black' className='arrow' size={14} />*/}
-                  </motion.div>
-                )}
-              </NavLink>
-            ))}
-          </div>
+            <div className='menu-body'>
+              {submenus.map(({ icon, text, link }, menuItemIndex) => (
+                <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
+                  {({ isActive }) => (
+                    <motion.div
+                      whileTap={{ scale: 0.98 }}
+                      className={`menu-item ${isActive ? 'active' : ''}`}>
+                      <Icon icon={icon} color='black' size={20} />
+                      <Typography variant='body4' className='text'>
+                        {text}
+                      </Typography>
+                      {/*<Icon icon='chevron-right' color='black' className='arrow' size={14} />*/}
+                    </motion.div>
+                  )}
+                </NavLink>
+              ))}
+            </div>
 
-          <div className='menu-footer'>
-            <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
-              <Icon icon='sign-out' color='black' size={20} />
-              <Typography variant='body4' className='text'>
-                Sign out
-              </Typography>
-            </motion.div>
+            <div className='menu-footer'>
+              <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
+                <Icon icon='sign-out' color='black' size={20} />
+                <Typography variant='body4' className='text'>
+                  Sign out
+                </Typography>
+              </motion.div>
+            </div>
           </div>
-        </div>
-        <div className='line'></div>
-        <div>
-          <Routes>
-            <Route path='/' element={<Dashboard />} />
-            <Route path='/profile-details' element={<ProfileDetails />} />
-            <Route path='/account-settings' element={<AccountSettings />} />
-            <Route path='/starred-matches' element={<StarredMatches />} />
-            <Route path='/notification-settings' element={<NotificationSettings />} />
-            <Route path='/transaction-agreement' element={<TransactionAgreement />} />
-            <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
-            <Route path='/help-and-support' element={<HelpAndSupport />} />
-          </Routes>
+          <div className='line'></div>
+          <div>
+            <Routes>
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/profile-details' element={<ProfileDetails />} />
+              <Route path='/account-settings' element={<AccountSettings />} />
+              <Route path='/starred-matches' element={<StarredMatches />} />
+              <Route path='/notification-settings' element={<NotificationSettings />} />
+              <Route path='/transaction-agreement' element={<TransactionAgreement />} />
+              <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
+              <Route path='/help-and-support' element={<HelpAndSupport />} />
+            </Routes>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 })`
   &.my-account-page {

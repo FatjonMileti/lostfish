@@ -1,131 +1,116 @@
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
 import { Icon } from '../../components/Icon';
-import { avatars } from '../HomeLoggedIn/avatars';
+import { avatars } from './avatars';
 import { IconButton } from '../../components/IconButton';
 import { useProfileStore } from '../../globalState/profile';
+import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
+import { useNavigate } from 'react-router-dom';
 
 export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();
+  const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
+  const navigate = useNavigate();
   return (
-    <div className={className}>
-      <div className='section-content'>
-        <div className='wellcome'>
-          <Typography>Hi, {profileStore.first_name}</Typography>
-          <Typography variant='body4' className='center texts'>
-            Our goal is to revolutionise the property industry by using technology and data to empower and
-            inform customers in the buying, selling, and renting process.
-          </Typography>
-        </div>
-        <div className='section'>
-          <div className='current-search-wrapper'>
-            <div className='current-search'>
-              <div className='match'>
-                <Typography variant='body5' className='title'>
-                  Current search
-                </Typography>
-                <Typography variant='body4' className='bold'>
-                  Matching with <span className='matching-with'>Tenants from Bristol, UK</span>
-                </Typography>
-              </div>
-              <div className='matches'>
-                <Typography variant='body5' className='title'>
-                  Matches
-                </Typography>
-                <Typography variant='body4' className='number'>
-                  275
-                </Typography>
-              </div>
-            </div>
-            <div className='hr-line'></div>
-            <div className='avatars-buttons'>
-              <div className='potential-matches-list'>
-                <Avatar image={avatars[0].image} />
-                <Avatar image={avatars[1].image} />
-                <Avatar image={avatars[2].image} />
-                <div className='others-number'>
-                  <Typography variant='body4'>+49</Typography>
-                </div>
-              </div>
-              <div className='buttons'>
-                <Button active={true} inverted size='large'>
-                  View matches
-                </Button>
-                <Button active={false} inverted size='large'>
-                  Refine search
-                </Button>
-              </div>
-            </div>
+    <>
+      <ImproveTrustScoreModal
+        open={improveTrustScoreModalVisibility}
+        closeModal={() => setImproveTrustScoreModalVisibility(false)}
+      />
+
+      <div className={className}>
+        <div className='section-content'>
+          <div className='wellcome'>
+            <Typography>Hi, {profileStore.first_name}</Typography>
+            <Typography variant='body4' className='center texts'>
+              Our goal is to revolutionise the property industry by using technology and data to empower and
+              inform customers in the buying, selling, and renting process.
+            </Typography>
           </div>
-          <div className='slider-wrapper'>
-            <div className='recommandation-wrapper'>
-              <div className='recommandation-buttons'>
-                <div className='recommandation'>
+          <div className='section'>
+            <div className='current-search-wrapper'>
+              <div className='current-search'>
+                <div className='match'>
                   <Typography variant='body5' className='title'>
-                    Recommendation • 1/5
+                    Current search
                   </Typography>
                   <Typography variant='body4' className='bold'>
-                    Improve your trust score for curated matches
+                    Matching with <span className='matching-with'>Tenants from Bristol, UK</span>
                   </Typography>
                 </div>
-                <div className='buttons'>
-                  <IconButton size='large'>
-                    <Icon icon='chevron-left' size={16} />
-                  </IconButton>
-                  <IconButton size='large'>
-                    <Icon icon='chevron-right' size={16} />
-                  </IconButton>
+                <div className='matches'>
+                  <Typography variant='body5' className='title'>
+                    Matches
+                  </Typography>
+                  <Typography variant='body4' className='number'>
+                    275
+                  </Typography>
                 </div>
               </div>
-              <Typography variant='body4' className='texts'>
-                Our goal is to revolutionise the property industry by using technology and data to empower and
-                inform customers in the buying, selling, and renting process.
-              </Typography>
-              <div className='cta'>
-                <Label variant='tertiary' size='medium' className='improve-link'>
-                  Improve trust score
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
+              <div className='hr-line'></div>
+              <div className='avatars-buttons'>
+                <div className='potential-matches-list'>
+                  <Avatar image={avatars[0].image} />
+                  <Avatar image={avatars[1].image} />
+                  <Avatar image={avatars[2].image} />
+                  <div className='others-number'>
+                    <Typography variant='body4'>+49</Typography>
+                  </div>
+                </div>
+                <div className='buttons'>
+                  <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+                    View matches
+                  </Button>
+                  <Button active={false} inverted size='large'>
+                    Refine search
+                  </Button>
+                </div>
               </div>
             </div>
-            {/* <div className='recommandation-wrapper card-two'>
-              <div className='recommandation-buttons'>
-                <div className='recommandation'>
-                  <Typography variant='body5' className='title'>
-                    Recommendation • 1/5
-                  </Typography>
-                  <Typography variant='body4' className='bold'>
-                    Improve your trust score for curated matches
-                  </Typography>
+            <div className='slider-wrapper'>
+              <div className='recommandation-wrapper'>
+                <div className='recommandation-buttons'>
+                  <div className='recommandation'>
+                    <Typography variant='body5' className='title'>
+                      Recommendation • 1/5
+                    </Typography>
+                    <Typography variant='body4' className='bold'>
+                      Improve your trust score for curated matches
+                    </Typography>
+                  </div>
+                  <div className='buttons'>
+                    <IconButton size='large'>
+                      <Icon icon='chevron-left' size={16} />
+                    </IconButton>
+                    <IconButton size='large'>
+                      <Icon icon='chevron-right' size={16} />
+                    </IconButton>
+                  </div>
                 </div>
-                <div className='buttons'>
-                  <IconButton size='large'>
-                    <Icon icon='chevron-left' size={16} />
-                  </IconButton>
-                  <IconButton size='large'>
-                    <Icon icon='chevron-right' size={16} />
-                  </IconButton>
+                <Typography variant='body4' className='texts'>
+                  Our goal is to revolutionise the property industry by using technology and data to empower
+                  and inform customers in the buying, selling, and renting process.
+                </Typography>
+                <div className='cta'>
+                  <Label
+                    variant='tertiary'
+                    size='medium'
+                    className='improve-link'
+                    onClick={() => setImproveTrustScoreModalVisibility(true)}>
+                    Improve trust score
+                    <Icon icon='arrow-right-1' size={16} />
+                  </Label>
                 </div>
               </div>
-              <Typography variant='body4' className='texts'>
-                Our goal is to revolutionise the property industry by using technology and data to empower and
-                inform customers in the buying, selling, and renting process.
-              </Typography>
-              <div className='cta'>
-                <Label variant='tertiary' size='medium' className='improve-link'>
-                  Improve trust score
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
-              </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 })`
   & {

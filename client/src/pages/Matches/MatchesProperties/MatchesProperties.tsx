@@ -8,7 +8,7 @@ import { Label } from '../../../components/Label';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
+import { ImproveTrustScoreModal } from '../../PagesComponents/ImproveTrustScoreModal';
 import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
@@ -56,7 +56,6 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   const [properties, setProperties] = React.useState<PropertyType[]>([]);
 
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
-  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
   const [checkedProperties, setCheckedProperties] = React.useState<any[]>([]);
   const [matchedView, setMatchedView] = React.useState<boolean>(false);
 
@@ -183,21 +182,10 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       <ImproveTrustScoreModal
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
-        refineYourSearchClick={() => {
-          setImproveTrustScoreModalVisibility(false);
-          setCriteriaModalVisibility(true);
+        afterRefineSearch={async () => {
+          await getProperties();
         }}
       />
-
-      <>
-        <NewSetCriteria
-          open={criteriaModalVisibility}
-          setOpen={setCriteriaModalVisibility}
-          afterRefineSearch={async () => {
-            await getProperties();
-          }}
-        />
-      </>
     </div>
   );
 })`

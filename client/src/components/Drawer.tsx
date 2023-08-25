@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ScrollLock } from './ScrollLock';
+import { createPortal } from 'react-dom';
 
 interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   open?: boolean;
@@ -16,7 +17,7 @@ export const Drawer = styled(
       closed: { x: '100%' }
     };
 
-    return (
+    return createPortal(
       <>
         <ScrollLock lock={open && !disableScrollLock} />
         <AnimatePresence>
@@ -53,7 +54,8 @@ export const Drawer = styled(
             </motion.div>
           )}
         </AnimatePresence>
-      </>
+      </>,
+      document.body
     );
   }
 )`

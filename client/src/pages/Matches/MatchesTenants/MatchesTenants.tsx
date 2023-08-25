@@ -6,7 +6,7 @@ import { Typography } from '../../../components/Typography';
 import { Avatar } from '../../../components/Avatar';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { ImproveTrustScoreModal } from '../ImproveTrustScoreModal';
+import { ImproveTrustScoreModal } from '../../PagesComponents/ImproveTrustScoreModal';
 import { Backdrop } from '../../../components/Backdrop';
 import { Button } from '../../../components/Button';
 import { ViewProfile } from './ViewProfile';
@@ -141,6 +141,7 @@ export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
       />
+
       {criteriaToView && (
         <ViewProfile criteria={criteriaToView.criteria} closeViewProfile={() => setCriteriaToView(null)} />
       )}
