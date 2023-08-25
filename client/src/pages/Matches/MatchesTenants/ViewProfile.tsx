@@ -230,7 +230,7 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria }: Vi
             &.looking-for-section {
               .looking-for-content {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
                 column-gap: 64px;
                 row-gap: 8px;
 
@@ -239,10 +239,15 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria }: Vi
                   justify-content: space-between;
                   padding: 8px 0;
                   column-gap: 16px;
+                  border-bottom: 1px solid #f3f4f5;
+                  .detail-name {
+                    flex-shrink: 0;
+                  }
 
                   .detail-value {
                     font-weight: 700;
                     text-align: end;
+                    flex-wrap: wrap;
                   }
                 }
               }
