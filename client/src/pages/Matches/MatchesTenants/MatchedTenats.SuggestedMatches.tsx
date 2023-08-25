@@ -122,6 +122,7 @@ export const SuggestedTenants = styled(
 
                 return (
                   <motion.div
+                    key={tenantIndex}
                     animate={{
                       x:
                         tenantIndex < activeSlide

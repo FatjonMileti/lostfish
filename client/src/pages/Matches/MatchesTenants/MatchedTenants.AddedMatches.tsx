@@ -102,6 +102,7 @@ export const AddedTenants = styled(
                 const { criteria: tenantCriteria } = addedTenant;
                 return (
                   <motion.div
+                    key={tenantIndex}
                     animate={{
                       x:
                         tenantIndex < activeSlide

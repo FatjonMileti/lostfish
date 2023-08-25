@@ -143,6 +143,7 @@ export const AddedMatches = styled(
                 const { property } = addedProperty;
                 return (
                   <motion.div
+                    key={propertyIndex}
                     animate={{
                       x:
                         propertyIndex < activeSlide

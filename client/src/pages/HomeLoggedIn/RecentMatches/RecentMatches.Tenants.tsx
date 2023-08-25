@@ -42,6 +42,7 @@ export const RecentMatchesTenants = styled(({ className }: HTMLAttributes<HTMLDi
           if (!tenant) return null;
           return (
             <TenantMatch
+              key={tenantIndex}
               className='recent-match'
               fullName={`${tenant.first_name} ${tenant.last_name}`}
               userId={tenant._id}
