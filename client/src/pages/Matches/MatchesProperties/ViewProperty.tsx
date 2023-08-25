@@ -229,6 +229,7 @@ export const ViewProperty = styled(
         position: absolute;
         top: 0;
         z-index: 2;
+        transform: translate3d(0, 0, 0);
 
         display: flex;
         width: 100%;
