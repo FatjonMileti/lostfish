@@ -149,5 +149,6 @@ export const Slide = styled(({ className, ...rest }: SlideProps) => {
     background-image: url('${(props) => props.image}');
     background-repeat: no-repeat;
     background-size: cover;
+    background-position-y: center;
   }
 `;
