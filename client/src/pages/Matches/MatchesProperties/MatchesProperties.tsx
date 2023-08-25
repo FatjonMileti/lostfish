@@ -317,7 +317,7 @@ export const MatchedSlide = styled(
                     </div>
                   </div>
                 </div>
-                <Label variant='secondary' inverted onClick={viewProperty}>
+                <Label className='view-property-button' variant='secondary' inverted onClick={viewProperty}>
                   View property
                 </Label>
               </div>
@@ -339,6 +339,7 @@ export const MatchedSlide = styled(
     background-image: url('${(props) => props.image}');
     background-repeat: no-repeat;
     background-size: cover;
+    background-position-y: center;
 
     box-shadow: 0 7.7px 23.2px 0 rgba(0, 0, 0, 0.25);
 
@@ -387,6 +388,7 @@ export const MatchedSlide = styled(
       justify-content: space-between;
       align-items: center;
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
+      column-gap: 8px;
 
       .left-part {
         display: grid;
@@ -404,8 +406,9 @@ export const MatchedSlide = styled(
           color: white;
           font-weight: 700;
           display: flex;
-          column-gap: 8px;
+          gap: 8px;
           align-items: center;
+          flex-wrap: wrap;
 
           .detail {
             display: flex;
@@ -413,6 +416,10 @@ export const MatchedSlide = styled(
             align-items: center;
           }
         }
+      }
+
+      .view-property-button {
+        flex-shrink: 0;
       }
     }
   }

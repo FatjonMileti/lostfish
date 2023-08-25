@@ -152,6 +152,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
         flex-shrink: 0;
         width: 100%;
         aspect-ratio: 3 / 2;
+        object-fit: contain;
       }
     }
   }
