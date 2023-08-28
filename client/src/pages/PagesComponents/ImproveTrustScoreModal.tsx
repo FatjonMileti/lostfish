@@ -62,7 +62,7 @@ export const ImproveTrustScoreModal = styled(
                   variant='tertiary'
                   size='medium'
                   className='improve-link'
-                  onClick={() => navigate('/my-account/profile-details')}>
+                  onClick={() => navigate('/my-account/account-settings')}>
                   Add a description
                   <Icon icon='arrow-right-1' size={16} />
                 </Label>
@@ -118,7 +118,7 @@ export const ImproveTrustScoreModal = styled(
                   variant='tertiary'
                   size='medium'
                   className='improve-link'
-                  onClick={() => navigate('/my-account/profile-details')}>
+                  onClick={() => navigate('/my-account/account-settings')}>
                   Add a description
                   <Icon icon='arrow-right-1' size={16} />
                 </Label>
@@ -147,7 +147,7 @@ export const ImproveTrustScoreModal = styled(
                   variant='tertiary'
                   size='medium'
                   className='improve-link'
-                  onClick={() => navigate('/my-account/profile-details')}>
+                  onClick={() => navigate('/my-account/account-settings')}>
                   Select avatar
                   <Icon icon='arrow-right-1' size={16} />
                 </Label>
