@@ -17,6 +17,7 @@ const login = async (req: express.Request, res: express.Response) => {
   const model = res.locals.model! as { email: string; password: string };
 
   const loginError = (message: string, code: string) => createError(400, { message, code });
+
   const user: UserDocument | null = await UserModel.findOne({
     email: model.email,
     is_disabled: false
@@ -36,7 +37,6 @@ const login = async (req: express.Request, res: express.Response) => {
   user.last_login = new Date();
   await user.save();
 
-  // tslint:disable-next-line:no-shadowed-variable
   const { token, refresh } = generateTokens(user);
 
   await new LoginLog({
@@ -122,20 +122,6 @@ const getMyProfile = async (req: express.Request, res: express.Response) => {
   const rules = packRules(defineAbilitiesFor(user).rules);
   const data: any = { ...user.toObject(), rules };
 
-  data.documents = data.documents.map((item: any) => {
-    const fileUrl = item.mimetype.startsWith('image')
-      ? `${config.api_url}/api/file/${item.key}`
-      : `${config.api_url}/api/file/pdf/${item.key}`;
-
-    return {
-      key: item.key,
-      type: item.type,
-      approved: item.approved,
-      mimetype: item.mimetype,
-      originalname: item.originalname,
-      link: fileUrl
-    };
-  });
   res.status(httpStatus.OK).json(data);
 };
 
@@ -234,6 +220,7 @@ const logout = async (req: express.Request, res: express.Response) => {
     info: res.locals.username,
     action: LoginLogAction.Logout
   }).save();
+
   return res.json({ success: true });
 };
 

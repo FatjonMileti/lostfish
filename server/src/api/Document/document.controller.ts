@@ -8,13 +8,16 @@ import authorize from '../../middleware/authorize';
 import { handleUploadedDocuments } from './document.helper';
 import abilityMiddleware from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
+import { FileService } from '../File/file.interface';
+import { multipleUpload } from '../../utils/uploader';
 
 const router: Router = Router();
 
 export class DocumentController {
   public router = router;
-
-  constructor() {
+  private fileService: FileService;
+  constructor(fileService: FileService) {
+    this.fileService = fileService;
     this.initializeRoutes();
   }
 
@@ -23,6 +26,7 @@ export class DocumentController {
     this.router.get('/by-user', authorize(), this.getDocumentByUserIds);
     this.router.get('/:id', authorize(), this.getDocumentById);
     this.router.post('/', authorize(), this.createDocument);
+    this.router.post('/upload', authorize(), multipleUpload, this.uploadDocument);
     this.router.patch(
       '/:id',
       authorize(),
@@ -99,6 +103,22 @@ export class DocumentController {
     } catch (error: any) {
       response.status(httpStatus.BAD_REQUEST).send(error);
     }
+  };
+
+  /**
+   * @api {post} /api/documents/upload Upload documents
+   * @apiDescription Upload documents
+   * @apiGroup Document
+   * @apiSampleRequest /api/documents
+   */
+  protected uploadDocument = async (req: Request, res: Response) => {
+    const files = req.files as any[];
+    const mapFilesWithUser: any[] = files.map((item: any) => ({
+      ...item,
+      created_by: res.locals.user_id as string
+    }));
+    const savedFiles = await this.fileService.uploadFiles(mapFilesWithUser);
+    return res.send(savedFiles);
   };
 
   /**

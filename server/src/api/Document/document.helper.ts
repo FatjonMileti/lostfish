@@ -1,11 +1,8 @@
-import config from '../../config';
-import fileService from '../File/services/file.service';
-import S3UploadService from '../File/services/s3-file.service';
-const s3UploaderService = S3UploadService.getInstance();
+import { fileService } from '../index';
+
 import { areArraysOfObjectsIdentical } from '../api.helpers';
 
 export const handleUploadedDocuments = (existingImages: any[], incomingImages: any[], userDocs: any[]) => {
-  const userDocsNotDeleteKeys: string[] = userDocs.map((doc: any) => doc.key);
   if (areArraysOfObjectsIdentical(existingImages, incomingImages)) {
     return [...incomingImages];
   } else {
@@ -14,19 +11,9 @@ export const handleUploadedDocuments = (existingImages: any[], incomingImages: a
     );
 
     if (imagesToDelete.length > 0) {
-      if (config.uses3Bucket) {
-        imagesToDelete
-          .filter((item: any) => !userDocsNotDeleteKeys.includes(item.key))
-          .forEach((img: any) => {
-            s3UploaderService.deleteImage(img.key);
-          });
-      } else {
-        imagesToDelete
-          .filter((item: any) => !userDocsNotDeleteKeys.includes(item.key))
-          .forEach((img: any) => {
-            fileService.removeFile(img.key);
-          });
-      }
+      imagesToDelete.forEach((image: any) => {
+        fileService.deleteFile(image.key).then(() => console.log('Document deleted!'));
+      });
     }
 
     return incomingImages;

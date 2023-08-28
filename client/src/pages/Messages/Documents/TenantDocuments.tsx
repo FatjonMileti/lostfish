@@ -191,7 +191,7 @@ const TenantDocumentItem = ({
                 <img src={document.link} width={40} height={40} alt={''} />
               )}
               {document.mimetype.startsWith('application/pdf') && (
-                <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
+                <a href={`${document.link}`} target='_blank'>
                   {document.originalname}
                 </a>
               )}
@@ -232,7 +232,7 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
                 <img src={document.link} width={40} height={40} alt={''} />
               )}
               {document.mimetype.startsWith('application/pdf') && (
-                <a href={`${document.link}?fileName=${document.originalname}`} target='_blank'>
+                <a href={`${document.link}`} target='_blank'>
                   {document.originalname}
                 </a>
               )}

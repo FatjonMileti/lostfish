@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, ObjectId } from 'mongoose';
 
 export interface IFiles extends Document {
   fieldname: string;
@@ -21,6 +21,7 @@ export interface IFiles extends Document {
   destination: string;
   filename: string;
   path: string;
+  created_by: string | ObjectId;
   expires_in: Date;
   created_at: Date;
 }
@@ -46,6 +47,7 @@ const schema = new Schema<IFiles>({
   destination: { type: String },
   filename: { type: String },
   path: { type: String },
+  created_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, default: new Date() }
 });
 schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });

@@ -47,7 +47,7 @@ export default {
     region: process.env.AWS_REGION ?? '',
     accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
-    awsBucket: process.env.AWS_BACKET ?? ''
+    awsBucket: process.env.AWS_BUCKET ?? ''
   },
   rateLimiter: process.env.RATE_LIMIER_NUMBER_FOR_HOUR ?? 1000
 };

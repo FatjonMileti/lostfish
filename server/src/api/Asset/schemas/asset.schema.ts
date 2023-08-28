@@ -11,20 +11,6 @@ import {
   RentStatusString
 } from '../asset.interface';
 
-const Contact = {
-  firstname: { type: String, required: true },
-  surname: { type: String, required: true },
-  legal_name: { type: String },
-  email: { type: String, required: true },
-  phone: { type: String },
-  company: { type: String, default: null },
-  contact_type: {
-    type: String,
-    enum: ['Client', 'Solicitor', 'Agent', 'Unknown'],
-    default: null
-  },
-  address: { type: String, default: null }
-};
 const schema = new Schema<AssetDocument>({
   asset_id: Number,
   name: { type: String },
@@ -73,13 +59,6 @@ const schema = new Schema<AssetDocument>({
   },
   floor_size: Number,
   floor_size_unit: String,
-  buyers: [Object],
-  reserved: { type: Boolean, default: null },
-  master_branch_name: String,
-  extra_branch_names: [String],
-  walkthrough_url: { type: String, default: null },
-  videos: [{ name: String, url: String }],
-  asset_files: [Object],
   asset_attribute: [Object],
   room_details: {
     number_of_bathrooms: Number,
@@ -104,14 +83,8 @@ const schema = new Schema<AssetDocument>({
     interest_by: Date,
     available_from: Date
   },
-  client_id: { type: Number, default: null },
-  client: { type: Contact, default: null },
-  solicitor_id: { type: Number, default: null },
-  solicitor: { type: Contact, default: null },
-  statistics: { type: Object, default: {} },
   property_images: [{ type: Object }],
   settings: { type: Object, default: {} },
-  preferences: String,
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

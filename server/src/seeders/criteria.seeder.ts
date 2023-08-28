@@ -33,7 +33,7 @@ const createFakeDataMinDetails = (user: any) => {
 const createFakeDataMaxDetails = (user: any) => {
   return {
     area_of_interest: faker.location.streetAddress(),
-    budget: faker.helpers.arrayElement(['1000-5000', '500-1500', '2000-10000']),
+    budget: faker.helpers.arrayElement(['1000 - 5000', '500 - 1500', '2000 - 10000']),
     radius: faker.helpers.arrayElement(['1', '5', '10', '50']),
     asset_address: {
       administrative_area_level_1: faker.location.country(),

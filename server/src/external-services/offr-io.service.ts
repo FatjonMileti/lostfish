@@ -2,7 +2,6 @@ import offrIoRequest from '../offr-io.request';
 import { AssetDocument, MasterAssetTypeSring } from '../api/Asset/asset.interface';
 import { AxiosResponse } from 'axios';
 import { UserDocument } from '../api/User/user.interface';
-import { getCurrentPropertyTypeForPost } from '../api/Asset/helpers';
 
 const createContact = async (contact: UserDocument) => {
   const postData = {
@@ -57,7 +56,6 @@ const mapAssetBeforePost = (asset: AssetDocument): AssetDocument => {
     { name: 'floor_size_unit', type: 'Select', value: asset.floor_size_unit }
   ];
   asset.master_asset_type_string = MasterAssetTypeSring.Residential;
-  // asset.asset_type_string = getCurrentPropertyTypeForPost(asset.property_type);
 
   return asset;
 };

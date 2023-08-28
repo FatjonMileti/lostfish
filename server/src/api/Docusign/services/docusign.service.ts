@@ -52,7 +52,7 @@ const getToken = async () => {
       jwtConfig.dsJWTClientId,
       jwtConfig.impersonatedUserGuid,
       ['signature'],
-      fs.readFileSync(path.join(__dirname, '../../../../', 'private.key')),
+      fs.readFileSync(path.join(__dirname, '../', 'private.key')),
       3600
     );
 

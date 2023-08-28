@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import assetService from './services/asset.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
@@ -8,6 +8,8 @@ import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
+import { multipleUpload } from '../../utils/uploader';
+import { FileService } from '../File/file.interface';
 
 const router: Router = Router();
 
@@ -15,8 +17,11 @@ export class AssetController {
   public path = '/';
   public router = router;
   public assetService = assetService;
+  private readonly fileService: FileService;
   public assetApplicationService = assetApplicationService;
-  constructor() {
+
+  constructor(fileService: FileService) {
+    this.fileService = fileService;
     this.initializeRoutes();
   }
 
@@ -41,6 +46,7 @@ export class AssetController {
       validator(createAssetSchemaValidationDraft),
       this.createAssetDraft
     );
+    this.router.post('/upload', multipleUpload, authorize(), this.uploadAssetFile);
     this.router.post('/:id/send-invitation', authorize(), validateId, authorize(), this.sendInvitation);
     this.router.patch(
       '/:id',
@@ -121,6 +127,19 @@ export class AssetController {
    * @apiUse bearer
    */
   private getById = this.assetService.getById;
+
+  /**
+   * @api {post} /api/asset/upload Upload documents
+   * @apiDescription Upload property images (or other documents)
+   * @apiGroup Asset
+   * @apiSampleRequest /api/asset/upload
+   *
+   * @apiHeader {String} Content-Type multipart/form-data
+   * @apiParam {File[]} images Array of image files to upload.
+   * @apiUse bearer
+   */
+  private uploadAssetFile = (req: Request, res: Response) =>
+    this.assetService.uploadAssetFiles(req, res, this.fileService);
 
   /**
    * @api {post} /api/asset Post

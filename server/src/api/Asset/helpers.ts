@@ -1,20 +1,6 @@
 import config from '../../config';
-import fileService from '../File/services/file.service';
-import S3UploadService from '../File/services/s3-file.service';
+import { fileService } from '../index';
 import { areArraysOfObjectsIdentical } from '../api.helpers';
-const s3UploaderService = S3UploadService.getInstance();
-
-export const getCurrentPropertyTypeForPost = (type: string) => {
-  const propertyTypes: any = {
-    Detached: 'Detached House',
-    'Semi- Detached': 'Semi Detached House',
-    Terraced: 'Mid Terrace House',
-    Flats: 'Studio Apartment',
-    'Farms/Land': 'Industrial'
-  };
-
-  return propertyTypes[type];
-};
 
 export const getCurrentStatusForPost = (status: string) => {
   const statuses: any = {
@@ -40,33 +26,27 @@ export const generateLinksForImages = (docs: any[]) => {
 export const generateLinksForOneAsset = (propertyImages: any[]) => {
   return propertyImages.map((img: any) => {
     return {
-      key: img.key,
-      link: img.link
+      ...img,
+      link: img.link.startsWith('https://') ? img.link : `${config.api_url}/api/file/${img.key}`
     };
   });
 };
 
-export const handlePropertyImages = (existingImages: any[], incomingImages: any[], assetId: string) => {
-  const oldImages = incomingImages.filter((img: any) => Object.keys(img).length < 3);
+export const handlePropertyImages = (existingImages: any[], incomingImages: any[]) => {
+  const oldImages = incomingImages.filter((img: any) => !img.hasOwnProperty('isNew'));
   if (areArraysOfObjectsIdentical(existingImages, oldImages)) {
-    return [...incomingImages];
+    return [...generateLinksForOneAsset(incomingImages)];
   } else {
-    const imagesToDelete = existingImages.filter(
+    const deletedImages = existingImages.filter(
       (img: any) => !incomingImages.some((newImg: any) => newImg.key === img.key)
     );
 
-    if (imagesToDelete.length > 0) {
-      if (config.uses3Bucket) {
-        imagesToDelete.forEach((img: any) => {
-          s3UploaderService.deleteImage(img.key);
-        });
-      } else {
-        imagesToDelete.forEach((img: any) => {
-          fileService.removeFile(img.key);
-        });
-      }
+    if (deletedImages.length > 0) {
+      deletedImages.forEach((img: any) => {
+        fileService.deleteFile(img.key).then(() => console.log('File Deleted!'));
+      });
     }
 
-    return incomingImages;
+    return generateLinksForOneAsset(incomingImages);
   }
 };

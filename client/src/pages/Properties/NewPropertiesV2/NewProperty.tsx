@@ -158,10 +158,10 @@ export const NewPropertyV2 = styled(
         const data = new FormData();
 
         images.forEach((image) => {
-          data.append('images', image);
+          data.append('files', image);
         });
 
-        const response = await axios(auth.access_token).post('/api/upload', data, {
+        const response = await axios(auth.access_token).post('/api/asset/upload', data, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -187,8 +187,10 @@ export const NewPropertyV2 = styled(
         form.setValue('buildingType', data.property_type);
 
         form.setValue('area', data.floor_size);
-        form.setValue('bedrooms', data.room_details.number_of_bedrooms);
-        form.setValue('bathrooms', data.room_details.number_of_bathrooms);
+        if (data.room_details) {
+          form.setValue('bedrooms', data.room_details.number_of_bedrooms);
+          form.setValue('bathrooms', data.room_details.number_of_bathrooms);
+        }
         form.setValue('propertyImages', data.property_images);
         form.setValue('minBudget', data?.budget?.min_budget);
         form.setValue('maxBudget', data?.budget?.max_budget);
@@ -251,6 +253,7 @@ export const NewPropertyV2 = styled(
         setState((state) => ({ ...state, savingProperty: false }));
       }
     };
+
     const startMatching = async () => {
       try {
         if (state.newImages.length > 0) {

@@ -92,10 +92,12 @@ export const NewSetCriteria = styled(
           mainForm.setValue(`propertyFeatures.${key}`, data.property_features.includes(key));
         });
 
-        mainForm.setValue('area', [
-          parseInt(data.floor_size.split('-')[0]),
-          parseInt(data.floor_size.split('-')[1])
-        ]);
+        if (data.floor_size?.includes('-')) {
+          mainForm.setValue('area', [
+            parseInt(data.floor_size.split('-')[0]),
+            parseInt(data.floor_size.split('-')[1])
+          ]);
+        }
 
         mainForm.setValue('nrOfBedrooms', [
           parseInt(data.room_details?.number_of_bedrooms.split('-')[0] || '0'),

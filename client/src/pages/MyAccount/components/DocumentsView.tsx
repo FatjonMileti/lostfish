@@ -67,7 +67,7 @@ export const DocumentsView = (props: IDocumentView) => {
             </Button>
             <input
               type='file'
-              accept='image/*, .pdf'
+              accept='image/*, application/pdf'
               style={{ display: 'none' }}
               ref={fileInputRefs[document.type]}
               onChange={(event) => handleFileChange(event, document.type)}
@@ -78,9 +78,7 @@ export const DocumentsView = (props: IDocumentView) => {
             {selectedDocument?.link && selectedDocument.mimetype.startsWith('application/pdf') && (
               <>
                 Download{' '}
-                <a
-                  href={`${selectedDocument.link}?fileName=${selectedDocument.originalname}`}
-                  target='_blank'>
+                <a href={`${selectedDocument.link}`} target='_blank'>
                   {selectedDocument.originalname}
                 </a>
               </>

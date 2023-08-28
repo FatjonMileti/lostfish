@@ -85,7 +85,6 @@ app.use(helmet.xssFilter());
 // Configure logging middleware to capture and record request and response data.
 
 // Define a custom token to log the request body.
-morgan.token('req-body', (req: Request) => JSON.stringify(req.body));
 app.use(morgan(logFormat));
 app.use(logStream);
 
@@ -100,7 +99,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Configure session management using express-session and MongoStore
-
 export const sessionMiddleware = session({
   resave: true,
   rolling: true,
@@ -117,10 +115,13 @@ export const sessionMiddleware = session({
   },
   name: 'fsdlm'
 });
+
 app.use(sessionMiddleware);
 
 // Serve documentation files from '/docs' route
-app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
+if (config.node_env === 'development') {
+  app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
+}
 
 // Route handlers
 // --------------

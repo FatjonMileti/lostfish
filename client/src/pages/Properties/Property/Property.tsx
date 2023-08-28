@@ -87,13 +87,13 @@ export const Property = styled(
                   <Icon icon='ruler' /> <Typography variant='body5'>{area} sqm </Typography>
                 </div>
               )}
-              {roomsDetails.number_of_bedrooms && (
+              {roomsDetails?.number_of_bedrooms && (
                 <div className='detail'>
                   <Icon icon='double-bed' />
                   <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
                 </div>
               )}
-              {roomsDetails.number_of_bathrooms && (
+              {roomsDetails?.number_of_bathrooms && (
                 <div className='detail'>
                   <Icon icon='bathtub' />{' '}
                   <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>

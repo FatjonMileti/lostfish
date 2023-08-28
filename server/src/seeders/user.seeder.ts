@@ -5,6 +5,7 @@ import { Role, UserDocument } from '../api/User/user.interface';
 import { UserLog } from '../data/logs';
 import RoomSchema from '../api/Chat/schemas/room.schema';
 import MessageSchema from '../api/Chat/schemas/message.schema';
+import DocumentSchema from '../api/Document/document.schema';
 const password = 'Lostfish1234';
 
 const remainingRoles = Object.values(Role);
@@ -53,7 +54,8 @@ export const seedUsers = async (numUsers: number): Promise<void> => {
       UserSchema.deleteMany({}),
       UserLog.deleteMany({}),
       RoomSchema.deleteMany({}),
-      MessageSchema.deleteMany({})
+      MessageSchema.deleteMany({}),
+      DocumentSchema.deleteMany({})
     ]);
 
     const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));

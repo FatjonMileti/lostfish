@@ -1,30 +1,60 @@
 import FilesCollection from '../../../data/files.collection';
 import path from 'path';
 import fs from 'fs';
+import { FileService } from '../file.interface';
+import config from '../../../config';
+import process from 'process';
 
-const createFiles = async (files: any[]) => {
-  return await FilesCollection.insertMany(files);
-};
+export default class LocalFileService implements FileService {
+  async uploadFile(file: any): Promise<string> {
+    // Save the file to the local 'uploads' folder
+    // Return the local file URL
 
-const removeFile = async (imageId: string): Promise<boolean> => {
-  const filePathString: string = 'uploads/';
-
-  const rootDir = process.cwd();
-  const filePath = path.resolve(rootDir, filePathString, imageId);
-
-  try {
-    return await new Promise((resolve, reject) => {
-      fs.unlink(filePath, (error: any) => {
-        if (error) {
-          reject(false);
-        } else {
-          resolve(true);
-        }
-      });
-    });
-  } catch (error) {
-    return false;
+    return '';
   }
-};
 
-export default { createFiles, removeFile };
+  async uploadFiles(files: any[]): Promise<any[]> {
+    await FilesCollection.insertMany(files);
+    return files.map((file: any) => {
+      return {
+        key: file.filename,
+        mimetype: file.mimetype,
+        originalname: file.originalname,
+        link: `${config.api_url}/api/file/${file.filename}`,
+        isNew: true
+      };
+    });
+  }
+
+  async deleteFile(fileUrl: string): Promise<boolean> {
+    const filePathString: string = 'uploads/';
+
+    const rootDir = process.cwd();
+    const filePath = path.resolve(rootDir, filePathString, fileUrl);
+
+    try {
+      return await new Promise((resolve, reject) => {
+        fs.unlink(filePath, async (error: any) => {
+          if (error) {
+            reject(false);
+          } else {
+            await FilesCollection.deleteOne({ filename: fileUrl });
+            resolve(true);
+          }
+        });
+      });
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async getFile(fileUrl: string): Promise<any> {
+    const imagePath = path.resolve(process.cwd(), 'uploads', fileUrl);
+
+    try {
+      return fs.readFileSync(imagePath);
+    } catch (error: any) {
+      return null;
+    }
+  }
+}

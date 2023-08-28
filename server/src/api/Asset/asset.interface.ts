@@ -28,17 +28,6 @@ export enum CountryCode {
   'AL' = 'AL'
 }
 
-export interface ContactDocument extends Document {
-  firstname: string;
-  surname: string;
-  legal_name: { type: string };
-  email: string;
-  phone: string;
-  company: string;
-  contact_type: ContactType;
-  address: string;
-}
-
 export enum PropertyPreferences {
   NewHome = 'New home',
   RetirementHome = 'Retirement home',
@@ -118,12 +107,6 @@ export enum CurrencyCode {
   'KES' = 'KES'
 }
 
-export enum Access {
-  'flexible' = 'flexible',
-  'strict' = 'strict',
-  'semi_strict' = 'semi_strict'
-}
-
 export enum RentalFrequency {
   'Day' = 'Day',
   'Week' = 'Week',
@@ -171,17 +154,11 @@ export interface AssetDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
-  asset_files: any[];
   status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;
   property_type: PropertyType;
   currency_code: CurrencyCode;
-  reserved: boolean;
-  master_branch_name: string;
-  extra_branch_names: [string];
-  walkthrough_url: string;
-  videos: [{ name: string; url: string }];
   asset_attribute: any[];
   room_details: {
     number_of_bathrooms: number;
@@ -206,17 +183,11 @@ export interface AssetDocument extends Document {
     available_from: Date;
   };
   statistics: any;
-  buyers: [object];
   specific_property_features: SpecificPropertyFeatures[];
   property_images: object[];
   credit_score_requirements: CreditScoreRequirement;
   contract_details: ContractDetails[];
   settings: any;
-  preferences: string;
-  client_id: number;
-  solicitor_id: number;
-  client?: ContactDocument;
-  solicitor?: ContactDocument;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

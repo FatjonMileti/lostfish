@@ -1,8 +1,6 @@
 import bcrypt from 'bcrypt';
-import config from '../../config';
-import fileService from '../File/services/file.service';
-import S3UploadService from '../File/services/s3-file.service';
-const s3UploaderService = S3UploadService.getInstance();
+import { fileService } from '../index';
+
 import { areArraysOfObjectsIdentical } from '../api.helpers';
 export const hashPassword = (password: string) => {
   return new Promise((resolve, reject) => {
@@ -61,15 +59,9 @@ export const handleUserDocuments = (existingImages: any[], incomingImages: any[]
     );
 
     if (imagesToDelete.length > 0) {
-      if (config.uses3Bucket) {
-        imagesToDelete.forEach((img: any) => {
-          s3UploaderService.deleteImage(img.key);
-        });
-      } else {
-        imagesToDelete.forEach((img: any) => {
-          fileService.removeFile(img.key);
-        });
-      }
+      imagesToDelete.forEach((img: any) => {
+        fileService.deleteFile(img.key).then(() => console.log('File Deleted!'));
+      });
     }
 
     return incomingImages;

@@ -11,7 +11,6 @@ import { AccountController } from './Account/account.controller';
 import { ProtectedApiController } from './Get/get-data.controller';
 import { CriteriaController } from './Criteria/criteria.controller';
 import { DocusignController } from './Docusign/docusign-test.controller';
-import { UploadController } from './Upload/upload.controller';
 import { FileController } from './File/file.controller';
 import { MatchController } from './Match/match.controller';
 import { AdminController } from './Agent/admin.controller';
@@ -25,6 +24,10 @@ import AdminService from './Agent/admin.service';
 import SuggestionService from './Suggestions/suggestion.service';
 import AssetSchema from './Asset/schemas/asset.schema';
 import CriteriaSchema from './Criteria/schemas/criteria.schema';
+import config from '../config';
+import S3FileService from './File/services/s3-file.service';
+import LocalFileService from './File/services/file.service';
+import { FileService } from './File/file.interface';
 
 const router: Router = Router();
 /**
@@ -58,20 +61,21 @@ const router: Router = Router();
 const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
 const suggestionService = new SuggestionService(AssetSchema, CriteriaSchema);
+export const fileService: FileService = config.uses3Bucket ? new S3FileService() : new LocalFileService();
+
 // Create controller instances
 const suggestionController = new SuggestionController(suggestionService);
 const adminController = new AdminController(adminService);
 const matchController = new MatchController(matchService);
 const protectedController = new ProtectedApiController();
-const uploadController = new UploadController();
 const criteriaController = new CriteriaController();
 const accountController = new AccountController();
-const assetController = new AssetController();
+const assetController = new AssetController(fileService);
 const userController = new UserController();
 const chatController = new ChatController();
 const mapController = new MapController();
 const notificationController = new NotificationController();
-const documentController = new DocumentController();
+const documentController = new DocumentController(fileService);
 const docusignController = new DocusignController();
 const fileController = new FileController();
 
@@ -80,7 +84,6 @@ router.use('/suggestion', suggestionController.router);
 router.use('/admin', adminController.router);
 router.use('/document', documentController.router);
 router.use('/match', matchController.router);
-router.use('/upload', uploadController.router);
 router.use('/file', fileController.router);
 router.use('/docusign', docusignController.router);
 router.use('/criteria', criteriaController.router);

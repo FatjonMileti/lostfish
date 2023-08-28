@@ -46,8 +46,8 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
         // Handle the selected file
         const formData = new FormData();
 
-        formData.append('images', selectedFile);
-        const response = await axios(auth.access_token).post('/api/upload/private-docs', formData, {
+        formData.append('files', selectedFile);
+        const response = await axios(auth.access_token).post('/api/document/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -60,6 +60,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
               doc.key = response.data[0].key;
               doc.mimetype = response.data[0].mimetype;
               doc.originalname = response.data[0].originalname;
+              doc.link = response.data[0].link;
               return doc;
             } else {
               return doc;

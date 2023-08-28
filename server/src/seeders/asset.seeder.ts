@@ -67,12 +67,17 @@ const generateAsset = async (index: number) => {
       longitude: faker.location.longitude(),
       text: faker.location.streetAddress()
     },
+    budget: {
+      min_budget: faker.number.int({ min: 100, max: 500 }),
+      max_budget: faker.number.int({ min: 600, max: 5000 })
+    },
     asset_rent: {
       deposit_amount: faker.number.int({ min: 100, max: 500 }),
       rental_amount: faker.number.int({ min: 500, max: 5000 }),
       rental_frequency: faker.helpers.arrayElement(Object.values(RentalFrequency))
     },
     currency_code: faker.helpers.arrayElement(Object.values(CurrencyCode)),
+    floor_size: faker.number.int({ min: 20, max: 250 }),
     floor_size_unit: 'Meter Squared',
     master_asset_type_string: 'Residential',
     property_type: faker.helpers.arrayElement(Object.values(PropertyType)),

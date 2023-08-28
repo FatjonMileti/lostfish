@@ -1,11 +1,14 @@
-import { DeleteObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { Request } from 'express';
-import multer, { Multer } from 'multer';
-import multerS3 from 'multer-s3';
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import crypto from 'crypto';
 import config from '../../../config';
-import path from 'path';
-import process from 'process';
-
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { FileService } from '../file.interface';
+import FilesCollection from '../../../data/files.collection';
+/*
+  TODO Implement image resize if needed
+  import sharp from 'sharp';
+  const buffer = await sharp(file.buffer).resize({ height: 1080, width: 721, fit: 'contain' }).toBuffer();
+*/
 const s3 = new S3Client({
   region: config.aws.region,
   credentials: {
@@ -14,81 +17,76 @@ const s3 = new S3Client({
   }
 });
 
-export default class S3FileService {
-  private static instance: S3FileService;
-  private uploader!: Multer;
+const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
+
+export default class S3FileService implements FileService {
   private s3service = s3;
 
-  private constructor() {}
-
-  static getInstance(): S3FileService {
-    if (!S3FileService.instance) {
-      S3FileService.instance = new S3FileService();
-    }
-    return S3FileService.instance;
-  }
-
-  createPublicUploader(): Multer {
-    this.uploader = this.createUploader();
-    return this.uploader;
-  }
-
-  createUploader(folder?: string): Multer {
-    this.uploader = multer({
-      storage: multerS3({
-        s3,
-        bucket: config.aws.awsBucket,
-        metadata: (req: Request, file: Express.Multer.File, cb: (error: any, metadata?: any) => void) => {
-          cb(null, { fieldName: file.fieldname });
-        },
-        key: (req: Request, file: Express.Multer.File, cb: (error: any, key?: string) => void) => {
-          const fileName = Date.now() + '-' + file.originalname;
-          let filePath: string | null = fileName;
-          if (folder) {
-            filePath = `${folder}/${fileName}`;
-          }
-          cb(null, filePath);
-        }
-      }),
-      limits: {
-        fileSize: 10 * (1024 * 1024)
-      }
-    });
-    return this.uploader;
-  }
-
-  createPrivateUploader(): Multer {
-    this.uploader = this.createUploader('user-docs');
-    return this.uploader;
-  }
-
-  getFilePath(id: string, folder?: string) {
-    return path.resolve(process.cwd(), 'uploads', folder ? folder : 'asset-images', id);
-  }
-
-  async getImage(filename: string) {
-    const params = {
-      Bucket: config.aws.awsBucket,
-      Key: filename,
-      Expires: 3600
-    };
-
-    const getObjectCommand = new GetObjectCommand(params);
-    const data = await this.s3service.send(getObjectCommand);
-    return data.Body;
-  }
-
-  async deleteImage(imgKey: any) {
+  async uploadFile(file: any): Promise<string> {
     try {
       const params = {
         Bucket: config.aws.awsBucket,
-        Key: imgKey
+        Key: file.key,
+        Body: file.buffer
+      };
+
+      const command = new PutObjectCommand(params);
+      await this.s3service.send(command);
+
+      return '';
+    } catch (err: any) {
+      console.log(err);
+      return '';
+    }
+  }
+
+  async uploadFiles(files: any[]): Promise<any[]> {
+    for (const file of files) {
+      file.key = `${randomImageName()}-${file.originalname}`;
+      await this.uploadFile(file);
+    }
+
+    await FilesCollection.insertMany(files);
+    const updatedFiles: any[] = [];
+
+    for (const file of files) {
+      updatedFiles.push({
+        key: file.key,
+        mimetype: file.mimetype,
+        originalname: file.originalname,
+        link: `${config.api_url}/api/file/${file.key}`,
+        isNew: true
+      });
+    }
+
+    return updatedFiles;
+  }
+
+  async deleteFile(fileUrl: string): Promise<boolean> {
+    try {
+      const params = {
+        Bucket: config.aws.awsBucket,
+        Key: fileUrl
       };
       const command = new DeleteObjectCommand(params);
       await this.s3service.send(command);
-      console.log('File deleted successfully.');
+      await FilesCollection.deleteOne({ filename: fileUrl });
+      return true;
     } catch (err) {
       console.error('Error deleting file:', err);
+      return false;
     }
+  }
+
+  async getFile(fileUrl: string): Promise<string> {
+    const params = {
+      Bucket: config.aws.awsBucket,
+      Key: fileUrl,
+      Expires: 3600
+    };
+
+    const command = new GetObjectCommand(params);
+    // @ts-ignore
+    return await getSignedUrl(s3, command, { expiresIn: 3600 });
   }
 }

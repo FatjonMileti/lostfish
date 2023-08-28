@@ -13,6 +13,8 @@ import { Role } from '../../User/user.interface';
 import { AssetLog, LogAction } from '../../../data/logs';
 import { faker } from '@faker-js/faker';
 import MatchSchema from '../../Match/match.schema';
+import { FileService } from '../../File/file.interface';
+import config from '../../../config';
 
 const mailService = MailService.getInstance();
 
@@ -140,8 +142,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (data.hasOwnProperty('location_details')) {
-        asset.location_details = data.location_details;
-      }
+      asset.location_details = data.location_details;
+    }
 
     if (data.hasOwnProperty('status_string')) {
       asset.status_string = data.status_string;
@@ -188,7 +190,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     }
 
     if (req.body.hasOwnProperty('property_images')) {
-      asset.property_images = handlePropertyImages(asset.property_images, data.property_images, asset._id);
+      asset.property_images = handlePropertyImages(asset.property_images, data.property_images);
     }
 
     await asset.save();
@@ -329,6 +331,12 @@ const findPublishedPropertiesExample = async (userId?: string): Promise<AssetDoc
   }
 };
 
+const uploadAssetFiles = async (req: Request, res: Response, fileService: FileService) => {
+  const files = req.files as any[];
+  const savedFiles = await fileService.uploadFiles(files);
+  return res.send(savedFiles);
+};
+
 export default {
   findAll,
   getById,
@@ -339,5 +347,6 @@ export default {
   sendAssetInvitation,
   findPublishedProperties,
   findPublishedPropertiesExample,
-  findPropertyById
+  findPropertyById,
+  uploadAssetFiles
 };

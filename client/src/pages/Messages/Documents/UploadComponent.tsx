@@ -25,9 +25,9 @@ export const UploadComponent = (props: IUploadDocument) => {
     if (selectedFile) {
       const formData = new FormData();
 
-      formData.append('images', selectedFile);
+      formData.append('files', selectedFile);
       try {
-        const { status, data } = await axios(auth.access_token).post('/api/upload/private-docs', formData, {
+        const { status, data } = await axios(auth.access_token).post('/api/document/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -44,7 +44,7 @@ export const UploadComponent = (props: IUploadDocument) => {
     <>
       <input
         type='file'
-        accept='image/*, .pdf'
+        accept='image/*, application/pdf'
         style={{ display: 'none' }}
         ref={inputRef}
         onChange={(event) => handleFileChange(event)}
