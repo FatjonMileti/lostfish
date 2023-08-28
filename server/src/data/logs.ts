@@ -89,4 +89,4 @@ const generateModel: (collection: string) => PaginateModel<ILog> = (collection: 
 
 export const UserLog = generateModel('user');
 export const MatchLog = generateModel('match');
-export const AssetLog = generateModel('asset');
+export const AssetLog = generateModel('property');

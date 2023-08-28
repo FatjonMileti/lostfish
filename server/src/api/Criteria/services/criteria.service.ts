@@ -4,7 +4,7 @@ import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import googleMapService from '../../../external-services/google-map.service';
-import { CurrencyCode } from '../../Asset/asset.interface';
+import { CurrencyCode } from '../../Property/property.interface';
 import userService from '../../User/user.service';
 import { Role } from '../../User/user.interface';
 import docusignService from '../../Docusign/services/docusign.service';

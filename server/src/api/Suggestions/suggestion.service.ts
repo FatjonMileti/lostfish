@@ -1,19 +1,19 @@
 import { PaginateModel } from 'mongoose';
 import { IPagingOptions } from '../../middleware/paging';
-import { AssetDocument } from '../Asset/asset.interface';
+import { PropertyDocument } from '../Property/property.interface';
 import { CriteriaDocument } from '../Criteria/criteria.interface';
 import MatchSchema from '../Match/match.schema';
-import { generateLinksForImages } from '../Asset/helpers';
+import { generateLinksForImages } from '../Property/helpers';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
-import assetService from '../Asset/services/asset.service';
+import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
 
 export default class SuggestionService {
-  private assetModel: PaginateModel<AssetDocument>;
+  private assetModel: PaginateModel<PropertyDocument>;
   private criteriaModel: PaginateModel<CriteriaDocument>;
-  constructor(assetModel: PaginateModel<AssetDocument>, criteriaModel: PaginateModel<CriteriaDocument>) {
+  constructor(assetModel: PaginateModel<PropertyDocument>, criteriaModel: PaginateModel<CriteriaDocument>) {
     this.assetModel = assetModel;
     this.criteriaModel = criteriaModel;
   }
@@ -100,7 +100,10 @@ export default class SuggestionService {
         (item: any) => item.created_by && item.created_by.role === Role.Client
       );
 
-      const myProperties: AssetDocument[] | null = await assetService.findPublishedPropertiesExample(userId);
+      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample(
+        userId
+      );
+
       const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
 
       const data: any[] = [];
@@ -123,10 +126,47 @@ export default class SuggestionService {
     }
   }
 
+  public async getTenantsByUser(userId: string) {
+    try {
+      let matchesUsers: any[] = await this.criteriaModel
+        .find({
+          created_by: { $ne: userId }
+        })
+        .populate('created_by', ['email', 'username', 'first_name', 'last_name', 'avatar', 'role']);
+
+      matchesUsers = matchesUsers.filter(
+        (item: any) => item.created_by && item.created_by.role === Role.Client
+      );
+
+      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample(
+        userId
+      );
+
+      const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
+
+      const data: any[] = [];
+
+      for (const property of myProperties) {
+        const processedProperties = matchesUsers.map((item: any) => {
+          return this.makeSuggestionObject(item, matches, property);
+        });
+
+        data.push(...processedProperties);
+      }
+
+      matchesUsers = data
+        .filter((item: any) => item.property.percentage > 20)
+        .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
+      return { response: matchesUsers, success: true };
+    } catch (error: any) {
+      return { response: error, success: false };
+    }
+  }
+
   private makeSuggestionObject = (
     item: MatchDocWithCreatedBY,
     matches: MatchDocument[],
-    property: AssetDocument
+    property: PropertyDocument
   ) => {
     const matchTenant: MatchDocument | undefined = matches.find((match: any) => {
       return (

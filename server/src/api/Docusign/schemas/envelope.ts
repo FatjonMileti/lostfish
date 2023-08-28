@@ -38,7 +38,7 @@ const schema = new Schema<IEnvelope>({
   land_lord: { type: Schema.Types.ObjectId, ref: 'user' },
   tenant: { type: Schema.Types.ObjectId, ref: 'user' },
   agent: { type: Schema.Types.ObjectId, ref: 'user' },
-  property: { type: Schema.Types.ObjectId, ref: 'asset' },
+  property: { type: Schema.Types.ObjectId, ref: 'property' },
   created_at: { type: Date, default: new Date() },
   created_by: { type: Schema.Types.ObjectId, ref: 'user' }
 });

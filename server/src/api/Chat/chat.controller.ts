@@ -11,7 +11,7 @@ import documentService from '../Document/document.service';
 import docusignLocalService from '../Docusign/services/docusign.local.service';
 import { Role } from '../User/user.interface';
 import { IEnvelope } from '../Docusign/schemas/envelope';
-import assetService from '../Asset/services/asset.service';
+import assetService from '../Property/services/property.service';
 import validateId from '../../middleware/object-id.validator';
 const router: Router = Router();
 

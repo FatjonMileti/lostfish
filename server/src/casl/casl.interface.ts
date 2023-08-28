@@ -8,7 +8,7 @@ export enum CASLAction {
 
 export type AppSubjects =
   | 'User'
-  | 'Asset'
+  | 'Property'
   | 'Chat'
   | 'all'
   | 'Agent'

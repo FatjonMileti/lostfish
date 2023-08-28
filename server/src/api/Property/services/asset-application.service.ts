@@ -4,11 +4,11 @@ import AssetApplicationSchema, {
   ApproveType
 } from '../schemas/asset-application.schema';
 import createError from 'http-errors';
-import assetService from './asset.service';
+import assetService from './property.service';
 import { Types } from 'mongoose';
 import userService from '../../User/user.service';
 import sendApplicationTemplate from '../../../utils/templates/sendApplicationTemplate';
-import { RentStatusString } from '../asset.interface';
+import { RentStatusString } from '../property.interface';
 import generalTemplate from '../../../utils/templates/generalTemplate';
 import { getCurrentStatusForPost } from '../helpers';
 import MailService from '../../../utils/email';
@@ -27,7 +27,7 @@ const getAssetApplications = async (req: Request, res: Response) => {
             path: 'applicant',
             select: ['first_name', 'last_name']
           },
-          { path: 'asset' }
+          { path: 'property' }
         ]
       }
     );
@@ -44,7 +44,7 @@ const getOneAssetApplication = async (req: Request, res: Response) => {
     const response = await AssetApplicationSchema.findOne({
       asset: id,
       applicant: res.locals.user_id
-    }).populate('asset', ['asset_rent']);
+    }).populate('property', ['asset_rent']);
 
     res.send(response);
   } catch (error: any) {

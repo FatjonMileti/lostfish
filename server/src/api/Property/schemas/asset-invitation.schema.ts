@@ -10,7 +10,7 @@ const schema = new Schema<InvitationDocument>({
   invite_reason: { type: String },
   invite_type: { type: String },
   accepted: { type: Boolean, default: false },
-  asset: { type: Schema.Types.ObjectId, ref: 'asset' },
+  asset: { type: Schema.Types.ObjectId, ref: 'property' },
   created_at: { type: Date, required: true, default: () => new Date() },
   created_by: { type: Types.ObjectId, ref: 'user' }
 });

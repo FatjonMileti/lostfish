@@ -14,7 +14,7 @@ import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
 import MatchSchema from '../Match/match.schema';
-import AssetSchema from '../Asset/schemas/asset.schema';
+import AssetSchema from '../Property/schemas/property.schema';
 const mailService = MailService.getInstance();
 
 const getAll = async (req: Request, res: Response) => {

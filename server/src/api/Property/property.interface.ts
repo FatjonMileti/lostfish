@@ -135,7 +135,7 @@ export enum ContractDetails {
   energyCertificate = 'energyCertificate'
 }
 
-export interface AssetDocument extends Document {
+export interface PropertyDocument extends Document {
   asset_id: number;
   name: string;
   area_of_interest: string;
@@ -168,6 +168,7 @@ export interface AssetDocument extends Document {
     min_budget: number;
     max_budget: number;
   };
+  views: number;
   parking_spot: number;
   epc_rating: string;
   location_details: string;

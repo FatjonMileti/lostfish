@@ -1,6 +1,7 @@
 import config from '../../config';
 import { fileService } from '../index';
 import { areArraysOfObjectsIdentical } from '../api.helpers';
+import { PropertyDocument } from './property.interface';
 
 export const getCurrentStatusForPost = (status: string) => {
   const statuses: any = {
@@ -13,6 +14,26 @@ export const getCurrentStatusForPost = (status: string) => {
     'Pre Draft': 'Pre Draft'
   };
   return statuses[status];
+};
+
+export const getPropertyScore = (property: PropertyDocument) => {
+  return (
+    (100 / 7) *
+    [
+      !!property.title,
+      !!property.property_images.length,
+      !!property.area_of_interest,
+      !!property.budget.min_budget && !!property.budget.max_budget,
+      !!property.property_type &&
+        !!property.room_details.number_of_bedrooms &&
+        !!property.room_details.number_of_bathrooms &&
+        !!property.floor_size &&
+        !!property.parking_spot &&
+        !!property.epc_rating,
+      !!property.description && !!property.location_details,
+      true
+    ].filter((d) => d).length
+  ).toFixed(0);
 };
 
 export const generateLinksForImages = (docs: any[]) => {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import assetService from '../Asset/services/asset.service';
+import assetService from '../Property/services/property.service';
 import userService from '../User/user.service';
 import tokenAuthorize from '../../middleware/tokenAuthorize';
 const router: Router = Router();

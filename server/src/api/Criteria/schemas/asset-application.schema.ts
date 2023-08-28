@@ -8,7 +8,7 @@ export enum ApproveType {
 
 const schema = new Schema<ApplicationDocument>({
   applicant: { type: Types.ObjectId, ref: 'user' },
-  asset: { type: Schema.Types.ObjectId, ref: 'asset' },
+  asset: { type: Schema.Types.ObjectId, ref: 'property' },
   have_pets: { type: Boolean, default: false },
   adults_number: { type: Number, required: true },
   participants: [String],

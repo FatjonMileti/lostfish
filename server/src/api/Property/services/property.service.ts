@@ -1,12 +1,17 @@
-import AssetModel from '../schemas/asset.schema';
-import { AssetDocument, CurrencyCode, MasterAssetTypeSring } from '../asset.interface';
+import PropertyModel from '../schemas/property.schema';
+import { CurrencyCode, MasterAssetTypeSring, PropertyDocument } from '../property.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
 import { Types } from 'mongoose';
-import { generateLinksForImages, generateLinksForOneAsset, handlePropertyImages } from '../helpers';
+import {
+  generateLinksForImages,
+  generateLinksForOneAsset,
+  getPropertyScore,
+  handlePropertyImages
+} from '../helpers';
 import MailService from '../../../utils/email';
 import googleMapService from '../../../external-services/google-map.service';
 import { Role } from '../../User/user.interface';
@@ -14,7 +19,8 @@ import { AssetLog, LogAction } from '../../../data/logs';
 import { faker } from '@faker-js/faker';
 import MatchSchema from '../../Match/match.schema';
 import { FileService } from '../../File/file.interface';
-import config from '../../../config';
+import propertyDetailService from './property-detail.service';
+import { suggestionService } from '../../index';
 
 const mailService = MailService.getInstance();
 
@@ -45,10 +51,10 @@ const findAll = async (req: Request, res: Response) => {
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
   }
 
-  const count = await AssetModel.countDocuments({ created_by: res.locals.user_id });
+  const count = await PropertyModel.countDocuments({ created_by: res.locals.user_id });
 
   try {
-    const response = await AssetModel.paginate(query, {
+    const response = await PropertyModel.paginate(query, {
       ...res.locals.paging_options,
       populate: [
         {
@@ -72,7 +78,7 @@ const findAll = async (req: Request, res: Response) => {
 };
 
 const createAsset = async (req: Request, res: Response): Promise<any> => {
-  const data: AssetDocument = req.body;
+  const data: PropertyDocument = req.body;
   data.created_by = res.locals.user_id;
   data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
@@ -90,8 +96,12 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
   }
 
   try {
-    const asset: AssetDocument = new AssetModel({ ...data });
-    await asset.save();
+    const asset: PropertyDocument = new PropertyModel({ ...data });
+    const property = await asset.save();
+
+    const propertyScore = getPropertyScore(property);
+
+    await propertyDetailService.createPropertyDetail(property._id, propertyScore);
     await AssetLog.create({ user: res.locals.user_id, action: LogAction.Create, info: data });
     res.status(httpStatus.CREATED).send(asset.toObject());
   } catch (error: any) {
@@ -101,7 +111,7 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
 
 const updateAsset = async (req: Request, res: Response): Promise<any> => {
   try {
-    const data: AssetDocument = req.body;
+    const data: PropertyDocument = req.body;
     const id = req.params.id;
     const asset = await findById(id);
 
@@ -193,6 +203,10 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.property_images = handlePropertyImages(asset.property_images, data.property_images);
     }
 
+    const propertyScore = getPropertyScore(asset);
+
+    await propertyDetailService.findAndUpdateByPropertyId(asset._id, { property_score: propertyScore });
+
     await asset.save();
     await AssetLog.create({ user: res.locals.user_id, action: LogAction.Update, ref: id, info: data });
     res.status(httpStatus.OK).send(asset);
@@ -204,7 +218,7 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 const getById = async (req: Request, res: Response): Promise<any | null> => {
   const id = req.params.id;
 
-  const asset: AssetDocument | null = await AssetModel.findOne({ _id: id });
+  const asset: PropertyDocument | null = await PropertyModel.findOne({ _id: id });
 
   if (!asset) {
     throw createError(404, 'The item does not exist');
@@ -221,7 +235,7 @@ const getById = async (req: Request, res: Response): Promise<any | null> => {
 };
 
 const findById = async (id: string): Promise<any | null> => {
-  const asset: AssetDocument | null = await AssetModel.findOne({ _id: id });
+  const asset: PropertyDocument | null = await PropertyModel.findOne({ _id: id });
 
   if (!asset) {
     throw createError(404, 'The item does not exist');
@@ -230,12 +244,34 @@ const findById = async (id: string): Promise<any | null> => {
 };
 
 const findPropertyById = async (id: string): Promise<any | null> => {
-  return AssetModel.findOne({ _id: id }).lean();
+  return PropertyModel.findOne({ _id: id }).lean();
+};
+
+const findLastAddedPropertyWithDetails = async (req: Request, res: Response) => {
+  const lastAddedProperty = await PropertyModel.findOne(
+    { status_string: 'Live' },
+    {},
+    { sort: { created_at: -1 } }
+  );
+  if (!lastAddedProperty) {
+    throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+  }
+  const propertyDetails: any = await propertyDetailService.findPropertyByPropertyId(
+    <string>lastAddedProperty._id
+  );
+
+  const matches = await suggestionService.getTenantsByUser(<string>res.locals.user_id);
+
+  propertyDetails.tenants = matches.response.map((item: any) => item.criteria.created_by);
+
+  propertyDetails.my_chosen_matches = await MatchSchema.count({ created_by: <string>res.locals.user_id });
+
+  res.send({ property: lastAddedProperty, details: propertyDetails });
 };
 
 const deleteAsset = async (req: Request, res: Response) => {
   const id = req.params.id;
-  await AssetModel.findByIdAndDelete(id);
+  await PropertyModel.findByIdAndDelete(id);
   await AssetLog.create({ user: res.locals.user_id, action: LogAction.Delete, ref: id });
   res.status(httpStatus.NO_CONTENT).send();
 };
@@ -273,7 +309,7 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   };
 
   try {
-    const response: any = await AssetModel.paginate(query, {
+    const response: any = await PropertyModel.paginate(query, {
       ...res.locals.paging_options,
       populate: [
         {
@@ -315,7 +351,7 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   }
 };
 
-const findPublishedPropertiesExample = async (userId?: string): Promise<AssetDocument[]> => {
+const findPublishedPropertiesExample = async (userId?: string): Promise<PropertyDocument[]> => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
   };
@@ -325,7 +361,7 @@ const findPublishedPropertiesExample = async (userId?: string): Promise<AssetDoc
   }
 
   try {
-    return await AssetModel.find(query).lean();
+    return await PropertyModel.find(query).lean();
   } catch (error: any) {
     return [];
   }
@@ -348,5 +384,6 @@ export default {
   findPublishedProperties,
   findPublishedPropertiesExample,
   findPropertyById,
-  uploadAssetFiles
+  uploadAssetFiles,
+  findLastAddedPropertyWithDetails
 };

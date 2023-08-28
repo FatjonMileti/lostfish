@@ -18,12 +18,13 @@ export enum CASLAction {
 
 export type AppSubjects =
   | 'User'
-  | 'Asset'
+  | 'Property'
   | 'Chat'
   | 'all'
   | 'Menu'
   | 'AdminMenu'
   | 'Client'
+  | 'Criteria'
   | 'Agent'
   | 'SignGenerator'
   | 'SignURL'
@@ -32,7 +33,9 @@ export type AppSubjects =
   | 'Properties'
   | 'Matches'
   | 'Message'
-  | 'Documents';
+  | 'Documents'
+  | 'ClientMatches'
+  | 'LandlordMatches';
 
 export enum Role {
   Agent = 'Agent',
@@ -55,8 +58,10 @@ export default function defineRulesFor(role: string) {
 
   if (role === Role.Landlord) {
     can(CASLAction.Read, 'Menu', ['Home', 'Property', 'Match', 'Message']);
+    can(CASLAction.Read, 'LandlordMatches');
   } else if (role === Role.Client) {
     can(CASLAction.Read, 'Menu', ['Home', 'Match', 'Message']);
+    can(CASLAction.Read, 'ClientMatches');
   } else if (role === Role.NewUser) {
     can(CASLAction.Read, 'Menu', ['Home']);
   }

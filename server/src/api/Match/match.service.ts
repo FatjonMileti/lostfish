@@ -83,4 +83,8 @@ export default class MatchService {
   public async deleteMatch(id: string): Promise<MatchDocument | null> {
     return this.matchModel.findByIdAndDelete(id).exec();
   }
+
+  public async findMatchById(id: string): Promise<MatchDocument | null> {
+    return this.matchModel.findById(id);
+  }
 }

@@ -10,17 +10,30 @@ import { IconButton } from '../../components/IconButton';
 import { useProfileStore } from '../../globalState/profile';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { useNavigate } from 'react-router-dom';
+import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import Can from '../../components/Can';
+import { CASLAction } from '../../utils/ability.util';
+import { TPropertyDetails, usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
 
 export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
+  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
+
+  const { property, propertyDetails } = usePropertyDetailsHook();
+
   const navigate = useNavigate();
+
   return (
     <>
       <ImproveTrustScoreModal
         open={improveTrustScoreModalVisibility}
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
       />
+
+      {profileStore.role === 'Tenant' && (
+        <NewSetCriteria open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
+      )}
 
       <div className={className}>
         <div className='section-content'>
@@ -32,45 +45,11 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             </Typography>
           </div>
           <div className='section'>
-            <div className='current-search-wrapper'>
-              <div className='current-search'>
-                <div className='match'>
-                  <Typography variant='body5' className='title'>
-                    Current search
-                  </Typography>
-                  <Typography variant='body4' className='bold'>
-                    Matching with <span className='matching-with'>Tenants from Bristol, UK</span>
-                  </Typography>
-                </div>
-                <div className='matches'>
-                  <Typography variant='body5' className='title'>
-                    Matches
-                  </Typography>
-                  <Typography variant='body4' className='number'>
-                    275
-                  </Typography>
-                </div>
-              </div>
-              <div className='hr-line'></div>
-              <div className='avatars-buttons'>
-                <div className='potential-matches-list'>
-                  <Avatar image={avatars[0].image} />
-                  <Avatar image={avatars[1].image} />
-                  <Avatar image={avatars[2].image} />
-                  <div className='others-number'>
-                    <Typography variant='body4'>+49</Typography>
-                  </div>
-                </div>
-                <div className='buttons'>
-                  <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
-                    View matches
-                  </Button>
-                  <Button active={false} inverted size='large'>
-                    Refine search
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <Can do={CASLAction.Read} on='LandlordMatches'>
+              {property && propertyDetails && (
+                <LandlordSectionMatches property={property} propertyDetails={propertyDetails} />
+              )}
+            </Can>
             <div className='slider-wrapper'>
               <div className='recommandation-wrapper'>
                 <div className='recommandation-buttons'>
@@ -332,3 +311,54 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     }
   }
 `;
+
+const LandlordSectionMatches = ({
+  property,
+  propertyDetails
+}: {
+  property: IProperty;
+  propertyDetails: TPropertyDetails;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className='current-search-wrapper'>
+      <div className='current-search'>
+        <div className='match'>
+          <Typography variant='body5' className='title'>
+            Current search
+          </Typography>
+          <Typography variant='body4' className='bold'>
+            Matching with <span className='matching-with'>Tenants from {property.area_of_interest}</span>
+          </Typography>
+        </div>
+        <div className='matches'>
+          <Typography variant='body5' className='title'>
+            Matches
+          </Typography>
+          <Typography variant='body4' className='number'>
+            {propertyDetails?.my_chosen_matches || 0}
+          </Typography>
+        </div>
+      </div>
+      <div className='hr-line'></div>
+      <div className='avatars-buttons'>
+        <div className='potential-matches-list'>
+          {propertyDetails?.tenants?.slice(0, 3).map((item: any) => (
+            <Avatar image={avatars[parseInt(item.avatar)].image} />
+          ))}
+          {propertyDetails?.tenants && propertyDetails?.tenants?.length > 3 && (
+            <div className='others-number'>
+              <Typography variant='body4'>+49</Typography>
+            </div>
+          )}
+        </div>
+        <div className='buttons'>
+          <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+            View matches
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};

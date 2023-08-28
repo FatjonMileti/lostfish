@@ -2,7 +2,7 @@ import { Router } from 'express';
 import authorize from '../middleware/authorize';
 /* CONTROLLERS */
 import { UserController } from './User/user.controller';
-import { AssetController } from './Asset/asset.controller';
+import { PropertyController } from './Property/property.controller';
 import { ChatController } from './Chat/chat.controller';
 import { MapController } from './Map/map.controller';
 import { NotificationController } from './Notification/notification.controller';
@@ -22,7 +22,7 @@ import MatchModel from './Match/match.schema';
 import { LoginLog, AssetLog, MatchLog } from '../data/logs';
 import AdminService from './Agent/admin.service';
 import SuggestionService from './Suggestions/suggestion.service';
-import AssetSchema from './Asset/schemas/asset.schema';
+import PropertySchema from './Property/schemas/property.schema';
 import CriteriaSchema from './Criteria/schemas/criteria.schema';
 import config from '../config';
 import S3FileService from './File/services/s3-file.service';
@@ -60,7 +60,7 @@ const router: Router = Router();
 // Create services instances
 const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
-const suggestionService = new SuggestionService(AssetSchema, CriteriaSchema);
+export const suggestionService = new SuggestionService(PropertySchema, CriteriaSchema);
 export const fileService: FileService = config.uses3Bucket ? new S3FileService() : new LocalFileService();
 
 // Create controller instances
@@ -70,7 +70,7 @@ const matchController = new MatchController(matchService);
 const protectedController = new ProtectedApiController();
 const criteriaController = new CriteriaController();
 const accountController = new AccountController();
-const assetController = new AssetController(fileService);
+const assetController = new PropertyController(fileService);
 const userController = new UserController();
 const chatController = new ChatController();
 const mapController = new MapController();

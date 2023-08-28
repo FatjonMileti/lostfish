@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
-import assetService from './services/asset.service';
+import assetService from './services/property.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import assetApplicationService from './services/asset-application.service';
-import { createAssetSchemaValidation, createAssetSchemaValidationDraft } from './asset.validation';
+import { createAssetSchemaValidation, createAssetSchemaValidationDraft } from './property.validation';
 import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import ability from '../../middleware/ability.middleware';
@@ -13,7 +13,7 @@ import { FileService } from '../File/file.interface';
 
 const router: Router = Router();
 
-export class AssetController {
+export class PropertyController {
   public path = '/';
   public router = router;
   public assetService = assetService;
@@ -30,7 +30,7 @@ export class AssetController {
       this.path,
       authorize(),
       paging({ sort: { created_at: -1 } }),
-      ability(CASLAction.Read, 'Asset'),
+      ability(CASLAction.Read, 'Property'),
       this.findAll
     );
     this.router.get('/:id/get-applications', authorize(), validateId, this.getAssetApplications);
@@ -38,6 +38,7 @@ export class AssetController {
     this.router.post('/:id/send-application', authorize(), validateId, this.sendApplication);
     this.router.patch('/:id/approve-application', authorize(), validateId, this.approveApplication);
     this.router.patch('/:id/update-application', authorize(), validateId, this.updateApplication);
+    this.router.get('/last', authorize(), this.getLatestProperty);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
     this.router.post(
@@ -61,7 +62,7 @@ export class AssetController {
   /**
    * @api {get} /api/asset Get asset
    * @apiDescription Get all assets
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset
    *
    * @apiQuery {string} [status] status
@@ -74,7 +75,7 @@ export class AssetController {
   /**
    * @api {get} /api/asset/:id/applications Get asset applications
    * @apiDescription Get all applications for an asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/applications
    *
    * @apiPermission admin
@@ -84,7 +85,7 @@ export class AssetController {
   /**
    * @api {get} /api/asset/:id/application Get aset application
    * @apiDescription Get application for an asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/application
    *
    * @apiPermission admin
@@ -94,7 +95,7 @@ export class AssetController {
   /**
    * @api {patch} /api/asset/:id/update-application Update asset application
    * @apiDescription Update an application for an asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/update-application
    *
    * @apiBody {documents} any
@@ -107,7 +108,7 @@ export class AssetController {
   /**
    * @api {patch} /api/asset/:id/approve-application Approve or pre-approve an application
    * @apiDescription Approve or pre-approve an application
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/approve-application
    *
    * @apiBody {boolean} approve_status
@@ -119,7 +120,7 @@ export class AssetController {
   /**
    * @api {get} /api/asset/:id Get by Id
    * @apiDescription Get asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id
    *
    * @apiParam id asset id
@@ -129,9 +130,19 @@ export class AssetController {
   private getById = this.assetService.getById;
 
   /**
+   * @api {get} /api/asset/last Get the latest property Live
+   * @apiDescription Get property details
+   * @apiGroup Property
+   * @apiSampleRequest /api/asset/last
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+  private getLatestProperty = this.assetService.findLastAddedPropertyWithDetails;
+
+  /**
    * @api {post} /api/asset/upload Upload documents
    * @apiDescription Upload property images (or other documents)
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/upload
    *
    * @apiHeader {String} Content-Type multipart/form-data
@@ -144,7 +155,7 @@ export class AssetController {
   /**
    * @api {post} /api/asset Post
    * @apiDescription Add a new asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset
    *
    * @apiUse CreateAsset
@@ -157,7 +168,7 @@ export class AssetController {
   /**
    * @api {post} /api/asset/draft Post as draft
    * @apiDescription Add a new asset as draft
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/draft
    *
    * @apiUse CreateAsset
@@ -170,7 +181,7 @@ export class AssetController {
   /**
    * @api {patch} /api/asset/:id Patch one asset
    * @apiDescription Update existing asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id
    *
    * @apiUse CreateAsset
@@ -183,7 +194,7 @@ export class AssetController {
   /**
    * @api {patch} /api/asset/:id/send-invitation Send invitation
    * @apiDescription Send invitation
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/send-invitation
    *
    * @apiBody {string} first_name
@@ -201,7 +212,7 @@ export class AssetController {
   /**
    * @api {patch} /api/asset/:id/send-application Send application
    * @apiDescription Send application
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id/send-application
    *
    * @apiBody {boolean} have_pets
@@ -219,7 +230,7 @@ export class AssetController {
   /**
    * @api {delete} /api/asset/:id Delete
    * @apiDescription Delete asset
-   * @apiGroup Asset
+   * @apiGroup Property
    * @apiSampleRequest /api/asset/:id
    * @apiParam id
    * @apiPermission admin

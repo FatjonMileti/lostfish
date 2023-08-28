@@ -17,7 +17,7 @@ import createError from 'http-errors';
 import { Role, UserDocument } from '../../User/user.interface';
 import util from 'util';
 import docusignLocalService from './docusign.local.service';
-import assetService from '../../Asset/services/asset.service';
+import assetService from '../../Property/services/property.service';
 import moment from 'moment';
 import envelopeService from './envelope.service';
 

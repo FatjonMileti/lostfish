@@ -8,7 +8,7 @@ import {
   PropertyType,
   SpecificPropertyFeatures,
   TransactionTypeString
-} from '../api/Asset/asset.interface';
+} from '../api/Property/property.interface';
 import userService from '../api/User/user.service';
 import { Role } from '../api/User/user.interface';
 import CriteriaSchema from '../api/Criteria/schemas/criteria.schema';

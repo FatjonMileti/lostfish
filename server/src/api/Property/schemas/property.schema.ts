@@ -2,16 +2,16 @@ import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import {
-  AssetDocument,
+  PropertyDocument,
   CountryCode,
   CurrencyCode,
   MasterAssetTypeSring,
   StatusString,
   TransactionTypeString,
   RentStatusString
-} from '../asset.interface';
+} from '../property.interface';
 
-const schema = new Schema<AssetDocument>({
+const schema = new Schema<PropertyDocument>({
   asset_id: Number,
   name: { type: String },
   area_of_interest: String,
@@ -57,6 +57,7 @@ const schema = new Schema<AssetDocument>({
     enum: Object.values(CurrencyCode),
     default: CurrencyCode.GBP
   },
+  views: { type: Number, default: () => 0 },
   floor_size: Number,
   floor_size_unit: String,
   asset_attribute: [Object],
@@ -93,4 +94,4 @@ const schema = new Schema<AssetDocument>({
 
 schema.plugin(mongoosePaginate);
 
-export default model<AssetDocument, PaginateModel<AssetDocument>>('asset', schema);
+export default model<PropertyDocument, PaginateModel<PropertyDocument>>('property', schema);

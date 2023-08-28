@@ -8,14 +8,15 @@ import { Role } from '../User/user.interface';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
 import { generateLinksForMatchesImages } from './match.helper';
-import assetService from '../Asset/services/asset.service';
+import assetService from '../Property/services/property.service';
 import { LogAction, MatchLog } from '../../data/logs';
 import criteriaService from '../Criteria/services/criteria.service';
 import chatService from '../Chat/chat.service';
 import SuggestionService from '../Suggestions/suggestion.service';
-import AssetSchema from '../Asset/schemas/asset.schema';
+import AssetSchema from '../Property/schemas/property.schema';
 import CriteriaSchema from '../Criteria/schemas/criteria.schema';
 import validateId from '../../middleware/object-id.validator';
+import propertyDetailService from '../Property/services/property-detail.service';
 
 const router: Router = Router();
 
@@ -128,6 +129,10 @@ export class MatchController {
         tenant: res.locals.user_id,
         created_by: res.locals.user_id
       });
+      await propertyDetailService.findAndIncrementById(
+        property._id,
+        matchData.chosen ? { matches: 1 } : { starred: 1 }
+      );
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       return res.status(201).json(match);
     } catch (error) {
@@ -290,14 +295,29 @@ export class MatchController {
   private updateMatch = async (req: Request, res: Response) => {
     const matchId: string = req.params.id;
     const matchData: Partial<MatchDocument> = req.body;
+    console.log({ matchData });
     const newData = { ...matchData, edited_at: new Date(), edited_by: res.locals.user_id };
     try {
-      const updatedMatch = await this.matchService.updateMatch(matchId, newData);
-      if (!updatedMatch) {
+      const existingMatch = await this.matchService.findMatchById(matchId);
+      if (!existingMatch) {
         return res.status(404).json({ error: 'Match not found.' });
       }
 
-      if (!updatedMatch.chosen && !updatedMatch.starred) {
+      const updatedMatch = await this.matchService.updateMatch(matchId, newData);
+      let data: any = {};
+      if (existingMatch.chosen && !updatedMatch?.chosen) {
+        data = { matches: -1 };
+      } else if (!existingMatch.chosen && updatedMatch?.chosen) {
+        data = { matches: +1 };
+      } else if (existingMatch.starred && !updatedMatch?.starred) {
+        data = { ...data, starred: -1 };
+      } else if (!existingMatch.starred && updatedMatch?.starred) {
+        data = { ...data, starred: +1 };
+      }
+
+      await propertyDetailService.findAndIncrementById(<string>existingMatch.property, { ...data });
+
+      if (updatedMatch && !updatedMatch.chosen && !updatedMatch.starred) {
         const deletedMatch = await this.matchService.deleteMatch(matchId);
         return res.status(204).send(deletedMatch);
       }

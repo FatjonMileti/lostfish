@@ -1,4 +1,4 @@
-import AssetSchema from '../api/Asset/schemas/asset.schema';
+import PropertySchema from '../api/Property/schemas/property.schema';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 import {
@@ -6,15 +6,18 @@ import {
   CountryCode,
   CreditScoreRequirement,
   CurrencyCode,
+  PropertyDocument,
   PropertyFeatures,
   PropertyPreferences,
   PropertyType,
   RentalFrequency,
   SpecificPropertyFeatures,
   TransactionTypeString
-} from '../api/Asset/asset.interface';
+} from '../api/Property/property.interface';
 import userService from '../api/User/user.service';
 import { AssetLog } from '../data/logs';
+import propertyDetailService from '../api/Property/services/property-detail.service';
+import PropertyDetailsSchema from '../api/Property/schemas/property-details.schema';
 
 // Define your Unsplash API key here
 const ACCESS_KEY: string = 'jCUSC7UiB67_YlXdPgqHafZjswTiTwvO9aHtA0kWsng';
@@ -100,17 +103,26 @@ const generateAsset = async (index: number) => {
   return asset;
 };
 
+const generatePropertyDetails = async (propertyId: string) => {
+  return await propertyDetailService.createPropertyDetail(propertyId);
+};
+
 export const seedAssets = async (numAssets: number): Promise<void> => {
   try {
-    await AssetSchema.deleteMany({});
+    await PropertySchema.deleteMany({});
+    await PropertyDetailsSchema.deleteMany({});
     await AssetLog.deleteMany({});
 
-    const assets: any[] = []; //= await Promise.all(Array.from({ length: numAssets }, generateAsset));
+    const assets: any[] = [];
     for (let i = 0; i < numAssets; i++) {
       const asset = await generateAsset(i);
       assets.push(asset);
     }
-    await AssetSchema.insertMany(assets);
+    // @ts-ignore
+    const properties: PropertyDocument[] = await PropertySchema.insertMany(assets);
+    for (const property of properties) {
+      await generatePropertyDetails(property._id as string);
+    }
     console.log(`${numAssets} assets seeded successfully.`);
   } catch (error) {
     console.error('Error seeding assets:', error);

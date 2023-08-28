@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, useContext } from 'react';
 import { HTMLMotionProps, motion } from 'framer-motion';
 
 import { Typography } from '../../../components/Typography';
@@ -14,38 +14,10 @@ import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
+import SocketContext from '../../../context/SocketContext';
 
 export interface PropertyType {
-  property: {
-    _id: string;
-    property_images: { link: string }[];
-    area_of_interest: string;
-    title: string;
-    description: string;
-    location_details: string;
-    property_type?: string;
-    floor_size: string;
-    specific_property_features?: string[];
-    contract_details?: string[];
-
-    room_details: {
-      number_of_bathrooms: string;
-      number_of_bedrooms: string;
-    };
-
-    asset_rent: {
-      rental_amount?: string;
-    };
-    created_by: {
-      email: string;
-      first_name: string;
-      last_name: string;
-      avatar: string;
-    };
-
-    asset_address: any;
-    percentage: number;
-  };
+  property: IProperty;
   matchId?: string;
   chosen: boolean;
   starred: boolean;
@@ -61,11 +33,19 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 
   const [propertyToView, setPropertyToView] = React.useState<PropertyType | null>(null);
 
-  const { auth } = useUserStore();
+  const { auth, userDetails } = useUserStore();
+
+  const { socket } = useContext(SocketContext);
 
   React.useEffect(() => {
     getCheckedProperties();
   }, [properties]);
+
+  React.useEffect(() => {
+    if (propertyToView && socket) {
+      viewProperty(socket, propertyToView.property);
+    }
+  }, [propertyToView]);
 
   const getCheckedProperties = async () => {
     try {
@@ -75,9 +55,17 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
       throw err;
     }
   };
+
   const getProperties = async () => {
     const { data } = await axios(auth?.access_token).get('/api/suggestion/asset');
     setProperties(data.docs.map((doc: any) => ({ ...doc, id: doc._id })));
+  };
+
+  const viewProperty = (socketData: any, property: any) => {
+    return socketData.emit('view_property', {
+      propertyId: property._id,
+      userId: userDetails.user_id
+    });
   };
 
   const addOrUpdateTenantMatch = async (

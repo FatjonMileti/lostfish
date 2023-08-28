@@ -16,38 +16,7 @@ import ellipse from '../../../assets/svg/Ellipse.svg';
 interface AddedMatchedProperty {
   _id: string;
   unread_messages: number;
-  property: {
-    _id: string;
-    property_images: { link: string }[];
-    area_of_interest: string;
-    property_type?: string;
-    floor_size: string;
-    specific_property_features?: string[];
-    contract_details?: string[];
-    room_details: {
-      number_of_bathrooms: string;
-      number_of_bedrooms: string;
-    };
-    title: string;
-    description: string;
-    location_details: string;
-    asset_rent: {
-      rental_amount?: string;
-    };
-
-    id: string;
-
-    asset_address: any;
-
-    created_by: {
-      _id: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      avatar: string;
-    };
-    percentage: number;
-  };
+  property: IProperty;
   matchId?: string;
   chosen: boolean;
   starred: boolean;

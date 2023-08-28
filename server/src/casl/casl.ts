@@ -42,7 +42,7 @@ function defineAbilitiesFor(user: UserDocument | IUserAbilityData): PureAbility<
     cannot(CASLAction.Update, 'Documents', 'file.approved');
   } else if (user.role === Role.Landlord) {
     can(CASLAction.Manage, 'User', user._id.toString());
-    can(CASLAction.Manage, 'Asset');
+    can(CASLAction.Manage, 'Property');
     can(CASLAction.Manage, 'SignGenerator');
     can(CASLAction.Manage, 'StarredTenants');
     can(CASLAction.Read, 'SignURL');

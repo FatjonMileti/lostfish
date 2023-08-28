@@ -17,7 +17,7 @@ const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
     chosen: { type: Boolean, default: false },
     starred: { type: Boolean, default: false },
     type: { type: String, enum: MatchingType },
-    property: { type: Schema.Types.ObjectId, ref: 'asset' },
+    property: { type: Schema.Types.ObjectId, ref: 'property' },
     edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
     created_by: { type: Schema.Types.ObjectId, ref: 'user' },
     created_at: { type: Date, default: () => new Date() },

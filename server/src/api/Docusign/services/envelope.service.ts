@@ -12,7 +12,7 @@ import docusign, {
   ViewUrl
 } from 'docusign-esign';
 import config from '../../../config';
-import { AssetDocument } from '../../Asset/asset.interface';
+import { PropertyDocument } from '../../Property/property.interface';
 import moment from 'moment/moment';
 import docusignLocalService from './docusign.local.service';
 import { IEnvelope } from '../schemas/envelope';
@@ -57,7 +57,7 @@ const createTransactionAgreementEnvelope = (user: UserDocument) => {
 const createContractEnvelope = (
   landlord: UserDocument,
   tenant: UserDocument,
-  property: AssetDocument
+  property: PropertyDocument
 ): EnvelopeDefinition => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();

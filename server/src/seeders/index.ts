@@ -12,7 +12,7 @@ const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));
   try {
     await seedUsers(10).then(() => console.log(chalk.bold.green('User seeder: success')));
-    await seedAssets(10).then(() => console.log(chalk.bold.green('Asset seeder: success')));
+    await seedAssets(10).then(() => console.log(chalk.bold.green('Property seeder: success')));
     await seedCriteria(5);
     // await seedRoom();
   } catch (error) {

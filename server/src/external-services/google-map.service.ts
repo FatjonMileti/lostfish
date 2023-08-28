@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 import createError from 'http-errors';
-import { CountryCode } from '../api/Asset/asset.interface';
+import { CountryCode } from '../api/Property/property.interface';
 
 const getNearestPlacesByType = async (queryData: any, type: string) => {
   if (!queryData.latitude || !queryData.longitude) {

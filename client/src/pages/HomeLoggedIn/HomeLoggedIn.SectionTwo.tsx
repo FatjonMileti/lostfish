@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
@@ -5,143 +6,172 @@ import { Icon } from '../../components/Icon';
 import { IconButton } from '../../components/IconButton';
 import apartament from './image353.png';
 import { Avatar } from '../../components/Avatar';
-import { avatars } from '../HomeLoggedIn/avatars';
+import { avatars } from './avatars';
 import { Button } from '../../components/Button';
+import { NewPropertyV2 } from '../Properties/NewPropertiesV2/NewProperty';
+import { useNavigate } from 'react-router-dom';
+import { usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
 
 export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
+
+  const { property, propertyDetails } = usePropertyDetailsHook();
+
+  const navigate = useNavigate();
+
   return (
     <div className={className}>
+      {property && showNewPropertyModal && (
+        <NewPropertyV2
+          showStore={[showNewPropertyModal, setShowNewPropertyModal]}
+          propertyId={property._id}
+          setEditPropertyId={() => {}}
+          fetchAssets={() => {}}
+        />
+      )}
       <div className='section-wrapper'>
-        <div className='left'>
-          <div className='img'>
-            <div className='top'>
-              <div className='left-part'>
-                <Typography className='property-name'>Two bedroom apartment for rent</Typography>
-                <div className='property-details'>
-                  <div className='detail'>
-                    <Icon icon='location' />
-                    <Typography variant='body5'>Bristol, UK</Typography>
+        {property && (
+          <div
+            className='left'
+            style={{
+              backgroundImage: property ? `url(${property.property_images[0].link})` : '',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover'
+            }}>
+            <div className='img'>
+              <div className='top'>
+                <div className='left-part'>
+                  <Typography className='property-name'>{property.title}</Typography>
+                  <div className='property-details'>
+                    <div className='detail'>
+                      <Icon icon='location' />
+                      <Typography variant='body5'>{property.area_of_interest}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                    <div className='detail'>
+                      <Icon icon='banknote' />
+                      <Typography variant='body5'>
+                        £ {`${property.budget.min_budget} / ${property.budget.max_budget}`} PCM
+                      </Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                    <div className='detail'>
+                      <Icon icon='double-bed' />
+                      <Typography variant='body5'>{property.room_details.number_of_bedrooms}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                    <div className='detail'>
+                      <Icon icon='bathtub' />
+                      <Typography variant='body5'>{property.room_details.number_of_bathrooms}</Typography>
+                    </div>
                   </div>
-                  <Typography variant='body4' className='dot'>
-                    •
-                  </Typography>
-                  <div className='detail'>
-                    <Icon icon='banknote' />
-                    <Typography variant='body5'>£1,150 PCM</Typography>
-                  </div>
-                  <Typography variant='body4' className='dot'>
-                    •
-                  </Typography>
-                  <div className='detail'>
-                    <Icon icon='double-bed' />
-                    <Typography variant='body5'>2</Typography>
-                  </div>
-                  <Typography variant='body4' className='dot'>
-                    •
-                  </Typography>
-                  <div className='detail'>
-                    <Icon icon='bathtub' />
-                    <Typography variant='body5'>1</Typography>
+                </div>
+                <div className='potential-matches-list'>
+                  <Avatar image={avatars[0].image} />
+                  <Avatar image={avatars[1].image} />
+                  <Avatar image={avatars[2].image} />
+                  <div className='others-number'>
+                    <Typography variant='body4'>+49</Typography>
                   </div>
                 </div>
               </div>
-              <div className='potential-matches-list'>
-                <Avatar image={avatars[0].image} />
-                <Avatar image={avatars[1].image} />
-                <Avatar image={avatars[2].image} />
-                <div className='others-number'>
-                  <Typography variant='body4'>+49</Typography>
-                </div>
+              <div className='bottom'>
+                <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+                  View matches
+                </Button>
+                <Button active={false} inverted size='large' onClick={() => setShowNewPropertyModal(true)}>
+                  Edit property
+                </Button>
               </div>
             </div>
-            <div className='bottom'>
-              <Button active={true} inverted size='large'>
-                View matches
-              </Button>
-              <Button active={false} inverted size='large'>
-                Edit property
-              </Button>
-            </div>
           </div>
-        </div>
-        <div className='right'>
-          <div className='views'>
-            <div className='label'>
-              <Icon icon='eye' size={24} />
-              <Typography variant='body5' className='title'>
-                Property views
-              </Typography>
-            </div>
-            <div className='section-content'>
-              <div className='total-viewes'>
-                <Typography className='number'>14,528</Typography>
-                <div className='text'>
-                  <Typography variant='body4'>Total views</Typography>
-                </div>
+        )}
+        {propertyDetails && (
+          <div className='right'>
+            <div className='views'>
+              <div className='label'>
+                <Icon icon='eye' size={24} />
+                <Typography variant='body5' className='title'>
+                  Property views
+                </Typography>
               </div>
-              <IconButton size='large'>
-                <Icon icon='chevron-right' size={16} />
-              </IconButton>
-            </div>
-          </div>
-          <div className='views'>
-            <div className='label'>
-              <Icon icon='dashboard' size={24} />
-              <Typography variant='body5' className='title'>
-                Property score
-              </Typography>
-            </div>
-            <div className='section-content'>
-              <div className='total-viewes'>
-                <Typography className='number'>75/100</Typography>
-                <div className='text'>
-                  <Typography variant='body4'>Add more details</Typography>
+              <div className='section-content'>
+                <div className='total-viewes'>
+                  <Typography className='number'>{propertyDetails.views}</Typography>
+                  <div className='text'>
+                    <Typography variant='body4'>Total views</Typography>
+                  </div>
                 </div>
+                <IconButton size='large'>
+                  <Icon icon='chevron-right' size={16} />
+                </IconButton>
               </div>
-              <IconButton size='large'>
-                <Icon icon='chevron-right' size={16} />
-              </IconButton>
             </div>
-          </div>
-          <div className='views'>
-            <div className='label'>
-              <Icon icon='exclude' size={24} />
-              <Typography variant='body5' className='title'>
-                Matching
-              </Typography>
-            </div>
-            <div className='section-content'>
-              <div className='total-viewes'>
-                <Typography className='number'>53</Typography>
-                <div className='text'>
-                  <Typography variant='body4'>Potential perfect matches</Typography>
+            <div className='views'>
+              <div className='label'>
+                <Icon icon='dashboard' size={24} />
+                <Typography variant='body5' className='title'>
+                  Property score
+                </Typography>
+              </div>
+              <div className='section-content'>
+                <div className='total-viewes'>
+                  <Typography className='number'>{propertyDetails.property_score}/100</Typography>
+                  <div className='text'>
+                    <Typography variant='body4'>Add more details</Typography>
+                  </div>
                 </div>
+                <IconButton size='large' onClick={() => setShowNewPropertyModal(true)}>
+                  <Icon icon='chevron-right' size={16} />
+                </IconButton>
               </div>
-              <IconButton size='large'>
-                <Icon icon='chevron-right' size={16} />
-              </IconButton>
             </div>
-          </div>
-          <div className='views'>
-            <div className='label'>
-              <Icon icon='star' size={24} />
-              <Typography variant='body5' className='title'>
-                Added to favourites
-              </Typography>
-            </div>
-            <div className='section-content'>
-              <div className='total-viewes'>
-                <Typography className='number'>21</Typography>
-                <div className='text'>
-                  <Typography variant='body4'>Liked your property</Typography>
+            <div className='views'>
+              <div className='label'>
+                <Icon icon='exclude' size={24} />
+                <Typography variant='body5' className='title'>
+                  Matching
+                </Typography>
+              </div>
+              <div className='section-content'>
+                <div className='total-viewes'>
+                  <Typography className='number'>{propertyDetails.matches}</Typography>
+                  <div className='text'>
+                    <Typography variant='body4'>Potential perfect matches</Typography>
+                  </div>
                 </div>
+                <IconButton size='large'>
+                  <Icon icon='chevron-right' size={16} />
+                </IconButton>
               </div>
-              <IconButton size='large'>
-                <Icon icon='chevron-right' size={16} />
-              </IconButton>
+            </div>
+            <div className='views'>
+              <div className='label'>
+                <Icon icon='star' size={24} />
+                <Typography variant='body5' className='title'>
+                  Added to favourites
+                </Typography>
+              </div>
+              <div className='section-content'>
+                <div className='total-viewes'>
+                  <Typography className='number'>{propertyDetails.starred}</Typography>
+                  <div className='text'>
+                    <Typography variant='body4'>Liked your property</Typography>
+                  </div>
+                </div>
+                <IconButton size='large'>
+                  <Icon icon='chevron-right' size={16} />
+                </IconButton>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

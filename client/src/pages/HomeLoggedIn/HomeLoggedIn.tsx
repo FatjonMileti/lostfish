@@ -8,8 +8,9 @@ import { SectionTwo } from './HomeLoggedIn.SectionTwo';
 import { SectionThree } from './HomeLoggedIn.SectionThree';
 import { SectionFour } from './HomeLoggedIn.SectionFour';
 import { SectionFive } from './HomeLoggedIn.SectionFive';
-
+import Can from '../../components/Can';
 import backgroundImg from '../About/sectionOne.About.png';
+import { CASLAction } from '../../utils/ability.util';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -22,7 +23,9 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       <div className='container'>
         <SectionOne />
-        <SectionTwo />
+        <Can do={CASLAction.Update} on='Property'>
+          <SectionTwo />
+        </Can>
         <SectionThree />
         <SectionFour />
         <SectionFive />

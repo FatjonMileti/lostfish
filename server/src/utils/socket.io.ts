@@ -2,6 +2,8 @@ import { verifyToken } from '../middleware/authorize';
 import { Server, Socket } from 'socket.io';
 import chatService from '../api/Chat/chat.service';
 import { JwtPayload } from 'jsonwebtoken';
+import propertyDetailService from '../api/Property/services/property-detail.service';
+import { PropertyDocument } from '../api/Property/property.interface';
 
 const users: any = {};
 const io: Server = new Server();
@@ -33,6 +35,14 @@ io.on('connection', async (socket: Socket) => {
 
   socket.on('send_message', async (data: any) => {
     await chatService.handleNewMessage(socket, data);
+  });
+
+  socket.on('view_property', async (data: { propertyId: string; userId: string }) => {
+    const isPropertyViewed = await propertyDetailService.findTenantView(data.propertyId, data.userId);
+    if (!isPropertyViewed) {
+      await propertyDetailService.createTenantView(data.propertyId, data.userId);
+      await propertyDetailService.findAndIncrementById(data.propertyId, { views: 1 });
+    }
   });
 
   socket.on('disconnect', () => {
