@@ -33,6 +33,7 @@ import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
 import { InitialSetup } from './pages/InitialSetup/InitialSetup';
 import { useProfileStore } from './globalState/profile';
+import { CookieConsent } from './components/CookieConsent';
 
 registerStore(
   'notification',
@@ -141,6 +142,7 @@ function App() {
           </UserProvider>
         </SocketContext.Provider>
       </SessionMaintainer>
+      <CookieConsent />
     </>
   );
 }

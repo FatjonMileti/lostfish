@@ -68,7 +68,7 @@ export const CookieConsent = styled(({ className = '' }: React.HTMLAttributes<HT
     </div>
   );
 })`
-  &&.consent {
+  &&&.consent {
     background-color: #afabab;
     padding: 20px;
     height: initial;
