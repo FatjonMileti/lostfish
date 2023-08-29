@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../Login/SessionMaintainer';
 import backgroundImg from '../Home/home-background.png';
 import classNames from 'classnames';
+import { Role } from '../../enums';
 
 export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -40,6 +41,7 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
       setLoading(false);
     }
   };
+
   const onLookingForChange = async (lookingFor: string) => {
     try {
       setLoading(true);
@@ -58,6 +60,7 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
       await refreshToken(true);
 
       if (lookingFor === 'I own a place') {
+        await onSelectAvatar(0);
         navigate('/properties?newProperty=true');
       }
 
@@ -73,19 +76,7 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
 
       <Backdrop open={loading}></Backdrop>
 
-      {isNaN(parseInt(profileStore.avatar || '')) && (
-        <motion.div
-          key='SelectAvatar'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            duration: 1
-          }}>
-          <SelectAvatar onSelectAvatar={onSelectAvatar} />
-        </motion.div>
-      )}
-
-      {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.lookingFor && (
+      {!criteriaStore.lookingFor && (
         <motion.div
           key='WhatAreYouLookingFor'
           initial={{ opacity: 0 }}
@@ -98,6 +89,18 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
             lookingFor={criteriaStore.lookingFor}
             onLookingForChange={onLookingForChange}
           />
+        </motion.div>
+      )}
+
+      {profileStore.role === Role.Client && isNaN(parseInt(profileStore.avatar || '')) && (
+        <motion.div
+          key='SelectAvatar'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1
+          }}>
+          <SelectAvatar onSelectAvatar={onSelectAvatar} />
         </motion.div>
       )}
 

@@ -249,7 +249,7 @@ const findPropertyById = async (id: string): Promise<any | null> => {
 
 const findLastAddedPropertyWithDetails = async (req: Request, res: Response) => {
   const lastAddedProperty = await PropertyModel.findOne(
-    { status_string: 'Live' },
+    { status_string: 'Live', created_by: <string>res.locals.user_id },
     {},
     { sort: { created_at: -1 } }
   );
