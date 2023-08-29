@@ -29,7 +29,7 @@ export const CookieConsent = styled(({className=''}: React.HTMLAttributes<HTMLDi
 
   if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'false') {
     return (
-      <div className={`test-consent ${className}`}>
+      <div className={`consent ${className}`}>
             <Typography
                 variant='body4' className='content'>
                 We're sorry to hear that. Some features of the website may not work without cookies.
