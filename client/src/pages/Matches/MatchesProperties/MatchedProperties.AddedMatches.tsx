@@ -151,7 +151,7 @@ export const AddedMatches = styled(
                   chantWith(property.created_by._id);
                 }}>
                 Messages
-                {matchedProperty.unread_messages > 0 && (
+                {matchedProperty?.unread_messages > 0 && (
                   <img className='unread-message-indicator' src={ellipse} alt='Message indicator' />
                 )}
               </Button>

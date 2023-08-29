@@ -14,6 +14,7 @@ import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
 import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { TPropertyDetails, usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
+import { useCriteriaStore } from '../../globalState/criteria';
 
 export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();
@@ -48,6 +49,15 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             <Can do={CASLAction.Read} on='LandlordMatches'>
               {property && propertyDetails && (
                 <LandlordSectionMatches property={property} propertyDetails={propertyDetails} />
+              )}
+            </Can>
+            <Can do={CASLAction.Read} on='ClientMatches'>
+              {property && propertyDetails && (
+                <TenantSectionMatches
+                  property={property}
+                  propertyDetails={propertyDetails}
+                  setCriteriaModalVisibility={setCriteriaModalVisibility}
+                />
               )}
             </Can>
             <div className='slider-wrapper'>
@@ -356,6 +366,62 @@ const LandlordSectionMatches = ({
         <div className='buttons'>
           <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
             View matches
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TenantSectionMatches = ({
+  property,
+  propertyDetails,
+  setCriteriaModalVisibility
+}: {
+  property: IProperty;
+  propertyDetails: TPropertyDetails;
+  setCriteriaModalVisibility: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const navigate = useNavigate();
+  const criteria = useCriteriaStore();
+  return (
+    <div className='current-search-wrapper'>
+      <div className='current-search'>
+        <div className='match'>
+          <Typography variant='body5' className='title'>
+            Current search
+          </Typography>
+          <Typography variant='body4' className='bold'>
+            Matching with <span className='matching-with'>Properties from {criteria.areaOfInterest}</span>
+          </Typography>
+        </div>
+        <div className='matches'>
+          <Typography variant='body5' className='title'>
+            Matches
+          </Typography>
+          <Typography variant='body4' className='number'>
+            {propertyDetails?.my_chosen_matches || 0}
+          </Typography>
+        </div>
+      </div>
+      <div className='hr-line'></div>
+      <div className='avatars-buttons'>
+        <div className='potential-matches-list'>
+          {propertyDetails?.tenants?.slice(0, 3).map((item: any) => (
+            <Avatar image={avatars[parseInt(item.avatar)].image} />
+          ))}
+          {propertyDetails?.tenants && propertyDetails?.tenants?.length > 3 && (
+            <div className='others-number'>
+              <Typography variant='body4'>+49</Typography>
+            </div>
+          )}
+        </div>
+        <div className='buttons'>
+          <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+            View matches
+          </Button>
+          <Button active={false} inverted size='large' onClick={() => setCriteriaModalVisibility(true)}>
+            Refine search
           </Button>
         </div>
       </div>
