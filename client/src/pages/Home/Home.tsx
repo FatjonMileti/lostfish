@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
-import { CookieConsent } from '../../components/CookieConsent'
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const navigate = useNavigate();
@@ -35,7 +34,6 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
           Join our community
         </Button>
       </div>
-      <CookieConsent />
     </div>
   );
 })`
