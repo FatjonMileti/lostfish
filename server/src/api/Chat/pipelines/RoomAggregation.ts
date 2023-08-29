@@ -66,7 +66,7 @@ const PaginationPipeline: PaginationPipelineFunc = (
     },
     {
       $lookup: {
-        from: 'assets',
+        from: 'properties',
         localField: 'property',
         foreignField: '_id',
         as: 'property'
