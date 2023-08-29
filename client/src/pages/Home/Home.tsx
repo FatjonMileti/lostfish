@@ -32,7 +32,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         </div>
 
         <Button size='large' onClick={() => navigate('/create-account')} className='create-account-button'>
-          Create an account
+          Join our community
         </Button>
       </div>
       <CookieConsent />
