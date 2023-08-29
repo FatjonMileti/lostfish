@@ -141,7 +141,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
               </div>
               <div className='section-content'>
                 <div className='total-viewes'>
-                  <Typography className='number'>{propertyDetails.matches}</Typography>
+                  <Typography className='number'>{propertyDetails?.my_chosen_matches || 0}</Typography>
                   <div className='text'>
                     <Typography variant='body4'>Potential perfect matches</Typography>
                   </div>
