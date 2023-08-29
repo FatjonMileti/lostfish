@@ -124,7 +124,9 @@ const verifyEmail = function(confirmationLink: string) {
     
               <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                  <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account, you can safely delete this email.</p>
+                  <p style="margin: 0;">We appreciate you. 
+                  Thank you for joining the LostFish community, the best way to buy, sell or rent a property using the power of technology and AI.
+                   Good luck on your journey!</p>
                 </td>
               </tr>
     
