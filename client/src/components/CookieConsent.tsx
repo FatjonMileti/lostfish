@@ -29,13 +29,13 @@ export const CookieConsent = styled(({className=''}: React.HTMLAttributes<HTMLDi
 
   if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'false') {
     return (
-      <div className={`cookie-consent ${className}`}>
+      <div className={`test-consent ${className}`}>
             <Typography
-                variant='body4' className='cookie-content'>
+                variant='body4' className='content'>
                 We're sorry to hear that. Some features of the website may not work without cookies.
             </Typography>
           <Typography
-              variant='body4' className='cookie-content'>
+              variant='body4' className='content'>
           If you change your mind, you can update your preferences in the website's settings.
           </Typography>
       </div>
@@ -43,8 +43,8 @@ export const CookieConsent = styled(({className=''}: React.HTMLAttributes<HTMLDi
   }
 
   return (
-    <div className={`cookie-consent ${className}`}>
-        <div className="cookie-content">
+    <div className={`consent ${className}`}>
+        <div className="content">
             <Typography variant='body4'>
                 This website uses cookies to ensure you get the best experience. By using our site, you acknowledge
                 that you have read and understand our
@@ -61,7 +61,7 @@ export const CookieConsent = styled(({className=''}: React.HTMLAttributes<HTMLDi
     </div>
   );
 })`
-  &.cookie-consent {
+  &.consent {
     background-color: #afabab;
     padding: 20px;
     height: max-content;
@@ -74,7 +74,7 @@ export const CookieConsent = styled(({className=''}: React.HTMLAttributes<HTMLDi
     left: 0;
     right: 0;
     
-    .cookie-content {
+    .content {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
