@@ -32,7 +32,7 @@ app.use(compression());
 
 // Connect to the database if not in 'test' environment
 if (config.stage !== 'test') {
-  dbConnect(process.env.DB_CONNECTION_STRING as string);
+  dbConnect(config.connectionString as string);
 }
 
 // Set 'trust proxy' if behind a proxy server
