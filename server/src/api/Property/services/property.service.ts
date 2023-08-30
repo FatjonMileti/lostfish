@@ -21,6 +21,8 @@ import MatchSchema from '../../Match/match.schema';
 import { FileService } from '../../File/file.interface';
 import propertyDetailService from './property-detail.service';
 import { suggestionService } from '../../index';
+import PropertyViewSchema from '../schemas/property-view.schema';
+import { getPipelineBySort } from '../pipelines/PropertyAggregation';
 
 const mailService = MailService.getInstance();
 
@@ -253,9 +255,11 @@ const findLastAddedPropertyWithDetails = async (req: Request, res: Response) => 
     {},
     { sort: { created_at: -1 } }
   );
+
   if (!lastAddedProperty) {
     throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
   }
+
   const propertyDetails: any = await propertyDetailService.findPropertyByPropertyId(
     <string>lastAddedProperty._id
   );
@@ -264,7 +268,10 @@ const findLastAddedPropertyWithDetails = async (req: Request, res: Response) => 
 
   propertyDetails.tenants = matches.response.map((item: any) => item.criteria.created_by);
 
-  propertyDetails.my_chosen_matches = await MatchSchema.count({ created_by: <string>res.locals.user_id });
+  propertyDetails.my_chosen_matches = await MatchSchema.count({
+    created_by: <string>res.locals.user_id,
+    property: <string>lastAddedProperty._id
+  });
 
   res.send({ property: lastAddedProperty, details: propertyDetails });
 };
@@ -373,6 +380,31 @@ const uploadAssetFiles = async (req: Request, res: Response, fileService: FileSe
   return res.send(savedFiles);
 };
 
+const getPropertyViewers = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { page, limit }: PaginationOptions = res.locals.paging_options || {};
+  const sort: any = { created_at: -1 };
+  const skip = page ? (page - 1) * 10 : 0;
+  const views = await PropertyViewSchema.aggregate([
+    {
+      $match: {
+        property: { $eq: new Types.ObjectId(id) }
+      }
+    },
+    ...getPipelineBySort('getAll')(page, skip, limit, sort)
+  ]);
+
+  const response = views.length > 0 ? views[0] : DefaultResponse;
+  for (const item of response.docs) {
+    item.user.match_similarity = suggestionService.calculateSimilarity(item.user.criteria, item.property);
+  }
+  if (response.docs.length > 0) {
+    response.docs = response.docs.map((item: any) => item.user);
+  }
+
+  res.send(response);
+};
+
 export default {
   findAll,
   getById,
@@ -385,5 +417,20 @@ export default {
   findPublishedPropertiesExample,
   findPropertyById,
   uploadAssetFiles,
-  findLastAddedPropertyWithDetails
+  findLastAddedPropertyWithDetails,
+  getPropertyViewers
+};
+
+type PaginationOptions = {
+  sort?: object;
+  page?: number;
+  limit?: number;
+};
+
+const DefaultResponse: any = {
+  docs: [],
+  limit: 10,
+  page: 1,
+  totalDocs: 0,
+  totalPages: 1
 };

@@ -2,7 +2,7 @@ import FilesCollection from '../../../data/files.collection';
 import path from 'path';
 import fs from 'fs';
 import { FileService } from '../file.interface';
-import config from '../../../config';
+import config from '../../../config/index';
 import process from 'process';
 
 export default class LocalFileService implements FileService {

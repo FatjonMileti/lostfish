@@ -1,4 +1,5 @@
-import { Schema, model, Model, Document, Types } from 'mongoose';
+import { Schema, model, PaginateModel, Document, Types } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const schema = new Schema<PropertyViewDocument>({
   property: { type: Schema.Types.ObjectId, ref: 'property' },
@@ -6,7 +7,8 @@ const schema = new Schema<PropertyViewDocument>({
   created_by: { type: Types.ObjectId, ref: 'user' }
 });
 
-export default model<PropertyViewDocument, Model<PropertyViewDocument>>('property-view', schema);
+schema.plugin(mongoosePaginate);
+export default model<PropertyViewDocument, PaginateModel<PropertyViewDocument>>('property-view', schema);
 
 export interface PropertyViewDocument extends Document {
   property: string | Schema.Types.ObjectId;

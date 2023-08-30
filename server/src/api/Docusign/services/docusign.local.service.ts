@@ -7,7 +7,7 @@ import { Role } from '../../User/user.interface';
 import docusignService from './docusign.service';
 import fs from 'fs';
 import userService from '../../User/user.service';
-import config from '../../../config';
+import config from '../../../config/index';
 import envelopeService from './envelope.service';
 import { EnvelopeSummary } from 'docusign-esign';
 

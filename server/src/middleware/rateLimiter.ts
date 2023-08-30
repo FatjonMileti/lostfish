@@ -2,7 +2,7 @@ import { RateLimiterMongo, IRateLimiterMongoOptions, IRateLimiterRes } from 'rat
 import { connection } from 'mongoose';
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import config from '../config';
+import config from '../config/index';
 
 //1000 req/hour/IP
 const general: RateLimiterMongo = new RateLimiterMongo(<IRateLimiterMongoOptions>{

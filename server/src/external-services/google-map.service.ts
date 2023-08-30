@@ -1,24 +1,25 @@
 import axios from 'axios';
-import config from '../config';
+import config from '../config/index';
 import createError from 'http-errors';
-import { CountryCode } from '../api/Property/property.interface';
+
+const nearbyMapUrl: string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
+const mapGeocodeUrl: string = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 const getNearestPlacesByType = async (queryData: any, type: string) => {
   if (!queryData.latitude || !queryData.longitude) {
     throw createError(400, { message: 'invalid_address' });
   }
-  const url = config.map_nearby_url;
-  const query = `?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=${type}&key=${config.google_key}`;
-  const { data } = await axios.get(`${url}${query}`);
+  const query = `?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=${type}&key=${config.googleKey}`;
+  const { data } = await axios.get(`${nearbyMapUrl}${query}`);
   return data;
 };
 
 const getCoordinates = async (address: string) => {
   try {
-    const { data } = await axios.get(`${config.map_geocode_url}`, {
+    const { data } = await axios.get(`${mapGeocodeUrl}`, {
       params: {
         address,
-        key: config.google_key
+        key: config.googleKey
       }
     });
 
@@ -34,10 +35,10 @@ const getCoordinates = async (address: string) => {
 
 const getAddress = async (lat: number, lng: number) => {
   try {
-    const { data } = await axios.get(`${config.map_geocode_url}`, {
+    const { data } = await axios.get(`${mapGeocodeUrl}`, {
       params: {
         latlng: `${lat},${lng}`,
-        key: config.google_key
+        key: config.googleKey
       }
     });
 

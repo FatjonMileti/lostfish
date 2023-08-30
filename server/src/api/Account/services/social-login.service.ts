@@ -9,7 +9,7 @@ import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
 import httpStatus from 'http-status';
 import createError from 'http-errors';
-import config from '../../../config';
+import config from '../../../config/index';
 import * as process from 'process';
 
 //========================================================================
@@ -22,21 +22,14 @@ interface TokenResponse {
   rules: any;
 }
 
-// add your client id and secret here:
-const TWITTER_OAUTH_CLIENT_ID = process.env.TWITTER_AUTH_CLIENT_ID;
-const TWITTER_OAUTH_CLIENT_SECRET = process.env.TWITTER_CLIENT_AUTH_SECRET;
-
-// the url where we get the twitter access token from
-const TWITTER_OAUTH_TOKEN_URL = 'https://api.twitter.com/2/oauth2/token';
-
 // we need to encrypt our twitter client id and secret here in base 64 (stated in twitter documentation)
 const BasicAuthToken = Buffer.from(
-  `${TWITTER_OAUTH_CLIENT_ID}:${TWITTER_OAUTH_CLIENT_SECRET}`,
+  `${config.twitter.client_id}:${config.twitter.clientSecret}`,
   'utf8'
 ).toString('base64');
 
 export const twitterOauthTokenParams = {
-  client_id: TWITTER_OAUTH_CLIENT_ID ?? '',
+  client_id: config.twitter.client_id,
   code_verifier: '8KxxO-RPl0bLSxX5AWwgdiFbMnry_VOKzFeIlVA7NoA',
   redirect_uri: config.twitter.redirect_url ?? '',
   grant_type: 'authorization_code'
@@ -55,7 +48,7 @@ export async function getTwitterOAuthToken(code: string) {
   try {
     // POST request to the token url to get the access token
     const res = await axios.post<TwitterTokenResponse>(
-      TWITTER_OAUTH_TOKEN_URL,
+      config.twitter.tokenUrl,
       new URLSearchParams({ ...twitterOauthTokenParams, code }).toString(),
       {
         headers: {

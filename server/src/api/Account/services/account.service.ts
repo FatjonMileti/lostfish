@@ -11,7 +11,6 @@ import UsedRefreshToken from '../../../data/usedRefreshToken';
 import RevokedToken from '../../../data/revokedToken';
 import { packRules } from '@casl/ability/extra';
 import defineAbilitiesFor from '../../../casl/casl';
-import config from '../../../config';
 
 const login = async (req: express.Request, res: express.Response) => {
   const model = res.locals.model! as { email: string; password: string };

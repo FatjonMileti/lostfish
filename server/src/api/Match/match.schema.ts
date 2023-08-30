@@ -8,6 +8,7 @@ export interface IMatchQueryParams {
   starred?: boolean;
   type?: MatchingType;
   created_by?: ObjectId | string;
+  property?: string;
 }
 
 const schema: Schema<MatchDocument> = new Schema<MatchDocument>(

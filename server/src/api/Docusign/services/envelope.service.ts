@@ -11,7 +11,7 @@ import docusign, {
   Text,
   ViewUrl
 } from 'docusign-esign';
-import config from '../../../config';
+import config from '../../../config/index';
 import { PropertyDocument } from '../../Property/property.interface';
 import moment from 'moment/moment';
 import docusignLocalService from './docusign.local.service';

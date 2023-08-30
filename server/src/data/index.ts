@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import mongoose, { ConnectOptions } from 'mongoose';
-import config from '../config';
+import config from '../config/index';
 
 export default (connectionString: string, log: boolean = true) => {
   mongoose.connect(connectionString, {

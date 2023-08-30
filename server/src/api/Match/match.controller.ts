@@ -32,6 +32,7 @@ export class MatchController {
 
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
+    router.get('/property', authorize(), paging({ sort: { created_at: -1 } }), this.getAllPropertyMatches);
     router.get('/:id', authorize(), validateId, this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
@@ -171,7 +172,7 @@ export class MatchController {
    * @apiUse paging
    */
   private getAllMatches = async (req: Request, res: Response) => {
-    const { starred, chosen } = req.query;
+    const { starred, chosen, propertyId } = req.query;
 
     const query: IMatchQueryParams = {};
     if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
@@ -185,6 +186,77 @@ export class MatchController {
 
     if (chosen) {
       query.chosen = chosen === 'true';
+    }
+
+    if (propertyId) {
+      query.property = <string>propertyId;
+    }
+
+    try {
+      const matches = await this.matchService.getAllMatches(
+        query,
+        res.locals.paging_options as IPagingOptions
+      );
+
+      matches.docs = generateLinksForMatchesImages(matches.docs);
+
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < matches.docs.length; i++) {
+        const currentMatch = matches.docs[i];
+
+        matches.docs[i].unread_messages = await chatService.getMessagesBetweenUsers(
+          currentMatch.landlord._id.toString(),
+          currentMatch.tenant._id.toString(),
+          res.locals.user_id as string,
+          matches.docs[i].property._id
+        );
+        matches.docs[i].criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
+        matches.docs[i].suggestion_id = i;
+        const percentage = this.suggestionService.calculateSimilarity(
+          matches.docs[i].criteria,
+          matches.docs[i].property
+        );
+        matches.docs[i].property.percentage = parseInt(percentage.toFixed(0), 10);
+        matches.docs[i].matchId = currentMatch._id;
+      }
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
+      return res.status(200).json(matches);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'Unable to fetch matches.' });
+    }
+  };
+
+  /**
+   * @api {get} /api/match/property Get all matches for property
+   * @apiDescription Get all matches for property
+   * @apiGroup Matches
+   * @apiSampleRequest /api/match/property
+   * @apiUse bearer
+   * @apiSuccess {Object[]} matches List of match objects
+   * @apiQuery {string} [starred] Starred
+   * @apiQuery {string} [chosen] Choosed
+   * @apiPermission authorize
+   * @apiUse bearer
+   * @apiUse paging
+   */
+  private getAllPropertyMatches = async (req: Request, res: Response) => {
+    const { starred, chosen, propertyId } = req.query;
+
+    const query: any = {
+      created_by: { $ne: res.locals.user_id }
+    };
+
+    if (starred) {
+      query.starred = starred === 'true';
+    }
+
+    if (chosen) {
+      query.chosen = chosen === 'true';
+    }
+
+    if (propertyId) {
+      query.property = <string>propertyId;
     }
 
     try {

@@ -16,7 +16,7 @@ import MongoStore from 'connect-mongo';
 import compression from 'compression';
 
 // Internal Dependencies
-import config from './config';
+import config from './config/index';
 import dbConnect from './data';
 import MailService from './utils/email/index';
 import { logFormat, logStream } from './app.log';
@@ -31,7 +31,7 @@ app.use(compression());
 // app.use(generalLimiter);
 
 // Connect to the database if not in 'test' environment
-if (config.node_env !== 'test') {
+if (config.stage !== 'test') {
   dbConnect(process.env.DB_CONNECTION_STRING as string);
 }
 
@@ -45,9 +45,9 @@ if (config.behind_proxy) {
 const mailService: MailService = MailService.getInstance();
 
 // Create email connection based on environment
-if (config.node_env === 'development') {
+if (config.stage === 'development') {
   mailService.createLocalConnection();
-} else if (['stage', 'production'].includes(config.node_env)) {
+} else if (['stage', 'production'].includes(config.stage)) {
   mailService.createConnection();
 }
 
@@ -119,7 +119,7 @@ export const sessionMiddleware = session({
 app.use(sessionMiddleware);
 
 // Serve documentation files from '/docs' route
-if (config.node_env === 'development') {
+if (config.stage === 'development') {
   app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 }
 
@@ -138,14 +138,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // ------------------------
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   // Log error details if not in 'test' environment
-  if (process.env.NODE_ENV !== 'test' && ((err.status && err.status !== 404) || !err.status)) {
+  if (config.stage !== 'test' && ((err.status && err.status !== 404) || !err.status)) {
     console.error(chalk.red(new Date().toISOString(), err.stack || err.message || err));
   }
 
   // Respond with error details
   res.status(err.status || 500).json({
     message: err.message,
-    stack: ['stage', 'production'].includes(config.node_env) ? undefined : err.stack
+    stack: ['stage', 'production'].includes(config.stage) ? undefined : err.stack
   });
 });
 

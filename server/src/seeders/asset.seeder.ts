@@ -18,9 +18,8 @@ import userService from '../api/User/user.service';
 import { AssetLog } from '../data/logs';
 import propertyDetailService from '../api/Property/services/property-detail.service';
 import PropertyDetailsSchema from '../api/Property/schemas/property-details.schema';
-
-// Define your Unsplash API key here
-const ACCESS_KEY: string = 'jCUSC7UiB67_YlXdPgqHafZjswTiTwvO9aHtA0kWsng';
+import config from '../config/index';
+import PropertyViewSchema from '../api/Property/schemas/property-view.schema';
 
 // Function to search for images on Unsplash
 const searchImages = async () => {
@@ -30,7 +29,7 @@ const searchImages = async () => {
       params: {
         query,
         per_page: 100,
-        client_id: ACCESS_KEY
+        client_id: config.imageGeneratorKey
       }
     });
 
@@ -111,6 +110,7 @@ export const seedAssets = async (numAssets: number): Promise<void> => {
   try {
     await PropertySchema.deleteMany({});
     await PropertyDetailsSchema.deleteMany({});
+    await PropertyViewSchema.deleteMany({});
     await AssetLog.deleteMany({});
 
     const assets: any[] = [];

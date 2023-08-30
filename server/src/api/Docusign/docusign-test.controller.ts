@@ -4,7 +4,7 @@ import authorize from '../../middleware/authorize';
 import paging from '../../middleware/paging';
 import validateId from '../../middleware/object-id.validator';
 import docusignLocalService from './services/docusign.local.service';
-import config from '../../config';
+import config from '../../config/index';
 import abilityMiddleware from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 

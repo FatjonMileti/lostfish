@@ -1,9 +1,10 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import crypto from 'crypto';
-import config from '../../../config';
+import config from '../../../config/index';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { FileService } from '../file.interface';
 import FilesCollection from '../../../data/files.collection';
+
 /*
   TODO Implement image resize if needed
   import sharp from 'sharp';

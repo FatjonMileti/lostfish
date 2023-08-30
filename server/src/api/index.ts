@@ -24,7 +24,7 @@ import AdminService from './Agent/admin.service';
 import SuggestionService from './Suggestions/suggestion.service';
 import PropertySchema from './Property/schemas/property.schema';
 import CriteriaSchema from './Criteria/schemas/criteria.schema';
-import config from '../config';
+import config from '../config/index';
 import S3FileService from './File/services/s3-file.service';
 import LocalFileService from './File/services/file.service';
 import { FileService } from './File/file.interface';

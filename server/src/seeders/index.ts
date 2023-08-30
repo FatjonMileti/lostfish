@@ -3,10 +3,9 @@ import { seedAssets } from './asset.seeder';
 import { seedCriteria } from './criteria.seeder';
 import chalk from 'chalk';
 import mongoose from 'mongoose';
-import config from '../config';
-
+import config from '../config/index';
 import dbConnect from '../data';
-dbConnect(config.connection_string as string);
+dbConnect(config.connectionString);
 
 const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));

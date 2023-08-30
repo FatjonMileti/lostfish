@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '../../config/index';
 import { fileService } from '../index';
 import { areArraysOfObjectsIdentical } from '../api.helpers';
 import { PropertyDocument } from './property.interface';

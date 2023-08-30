@@ -11,9 +11,18 @@ import { Button } from '../../components/Button';
 import { NewPropertyV2 } from '../Properties/NewPropertiesV2/NewProperty';
 import { useNavigate } from 'react-router-dom';
 import { usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
+import { PotentialMatches } from './PotentialMatches';
+import { PropertyViewers } from './PropertyViewers';
+
+type MatchType = 'match' | 'starred';
 
 export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
+
+  const [showMatchesModal, setSHowMatchesModal] = React.useState<boolean>(false);
+  const [showViewersModal, setShowViewersModal] = React.useState<boolean>(false);
+
+  const [type, setType] = React.useState<MatchType>('match');
 
   const { property, propertyDetails } = usePropertyDetailsHook();
 
@@ -27,6 +36,23 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           propertyId={property._id}
           setEditPropertyId={() => {}}
           fetchAssets={() => {}}
+        />
+      )}
+
+      {showMatchesModal && property && (
+        <PotentialMatches
+          showStore={[showMatchesModal, setSHowMatchesModal]}
+          propertyId={property._id}
+          propertyTitle={property.title}
+          matchType={type}
+        />
+      )}
+
+      {showViewersModal && property && (
+        <PropertyViewers
+          showStore={[showViewersModal, setShowViewersModal]}
+          propertyId={property._id}
+          propertyTitle={property.title}
         />
       )}
       <div className='section-wrapper'>
@@ -108,9 +134,11 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     <Typography variant='body4'>Total views</Typography>
                   </div>
                 </div>
-                <IconButton size='large'>
-                  <Icon icon='chevron-right' size={16} />
-                </IconButton>
+                {propertyDetails.views > 0 && (
+                  <IconButton size='large' onClick={() => setShowViewersModal(true)}>
+                    <Icon icon='chevron-right' size={16} />
+                  </IconButton>
+                )}
               </div>
             </div>
             <div className='views'>
@@ -146,9 +174,16 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     <Typography variant='body4'>Potential perfect matches</Typography>
                   </div>
                 </div>
-                <IconButton size='large'>
-                  <Icon icon='chevron-right' size={16} />
-                </IconButton>
+                {propertyDetails?.my_chosen_matches > 0 && (
+                  <IconButton
+                    size='large'
+                    onClick={() => {
+                      setSHowMatchesModal(true);
+                      setType('match');
+                    }}>
+                    <Icon icon='chevron-right' size={16} />
+                  </IconButton>
+                )}
               </div>
             </div>
             <div className='views'>
@@ -165,9 +200,16 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     <Typography variant='body4'>Liked your property</Typography>
                   </div>
                 </div>
-                <IconButton size='large'>
-                  <Icon icon='chevron-right' size={16} />
-                </IconButton>
+                {propertyDetails.starred > 0 && (
+                  <IconButton
+                    size='large'
+                    onClick={() => {
+                      setSHowMatchesModal(true);
+                      setType('starred');
+                    }}>
+                    <Icon icon='chevron-right' size={16} />
+                  </IconButton>
+                )}
               </div>
             </div>
           </div>

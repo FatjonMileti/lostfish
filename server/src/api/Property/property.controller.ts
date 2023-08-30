@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import assetService from './services/property.service';
+import propertyService from './services/property.service';
 import authorize from '../../middleware/authorize';
 import validator from '../../middleware/validator';
 import assetApplicationService from './services/asset-application.service';
@@ -16,7 +16,7 @@ const router: Router = Router();
 export class PropertyController {
   public path = '/';
   public router = router;
-  public assetService = assetService;
+  public propertyService = propertyService;
   private readonly fileService: FileService;
   public assetApplicationService = assetApplicationService;
 
@@ -32,6 +32,13 @@ export class PropertyController {
       paging({ sort: { created_at: -1 } }),
       ability(CASLAction.Read, 'Property'),
       this.findAll
+    );
+    this.router.get(
+      '/:id/viewed-by',
+      authorize(),
+      validateId,
+      paging({ sort: { created_at: -1 } }),
+      this.getPropertyViewers
     );
     this.router.get('/:id/get-applications', authorize(), validateId, this.getAssetApplications);
     this.router.get('/:id/application', authorize(), validateId, this.getOneAssetApplication);
@@ -70,7 +77,17 @@ export class PropertyController {
    * @apiUse bearer
    * @apiUse paging
    */
-  private findAll = this.assetService.findAll;
+  private findAll = this.propertyService.findAll;
+
+  /**
+   * @api {get} /api/asset/:id/viewed-by Get property viewers
+   * @apiDescription Get all property viewers
+   * @apiGroup Property
+   * @apiSampleRequest /api/asset/:id/viewed-by
+   *
+   * @apiPermission admin
+   */
+  private getPropertyViewers = this.propertyService.getPropertyViewers;
 
   /**
    * @api {get} /api/asset/:id/applications Get asset applications
@@ -127,7 +144,7 @@ export class PropertyController {
    * @apiPermission authorize
    * @apiUse bearer
    */
-  private getById = this.assetService.getById;
+  private getById = this.propertyService.getById;
 
   /**
    * @api {get} /api/asset/last Get the latest property Live
@@ -137,7 +154,7 @@ export class PropertyController {
    * @apiPermission authorize
    * @apiUse bearer
    */
-  private getLatestProperty = this.assetService.findLastAddedPropertyWithDetails;
+  private getLatestProperty = this.propertyService.findLastAddedPropertyWithDetails;
 
   /**
    * @api {post} /api/asset/upload Upload documents
@@ -150,7 +167,7 @@ export class PropertyController {
    * @apiUse bearer
    */
   private uploadAssetFile = (req: Request, res: Response) =>
-    this.assetService.uploadAssetFiles(req, res, this.fileService);
+    this.propertyService.uploadAssetFiles(req, res, this.fileService);
 
   /**
    * @api {post} /api/asset Post
@@ -163,7 +180,7 @@ export class PropertyController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createAsset = this.assetService.createAsset;
+  private createAsset = this.propertyService.createAsset;
 
   /**
    * @api {post} /api/asset/draft Post as draft
@@ -176,7 +193,7 @@ export class PropertyController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private createAssetDraft = this.assetService.createAsset;
+  private createAssetDraft = this.propertyService.createAsset;
 
   /**
    * @api {patch} /api/asset/:id Patch one asset
@@ -189,7 +206,7 @@ export class PropertyController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private updateAsset = this.assetService.updateAsset;
+  private updateAsset = this.propertyService.updateAsset;
 
   /**
    * @api {patch} /api/asset/:id/send-invitation Send invitation
@@ -207,7 +224,7 @@ export class PropertyController {
    * @apiPermission admin
    * @apiUse bearer
    */
-  private sendInvitation = this.assetService.sendAssetInvitation;
+  private sendInvitation = this.propertyService.sendAssetInvitation;
 
   /**
    * @api {patch} /api/asset/:id/send-application Send application
@@ -237,7 +254,7 @@ export class PropertyController {
    * @apiUse bearer
    */
 
-  private delete = this.assetService.deleteAsset;
+  private delete = this.propertyService.deleteAsset;
 }
 
 /* API CONSTANTS FOR ASSET DOCUMENTATION */

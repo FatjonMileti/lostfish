@@ -354,8 +354,8 @@ const LandlordSectionMatches = ({
       <div className='hr-line'></div>
       <div className='avatars-buttons'>
         <div className='potential-matches-list'>
-          {propertyDetails?.tenants?.slice(0, 3).map((item: any) => (
-            <Avatar image={avatars[parseInt(item.avatar)].image} />
+          {propertyDetails?.tenants?.slice(0, 3).map((item: any, index) => (
+            <Avatar image={avatars[parseInt(item.avatar)].image} key={index} />
           ))}
           {propertyDetails?.tenants && propertyDetails?.tenants?.length > 3 && (
             <div className='others-number'>
@@ -407,8 +407,8 @@ const TenantSectionMatches = ({
       <div className='hr-line'></div>
       <div className='avatars-buttons'>
         <div className='potential-matches-list'>
-          {propertyDetails?.tenants?.slice(0, 3).map((item: any) => (
-            <Avatar image={avatars[parseInt(item.avatar)].image} />
+          {propertyDetails?.tenants?.slice(0, 3).map((item: any, index: number) => (
+            <Avatar image={avatars[parseInt(item.avatar)].image} key={index} />
           ))}
           {propertyDetails?.tenants && propertyDetails?.tenants?.length > 3 && (
             <div className='others-number'>

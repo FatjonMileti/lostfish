@@ -4,7 +4,7 @@ import path from 'path';
 import FilesCollection, { IFiles } from '../../data/files.collection';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
-import config from '../../config';
+import config from '../../config/index';
 import { fileService } from '../index';
 const router: Router = Router();
 

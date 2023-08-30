@@ -8,7 +8,17 @@ export const mapTenant = ({
   unread_messages
 }: any) => ({
   id: criteria._id,
-  criteria: {
+  criteria: mapCriteria(criteria),
+  property,
+  chosen,
+  starred,
+  percentage,
+  matchId,
+  unread_messages
+});
+
+export const mapCriteria = (criteria: any) => {
+  return {
     avatar: criteria.created_by.avatar,
     firstName: criteria.created_by.first_name,
     lastName: criteria.created_by.last_name,
@@ -26,11 +36,5 @@ export const mapTenant = ({
     specificPropertyFeatures: criteria?.specific_property_features || [],
     depositAmount: criteria?.deposit_amount || '',
     tenantId: criteria.created_by._id
-  },
-  property,
-  chosen,
-  starred,
-  percentage,
-  matchId,
-  unread_messages
-});
+  };
+};

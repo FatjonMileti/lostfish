@@ -5,7 +5,7 @@ import docusign, {
   ViewUrl,
   EnvelopesApi
 } from 'docusign-esign';
-import config from '../../../config';
+import config from '../../../config/index';
 import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
