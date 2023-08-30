@@ -69,9 +69,15 @@ export const SuggestedTenants = styled(
               Matching with{' '}
               <span className='matching-with'>renters in {matchedProperty?.area_of_interest ?? ''} +</span>
             </Typography>
-            <Typography variant='body5' className='sub-title'>
-              Displaying 1240 matches. Enter more details to refine your search.
-            </Typography>
+            {tenants.length === 0 ? (
+              <Typography variant='body5' className='sub-title'>
+                No matches. Enter more details to refine your search.
+              </Typography>
+            ) : (
+              <Typography variant='body5' className='sub-title'>
+                Displaying {tenants.length} matches. Enter more details to refine your search.
+              </Typography>
+            )}
           </div>
 
           {((id: string) => (

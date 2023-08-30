@@ -65,9 +65,15 @@ export const SuggestedMatches = styled(
               Matching with{' '}
               <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
             </Typography>
-            <Typography variant='body5' className='sub-title'>
-              Displaying 1240 matches. Enter more details to refine your search.
-            </Typography>
+            {properties.length === 0 ? (
+              <Typography variant='body5' className='sub-title'>
+                No matches. Enter more details to refine your search.
+              </Typography>
+            ) : (
+              <Typography variant='body5' className='sub-title'>
+                Displaying {properties.length} matches. Enter more details to refine your search.
+              </Typography>
+            )}
           </div>
 
           {((id: string) => (
