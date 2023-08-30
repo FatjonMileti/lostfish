@@ -13,7 +13,7 @@ let envConfig;
 if (stage === 'production') {
   envConfig = require('./prod').default;
 } else if (stage === 'stage') {
-  envConfig = require('./staging').default;
+  envConfig = require('./stage').default;
 } else {
   envConfig = require('./local').default;
 }
