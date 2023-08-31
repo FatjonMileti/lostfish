@@ -3,10 +3,10 @@ import { Server, Socket } from 'socket.io';
 import chatService from '../api/Chat/chat.service';
 import { JwtPayload } from 'jsonwebtoken';
 import propertyDetailService from '../api/Property/services/property-detail.service';
-import { PropertyDocument } from '../api/Property/property.interface';
+import { server } from '../bin/www';
 
 const users: any = {};
-const io: Server = new Server();
+const io: Server = new Server(server);
 
 const socketApi: any = {};
 

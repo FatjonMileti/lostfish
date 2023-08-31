@@ -5,6 +5,7 @@ export default {
   uses3Bucket: process.env.USE_S3_BACKET || false,
   behind_proxy: process.env.BEHIND_PROXY || 1,
   apiUrl: process.env.ABSOLUTE_URL,
+  frontendUrl: process.env.FRONTEND_URL,
   mongo: {
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,

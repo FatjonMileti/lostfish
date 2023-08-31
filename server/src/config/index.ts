@@ -21,6 +21,7 @@ if (stage === 'production') {
 const defaultConfig = {
   stage,
   apiUrl: process.env.ABSOLUTE_URL,
+  frontendUrl: process.env.FRONTEND_URL,
   googleKey: process.env.GOOGLE_MAP_KEY,
   pm2InstanceNum: process.env.NODE_APP_INSTANCE || '0',
   twitter: {
@@ -37,6 +38,7 @@ const defaultConfig = {
   },
   jwtSecret: process.env.JWT_SECRET,
   port: process.env.PORT,
+  redisUrl: process.env.REDIS_URL,
   logging: false
 };
 

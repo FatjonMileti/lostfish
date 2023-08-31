@@ -1,20 +1,16 @@
 #!/usr/bin/env node
-
-import * as process from 'process';
-
 /**
  * Module dependencies.
  */
 const app = require('../app');
 const debug = require('debug')('backend.api:server');
-import { Server, createServer } from 'http';
+import { Server as ExpressServer, createServer } from 'http';
+import config from '../config/index';
 import { AddressInfo } from 'net';
+import { createAdapter } from '@socket.io/redis-adapter';
+import Redis from 'ioredis';
 
-/**
- * Get port from environment and store in Express.
- */
-
-const port: string | number | boolean = normalizePort(process.env.PORT || '3000');
+const port: string | number | boolean = normalizePort(config.port || '3000');
 
 app.set('port', port);
 
@@ -22,14 +18,19 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-const server: Server = createServer(app);
-
+export const server: ExpressServer = createServer(app);
 import socketApi from '../utils/socket.io';
-
 const io = socketApi.io;
+
+const redisURI = 'redis://localhost:6379'; // Change this to your Redis URI
+const redis = new Redis(redisURI);
+
+const subClient = redis.duplicate();
+io.adapter(createAdapter(redis, subClient));
+
 io.attach(server, {
   cors: {
-    origin: process.env.FRONTEND_URL
+    origin: config.frontendUrl
   }
 });
 
@@ -98,3 +99,11 @@ function onListening(): void {
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+process.on('beforeExit', () => {
+  if (redis) {
+    redis.quit().catch((err: any) => {
+      console.error('Error closing Redis connection:', err);
+    });
+  }
+});
