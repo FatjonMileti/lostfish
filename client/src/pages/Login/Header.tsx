@@ -1,13 +1,13 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Icon } from '../../components/Icon';
+import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header = styled(({ className }: HeaderProps) => {
   return (
     <div className={`header ${className}`}>
-      <Icon icon='lost-fish-yin' size={64} />
+      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' />
     </div>
   );
 })`
