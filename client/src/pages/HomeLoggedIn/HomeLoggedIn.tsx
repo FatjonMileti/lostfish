@@ -9,7 +9,9 @@ import { SectionThree } from './HomeLoggedIn.SectionThree';
 import { SectionFour } from './HomeLoggedIn.SectionFour';
 import { SectionFive } from './HomeLoggedIn.SectionFive';
 import Can from '../../components/Can';
-import backgroundImg from '../About/sectionOne.About.png';
+// import backgroundImg from '../About/sectionOne.About.png';
+import backgroundImg from './home-background.png';
+
 import { CASLAction } from '../../utils/ability.util';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
