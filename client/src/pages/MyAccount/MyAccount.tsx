@@ -22,7 +22,7 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
-import backgroundImg from './images/background.png';
+import backgroundImg from '../Home/home-background.png';
 import { Button } from '../../components/Button';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 

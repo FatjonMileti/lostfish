@@ -17,7 +17,7 @@ import { useUserStore } from '../../globalState/user';
 import { useLocation, useNavigate, Location } from 'react-router-dom';
 import axios from '../../utils/axios';
 
-import messagesBackground from './massages-page-backgroud.png';
+import messagesBackground from '../Home/home-background.png';
 import { DocumentsTest } from './Documents/DocumentsTest';
 import { MessagesProperties } from './Messages.Properties';
 

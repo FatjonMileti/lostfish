@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom';
 import propertiesBackground from './properties-background.png';
 import { Tab, Tabs } from '../../components/Tab';
 
+
 const state: IGridState = {
   loading: true,
   rows: [],
