@@ -75,7 +75,8 @@
     "sharp": "^0.32.5",
     "socket.io": "^4.6.1",
     "socket.io-adapter": "^2.5.2",
-    "twitter-api-sdk": "^1.2.1"
+    "twitter-api-sdk": "^1.2.1",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -96,6 +97,7 @@
     "@types/multer-s3": "^3.0.0",
     "@types/node": "^16.11.1",
     "@types/socket.io": "^3.0.2",
+    "@types/ws": "^8.5.5",
     "apidoc": "^0.50.5",
     "nodemon": "^2.0.14",
     "prettier": "^2.5.0",
