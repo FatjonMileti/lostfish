@@ -2,7 +2,7 @@ import * as process from 'process';
 require('dotenv').config();
 
 export default {
-  uses3Bucket: process.env.USE_S3_BACKET || false,
+  uses3Bucket: process.env.USE_S3_BACKET === 'true' || false,
   behind_proxy: process.env.BEHIND_PROXY || 1,
   apiUrl: process.env.ABSOLUTE_URL,
   mongo: {
