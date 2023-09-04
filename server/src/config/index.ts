@@ -37,6 +37,8 @@ const defaultConfig = {
   },
   jwtSecret: process.env.JWT_SECRET,
   port: process.env.PORT,
+  userEmail: process.env.EMAIL_USER,
+  emailPass: process.env.EMAIL_PASS,
   logging: false
 };
 

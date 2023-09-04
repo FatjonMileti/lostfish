@@ -51,8 +51,8 @@ export default class MailService {
       this.transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: config.email_user_account,
-          pass: config.email_user_password
+          user: config.userEmail,
+          pass: config.emailPass
         }
       });
     } catch (err: any) {
