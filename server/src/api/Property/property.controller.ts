@@ -207,6 +207,8 @@ export class PropertyController {
 
     const ws = await createWebSocketConnection();
 
+    let images: any[] = []; // Collect images here
+
     ws.on('message', (message: string) => {
       const response = JSON.parse(message.toString());
 
@@ -216,17 +218,16 @@ export class PropertyController {
       }
 
       if (response.hasOwnProperty('newImages')) {
-        const images = response.newImages.images;
-
+        const newImages = response.newImages.images;
+        images = images.concat(newImages); // Collect the images
         // Close the WebSocket connection after receiving images
         ws.close();
-
-        // Respond with the generated images
-        res.json({ images });
       }
     });
 
-    // sendNewConnectionMessage(ws);
+    ws.on('close', () => {
+      res.json({ images });
+    });
   };
 
   /**
