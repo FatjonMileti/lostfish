@@ -11,7 +11,7 @@ export default class LocalFileService implements FileService {
       key: file.filename,
       mimetype: file.mimetype,
       originalname: file.originalname,
-      link: `${config.api_url}/api/file/${file.filename}`,
+      link: `${config.apiUrl}/api/file/${file.filename}`,
       isNew: true
     };
   }
@@ -19,7 +19,13 @@ export default class LocalFileService implements FileService {
   async uploadFiles(files: any[]): Promise<any[]> {
     await FilesCollection.insertMany(files);
     return files.map((file: any) => {
-      return this.uploadFile(file);
+      return {
+        key: file.filename,
+        mimetype: file.mimetype,
+        originalname: file.originalname,
+        link: `${config.apiUrl}/api/file/${file.filename}`,
+        isNew: true
+      };
     });
   }
 

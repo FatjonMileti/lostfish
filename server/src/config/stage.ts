@@ -3,7 +3,7 @@ require('dotenv').config();
 
 export default {
   port: process.env.PORT || 3000,
-  uses3Bucket: process.env.USE_S3_BACKET || false,
+  uses3Bucket: process.env.USE_S3_BACKET === 'true' || false,
   behind_proxy: process.env.BEHIND_PROXY || 1,
   logging: true
 };
