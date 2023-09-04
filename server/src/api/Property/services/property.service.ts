@@ -376,7 +376,6 @@ const findPublishedPropertiesExample = async (userId?: string): Promise<Property
 
 const uploadAssetFiles = async (req: Request, res: Response, fileService: FileService) => {
   const files = req.files as any[];
-  console.log({ files });
   const savedFiles = await fileService.uploadFiles(files);
   return res.send(savedFiles);
 };
