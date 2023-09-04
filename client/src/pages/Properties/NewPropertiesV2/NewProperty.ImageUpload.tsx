@@ -114,25 +114,26 @@ export const ImageUpload = styled(
             </Button>
           </div>
         </Modal>
-        <div style={{ display: 'flex', justifyContent: 'space-between', columnGap: '15px' }}>
-          <Upload
-            multiple
-            accept='image/*'
-            onFiles={(files) => onNewImages(files)}
-            button={
-              <Button variant='secondary' size='large' startIcon={<Icon icon='plus' size={14} />}>
-                Upload media
-              </Button>
-            }></Upload>
 
-          <Button
-            variant='secondary'
-            size='large'
-            startIcon={<Icon icon='plus' size={14} />}
-            onClick={() => setGenerateModal(true)}>
-            Generate media
-          </Button>
-        </div>
+        <Upload
+          multiple
+          accept='image/*'
+          onFiles={(files) => onNewImages(files)}
+          button={
+            <Button variant='secondary' size='large' startIcon={<Icon icon='plus' size={14} />}>
+              Upload media
+            </Button>
+          }></Upload>
+
+        {/*<div style={{ display: 'flex', justifyContent: 'space-between', columnGap: '15px' }}>*/}
+        {/*  <Button*/}
+        {/*    variant='secondary'*/}
+        {/*    size='large'*/}
+        {/*    startIcon={<Icon icon='plus' size={14} />}*/}
+        {/*    onClick={() => setGenerateModal(true)}>*/}
+        {/*    Generate media*/}
+        {/*  </Button>*/}
+        {/*</div>*/}
       </div>
     );
   }
