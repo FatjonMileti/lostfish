@@ -19,5 +19,7 @@ export default {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
     awsBucket: process.env.AWS_BUCKET || ''
   },
+  imageGeneratorKey: process.env.IMAGE_GENERATOR_KEY,
+  imageGeneratorSecret: process.env.IMAGE_GENERATOR_SECRET,
   logging: true
 };

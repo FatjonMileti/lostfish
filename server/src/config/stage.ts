@@ -13,5 +13,7 @@ export default {
     port: process.env.DB_PORT
   },
   connectionString: `${process.env.DB_PROTOCOL}://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}`,
+  imageGeneratorKey: process.env.IMAGE_GENERATOR_KEY,
+  imageGeneratorSecret: process.env.IMAGE_GENERATOR_SECRET,
   logging: true
 };
