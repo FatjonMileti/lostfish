@@ -5,7 +5,7 @@ module.exports = {
       script: 'npx',
       args: 'serve -s ../client/build -l 4000',
       env: {
-        NODE_ENV: 'production'
+        NODE_ENV: 'stage'
       }
     },
     {
