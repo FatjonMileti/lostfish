@@ -299,7 +299,7 @@ const createLostfishTransactionAgreement = async (request: Request, response: Re
       );
 
       await userService.findAndUpdateUser(userId, {
-        transaction_agreement_link: `${config.api_url}/api/docusign/envelope/${results.envelopeId}/download`
+        transaction_agreement_link: `${config.apiUrl}/api/docusign/envelope/${results.envelopeId}/download`
       });
 
       return response.send(updatedEnvelope);

@@ -55,7 +55,7 @@ export default class S3FileService implements FileService {
         key: file.key,
         mimetype: file.mimetype,
         originalname: file.originalname,
-        link: `${config.api_url}/api/file/${file.key}`,
+        link: `${config.apiUrl}/api/file/${file.key}`,
         isNew: true
       });
     }
