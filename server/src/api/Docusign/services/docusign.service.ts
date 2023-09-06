@@ -28,7 +28,7 @@ const dsApiClient: ApiClient = new docusign.ApiClient();
 
 const getConsent = () => {
   const urlScopes = SCOPES.join('+');
-  const redirectUri = `${config.api_url}/api/docusign/callback`;
+  const redirectUri = `${config.apiUrl}/api/docusign/callback`;
   const consentUrl =
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
     `scope=${urlScopes}&client_id=${jwtConfig.dsJWTClientId}&` +

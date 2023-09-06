@@ -35,6 +35,18 @@ const defaultConfig = {
     secretAccessKey: 'test',
     awsBucket: 'test'
   },
+  docusign: {
+    dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
+    appAccountId: process.env.APP_ACCOUNT_ID ?? '',
+    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
+    integrationKey: process.env.INTEGRATION_KEY ?? '',
+    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
+    dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
+    rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
+    transactionAgreementTemplate: process.env.LOSTFISH_TRANSACTION_AGREEMENT_TEMPLATE_ID ?? '',
+    privacyAgreementTemplate: process.env.LOSTFISH_PRIVACY_AGREEMENT_TEMPLATE_ID ?? '',
+    basePath: process.env.DOCUSIGN_BASE_PATH ?? ''
+  },
   jwtSecret: process.env.JWT_SECRET,
   port: process.env.PORT,
   userEmail: process.env.EMAIL_USER,

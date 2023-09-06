@@ -19,6 +19,16 @@ export default {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
     awsBucket: process.env.AWS_BUCKET || ''
   },
+  docusign: {
+    dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
+    appAccountId: process.env.APP_ACCOUNT_ID ?? '',
+    impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
+    dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
+    rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
+    transactionAgreementTemplate: process.env.LOSTFISH_TRANSACTION_AGREEMENT_TEMPLATE_ID ?? '',
+    privacyAgreementTemplate: process.env.LOSTFISH_PRIVACY_AGREEMENT_TEMPLATE_ID ?? '',
+    basePath: process.env.DOCUSIGN_BASE_PATH ?? ''
+  },
   imageGeneratorKey: process.env.IMAGE_GENERATOR_KEY,
   imageGeneratorSecret: process.env.IMAGE_GENERATOR_SECRET,
   logging: true
