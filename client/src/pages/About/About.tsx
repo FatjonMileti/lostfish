@@ -6,7 +6,7 @@ import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionFour } from './About.SectionFour';
 import { Footer } from '../Home/Footer';
-import backgroundImg from './sectionOne.About.png';
+import backgroundImg from '../Home/home-background.png';
 import {SectionZero} from "./About.SectionZero";
 import {SectionImg} from "./About.SectionImg";
 
