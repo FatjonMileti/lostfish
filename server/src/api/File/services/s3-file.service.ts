@@ -10,18 +10,17 @@ import FilesCollection from '../../../data/files.collection';
   import sharp from 'sharp';
   const buffer = await sharp(file.buffer).resize({ height: 1080, width: 721, fit: 'contain' }).toBuffer();
 */
-const s3 = new S3Client({
-  region: config.aws.region,
-  credentials: {
-    accessKeyId: config.aws.accessKeyId,
-    secretAccessKey: config.aws.secretAccessKey
-  }
-});
 
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
 export default class S3FileService implements FileService {
-  private s3service = s3;
+  private s3service = new S3Client({
+    region: config.aws.region,
+    credentials: {
+      accessKeyId: config.aws.accessKeyId,
+      secretAccessKey: config.aws.secretAccessKey
+    }
+  });
 
   async uploadFile(file: any): Promise<string> {
     try {
@@ -54,7 +53,7 @@ export default class S3FileService implements FileService {
       updatedFiles.push({
         key: file.key,
         mimetype: file.mimetype,
-        originalname: file.originalname,
+        originalName: file.originalname,
         link: `${config.apiUrl}/api/file/${file.key}`,
         isNew: true
       });

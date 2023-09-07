@@ -2,18 +2,32 @@ import FilesCollection from '../../../data/files.collection';
 import { FileService } from '../file.interface';
 import config from '../../../config/index';
 import crypto from 'crypto';
-import { BlobServiceClient } from '@azure/storage-blob';
+import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
-const blobServiceClient = BlobServiceClient.fromConnectionString(config.azure.storageConnectionString);
-const containerClient = blobServiceClient.getContainerClient(config.azure.azureStorageName);
-
 export default class AzureBlobService implements FileService {
+  private static instance: AzureBlobService;
+
+  private blobServiceClient: BlobServiceClient = BlobServiceClient.fromConnectionString(
+    config.azure.storageConnectionString
+  );
+  private containerClient: ContainerClient = this.blobServiceClient.getContainerClient(
+    config.azure.azureStorageName
+  );
+
+  static getInstance() {
+    if (!AzureBlobService.instance) {
+      AzureBlobService.instance = new AzureBlobService();
+    }
+
+    return AzureBlobService.instance;
+  }
+
   async uploadFile(file: any): Promise<any> {
-    const blockBlobClient = containerClient.getBlockBlobClient(file.key);
+    const blockBlobClient = this.containerClient.getBlockBlobClient(file.key);
     await blockBlobClient.uploadData(file.buffer, file.mimetype);
   }
 
@@ -45,7 +59,7 @@ export default class AzureBlobService implements FileService {
     }
 
     try {
-      const blockBlobClient = containerClient.getBlockBlobClient(fileUrl);
+      const blockBlobClient = this.containerClient.getBlockBlobClient(fileUrl);
       await blockBlobClient.delete();
       console.log('File deleted successfully.');
       return true;
@@ -56,7 +70,7 @@ export default class AzureBlobService implements FileService {
   }
 
   async getFile(fileUrl: string): Promise<any> {
-    const blobClient = containerClient.getBlobClient(fileUrl);
+    const blobClient = this.containerClient.getBlobClient(fileUrl);
 
     try {
       const downloadBlockBlobResponse = await blobClient.download(0);

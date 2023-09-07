@@ -60,11 +60,12 @@ const router: Router = Router();
 // Create services instances
 const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
+
 export const suggestionService = new SuggestionService(PropertySchema, CriteriaSchema);
 
 export const fileService: FileService = config.useAzureStorage
-  ? new AzureBlobService()
-  : new LocalFileService();
+  ? AzureBlobService.getInstance()
+  : LocalFileService.getInstance();
 
 // Create controller instances
 const suggestionController = new SuggestionController(suggestionService);

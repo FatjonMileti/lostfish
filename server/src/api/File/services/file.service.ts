@@ -6,6 +6,16 @@ import config from '../../../config/index';
 import process from 'process';
 
 export default class LocalFileService implements FileService {
+  private static instance: LocalFileService;
+
+  static getInstance() {
+    if (!LocalFileService.instance) {
+      LocalFileService.instance = new LocalFileService();
+    }
+
+    return LocalFileService.instance;
+  }
+
   async uploadFile(file: any): Promise<any> {
     return {
       key: file.filename,
