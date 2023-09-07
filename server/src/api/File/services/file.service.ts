@@ -10,7 +10,7 @@ export default class LocalFileService implements FileService {
     return {
       key: file.filename,
       mimetype: file.mimetype,
-      originalname: file.originalname,
+      originalName: file.originalname,
       link: `${config.apiUrl}/api/file/${file.filename}`,
       isNew: true
     };
@@ -22,7 +22,7 @@ export default class LocalFileService implements FileService {
       return {
         key: file.filename,
         mimetype: file.mimetype,
-        originalname: file.originalname,
+        originalName: file.originalname,
         link: `${config.apiUrl}/api/file/${file.filename}`,
         isNew: true
       };

@@ -59,7 +59,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
             if (doc.type === type) {
               doc.key = response.data[0].key;
               doc.mimetype = response.data[0].mimetype;
-              doc.originalname = response.data[0].originalname;
+              doc.originalName = response.data[0].originalName;
               doc.link = response.data[0].link;
               return doc;
             } else {

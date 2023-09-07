@@ -22,7 +22,11 @@ const defaultConfig = {
   stage,
   apiUrl: process.env.ABSOLUTE_URL,
   googleKey: process.env.GOOGLE_MAP_KEY,
-  pm2InstanceNum: process.env.NODE_APP_INSTANCE || '0',
+  useAzureStorage: process.env.USE_AZURE_BLOB_BACKET === 'true',
+  azure: {
+    storageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+    azureStorageName: process.env.AZURE_STORAGE_NAME
+  },
   twitter: {
     redirect_url: `${process.env.ABSOLUTE_URL}/api/account/login-twitter-callback`,
     clientId: process.env.TWITTER_AUTH_CLIENT_ID || '',

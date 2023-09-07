@@ -5,6 +5,11 @@ export default {
   port: process.env.PORT || 3000,
   uses3Bucket: process.env.USE_S3_BACKET === 'true' || false,
   behind_proxy: process.env.BEHIND_PROXY || 1,
+  useAzureStorage: process.env.USE_AZURE_BLOB_BACKET === 'true',
+  azure: {
+    storageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+    azureStorageName: process.env.AZURE_STORAGE_NAME
+  },
   mongo: {
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
