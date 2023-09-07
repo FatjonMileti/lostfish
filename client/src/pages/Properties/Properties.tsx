@@ -193,7 +193,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     &::before {
       content: '';
       position: absolute;
-      top: 0;
+      top: -150px;
       left: 0;
       width: 100%;
       height: 100vh;
