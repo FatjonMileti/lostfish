@@ -15,7 +15,7 @@ import { Property } from './Property/Property';
 import { NewPropertyV2 } from './NewPropertiesV2/NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
-import propertiesBackground from './properties-background.png';
+import propertiesBackground from '../Home/home-background.png';
 import { Tab, Tabs } from '../../components/Tab';
 
 
@@ -193,14 +193,14 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     &::before {
       content: '';
       position: absolute;
-      top: 0;
+      top: -150px;
       left: 0;
       width: 100%;
       height: 100vh;
       background: url(${propertiesBackground}), lightgray 50% / cover no-repeat;
       opacity: 0.05;
       background-position-y: top;
-      background-size: cover;
+      background-size: auto;
       z-index: -1;
     }
 
@@ -214,7 +214,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
 
       background-position-y: top;
-      background-size: cover;
+      background-size: auto;
       z-index: -2;
     }
 
