@@ -62,7 +62,6 @@ const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
 export const suggestionService = new SuggestionService(PropertySchema, CriteriaSchema);
 
-console.log(config.useAzureStorage);
 export const fileService: FileService = config.useAzureStorage
   ? new AzureBlobService()
   : new LocalFileService();
