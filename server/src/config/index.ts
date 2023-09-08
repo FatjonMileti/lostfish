@@ -44,8 +44,6 @@ const defaultConfig = {
     dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
     appAccountId: process.env.APP_ACCOUNT_ID ?? '',
     impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
-    integrationKey: process.env.INTEGRATION_KEY ?? '',
-    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
     dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
     rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
     transactionAgreementTemplate: process.env.LOSTFISH_TRANSACTION_AGREEMENT_TEMPLATE_ID ?? '',

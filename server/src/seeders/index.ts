@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import config from '../config/index';
 import dbConnect from '../data';
 dbConnect(config.connectionString);
-console.log(config);
+
 const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));
   try {

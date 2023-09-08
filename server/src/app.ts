@@ -153,4 +153,4 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Export the Express app instance
-module.exports = app;
+export default app;

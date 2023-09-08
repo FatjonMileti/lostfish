@@ -2,13 +2,17 @@
 /**
  * Module dependencies.
  */
-const app = require('../app');
-const debug = require('debug')('backend.api:server');
-import { Server as ExpressServer, createServer } from 'http';
+import app from '../app';
+import debug from 'debug';
+const debugLog = debug('backend.api:server');
+import http from 'http';
 import config from '../config/index';
 import { AddressInfo } from 'net';
 import { createAdapter } from '@socket.io/redis-adapter';
 import Redis from 'ioredis';
+
+import { Server, Socket } from 'socket.io';
+import { handleSocketActions } from '../utils/socket.io';
 
 const port: string | number | boolean = normalizePort(config.port || '3000');
 
@@ -18,15 +22,16 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-export const server: ExpressServer = createServer(app);
-import socketApi from '../utils/socket.io';
-const io = socketApi.io;
+const server: http.Server = http.createServer(app);
+const io: Server = new Server();
 
 const redisURI = 'redis://localhost:6379';
 const redis = new Redis(redisURI);
 
 const subClient = redis.duplicate();
 io.adapter(createAdapter(redis, subClient));
+
+io.on('connection', (socket: Socket) => handleSocketActions(socket));
 
 io.attach(server, {
   cors: {
@@ -83,6 +88,11 @@ function onError(error: NodeJS.ErrnoException): void {
       console.error(bind + ' is already in use');
       process.exit(1);
       break;
+
+    case 'beforeExit':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
     default:
       throw error;
   }
@@ -94,10 +104,10 @@ function onError(error: NodeJS.ErrnoException): void {
 
 function onListening(): void {
   const addr: string | AddressInfo | null = server.address();
-  if (addr === null) return debug('failed to bind');
+  if (addr === null) return debugLog('failed to bind');
 
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  debugLog('Listening on ' + bind);
 }
 
 process.on('beforeExit', () => {
