@@ -91,7 +91,8 @@ export default class SuggestionService {
           populate: [
             {
               path: 'created_by',
-              select: ['email', 'username', 'first_name', 'last_name', 'avatar', 'role']
+              select: ['email', 'username', 'first_name', 'last_name', 'avatar', 'role', 'deleted_at'],
+              match: { deleted_at: { $exists: false } }
             }
           ]
         }
@@ -133,7 +134,11 @@ export default class SuggestionService {
         .find({
           created_by: { $ne: userId }
         })
-        .populate('created_by', ['email', 'username', 'first_name', 'last_name', 'avatar', 'role']);
+        .populate({
+          path: 'created_by',
+          select: ['email', 'username', 'first_name', 'last_name', 'avatar', 'role', 'deleted_at'],
+          match: { deleted_at: { $exists: false } }
+        });
 
       matchesUsers = matchesUsers.filter(
         (item: any) => item.created_by && item.created_by.role === Role.Client

@@ -12,11 +12,7 @@ import { multipleUpload } from '../../utils/uploader';
 import { FileService } from '../File/file.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
-import {
-  createWebSocketConnection,
-  sendNewTaskMessage,
-  sendNewConnectionMessage
-} from '../../utils/imageFinder';
+import { createWebSocketConnection, sendNewTaskMessage } from '../../utils/imageFinder';
 
 const router: Router = Router();
 
