@@ -36,7 +36,9 @@ export const Header = styled(({ className }: HeaderProps) => {
 
       <div className='middle-part'>
         <div className='menu'>
-          <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
+          <NavLink to='/'>
+            {({ isActive }) => <MenuButton active={isActive}>My dashboard</MenuButton>}
+          </NavLink>
           {canReadMatchesMenuItem && (
             <NavLink to='/matches'>
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}
