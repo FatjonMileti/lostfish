@@ -27,8 +27,8 @@ import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModa
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
-  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
+  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
