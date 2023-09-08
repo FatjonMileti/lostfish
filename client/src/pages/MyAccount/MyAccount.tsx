@@ -27,7 +27,7 @@ import { Button } from '../../components/Button';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 
 const submenus: any[] = [
-  { icon: 'layer', text: 'Dashboard', link: '' },
+  { icon: 'layer', text: 'Summary', link: '' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
