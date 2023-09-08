@@ -81,7 +81,7 @@ const mapController = new MapController();
 const notificationController = new NotificationController();
 const documentController = new DocumentController(fileService);
 const docusignController = new DocusignController();
-const fileController = new FileController();
+const fileController = new FileController(fileService);
 
 router.use('/v1', protectedController.router);
 router.use('/suggestion', suggestionController.router);
