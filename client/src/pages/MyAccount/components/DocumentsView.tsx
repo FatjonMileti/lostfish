@@ -45,6 +45,8 @@ export const DocumentsView = (props: IDocumentView) => {
       {DOCUMENT_TYPES.map((document, index) => {
         const selectedDocument = documents.find((userDoc) => userDoc.type === document.type);
 
+        console.log({ selectedDocument });
+
         return (
           <div className='section' key={index}>
             <Typography variant='body4' className='title'>
@@ -79,7 +81,7 @@ export const DocumentsView = (props: IDocumentView) => {
               <>
                 Download{' '}
                 <a href={`${selectedDocument.link}`} target='_blank'>
-                  {selectedDocument.originalname}
+                  {selectedDocument.originalName}
                 </a>
               </>
             )}

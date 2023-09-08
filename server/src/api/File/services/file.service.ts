@@ -6,11 +6,24 @@ import config from '../../../config/index';
 import process from 'process';
 
 export default class LocalFileService implements FileService {
-  async uploadFile(file: any): Promise<string> {
-    // Save the file to the local 'uploads' folder
-    // Return the local file URL
+  private static instance: LocalFileService;
 
-    return '';
+  static getInstance() {
+    if (!LocalFileService.instance) {
+      LocalFileService.instance = new LocalFileService();
+    }
+
+    return LocalFileService.instance;
+  }
+
+  async uploadFile(file: any): Promise<any> {
+    return {
+      key: file.filename,
+      mimetype: file.mimetype,
+      originalName: file.originalname,
+      link: `${config.apiUrl}/api/file/${file.filename}`,
+      isNew: true
+    };
   }
 
   async uploadFiles(files: any[]): Promise<any[]> {
@@ -19,8 +32,8 @@ export default class LocalFileService implements FileService {
       return {
         key: file.filename,
         mimetype: file.mimetype,
-        originalname: file.originalname,
-        link: `${config.api_url}/api/file/${file.filename}`,
+        originalName: file.originalname,
+        link: `${config.apiUrl}/api/file/${file.filename}`,
         isNew: true
       };
     });

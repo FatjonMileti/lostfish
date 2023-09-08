@@ -2,7 +2,7 @@ import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { CustomSection } from './CustomSection';
-import backgroundImg from './sectionFour.About.jpeg';
+import backgroundImg from '../Home/home-background.png';
 
 export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (

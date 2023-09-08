@@ -15,6 +15,9 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import compression from 'compression';
 
+// API Routes
+import routerApi from './api/index';
+
 // Internal Dependencies
 import config from './config/index';
 import dbConnect from './data';
@@ -127,7 +130,7 @@ if (config.stage === 'development') {
 // --------------
 // Include the main index route and API routes
 app.use('/', require('./routes/index'));
-app.use('/api', require('./api/index'));
+app.use('/api', routerApi);
 
 // Catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {

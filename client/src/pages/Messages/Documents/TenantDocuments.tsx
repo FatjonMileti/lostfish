@@ -192,7 +192,7 @@ const TenantDocumentItem = ({
               )}
               {document.mimetype.startsWith('application/pdf') && (
                 <a href={`${document.link}`} target='_blank'>
-                  {document.originalname}
+                  {document.originalName}
                 </a>
               )}
               <Button variant='secondary' onClick={() => setSelectedFile(document)}>
@@ -233,7 +233,7 @@ const LandlordDocumentItem = ({ document, approveOrDisapproveDocument }: ILandlo
               )}
               {document.mimetype.startsWith('application/pdf') && (
                 <a href={`${document.link}`} target='_blank'>
-                  {document.originalname}
+                  {document.originalName}
                 </a>
               )}
               <Button onClick={() => approveOrDisapproveDocument(document)}>Approve</Button>

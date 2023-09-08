@@ -17,6 +17,7 @@ const login = async (req: express.Request, res: express.Response) => {
 
   const loginError = (message: string, code: string) => createError(400, { message, code });
 
+  // @ts-ignore
   const user: UserDocument | null = await UserModel.findOne({
     email: model.email,
     is_disabled: false

@@ -1,8 +1,7 @@
 import { Schema, model, Document, ObjectId } from 'mongoose';
 
 export interface IFiles extends Document {
-  fieldname: string;
-  originalname: string;
+  originalName: string;
   encoding: string;
   mimetype: string;
   size: string;
@@ -27,8 +26,7 @@ export interface IFiles extends Document {
 }
 
 const schema = new Schema<IFiles>({
-  fieldname: { type: String },
-  originalname: { type: String },
+  originalName: { type: String },
   encoding: { type: String },
   mimetype: { type: String },
   size: { type: String },

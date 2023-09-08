@@ -28,7 +28,7 @@ const dsApiClient: ApiClient = new docusign.ApiClient();
 
 const getConsent = () => {
   const urlScopes = SCOPES.join('+');
-  const redirectUri = `${config.api_url}/api/docusign/callback`;
+  const redirectUri = `${config.apiUrl}/api/docusign/callback`;
   const consentUrl =
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
     `scope=${urlScopes}&client_id=${jwtConfig.dsJWTClientId}&` +
@@ -299,7 +299,7 @@ const createLostfishTransactionAgreement = async (request: Request, response: Re
       );
 
       await userService.findAndUpdateUser(userId, {
-        transaction_agreement_link: `${config.api_url}/api/docusign/envelope/${results.envelopeId}/download`
+        transaction_agreement_link: `${config.apiUrl}/api/docusign/envelope/${results.envelopeId}/download`
       });
 
       return response.send(updatedEnvelope);

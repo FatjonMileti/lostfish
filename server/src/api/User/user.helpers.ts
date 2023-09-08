@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { fileService } from '../index';
 
 import { areArraysOfObjectsIdentical } from '../api.helpers';
+
 export const hashPassword = (password: string) => {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 12, (err, generatedHash) => {

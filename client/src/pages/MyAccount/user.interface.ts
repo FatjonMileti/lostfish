@@ -20,7 +20,7 @@ export interface IUser_Documents {
   key: string;
   approved: boolean;
   mimetype: string;
-  originalname: string;
+  originalName: string;
   link?: string;
 }
 
@@ -31,7 +31,7 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
     link: '',
     approved: false,
     mimetype: '',
-    originalname: ''
+    originalName: ''
   },
   {
     type: 'Employer reference',
@@ -39,7 +39,7 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
     link: '',
     approved: false,
     mimetype: '',
-    originalname: ''
+    originalName: ''
   },
   {
     type: 'Landlord reference',
@@ -47,7 +47,7 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
     link: '',
     approved: false,
     mimetype: '',
-    originalname: ''
+    originalName: ''
   }
 ];
 

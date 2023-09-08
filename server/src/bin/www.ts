@@ -22,7 +22,7 @@ export const server: ExpressServer = createServer(app);
 import socketApi from '../utils/socket.io';
 const io = socketApi.io;
 
-const redisURI = 'redis://localhost:6379'; // Change this to your Redis URI
+const redisURI = 'redis://localhost:6379';
 const redis = new Redis(redisURI);
 
 const subClient = redis.duplicate();

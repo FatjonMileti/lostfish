@@ -53,6 +53,7 @@ type FormValues = {
 
 export interface NewPropertyStateType {
   newImages: File[];
+  generatedImages: any[];
   loadingProperty: boolean;
   savingProperty: boolean;
   deletePropertyConfirmationModal: boolean;
@@ -68,6 +69,7 @@ export const NewPropertyV2 = styled(
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       newImages: [],
+      generatedImages: [],
       loadingProperty: false,
       savingProperty: false,
       deletePropertyConfirmationModal: false
@@ -78,6 +80,9 @@ export const NewPropertyV2 = styled(
     }, []);
 
     const setNewImages = (newImages: File[]) => setState((state) => ({ ...state, newImages }));
+
+    const setGeneratedImages = (generatedImages: any[]) =>
+      setState((state) => ({ ...state, generatedImages }));
 
     React.useEffect(() => {
       if (propertyId) {
@@ -213,6 +218,11 @@ export const NewPropertyV2 = styled(
           form.setValue('propertyImages', [...form.getValues('propertyImages'), ...newImagesLinks]);
         }
 
+        if (state.generatedImages.length > 0) {
+          setGeneratedImages([]);
+          form.setValue('propertyImages', [...form.getValues('propertyImages'), ...state.generatedImages]);
+        }
+
         const payload = {
           transaction_type_string: 'Rent',
 
@@ -260,6 +270,11 @@ export const NewPropertyV2 = styled(
           const newImagesLinks = await uploadImages(state.newImages);
           setNewImages([]);
           form.setValue('propertyImages', [...form.getValues('propertyImages'), ...newImagesLinks]);
+        }
+
+        if (state.generatedImages.length > 0) {
+          setGeneratedImages([]);
+          form.setValue('propertyImages', [...form.getValues('propertyImages'), ...state.generatedImages]);
         }
 
         const payload: any = {
@@ -334,7 +349,7 @@ export const NewPropertyV2 = styled(
       (100 / 7) *
       [
         !!form.getValues('title'),
-        !!state.newImages.length || form.getValues('propertyImages').length,
+        !!state.newImages.length || form.getValues('propertyImages').length || state.generatedImages.length,
         !!form.getValues('areaOfInterest'),
         !!form.getValues('minBudget') && !!form.getValues('maxBudget'),
         !!form.getValues('buildingType') &&
@@ -411,6 +426,9 @@ export const NewPropertyV2 = styled(
                 onNewImages={(files) => {
                   setNewImages([...state.newImages, ...files]);
                 }}
+                onGenerateImages={(files) => {
+                  setGeneratedImages([...state.generatedImages, ...files]);
+                }}
               />
               <Controller
                 render={({ field: { value = [], onChange } }) => (
@@ -432,19 +450,36 @@ export const NewPropertyV2 = styled(
                         </div>
                       ))}
 
-                      {state.newImages.map((image: any, imageIndex: number) => (
-                        <div key={imageIndex} className='image-wrapper'>
-                          <IconButton
-                            size='large'
-                            className='remove-button'
-                            onClick={() => {
-                              setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
-                            }}>
-                            <Icon icon='minus' size={11} />
-                          </IconButton>
-                          <img alt='property image' src={URL.createObjectURL(image)} />
-                        </div>
-                      ))}
+                      {state.newImages.length > 0 &&
+                        state.newImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={URL.createObjectURL(image)} />
+                          </div>
+                        ))}
+                      {state.generatedImages.length > 0 &&
+                        state.generatedImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setGeneratedImages(
+                                  state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
+                                );
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={image.link} />
+                          </div>
+                        ))}
                     </div>
                   </>
                 )}

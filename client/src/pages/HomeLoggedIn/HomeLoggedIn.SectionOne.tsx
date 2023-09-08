@@ -355,7 +355,7 @@ const LandlordSectionMatches = ({
       <div className='avatars-buttons'>
         <div className='potential-matches-list'>
           {propertyDetails?.tenants?.slice(0, 3).map((item: any, index) => (
-            <Avatar image={avatars[parseInt(item.avatar)].image} key={index} />
+            <Avatar image={avatars[parseInt(item.avatar)]?.image} key={index} />
           ))}
           {propertyDetails?.tenants && propertyDetails?.tenants?.length > 3 && (
             <div className='others-number'>

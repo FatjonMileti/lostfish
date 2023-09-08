@@ -22,7 +22,7 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
-import backgroundImg from './images/background.png';
+import backgroundImg from '../Home/home-background.png';
 import { Button } from '../../components/Button';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 
@@ -62,7 +62,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       />
       <div className={`my-account-page ${className}`}>
         <Header />
-        <div className='container'>
+        <div className='container-account'>
           <div className='left-menu'>
             <div className='menu-header'>
               <Avatar
@@ -174,7 +174,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       z-index: -2;
     }
 
-    .container {
+    .container-account {
       display: grid;
       column-gap: 69px;
       padding: 36px;

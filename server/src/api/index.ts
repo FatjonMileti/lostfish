@@ -25,8 +25,8 @@ import SuggestionService from './Suggestions/suggestion.service';
 import PropertySchema from './Property/schemas/property.schema';
 import CriteriaSchema from './Criteria/schemas/criteria.schema';
 import config from '../config/index';
-import S3FileService from './File/services/s3-file.service';
 import LocalFileService from './File/services/file.service';
+import AzureBlobService from './File/services/azure-blob.service';
 import { FileService } from './File/file.interface';
 
 const router: Router = Router();
@@ -60,8 +60,12 @@ const router: Router = Router();
 // Create services instances
 const matchService = new MatchService(MatchModel);
 const adminService = new AdminService(LoginLog, AssetLog, MatchLog);
+
 export const suggestionService = new SuggestionService(PropertySchema, CriteriaSchema);
-export const fileService: FileService = config.uses3Bucket ? new S3FileService() : new LocalFileService();
+
+export const fileService: FileService = config.useAzureStorage
+  ? AzureBlobService.getInstance()
+  : LocalFileService.getInstance();
 
 // Create controller instances
 const suggestionController = new SuggestionController(suggestionService);
@@ -77,7 +81,7 @@ const mapController = new MapController();
 const notificationController = new NotificationController();
 const documentController = new DocumentController(fileService);
 const docusignController = new DocusignController();
-const fileController = new FileController();
+const fileController = new FileController(fileService);
 
 router.use('/v1', protectedController.router);
 router.use('/suggestion', suggestionController.router);
@@ -94,4 +98,4 @@ router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/notification', authorize(), notificationController.router);
 
-module.exports = router;
+export default router;

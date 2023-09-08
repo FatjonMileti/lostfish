@@ -187,6 +187,7 @@ export class DocumentController {
     await doc.save();
 
     try {
+      file.originalName = file.originalname;
       const document = await DocumentModel.findByIdAndUpdate(
         documentId,
         { file },

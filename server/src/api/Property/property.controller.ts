@@ -10,6 +10,9 @@ import ability from '../../middleware/ability.middleware';
 import { CASLAction } from '../../casl/casl.interface';
 import { multipleUpload } from '../../utils/uploader';
 import { FileService } from '../File/file.interface';
+import createError from 'http-errors';
+import httpStatus from 'http-status';
+import { createWebSocketConnection, sendNewTaskMessage } from '../../utils/imageFinder';
 
 const router: Router = Router();
 
@@ -48,6 +51,7 @@ export class PropertyController {
     this.router.get('/last', authorize(), this.getLatestProperty);
     this.router.get('/:id', authorize(), validateId, this.getById);
     this.router.post(this.path, authorize(), validator(createAssetSchemaValidation), this.createAsset);
+    this.router.post(`${this.path}generate-images`, authorize(), this.generateImages);
     this.router.post(
       '/draft',
       authorize(),
@@ -181,6 +185,46 @@ export class PropertyController {
    * @apiUse bearer
    */
   private createAsset = this.propertyService.createAsset;
+
+  /**
+   * @api {post} /api/asset/generate-images Post
+   * @apiDescription Generate property images
+   * @apiGroup Property
+   * @apiSampleRequest /api/asset/generate-images
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private generateImages = async (req: Request, res: Response) => {
+    const prompt = req.body.prompt;
+    if (!prompt) {
+      throw createError(httpStatus.BAD_REQUEST, { message: 'Prompt is required' });
+    }
+
+    const ws = await createWebSocketConnection();
+
+    let images: any[] = []; // Collect images here
+
+    ws.on('message', (message: string) => {
+      const response = JSON.parse(message.toString());
+
+      if (response.hasOwnProperty('newConnectionSessionUUID')) {
+        console.log('Logged in. Ready to get images');
+        sendNewTaskMessage(ws, prompt);
+      }
+
+      if (response.hasOwnProperty('newImages')) {
+        const newImages = response.newImages.images;
+        images = images.concat(newImages); // Collect the images
+        // Close the WebSocket connection after receiving images
+        ws.close();
+      }
+    });
+
+    ws.on('close', () => {
+      res.json({ images });
+    });
+  };
 
   /**
    * @api {post} /api/asset/draft Post as draft

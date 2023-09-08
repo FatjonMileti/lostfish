@@ -9,7 +9,9 @@ import { SectionThree } from './HomeLoggedIn.SectionThree';
 import { SectionFour } from './HomeLoggedIn.SectionFour';
 import { SectionFive } from './HomeLoggedIn.SectionFive';
 import Can from '../../components/Can';
-import backgroundImg from '../About/sectionOne.About.png';
+// import backgroundImg from '../About/sectionOne.About.png';
+import backgroundImg from '../Home/home-background.png';
+
 import { CASLAction } from '../../utils/ability.util';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -49,12 +51,13 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       left: 0;
       width: 100%;
       height: 100vh;
-      background: url(${backgroundImg}), lightgray 50% / cover no-repeat;
+      background: url(${backgroundImg});
+      background-repeat: no-repeat;
       opacity: 0.05;
 
-      background-size: auto;
-      background-position-x: center;
-      background-position-y: center;
+      background-size: cover;
+      //background-position-x: center;
+      //background-position-y: center;
       z-index: -1;
     }
 
@@ -66,8 +69,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       width: 100%;
       height: 100vh;
 
-      background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
-      background-position-y: top;
+      //background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
+      //background-position-y: top;
+      background: linear-gradient(180deg, rgba(255, 251, 243, 0.99) 18.95%, rgba(255, 255, 255, 0.95) 100%),
+      rgba(255, 255, 255, 0.2);
       background-size: cover;
       z-index: -2;
     }

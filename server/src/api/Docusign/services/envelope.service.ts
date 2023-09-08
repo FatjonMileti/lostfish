@@ -28,7 +28,7 @@ const makeRecipientViewRequest = ({
   envelopId: string;
 }): RecipientViewRequest => {
   return {
-    returnUrl: `${config.api_url}/api/docusign/success?userId=${user._id}&userType=${user.role}&envelopId=${envelopId}`,
+    returnUrl: `${config.apiUrl}/api/docusign/success?userId=${user._id}&userType=${user.role}&envelopId=${envelopId}`,
     authenticationMethod: 'none',
     email: user.email,
     userName: `${user.first_name} ${user.last_name}`,
