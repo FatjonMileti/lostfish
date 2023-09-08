@@ -12,7 +12,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
   return (
     <div className={`header ${className}`}>
-      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' />
+      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')}/>
 
       <div className='menu-desktop'>
         <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
@@ -50,6 +50,7 @@ export const Header = styled(({ className }: HeaderProps) => {
     .logo {
       height: 64px;
       width: auto;
+      cursor: pointer;
     }
 
     .menu-desktop {

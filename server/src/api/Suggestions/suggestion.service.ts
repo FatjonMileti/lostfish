@@ -9,6 +9,7 @@ import createError from 'http-errors';
 import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
+import { includes } from 'lodash';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -190,10 +191,26 @@ export default class SuggestionService {
     };
   };
 
+  public toCamelCase(inputString: string): string {
+    return (
+      inputString.split(' ').join('').charAt(0).toLocaleLowerCase() + inputString.slice(1).split(' ').join('')
+    );
+  }
+
   public calculateSimilarity(clientCriteria: any, property: any): number {
     let matchingCriteria = 0;
 
     if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 4;
+    if (clientCriteria.radius <= property.radius) matchingCriteria++;
+    if (clientCriteria.property_type.includes(property.property_type)) matchingCriteria++;
+    if (clientCriteria.property_preferences.includes(property.property_preference)) matchingCriteria++;
+    if (clientCriteria.deposit_amount >= property.asset_rent.deposit_amount) matchingCriteria++;
+    if (
+      clientCriteria.contract_details.every((i: string) =>
+        property.contract_details.includes(this.toCamelCase(i))
+      )
+    )
+      matchingCriteria++;
     if (clientCriteria.credit_score_requirements === property.credit_score_requirements) matchingCriteria++;
     if (clientCriteria.room_details.number_of_bedrooms === property.room_details.number_of_bedrooms) {
       matchingCriteria++;
@@ -234,7 +251,7 @@ export default class SuggestionService {
       matchingCriteria++;
     }
 
-    return (matchingCriteria / 10) * 100;
+    return (matchingCriteria / 16) * 100;
   }
 }
 
