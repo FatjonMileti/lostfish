@@ -23,7 +23,6 @@ import { useProfileStore } from '../../globalState/profile';
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
-import { Button } from '../../components/Button';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 
 const submenus: any[] = [
@@ -33,7 +32,8 @@ const submenus: any[] = [
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
+  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
+  { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -82,14 +82,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                   </Typography>
                 </div>
               </div>
-              <Button
-                size='small'
-                variant='secondary'
-                inverted
-                className='details-button'
-                onClick={() => setImproveTrustScoreModalVisibility(true)}>
-                Improve
-              </Button>
             </div>
             <div className='menu-body'>
               {submenus.map(({ icon, text, link }, menuItemIndex) => (
