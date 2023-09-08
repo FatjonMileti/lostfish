@@ -50,49 +50,14 @@ export default class SuggestionService {
         ]
       });
 
-      // response.docs = response.docs
-      //   .filter((property: any) => {
-      //     const percentage = this.calculateSimilarity(criteria, property);
-      //     property.percentage = percentage.toFixed(0);
+      response.docs = response.docs
+        .filter((property: any) => {
+          const percentage = this.calculateSimilarity(criteria, property);
+          property.percentage = percentage.toFixed(0);
 
-      //     return percentage >= 20;
-      //   })
-      //   .sort((a: any, b: any) => b.percentage - a.percentage);
-
-      response.docs = response.docs.filter((property: any) => {
-        return (
-          !criteria.area_of_interest ||
-          (property.area_of_interest === criteria.area_of_interest &&
-            (!criteria.radius || property.radius >= criteria.radius) &&
-            (!criteria.property_type.length || criteria.property_type.includes(property.property_type)) &&
-            (!criteria.floor_size ||
-              (property.floor_size >= Number(criteria.floor_size.split('-')[0]) &&
-                property.floor_size <= Number(criteria.floor_size.split('-')[1]))) &&
-            (!criteria.room_details.number_of_bathrooms ||
-              property.room_details.number_of_bathrooms >=
-                Number(criteria.room_details.number_of_bathrooms)) &&
-            (!criteria.room_details.number_of_bedrooms ||
-              (property.room_details.number_of_bedrooms >=
-                Number(criteria.room_details.number_of_bedrooms.split('-')[0]) &&
-                property.room_details.number_of_bedrooms <=
-                  Number(criteria.room_details.number_of_bedrooms.split('-')[1]))) &&
-            (!criteria.budget ||
-              (property.budget.min_budget >= Number(criteria.budget.split('-')[0]) &&
-                property.budget.max_budget <= Number(criteria.budget.split('-')[1]))) &&
-            /*************/
-            (!criteria.property_preferences.length ||
-              criteria.property_preferences.includes(property.property_preference)) &&
-            (!criteria.deposit_amount || criteria.deposit_amount >= property.asset_rent.deposit_amount) &&
-            (!criteria.contract_details ||
-              criteria.contract_details.every((i) =>
-                property.contract_details.includes(this.toCamelCase(i))
-              )) &&
-            (!criteria.property_features.length ||
-              criteria.specific_property_features.every((i) =>
-                property.specific_property_features.includes(i)
-              )))
-        );
-      });
+          return percentage >= 20;
+        })
+        .sort((a: any, b: any) => b.percentage - a.percentage);
 
       const matches = await MatchSchema.find({ created_by: userId }).lean();
       response.docs = generateLinksForImages(response.docs);
@@ -236,6 +201,16 @@ export default class SuggestionService {
     let matchingCriteria = 0;
 
     if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 4;
+    if (clientCriteria.radius <= property.radius) matchingCriteria++;
+    if (clientCriteria.property_type.includes(property.property_type)) matchingCriteria++;
+    if (clientCriteria.property_preferences.includes(property.property_preference)) matchingCriteria++;
+    if (clientCriteria.deposit_amount >= property.asset_rent.deposit_amount) matchingCriteria++;
+    if (
+      clientCriteria.contract_details.every((i: string) =>
+        property.contract_details.includes(this.toCamelCase(i))
+      )
+    )
+      matchingCriteria++;
     if (clientCriteria.credit_score_requirements === property.credit_score_requirements) matchingCriteria++;
     if (clientCriteria.room_details.number_of_bedrooms === property.room_details.number_of_bedrooms) {
       matchingCriteria++;
@@ -276,7 +251,7 @@ export default class SuggestionService {
       matchingCriteria++;
     }
 
-    return (matchingCriteria / 10) * 100;
+    return (matchingCriteria / 16) * 100;
   }
 }
 
