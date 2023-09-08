@@ -6,6 +6,7 @@
 # Node artifact files
 node_modules/
 docs/
+certs/
 uploads/
 logs/
 # Compiled Java class files

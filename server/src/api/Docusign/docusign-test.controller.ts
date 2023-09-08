@@ -113,7 +113,7 @@ export class DocusignController {
    * This is used by docusign to redirect after consent
    */
   private redirectCallback = async (req: Request, res: Response) => {
-    res.redirect(config.front_end_url);
+    res.redirect(config.frontendUrl);
   };
 
   /**

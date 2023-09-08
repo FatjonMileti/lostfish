@@ -63,8 +63,6 @@ function App() {
     }
   }, [userStore.auth]);
 
-  console.log(process.env.REACT_APP_NODE_ENV, 'ss');
-
   React.useEffect(() => {
     if (userStore.auth) {
       const socketOpt = {
