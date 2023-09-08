@@ -37,7 +37,7 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
             <Slider
               value={form.getValues('area')}
               min={10}
-              max={150}
+              max={1000}
               step={10}
               onChange={(_, value) => form.setValue('area', Array.isArray(value) ? value : [value])}
               valueLabelDisplay='on'

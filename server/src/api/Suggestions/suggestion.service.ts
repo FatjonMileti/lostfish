@@ -9,6 +9,7 @@ import createError from 'http-errors';
 import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
+import { includes } from 'lodash';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -49,14 +50,49 @@ export default class SuggestionService {
         ]
       });
 
-      response.docs = response.docs
-        .filter((property: any) => {
-          const percentage = this.calculateSimilarity(criteria, property);
-          property.percentage = percentage.toFixed(0);
+      // response.docs = response.docs
+      //   .filter((property: any) => {
+      //     const percentage = this.calculateSimilarity(criteria, property);
+      //     property.percentage = percentage.toFixed(0);
 
-          return percentage >= 20;
-        })
-        .sort((a: any, b: any) => b.percentage - a.percentage);
+      //     return percentage >= 20;
+      //   })
+      //   .sort((a: any, b: any) => b.percentage - a.percentage);
+
+      response.docs = response.docs.filter((property: any) => {
+        return (
+          !criteria.area_of_interest ||
+          (property.area_of_interest === criteria.area_of_interest &&
+            (!criteria.radius || property.radius >= criteria.radius) &&
+            (!criteria.property_type.length || criteria.property_type.includes(property.property_type)) &&
+            (!criteria.floor_size ||
+              (property.floor_size >= Number(criteria.floor_size.split('-')[0]) &&
+                property.floor_size <= Number(criteria.floor_size.split('-')[1]))) &&
+            (!criteria.room_details.number_of_bathrooms ||
+              property.room_details.number_of_bathrooms >=
+                Number(criteria.room_details.number_of_bathrooms)) &&
+            (!criteria.room_details.number_of_bedrooms ||
+              (property.room_details.number_of_bedrooms >=
+                Number(criteria.room_details.number_of_bedrooms.split('-')[0]) &&
+                property.room_details.number_of_bedrooms <=
+                  Number(criteria.room_details.number_of_bedrooms.split('-')[1]))) &&
+            (!criteria.budget ||
+              (property.budget.min_budget >= Number(criteria.budget.split('-')[0]) &&
+                property.budget.max_budget <= Number(criteria.budget.split('-')[1]))) &&
+            /*************/
+            (!criteria.property_preferences.length ||
+              criteria.property_preferences.includes(property.property_preference)) &&
+            (!criteria.deposit_amount || criteria.deposit_amount >= property.asset_rent.deposit_amount) &&
+            (!criteria.contract_details ||
+              criteria.contract_details.every((i) =>
+                property.contract_details.includes(this.toCamelCase(i))
+              )) &&
+            (!criteria.property_features.length ||
+              criteria.specific_property_features.every((i) =>
+                property.specific_property_features.includes(i)
+              )))
+        );
+      });
 
       const matches = await MatchSchema.find({ created_by: userId }).lean();
       response.docs = generateLinksForImages(response.docs);
@@ -189,6 +225,12 @@ export default class SuggestionService {
       matchId: matchTenant?._id ?? undefined
     };
   };
+
+  public toCamelCase(inputString: string): string {
+    return (
+      inputString.split(' ').join('').charAt(0).toLocaleLowerCase() + inputString.slice(1).split(' ').join('')
+    );
+  }
 
   public calculateSimilarity(clientCriteria: any, property: any): number {
     let matchingCriteria = 0;
