@@ -25,11 +25,20 @@ app.set('port', port);
 const server: http.Server = http.createServer(app);
 const io: Server = new Server();
 
-const redisURI = 'redis://localhost:6379';
-const redis = new Redis(redisURI);
+if (config.useRedis) {
+  const redisURI = 'redis://localhost:6379';
+  const redis = new Redis(redisURI);
+  const subClient = redis.duplicate();
+  io.adapter(createAdapter(redis, subClient));
 
-const subClient = redis.duplicate();
-io.adapter(createAdapter(redis, subClient));
+  process.on('beforeExit', () => {
+    if (redis) {
+      redis.quit().catch((err: any) => {
+        console.error('Error closing Redis connection:', err);
+      });
+    }
+  });
+}
 
 io.on('connection', (socket: Socket) => handleSocketActions(socket));
 
@@ -109,11 +118,3 @@ function onListening(): void {
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debugLog('Listening on ' + bind);
 }
-
-process.on('beforeExit', () => {
-  if (redis) {
-    redis.quit().catch((err: any) => {
-      console.error('Error closing Redis connection:', err);
-    });
-  }
-});

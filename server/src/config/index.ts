@@ -25,6 +25,7 @@ const defaultConfig = {
   googleKey: process.env.GOOGLE_MAP_KEY,
   useAzureStorage: process.env.USE_AZURE_BLOB_BACKET === 'true',
   lostfishApiToken: process.env.LOSTFISH_API_ACCESS_TOKEN,
+  useRedis: ['stage', 'production'].includes(stage),
   azure: {
     storageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
     azureStorageName: process.env.AZURE_STORAGE_NAME
