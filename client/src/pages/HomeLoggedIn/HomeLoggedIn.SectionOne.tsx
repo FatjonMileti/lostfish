@@ -10,7 +10,7 @@ import { IconButton } from '../../components/IconButton';
 import { useProfileStore } from '../../globalState/profile';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { useNavigate } from 'react-router-dom';
-import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { SetCriteriaDrawer } from '../SetCriteria/SetCriteriaDrawer';
 import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { TPropertyDetails, usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
@@ -33,7 +33,7 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       />
 
       {profileStore.role === 'Tenant' && (
-        <NewSetCriteria open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
+        <SetCriteriaDrawer open={criteriaModalVisibility} setOpen={setCriteriaModalVisibility} />
       )}
 
       <div className={className}>

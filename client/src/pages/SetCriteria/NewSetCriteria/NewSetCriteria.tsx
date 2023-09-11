@@ -23,7 +23,6 @@ import { SetCriteriaLocation } from './SetCriteria.Location';
 import { SetCriteriaHouseType } from './SetCriteria.HouseType';
 import { SetCriteriaBudget } from './SetCriteria.Budged';
 
-import { Drawer } from '../../../components/Drawer';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { Label } from '../../../components/Label';
@@ -31,21 +30,17 @@ import { Backdrop } from '../../../components/Backdrop';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
-import setCriteriaBackground from '../../Home/home-background.png';
-
 const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
 
 interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   afterRefineSearch?: () => void;
-  open?: boolean;
-  setOpen: (open: boolean) => void;
+  onClose?: () => void;
 }
 
 export const NewSetCriteria = styled(
-  ({ className, afterRefineSearch = () => {}, ...otherProps }: SetCriteriaProps) => {
+  ({ className, afterRefineSearch = () => {}, onClose, ...otherProps }: SetCriteriaProps) => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
-    const { open, setOpen } = otherProps || React.useState(true);
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const { auth } = useUserStore();
@@ -222,7 +217,7 @@ export const NewSetCriteria = styled(
     return (
       <>
         <Backdrop open={loading} />
-        <Drawer open={open} setOpen={setOpen} className={classNames(className, 'criteria-drawer')}>
+        <div className={classNames(className, 'criteria-container')}>
           <div className='criteria-header'>
             <Typography variant='body2'>Refine your search</Typography>
             <div className='action-buttons'>
@@ -230,14 +225,16 @@ export const NewSetCriteria = styled(
                 size='small'
                 onClick={async () => {
                   await handleSubmit();
-                  setOpen(false);
+                  onClose && onClose();
                 }}
                 disabled={loading}>
                 Save changes
               </Button>
-              <IconButton size='large' onClick={() => setOpen(false)}>
-                <Icon icon='close' size={12} />
-              </IconButton>
+              {onClose && (
+                <IconButton size='large' onClick={onClose}>
+                  <Icon icon='close' size={12} />
+                </IconButton>
+              )}
             </div>
           </div>
           <div className='criteria-tabs-bar'>
@@ -262,19 +259,17 @@ export const NewSetCriteria = styled(
               ][selectedTab]
             }
           </div>
-        </Drawer>
+        </div>
       </>
     );
   }
 )`
-  &.criteria-drawer {
-    .drawer-body {
-      display: grid;
-      grid-template-rows: min-content min-content auto;
-    }
+  &.criteria-container {
+    display: grid;
+    grid-template-rows: min-content min-content auto;
 
     .criteria-header {
-      padding: 20px 36px;
+      padding: 20px 0;
       box-sizing: border-box;
       display: flex;
       justify-content: space-between;
@@ -287,9 +282,10 @@ export const NewSetCriteria = styled(
     }
 
     .criteria-tabs-bar {
-      padding: 0 36px;
+      padding: 0;
       display: flex;
-      justify-content: space-between;
+      //justify-content: space-between;
+      column-gap: 12px;
       background: white;
       box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
 
@@ -301,26 +297,7 @@ export const NewSetCriteria = styled(
     }
 
     .criteria-body {
-      padding: 36px;
-      z-index: 1;
-      position: relative;
-
-      &::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        //width: 434px;
-        width: 100%;
-        height: 398px;
-
-        background: url(${setCriteriaBackground}), lightgray 50% / cover no-repeat;
-        opacity: 0.05;
-
-        background-size: cover;
-        background-position-y: center;
-        z-index: -1;
-      }
+      padding: 36px 0;
     }
   }
 `;

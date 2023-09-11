@@ -8,7 +8,7 @@ import React from 'react';
 import { Label } from '../../components/Label';
 import { useProfileStore } from '../../globalState/profile';
 import { useNavigate } from 'react-router-dom';
-import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { SetCriteriaDrawer } from '../SetCriteria/SetCriteriaDrawer';
 
 interface ImproveTrustScoreModalProps extends ModalProps {
   afterRefineSearch?: () => void;
@@ -23,7 +23,7 @@ export const ImproveTrustScoreModal = styled(
     return (
       <>
         {profileStore.role === 'Tenant' && (
-          <NewSetCriteria
+          <SetCriteriaDrawer
             open={criteriaModalVisibility}
             setOpen={setCriteriaModalVisibility}
             afterRefineSearch={() => {

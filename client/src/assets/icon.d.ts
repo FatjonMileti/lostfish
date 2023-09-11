@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "research"
   | "layer"
   | "direction-tool"
   | "image"
