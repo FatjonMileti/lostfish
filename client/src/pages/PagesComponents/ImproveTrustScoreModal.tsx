@@ -35,7 +35,7 @@ export const ImproveTrustScoreModal = styled(
         <Modal {...rest} onBackdropClick={closeModal}>
           <div className='modal-header'>
             <div className='left-texts'>
-              <Typography variant='body2'>Improve trust score</Typography>
+              <Typography variant='body2'>Improve match score</Typography>
               <Typography variant='body2'>•</Typography>
               <Typography variant='body2' className='percentage'>
                 {profileStore.trust_score}%
