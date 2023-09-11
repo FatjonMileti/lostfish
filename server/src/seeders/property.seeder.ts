@@ -20,6 +20,7 @@ import propertyDetailService from '../api/Property/services/property-detail.serv
 import PropertyDetailsSchema from '../api/Property/schemas/property-details.schema';
 import config from '../config/index';
 import PropertyViewSchema from '../api/Property/schemas/property-view.schema';
+import { getPropertyScore } from '../api/Property/helpers';
 
 // Function to search for images on Unsplash
 const searchImages = async () => {
@@ -51,7 +52,7 @@ const getImages = async () => {
   imagesTest = [...data];
 };
 
-const generateAsset = async (index: number) => {
+const generateProperty = async (index: number) => {
   const landlord = await userService.findOne({ email: 'Landlord@lostfish.com' });
 
   await getImages();
@@ -78,6 +79,8 @@ const generateAsset = async (index: number) => {
       rental_amount: faker.number.int({ min: 500, max: 5000 }),
       rental_frequency: faker.helpers.arrayElement(Object.values(RentalFrequency))
     },
+    parking_spot: faker.helpers.arrayElement([1, 2, 3, 4]),
+    epc_rating: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
     currency_code: faker.helpers.arrayElement(Object.values(CurrencyCode)),
     floor_size: faker.number.int({ min: 20, max: 250 }),
     floor_size_unit: 'Meter Squared',
@@ -102,29 +105,26 @@ const generateAsset = async (index: number) => {
   return asset;
 };
 
-const generatePropertyDetails = async (propertyId: string) => {
-  return await propertyDetailService.createPropertyDetail(propertyId);
-};
-
-export const seedAssets = async (numAssets: number): Promise<void> => {
+export const seedProperties = async (numAssets: number): Promise<void> => {
   try {
     await PropertySchema.deleteMany({});
     await PropertyDetailsSchema.deleteMany({});
     await PropertyViewSchema.deleteMany({});
     await AssetLog.deleteMany({});
 
-    const assets: any[] = [];
+    const propertyData: any[] = [];
     for (let i = 0; i < numAssets; i++) {
-      const asset = await generateAsset(i);
-      assets.push(asset);
+      const property = await generateProperty(i);
+      propertyData.push(property);
     }
     // @ts-ignore
-    const properties: PropertyDocument[] = await PropertySchema.insertMany(assets);
+    const properties: PropertyDocument[] = await PropertySchema.insertMany(propertyData);
     for (const property of properties) {
-      await generatePropertyDetails(property._id as string);
+      const propertyScore = getPropertyScore(property);
+      await propertyDetailService.createPropertyDetail(property._id, propertyScore);
     }
-    console.log(`${numAssets} assets seeded successfully.`);
+    console.log(`${numAssets} properties seeded successfully.`);
   } catch (error) {
-    console.error('Error seeding assets:', error);
+    console.error('Error seeding properties:', error);
   }
 };
