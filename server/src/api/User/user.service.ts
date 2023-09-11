@@ -147,7 +147,23 @@ const updateUser = async (req: Request, res: Response) => {
     user.email = userBody.email;
   }
 
-  if (userBody.phone) {
+  if (req.body.hasOwnProperty('age')) {
+    user.age = userBody.age;
+  }
+
+  if (req.body.hasOwnProperty('address')) {
+    user.address = userBody.address;
+  }
+
+  if (req.body.hasOwnProperty('martial_status')) {
+    user.martial_status = userBody.martial_status;
+  }
+
+  if (req.body.hasOwnProperty('have_pets')) {
+    user.have_pets = userBody.have_pets;
+  }
+
+  if (req.body.hasOwnProperty('phone')) {
     user.phone = userBody.phone;
   }
 

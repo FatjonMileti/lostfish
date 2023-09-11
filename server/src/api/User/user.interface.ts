@@ -38,6 +38,7 @@ export interface UserDocument extends Document {
     is_twitter_verified: boolean;
   };
   phone: string;
+  age: number;
   description: string;
   avatar: string;
   notification: {
@@ -48,6 +49,8 @@ export interface UserDocument extends Document {
   };
   documents: IUserDocuments[];
   address: string;
+  martial_status: string;
+  have_pets: boolean;
   agreed_application_policy: boolean;
   signed_transaction_agreement: boolean;
   transaction_agreement_link: string;
