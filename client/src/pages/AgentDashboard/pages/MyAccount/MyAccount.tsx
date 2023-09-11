@@ -53,7 +53,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               </Typography>
               <div className='trust-score'>
                 <Typography variant='body4' className='trust-score-title'>
-                  Trust score:
+                  Match score:
                 </Typography>
                 <Typography variant='body4' className='trust-score-percentage'>
                   60%

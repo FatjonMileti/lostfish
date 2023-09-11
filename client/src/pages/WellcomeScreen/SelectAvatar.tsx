@@ -29,8 +29,8 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
           Welcome to Lostfish
         </Typography>
         <Typography variant='body4' className='description'>
-          Maximise your chances of finding your perfect match by improving your trust score. You can start
-          improving your trust score by selecting an avatar.
+          Maximise your chances of finding your perfect match by improving your match score. You can start
+          improving your match score by selecting an avatar.
         </Typography>
         <div className='avatars-list'>
           {avatars.map(({ image, backgroundColor }, avatarIndex) => {
