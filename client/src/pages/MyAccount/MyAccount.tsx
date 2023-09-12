@@ -24,6 +24,7 @@ import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { Solicitors } from './Solicitors';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
@@ -78,7 +79,10 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                   <Typography variant='body4' className='trust-score-title'>
                     Match score:
                   </Typography>
-                  <Typography variant='body4' className='trust-score-percentage'>
+                  <Typography
+                    variant='body4'
+                    className='trust-score-percentage'
+                    onClick={() => setImproveTrustScoreModalVisibility(true)}>
                     {profileStore.trust_score}%
                   </Typography>
                 </div>
@@ -121,6 +125,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />
               <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
               <Route path='/help-and-support' element={<HelpAndSupport />} />
+              <Route path='/solicitors' element={<Solicitors />} />
             </Routes>
           </div>
         </div>
@@ -175,6 +180,10 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             .trust-score-percentage {
               color: #e5155a;
               font-weight: 700;
+
+              :hover {
+                cursor: pointer;
+              }
             }
           }
 
