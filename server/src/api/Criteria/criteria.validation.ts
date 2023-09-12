@@ -24,6 +24,15 @@ export const createAssetSchemaValidation = joi.object({
     number_of_bathrooms: joi.number().required(),
     number_of_bedrooms: joi.number().required()
   }),
+  flat_details: {
+    property_purpose: joi.string().allow(''),
+    floor: joi.number().allow(''),
+    lift: joi.boolean().allow(''),
+    security: joi.boolean().allow('')
+  },
+  outside_space: joi.array().items(joi.string().allow('')),
+  parking_details: joi.array().items(joi.string().allow('')),
+  floor_size_unit: joi.string().allow(''),
   property_features: joi.array().items(joi.string()),
   property_preference: joi.string(),
   specific_property_features: joi.array().items(joi.string()),

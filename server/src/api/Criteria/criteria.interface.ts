@@ -1,4 +1,5 @@
 import { Document, ObjectId } from 'mongoose';
+import { FloorSizeUnit, OutsideSpace, ParkingDetails } from '../Property/property.interface';
 
 export type LookingForType = 'I’m looking for a place' | 'I own a place';
 export enum LookingForEnum {
@@ -29,12 +30,20 @@ export interface CriteriaDocument extends Document {
     number_of_bedrooms: string;
   };
   specific_property_features: string[];
+  parking_details: ParkingDetails;
+  flat_details: {
+    property_purpose: string;
+    floor: number;
+    lift: boolean;
+    security: boolean;
+  };
+  outside_space: OutsideSpace[];
   budget: string;
   deposit_amount: string;
   contract_details: string[];
   credit_score_requirements: string;
   transaction_type_string: string;
-  floor_size_unit: string;
+  floor_size_unit: FloorSizeUnit;
   currency_code: string;
   looking_for: LookingForEnum;
   moving_time: string;

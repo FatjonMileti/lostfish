@@ -4,7 +4,7 @@ import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import googleMapService from '../../../external-services/google-map.service';
-import { CurrencyCode } from '../../Property/property.interface';
+import { CurrencyCode, FloorSizeUnit } from '../../Property/property.interface';
 import userService from '../../User/user.service';
 import { Role } from '../../User/user.interface';
 import docusignService from '../../Docusign/services/docusign.service';
@@ -12,7 +12,6 @@ import docusignService from '../../Docusign/services/docusign.service';
 const createCriteria = async (req: Request, res: Response): Promise<any> => {
   const data: CriteriaDocument = req.body;
   data.created_by = res.locals.user_id;
-  data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
   if (data.area_of_interest) {
     const coordinates = await googleMapService.getCoordinates(data.area_of_interest);
@@ -59,6 +58,22 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
 
     if (!criteria) {
       return res.status(httpStatus.NOT_FOUND).send({ message: 'criteria not found' });
+    }
+
+    if (data.hasOwnProperty('flat_details')) {
+      criteria.flat_details = data.flat_details;
+    }
+
+    if (data.hasOwnProperty('outside_space')) {
+      criteria.outside_space = data.outside_space;
+    }
+
+    if (data.hasOwnProperty('parking_details')) {
+      criteria.parking_details = data.parking_details;
+    }
+
+    if (data.hasOwnProperty('floor_size_unit')) {
+      criteria.floor_size_unit = data.floor_size_unit;
     }
 
     if (data.hasOwnProperty('budget')) {

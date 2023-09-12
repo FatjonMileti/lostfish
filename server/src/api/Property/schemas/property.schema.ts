@@ -8,7 +8,9 @@ import {
   MasterAssetTypeSring,
   StatusString,
   TransactionTypeString,
-  RentStatusString
+  RentStatusString,
+  OutsideSpace,
+  ParkingDetails
 } from '../property.interface';
 
 const schema = new Schema<PropertyDocument>({
@@ -52,12 +54,19 @@ const schema = new Schema<PropertyDocument>({
   property_type: {
     type: String
   },
+  outside_space: [String],
+  flat_details: {
+    property_purpose: String,
+    floor: Number,
+    lift: Boolean,
+    security: Boolean
+  },
+  parking_details: [String],
   currency_code: {
     type: String,
     enum: Object.values(CurrencyCode),
     default: CurrencyCode.GBP
   },
-  views: { type: Number, default: () => 0 },
   floor_size: Number,
   floor_size_unit: String,
   asset_attribute: [Object],

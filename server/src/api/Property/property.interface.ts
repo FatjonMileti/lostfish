@@ -1,12 +1,5 @@
 import { Document, ObjectId } from 'mongoose';
 
-export enum ContactType {
-  Client = 'Client',
-  Solicitor = 'Solicitor',
-  Agent = 'Agent',
-  Unknown = 'Unknown'
-}
-
 export enum CountryCode {
   'IRL' = 'IRL',
   'GBR' = 'GBR',
@@ -39,6 +32,18 @@ export enum PropertyFeatures {
   ParksNearby = 'Parks nearby',
   PublicTransportNearby = 'Public transport nearby',
   ShoppingCentersNearby = 'Shopping centers nearby'
+}
+
+export enum ParkingDetails {
+  Garage = 'Garage',
+  OffStreet = 'Off street',
+  OnStreet = 'On street'
+}
+
+export enum OutsideSpace {
+  Garden = 'Garden',
+  Balcony = 'Balcony',
+  RoofTerrace = 'Roof terrace'
 }
 
 export enum SpecificPropertyFeatures {
@@ -116,13 +121,6 @@ export enum RentalFrequency {
   'Year' = 'Year'
 }
 
-export enum PreferencesEnum {
-  NEW_HOME = 'New Home',
-  RETIREMENT_HOME = 'Retirement Home',
-  SHARED_OWNERSHIP = 'Shared Ownership',
-  AUCTION = 'Auction'
-}
-
 export enum CreditScoreRequirement {
   Excellent = 'Excellent',
   Good = 'Good',
@@ -133,6 +131,11 @@ export enum ContractDetails {
   guarantor = 'guarantor',
   reviewedProperty = 'reviewedProperty',
   energyCertificate = 'energyCertificate'
+}
+
+export enum FloorSizeUnit {
+  SQR_FT = 'sq.ft',
+  SQR_MTRS = 'sq.m'
 }
 
 export interface PropertyDocument extends Document {
@@ -159,6 +162,14 @@ export interface PropertyDocument extends Document {
   master_asset_type_string: MasterAssetTypeSring;
   property_type: PropertyType;
   currency_code: CurrencyCode;
+  outside_space: OutsideSpace[];
+  flat_details: {
+    property_purpose: string;
+    floor: number;
+    lift: boolean;
+    security: boolean;
+  };
+  parking_details: ParkingDetails[];
   asset_attribute: any[];
   room_details: {
     number_of_bathrooms: number;
@@ -168,12 +179,11 @@ export interface PropertyDocument extends Document {
     min_budget: number;
     max_budget: number;
   };
-  views: number;
   parking_spot: number;
   epc_rating: string;
   location_details: string;
   floor_size: number;
-  floor_size_unit: string;
+  floor_size_unit: FloorSizeUnit;
   property_features: PropertyFeatures[];
   property_preference: PropertyPreferences;
   asset_rent: {
