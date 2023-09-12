@@ -49,7 +49,7 @@ export const ImproveTrustScoreModal = styled(
           <div className='modal-body'>
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Add a description about yourself
+                Add a description about yourself • <span className='percentage'>5%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -105,7 +105,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Add a description
+                Solicitors
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -118,8 +118,8 @@ export const ImproveTrustScoreModal = styled(
                   variant='tertiary'
                   size='medium'
                   className='improve-link'
-                  onClick={() => navigate('/my-account/account-settings')}>
-                  Add a description
+                  onClick={() => navigate('/my-account/solicitors')}>
+                  Solicitors
                   <Icon icon='arrow-right-1' size={16} />
                 </Label>
               ) : (
@@ -134,7 +134,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Select avatar
+                Select avatar • <span className='percentage'> 5%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -163,7 +163,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Get your account verified
+                Get your account verified • <span className='percentage'> 30%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -225,6 +225,9 @@ export const ImproveTrustScoreModal = styled(
         grid-template-columns: 1fr 1fr;
         grid-gap: 16px;
 
+        .percentage {
+          color: #e5155a;
+        }
         .card {
           display: grid;
           border-radius: 12px;
