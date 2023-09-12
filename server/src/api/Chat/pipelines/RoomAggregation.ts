@@ -335,6 +335,20 @@ const GetOnePipeline: GetOnePipelineFunc = (userId: Types.ObjectId) => {
       }
     },
     {
+      $lookup: {
+        from: 'properties',
+        localField: 'property',
+        foreignField: '_id',
+        as: 'property'
+      }
+    },
+    {
+      $unwind: {
+        path: '$property',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
       $addFields: {
         last_message: {
           $ifNull: [
@@ -367,7 +381,8 @@ const GetOnePipeline: GetOnePipelineFunc = (userId: Types.ObjectId) => {
         last_message: 1,
         author: 1,
         participant: 1,
-        unseen_messages: 1
+        unseen_messages: 1,
+        property: { _id: 1, title: 1, area_of_interest: 1 }
       }
     }
   ];

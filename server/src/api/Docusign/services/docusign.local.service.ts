@@ -232,7 +232,7 @@ const downloadDocument = async (req: Request, res: Response) => {
         }
       });
     } else {
-      return res.redirect(config.front_end_url + '?file_is_not_signed');
+      return res.redirect(config.frontendUrl + '?file_is_not_signed');
     }
   } catch (error) {
     // Handle error response
@@ -278,12 +278,12 @@ const successSignRedirect = async (req: Request, res: Response) => {
       }
 
       await existingEnvelope.save();
-      return res.redirect(`${config.front_end_url}?event=signing_complete`);
+      return res.redirect(`${config.frontendUrl}?event=signing_complete`);
     }
     if (event && event === 'ttl_expired') {
-      return res.redirect(`${config.front_end_url}/agreement?event=link_exipired`);
+      return res.redirect(`${config.frontendUrl}/agreement?event=link_exipired`);
     }
-    res.redirect(`${config.front_end_url}`);
+    res.redirect(`${config.frontendUrl}`);
   } catch (error: any) {
     return res.status(httpStatus.BAD_REQUEST).send({ ...error });
   }

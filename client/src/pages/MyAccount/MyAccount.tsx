@@ -8,7 +8,6 @@ import { Typography } from '../../components/Typography';
 
 import { Dashboard } from './Dashboard/Dashboard';
 import { ProfileDetails } from './ProfileDetails';
-import { AccountSettings } from './AccountSettings';
 import { StarredMatches } from './StarredMatches/StarredMatches';
 import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
@@ -24,11 +23,13 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
+import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
+  { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -75,7 +76,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 </Typography>
                 <div className='trust-score'>
                   <Typography variant='body4' className='trust-score-title'>
-                    Trust score:
+                    Match score:
                   </Typography>
                   <Typography variant='body4' className='trust-score-percentage'>
                     {profileStore.trust_score}%
@@ -94,7 +95,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                       <Typography variant='body4' className='text'>
                         {text}
                       </Typography>
-                      {/*<Icon icon='chevron-right' color='black' className='arrow' size={14} />*/}
                     </motion.div>
                   )}
                 </NavLink>
@@ -111,10 +111,11 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             </div>
           </div>
           <div className='line'></div>
-          <div>
+          <div className='right-content'>
             <Routes>
               <Route path='/' element={<Dashboard />} />
               <Route path='/account-settings' element={<ProfileDetails />} />
+              <Route path='/refine-your-search' element={<NewSetCriteria />} />
               <Route path='/starred-matches' element={<StarredMatches />} />
               <Route path='/notification-settings' element={<NotificationSettings />} />
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />
@@ -134,41 +135,10 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
     background-color: white;
 
     grid-template-rows: min-content auto;
-    z-index: 0;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: url(${backgroundImg});
-      opacity: 0.05;
-
-      background-size: auto;
-      background-position-x: right;
-      background-position-y: bottom;
-      background-repeat: no-repeat;
-      z-index: -1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-
-      background-position-y: top;
-      background-size: cover;
-      z-index: -2;
-    }
 
     .container-account {
       display: grid;
-      column-gap: 69px;
+      //column-gap: 69px;
       padding: 36px;
 
       grid-template-columns: 1fr min-content 2.79fr;
@@ -177,6 +147,8 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
         display: grid;
         grid-template-rows: min-content auto min-content;
         row-gap: 32px;
+
+        padding-right: 69px;
 
         .menu-header {
           display: flex;
@@ -280,6 +252,42 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       .line {
         width: 2px;
         background-color: #f3f4f5;
+      }
+
+      .right-content {
+        padding-left: 69px;
+        z-index: 0;
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: url(${backgroundImg});
+          opacity: 0.05;
+
+          background-size: cover;
+          background-position-x: right;
+          background-position-y: bottom;
+          background-repeat: no-repeat;
+          z-index: -1;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+
+          background-position-y: top;
+          background-size: cover;
+          z-index: -2;
+        }
       }
     }
   }

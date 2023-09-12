@@ -110,7 +110,7 @@ const loginWithTwitter = async (req: Request, res: Response) => {
 
   const TwitterOAuthToken = await getTwitterOAuthToken(code as string);
   if (!TwitterOAuthToken) {
-    return res.redirect(config.front_end_url + '/login');
+    return res.redirect(config.frontendUrl + '/login');
   }
 
   const twitterUser = await getTwitterUser(TwitterOAuthToken.access_token);
@@ -122,14 +122,14 @@ const loginWithTwitter = async (req: Request, res: Response) => {
     });
     if (existingUser) {
       await addCookieToRes(res, existingUser);
-      return res.redirect(config.front_end_url + '/twitter/redirect');
+      return res.redirect(config.frontendUrl + '/twitter/redirect');
     } else {
       const newUser = await createUserFromTwitter(twitterUser);
       await addCookieToRes(res, newUser);
-      return res.redirect(config.front_end_url + '/twitter/redirect');
+      return res.redirect(config.frontendUrl + '/twitter/redirect');
     }
   } else {
-    return res.redirect(config.front_end_url + '/login');
+    return res.redirect(config.frontendUrl + '/login');
   }
 };
 

@@ -1,5 +1,5 @@
 import { seedUsers } from './user.seeder';
-import { seedAssets } from './asset.seeder';
+import { seedProperties } from './property.seeder';
 import { seedCriteria } from './criteria.seeder';
 import chalk from 'chalk';
 import mongoose from 'mongoose';
@@ -11,7 +11,7 @@ const init = async () => {
   console.log(chalk.bold.green('Initiating seeders'));
   try {
     await seedUsers(10).then(() => console.log(chalk.bold.green('User seeder: success')));
-    await seedAssets(10).then(() => console.log(chalk.bold.green('Property seeder: success')));
+    await seedProperties(10).then(() => console.log(chalk.bold.green('Property seeder: success')));
     await seedCriteria(5);
     // await seedRoom();
   } catch (error) {

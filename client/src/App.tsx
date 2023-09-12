@@ -65,8 +65,16 @@ function App() {
 
   React.useEffect(() => {
     if (userStore.auth) {
+      const socketOpt = {
+        ...(process.env.REACT_APP_NODE_ENV !== 'development' && { transports: ['websocket'] }),
+        auth: {
+          token: userStore.auth.access_token
+        }
+      };
+      console.log(socketOpt);
       // @ts-ignore
       const newSocket = io(config.apiUrl, {
+        ...(process.env.REACT_APP_NODE_ENV !== 'development' && { transports: ['websocket'] }),
         auth: {
           token: userStore.auth.access_token
         }

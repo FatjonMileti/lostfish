@@ -21,8 +21,11 @@ if (stage === 'production') {
 const defaultConfig = {
   stage,
   apiUrl: process.env.ABSOLUTE_URL,
+  frontendUrl: process.env.FRONTEND_URL,
   googleKey: process.env.GOOGLE_MAP_KEY,
   useAzureStorage: process.env.USE_AZURE_BLOB_BACKET === 'true',
+  lostfishApiToken: process.env.LOSTFISH_API_ACCESS_TOKEN,
+  useRedis: ['stage', 'production'].includes(stage),
   azure: {
     storageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
     azureStorageName: process.env.AZURE_STORAGE_NAME
@@ -43,8 +46,6 @@ const defaultConfig = {
     dsJWTClientId: process.env.DS_JWT_CLIENT_ID ?? '',
     appAccountId: process.env.APP_ACCOUNT_ID ?? '',
     impersonatedUserGuid: process.env.IMPERSONATED_USER_GUID ?? '',
-    integrationKey: process.env.INTEGRATION_KEY ?? '',
-    privateKeyLocation: process.env.PRIVATE_KEY_LOCATION ?? '',
     dsOauthServer: process.env.DS_OAUTH_SERVER ?? '',
     rentingTemplateId: process.env.RENTING_TEMPLATE_ID ?? '',
     transactionAgreementTemplate: process.env.LOSTFISH_TRANSACTION_AGREEMENT_TEMPLATE_ID ?? '',
@@ -53,6 +54,7 @@ const defaultConfig = {
   },
   jwtSecret: process.env.JWT_SECRET,
   port: process.env.PORT,
+  redisUrl: process.env.REDIS_URL,
   userEmail: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
   logging: false

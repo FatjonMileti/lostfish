@@ -95,21 +95,21 @@ export const SuggestedTenants = styled(
           <div className='matches-slider-body'>
             <div className='trust-score-section'>
               <Typography variant='body5' className='your-trust-score-text'>
-                Your trust score
+                Your match score
               </Typography>
               <Typography variant='h3' className='trust-score'>
                 {profileStore.trust_score}%
               </Typography>
               <Typography variant='body3' className='improve-trust-score-title'>
-                Improve your trust score and find better matches
+                Improve your match score and find better matches
               </Typography>
               <Typography variant='body4' className='trust-score-description'>
-                Go through the steps below to improve your trust score. Remember that you can’t close a
-                certain deal without maximum trust score.
+                Go through the steps below to improve your match score. Remember that you can’t close a
+                certain deal without maximum match score.
               </Typography>
 
               <Label variant='tertiary' size='medium' className='improve-link' onClick={improveTrustScore}>
-                Improve trust score
+                Improve match score
                 <Icon icon='arrow-right-1' size={16} />
               </Label>
             </div>

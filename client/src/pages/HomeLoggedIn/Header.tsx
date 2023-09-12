@@ -60,7 +60,7 @@ export const Header = styled(({ className }: HeaderProps) => {
       <div className='right-part'>
         <div className='trust-score'>
           <Typography variant='body6' className='trust-score-title'>
-            Trust score
+            Match score
           </Typography>
           <Typography variant='body5' className='trust-score-percentage'>
             {trustScore}%

@@ -13,7 +13,6 @@ import { SuggestedMatches } from './MatchedProperties.SuggestedMatches';
 import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
-import { NewSetCriteria } from '../../SetCriteria/NewSetCriteria/NewSetCriteria';
 import SocketContext from '../../../context/SocketContext';
 
 export interface PropertyType {

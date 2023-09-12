@@ -1,18 +1,14 @@
 import { verifyToken } from '../middleware/authorize';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import chatService from '../api/Chat/chat.service';
 import { JwtPayload } from 'jsonwebtoken';
 import propertyDetailService from '../api/Property/services/property-detail.service';
 
 const users: any = {};
-const io: Server = new Server();
 
-const socketApi: any = {};
+const socketApi: { users: any } = { users };
 
-socketApi.io = io;
-socketApi.users = users;
-
-io.on('connection', async (socket: Socket) => {
+export const handleSocketActions = async (socket: Socket) => {
   console.log(`User Connected: ${socket.id}`);
   const token = socket.handshake.auth.token;
 
@@ -59,6 +55,6 @@ io.on('connection', async (socket: Socket) => {
       }
     }
   });
-});
+};
 
 export default socketApi;

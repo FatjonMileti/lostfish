@@ -1,13 +1,13 @@
 import docusign, {
-  EnvelopeDefinition,
   ApiClient,
+  EnvelopeDefinition,
+  EnvelopesApi,
   EnvelopeSummary,
-  ViewUrl,
-  EnvelopesApi
+  ViewUrl
 } from 'docusign-esign';
 import config from '../../../config/index';
 import fs from 'fs';
-import path from 'path';
+import process from 'process';
 import { Request, Response } from 'express';
 import DocusignToken from '../../../data/docusign.token';
 import Envelope from '../schemas/envelope';
@@ -29,16 +29,13 @@ const dsApiClient: ApiClient = new docusign.ApiClient();
 const getConsent = () => {
   const urlScopes = SCOPES.join('+');
   const redirectUri = `${config.apiUrl}/api/docusign/callback`;
-  const consentUrl =
+  return (
     `${jwtConfig.dsOauthServer}/oauth/auth?response_type=code&` +
     `scope=${urlScopes}&client_id=${jwtConfig.dsJWTClientId}&` +
-    `redirect_uri=${redirectUri}`;
-
-  console.log('Open the following URL in your browser to grant consent to the application:');
-  console.log(consentUrl);
-  return consentUrl;
+    `redirect_uri=${redirectUri}`
+  );
 };
-
+console.log(process.cwd());
 const getToken = async () => {
   const getLastToken = await DocusignToken.findOne().sort({ created_at: -1 });
   if (getLastToken && Date.now() < new Date(getLastToken.expires_in).getTime()) {
@@ -52,7 +49,7 @@ const getToken = async () => {
       jwtConfig.dsJWTClientId,
       jwtConfig.impersonatedUserGuid,
       ['signature'],
-      fs.readFileSync(path.join(__dirname, '../', 'private.key')),
+      fs.readFileSync(process.cwd() + '/certs/docusign/private.key'),
       3600
     );
 

@@ -98,4 +98,4 @@ router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/notification', authorize(), notificationController.router);
 
-module.exports = router;
+export default router;
