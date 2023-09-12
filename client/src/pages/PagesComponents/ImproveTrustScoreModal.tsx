@@ -80,7 +80,7 @@ export const ImproveTrustScoreModal = styled(
               <>
                 <div className='card'>
                   <Typography variant='body4' className='card-title'>
-                    Add more details to your search
+                    Add more details to your search • <span className='percentage'>50%</span>
                   </Typography>
 
                   <Typography variant='body4' className='card-description'>
@@ -105,7 +105,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Solicitors
+                Solicitors • <span className='percentage'>10%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>
