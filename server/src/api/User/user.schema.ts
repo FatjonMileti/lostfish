@@ -45,6 +45,7 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   phone: String,
   first_name: String,
   last_name: String,
+  age: Number,
   is_disabled: { type: Boolean, default: true },
   google: {
     username: String,
@@ -76,6 +77,8 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   transaction_agreement_link: { type: String, default: undefined },
   last_login: Date,
   address: String,
+  martial_status: String,
+  have_pets: { type: Boolean, default: false },
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

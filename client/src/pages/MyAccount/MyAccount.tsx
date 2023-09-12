@@ -22,9 +22,9 @@ import { useProfileStore } from '../../globalState/profile';
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
-import { Button } from '../../components/Button';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { Solicitors } from './Solicitors';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
@@ -44,7 +44,8 @@ const tenantSubmenu: any[] = [
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
+  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
+  { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -88,19 +89,14 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                   <Typography variant='body4' className='trust-score-title'>
                     Match score:
                   </Typography>
-                  <Typography variant='body4' className='trust-score-percentage'>
+                  <Typography
+                    variant='body4'
+                    className='trust-score-percentage'
+                    onClick={() => setImproveTrustScoreModalVisibility(true)}>
                     {profileStore.trust_score}%
                   </Typography>
                 </div>
               </div>
-              <Button
-                size='small'
-                variant='secondary'
-                inverted
-                className='details-button'
-                onClick={() => setImproveTrustScoreModalVisibility(true)}>
-                Improve
-              </Button>
             </div>
             <div className='menu-body'>
               {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
@@ -143,6 +139,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />
               <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
               <Route path='/help-and-support' element={<HelpAndSupport />} />
+              <Route path='/solicitors' element={<Solicitors />} />
             </Routes>
           </div>
         </div>
@@ -197,6 +194,10 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             .trust-score-percentage {
               color: #e5155a;
               font-weight: 700;
+
+              :hover {
+                cursor: pointer;
+              }
             }
           }
 

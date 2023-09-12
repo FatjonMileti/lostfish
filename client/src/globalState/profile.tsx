@@ -11,6 +11,10 @@ export interface ProfileStoreType {
   email: string;
   phone: string;
   role: string;
+  age: number;
+  address: string;
+  martial_status: string;
+  have_pets: string;
   description: string;
   agreed_application_policy: boolean;
   signed_transaction_agreement: boolean;
@@ -43,7 +47,11 @@ const profileInitialState = {
   transaction_agreement_link: undefined,
   description: '',
   documents: [],
-  trust_score: 0
+  trust_score: 0,
+  age: 0,
+  address: '',
+  martial_status: '',
+  have_pets: ''
 };
 
 export const useProfileStore = create<ProfileStoreType>()(
@@ -56,6 +64,7 @@ export const useProfileStore = create<ProfileStoreType>()(
         fetchProfile: async (access_token: string) => {
           try {
             const { data } = await axios(access_token).get('/api/account/me');
+
             set((profile) => ({
               ...profile,
               id: data._id,
@@ -71,7 +80,11 @@ export const useProfileStore = create<ProfileStoreType>()(
               has_transaction_agreement: data.has_transaction_agreement,
               transaction_agreement_link: data.transaction_agreement_link,
               documents: data.documents || [],
-              trust_score: data.trust_score
+              trust_score: data.trust_score,
+              age: data.age,
+              address: data.address,
+              martial_status: data.martial_status,
+              have_pets: data.have_pets ? 'Yes' : 'No'
             }));
           } catch (err: any) {
             if (err.response.code === 404) {

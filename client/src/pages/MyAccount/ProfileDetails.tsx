@@ -12,20 +12,26 @@ import { Icon } from '../../components/Icon';
 import Can from '../../components/Can';
 import { Backdrop } from '../../components/Backdrop';
 import { Avatar } from '../../components/Avatar';
-
 import axios from '../../utils/axios';
 import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { AccountSettings } from './AccountSettings';
+import { FormControl } from '@mui/material';
+import FormLabel from '@mui/material/FormLabel';
+import { Select } from '../../components/Select/Select';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
   last_name: yup.string().required('Last name is required'),
   email: yup.string().required('Email is required'),
   phone: yup.string().nullable(),
-  description: yup.string().nullable()
+  description: yup.string().nullable(),
+  age: yup.number().min(18).max(110).nullable(),
+  have_pets: yup.string().nullable(),
+  address: yup.string().nullable(),
+  martial_status: yup.string().nullable()
 });
 
 interface ProfileDetails {
@@ -35,6 +41,10 @@ interface ProfileDetails {
   phone?: string;
   description?: string;
   avatar?: string;
+  address?: string;
+  age?: number;
+  martial_status?: string;
+  have_pets?: string;
 }
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -52,7 +62,11 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: profileStore.avatar ? profileStore.avatar : undefined
+      avatar: profileStore.avatar ? profileStore.avatar : undefined,
+      address: '',
+      age: undefined,
+      martial_status: undefined,
+      have_pets: undefined
     },
     mode: 'all'
   });
@@ -73,6 +87,10 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     profileDetailsForm.setValue('phone', profileStore.phone);
     profileDetailsForm.setValue('description', profileStore.description);
     profileDetailsForm.setValue('avatar', profileStore.avatar || '');
+    profileDetailsForm.setValue('age', profileStore.age || undefined);
+    profileDetailsForm.setValue('address', profileStore.address || '');
+    profileDetailsForm.setValue('martial_status', profileStore.martial_status || undefined);
+    profileDetailsForm.setValue('have_pets', profileStore.have_pets || undefined);
   }, [profileStore]);
 
   const loadProfile = async () => {
@@ -88,6 +106,9 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
   const onSubmit = async (data: any) => {
     setLoading(true);
+
+    data.have_pets = data.have_pets === 'Yes';
+    console.log({ data });
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
       await loadProfile();
@@ -163,10 +184,57 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                   Personal details
                 </Typography>
                 <div className='personal-details'>
+                  <div className='contact-information' style={{ marginBottom: '1rem' }}>
+                    <TextField
+                      type='number'
+                      label='Age'
+                      {...profileDetailsForm.register('age')}
+                      error={!!profileDetailsForm.formState.errors?.age}
+                      helperText={profileDetailsForm.formState.errors?.age?.message}
+                    />
+
+                    <Select
+                      label={<>Martial status</>}
+                      {...profileDetailsForm.register('martial_status')}
+                      error={!!profileDetailsForm.formState.errors['martial_status']}
+                      helperText={profileDetailsForm.formState.errors['martial_status']?.message?.toString()}>
+                      <option></option>
+                      <option value='Single'>Single</option>
+                      <option value='Married'>Married</option>
+                    </Select>
+                    <Select
+                      label='Have pets'
+                      {...profileDetailsForm.register('have_pets')}
+                      error={!!profileDetailsForm.formState.errors['have_pets']}
+                      helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
+                      <option></option>
+                      <option value='Yes'>Yes</option>
+                      <option value='No'>No</option>
+                    </Select>
+                    <FormControl>
+                      <FormLabel className='label'>User type</FormLabel>
+                      <Typography variant='body3' style={{ marginTop: '8px' }}>
+                        {profileStore.role}
+                      </Typography>
+                    </FormControl>
+                  </div>
                   <Textarea
                     rows={6}
                     label='Describe yourself (your matches will see this)'
                     {...profileDetailsForm.register('description')}
+                    defaultValue=''></Textarea>
+                </div>
+              </div>
+
+              <div className='section'>
+                <Typography className='section-title' variant='body4'>
+                  Address
+                </Typography>
+                <div className='personal-details'>
+                  <Textarea
+                    rows={2}
+                    label=''
+                    {...profileDetailsForm.register('address')}
                     defaultValue=''></Textarea>
                 </div>
               </div>
@@ -223,6 +291,19 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px 24px;
+      label {
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 16px;
+        color: #0d2a38;
+
+        .required-asterisk {
+          color: #b4263b;
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 16px;
+        }
+      }
     }
 
     .personal-details {
