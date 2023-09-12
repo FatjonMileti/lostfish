@@ -17,6 +17,12 @@ export type CriteriaFormType = {
     'Farms/Land': boolean;
     'Park homes': boolean;
   };
+  flatDetails?: {
+    propertyPurpose?: flatDetailsBuildPurposeType;
+    floor?: number;
+    lift?: boolean;
+    security?: boolean;
+  };
   propertyClass: {
     'New home': boolean;
     'Retirement home': boolean;
@@ -44,6 +50,7 @@ export type CriteriaFormType = {
 
   creditScore: creditScoreSType;
   area: number[];
+  areaUnit: areaUnitType;
   nrOfBedrooms: number[];
   nrOfBathrooms: number;
   specificPropertyFeatures: {
@@ -99,6 +106,14 @@ export const whenDoYouWantToMoveTypes = [
 
 export type whenDoYouWantToMoveType = (typeof whenDoYouWantToMoveTypes)[number];
 
+export const flatDetailsBuildPurpose = ['Purpose built', 'Conversion'];
+
+export type flatDetailsBuildPurposeType = (typeof flatDetailsBuildPurpose)[number];
+
+export const areaUnits = ['sq.m', 'sq.ft'];
+
+export type areaUnitType = (typeof areaUnits)[number];
+
 export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
   location: yup.object().shape({
@@ -115,6 +130,15 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     'Farms/Land': yup.boolean().required(),
     'Park homes': yup.boolean().required()
   }),
+  flatDetails: yup
+    .object()
+    .shape({
+      propertyPurpose: yup.string().oneOf(flatDetailsBuildPurpose).optional(),
+      floor: yup.number().optional(),
+      lift: yup.boolean().optional(),
+      security: yup.boolean().optional()
+    })
+    .optional(),
   propertyClass: yup.object().shape({
     'New home': yup.boolean().required(),
     'Retirement home': yup.boolean().required(),
@@ -140,6 +164,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   }),
   creditScore: yup.string().oneOf(creditScoreSTypes).required(),
   area: yup.array().required(),
+  areaUnit: yup.string().oneOf(areaUnits).required(),
   nrOfBedrooms: yup.array().required(),
   nrOfBathrooms: yup
     .number()

@@ -9,10 +9,12 @@ import request from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
 import {
+  areaUnits,
   contractDetailsTypes,
   creditScoreSTypes,
   criteriaFormSchema,
   CriteriaFormType,
+  flatDetailsBuildPurpose,
   propertyTypes,
   specificPropertyFeaturesTypes,
   transactionTypes
@@ -75,6 +77,17 @@ export const NewSetCriteria = styled(
           mainForm.setValue(`propertyType.${type}`, true);
         });
 
+        mainForm.setValue(
+          'flatDetails.propertyPurpose',
+          data?.flat_details?.property_purpose || flatDetailsBuildPurpose[0]
+        );
+
+        mainForm.setValue('flatDetails.lift', data?.flat_details?.lift);
+        mainForm.setValue('flatDetails.security', data?.flat_details?.security);
+        if (data?.flat_details?.floor) {
+          mainForm.setValue('flatDetails.floor', data.flat_details.floor);
+        }
+
         (
           Object.keys(mainForm.getValues('propertyClass')) as [keyof CriteriaFormType['propertyClass']]
         ).forEach((key) => {
@@ -92,6 +105,10 @@ export const NewSetCriteria = styled(
             parseInt(data.floor_size.split('-')[0]),
             parseInt(data.floor_size.split('-')[1])
           ]);
+        }
+
+        if (data?.floor_size_unit) {
+          mainForm.setValue('areaUnit', data?.floor_size_unit);
         }
 
         mainForm.setValue('nrOfBedrooms', [
@@ -140,6 +157,12 @@ export const NewSetCriteria = styled(
           property_type: Object.entries(mainForm.getValues('propertyType'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
+          flat_details: {
+            property_purpose: mainForm.getValues('flatDetails.propertyPurpose'),
+            floor: mainForm.getValues('flatDetails.floor'),
+            lift: mainForm.getValues('flatDetails.lift'),
+            security: mainForm.getValues('flatDetails.security')
+          },
           property_preferences: [
             mainForm.getValues('propertyClass.New home') ? ['New home'] : [],
             mainForm.getValues('propertyClass.Retirement home') ? ['Retirement home'] : [],
@@ -152,6 +175,7 @@ export const NewSetCriteria = styled(
             mainForm.getValues('propertyFeatures.Shopping centers nearby') ? ['Shopping centers nearby'] : []
           ].flat(),
           floor_size: `${mainForm.getValues('area')[0]}-${mainForm.getValues('area')[1]}`,
+          floor_size_unit: mainForm.getValues('areaUnit'),
           room_details: {
             number_of_bathrooms: mainForm.getValues('nrOfBathrooms') || undefined,
             number_of_bedrooms: `${mainForm.getValues('nrOfBedrooms')[0]}-${
@@ -188,6 +212,9 @@ export const NewSetCriteria = styled(
         location: {},
         radius: undefined,
         propertyType: Object.fromEntries(propertyTypes.map((pt) => [pt, false])),
+        flatDetails: {
+          propertyPurpose: flatDetailsBuildPurpose[0]
+        },
         propertyClass: {
           'New home': true,
           'Retirement home': true,
@@ -206,6 +233,7 @@ export const NewSetCriteria = styled(
         contractDetails: Object.fromEntries(contractDetailsTypes.map((cd) => [cd, false])),
         creditScore: creditScoreSTypes[0],
         area: [50, 100],
+        areaUnit: areaUnits[0],
         nrOfBedrooms: [1, 4],
         nrOfBathrooms: undefined,
         specificPropertyFeatures: Object.fromEntries(specificPropertyFeaturesTypes.map((spf) => [spf, false]))

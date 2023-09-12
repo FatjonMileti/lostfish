@@ -3,6 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import {
+  areaUnits,
   CriteriaFormType,
   specificPropertyFeaturesType,
   specificPropertyFeaturesTypes
@@ -30,9 +31,24 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
         </Typography>
         <div className='section-content'>
           <div className='slider-wrapper'>
-            <Typography variant='body6' className='slider-label'>
-              Property area (in sqm)
-            </Typography>
+            <div className='label-wrapper'>
+              <Typography variant='body6' className='slider-label'>
+                Property area (in {form.getValues('areaUnit')})
+              </Typography>
+              {((id: string) => (
+                <div className='switch-wrapper'>
+                  <Switch
+                    id={id}
+                    size='small'
+                    checked={form.getValues('areaUnit') === areaUnits[1]}
+                    onChange={({ target: { checked } }) =>
+                      form.setValue('areaUnit', checked ? areaUnits[1] : areaUnits[0])
+                    }
+                  />
+                  <label htmlFor={id}>use sq.ft</label>
+                </div>
+              ))(React.useId())}
+            </div>
 
             <Slider
               value={form.getValues('area')}
@@ -128,6 +144,21 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
           .slider-wrapper {
             display: grid;
             row-gap: 32px;
+
+            .label-wrapper {
+              display: flex;
+              column-gap: 16px;
+
+              .switch-wrapper {
+                column-gap: 8px;
+                display: flex;
+                align-items: center;
+                font-size: 12px;
+                line-height: 16px;
+                font-family: 'Roobert', serif;
+                font-weight: 600;
+              }
+            }
 
             .slider-label {
               font-weight: 600;

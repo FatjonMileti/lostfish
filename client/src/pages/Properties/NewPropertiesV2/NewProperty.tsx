@@ -2,9 +2,7 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { ObjectSchema } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 
 import { Modal } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
@@ -24,32 +22,15 @@ import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 
 import { ImageUpload } from './NewProperty.ImageUpload';
+import { areaUnits, propertyFormSchema, PropertyFormType } from './property.types';
+import { Switch } from '../../../components/Switch';
+import { flatDetailsBuildPurpose } from '../../SetCriteria/criteria.types';
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
   setEditPropertyId: (propertyId: string) => void;
   fetchAssets: () => void;
 }
-
-type FormValues = {
-  title: string;
-  location: {
-    latitude?: number;
-    longitude?: number;
-  };
-  minBudget: number;
-  maxBudget: number;
-  bedrooms: number;
-  bathrooms: number;
-  buildingType: string;
-  area: number;
-  parkingSpot: string;
-  epcRating: string;
-  description: string;
-  locationDetails: string;
-  areaOfInterest: string;
-  propertyImages: any[];
-};
 
 export interface NewPropertyStateType {
   newImages: File[];
@@ -93,47 +74,7 @@ export const NewPropertyV2 = styled(
       }
     }, [propertyId]);
 
-    const formSchema: ObjectSchema<FormValues> = yup.object().shape({
-      title: yup.string().required('Title is required'),
-      location: yup.object().shape({
-        latitude: yup.number().optional(),
-        longitude: yup.number().optional()
-      }),
-      minBudget: yup
-        .number()
-        .min(0, 'Must be greater then or equal to 0')
-        .transform((value) => (isNaN(value) ? undefined : value))
-        .required('Minimum budget is a required'),
-      maxBudget: yup
-        .number()
-        .min(0, 'Must be greater then or equal to 0')
-        .transform((value) => (isNaN(value) ? undefined : value))
-        .required('Maximum budget is a required'),
-      bedrooms: yup
-        .number()
-        .min(0, 'Must be greater then or equal to 0')
-        .transform((value) => (isNaN(value) ? undefined : value))
-        .required('Number of bedrooms is required'),
-      bathrooms: yup
-        .number()
-        .min(0, 'Must be greater then or equal to 0')
-        .transform((value) => (isNaN(value) ? undefined : value))
-        .required('Number of bathrooms is required'),
-      buildingType: yup.string().required('Building type is required'),
-      area: yup
-        .number()
-        .transform((value) => (isNaN(value) ? undefined : value))
-        .min(1)
-        .required('Area is required'),
-      parkingSpot: yup.string().required('Parking spot is required'),
-      epcRating: yup.string().required('EPC Rating is required'),
-      description: yup.string().required('Description is required'),
-      locationDetails: yup.string().required('Description is required'),
-      areaOfInterest: yup.string().required('Location is required'),
-      propertyImages: yup.array().required()
-    });
-
-    const form = useForm<FormValues>({
+    const form = useForm<PropertyFormType>({
       defaultValues: {
         title: '',
         location: {
@@ -153,7 +94,7 @@ export const NewPropertyV2 = styled(
         areaOfInterest: '',
         propertyImages: []
       },
-      resolver: yupResolver(formSchema),
+      resolver: yupResolver(propertyFormSchema),
       mode: 'all'
     });
 
@@ -579,19 +520,28 @@ export const NewPropertyV2 = styled(
                 <option value='Farms/Land'>Farms/Land</option>
               </Select>
 
-              <TextField
-                placeholder='Enter the area'
-                {...register('area')}
-                required
-                label={
-                  <>
-                    <Icon className='area-icon' icon='ruler' /> Area
-                  </>
-                }
-                error={!!form.formState.errors.area}
-                helperText={form.formState.errors.area?.message?.toString()}
-                type='number'
-              />
+              <div className='area-wrapper'>
+                <TextField
+                  placeholder='Enter the area'
+                  {...register('area')}
+                  required
+                  label={
+                    <>
+                      <Icon className='area-icon' icon='ruler' /> Area
+                    </>
+                  }
+                  error={!!form.formState.errors.area}
+                  helperText={form.formState.errors.area?.message?.toString()}
+                  type='number'
+                />
+                <Select {...register('areaUnit')}>
+                  {areaUnits.map((unit, unitIndex) => (
+                    <option value={unit} key={unitIndex}>
+                      {unit}
+                    </option>
+                  ))}
+                </Select>
+              </div>
 
               <Select
                 required
@@ -632,6 +582,55 @@ export const NewPropertyV2 = styled(
                 <option value='G'>G</option>
               </Select>
             </div>
+            {form.getValues('buildingType') === 'Flats' && (
+              <div className='flat-details-section'>
+                <Typography variant='body4' className='label'>
+                  Flat details
+                </Typography>
+                <div className='section-content'>
+                  <Select label='Build Purpose' {...form.register('flatDetails.propertyPurpose')}>
+                    <option></option>
+                    {flatDetailsBuildPurpose.map((purpose, i) => (
+                      <option value={purpose} key={i}>
+                        {purpose}
+                      </option>
+                    ))}
+                  </Select>
+
+                  <Select label='Floor' {...form.register('flatDetails.floor')}>
+                    <option></option>
+                    {Array.from({ length: 21 }, (_, i) => (
+                      <option value={i} key={i}>
+                        {i}
+                      </option>
+                    ))}
+                  </Select>
+
+                  {((id: string) => (
+                    <div className='switch-wrapper'>
+                      <Switch
+                        id={id}
+                        size='medium'
+                        {...form.register('flatDetails.lift')}
+                        checked={!!form.getValues('flatDetails.lift')}
+                      />
+                      <label htmlFor={id}>lift</label>
+                    </div>
+                  ))(Date.now().toString())}
+                  {((id: string) => (
+                    <div className='switch-wrapper'>
+                      <Switch
+                        id={id}
+                        size='medium'
+                        {...form.register('flatDetails.security')}
+                        checked={!!form.getValues('flatDetails.security')}
+                      />
+                      <label htmlFor={id}>security</label>
+                    </div>
+                  ))(Date.now().toString())}
+                </div>
+              </div>
+            )}
             <Textarea
               placeholder='Enter description'
               label='Description'
@@ -943,6 +942,37 @@ export const NewPropertyV2 = styled(
               display: grid;
               grid-template-columns: 1fr 1fr;
               gap: 4px;
+            }
+          }
+
+          .area-wrapper {
+            display: grid;
+            grid-template-columns: auto 70px;
+            column-gap: 4px;
+            align-items: flex-end;
+          }
+        }
+
+        .flat-details-section {
+          display: grid;
+          row-gap: 8px;
+          .section-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: center;
+            column-gap: 24px;
+
+            .switch-wrapper {
+              display: flex;
+              column-gap: 8px;
+              align-items: center;
+              label {
+                color: #0d2a38;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 20px;
+                font-family: 'Roobert', serif;
+              }
             }
           }
         }
