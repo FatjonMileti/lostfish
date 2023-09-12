@@ -30,6 +30,16 @@ const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
+  { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
+  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
+  { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
+  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
+];
+
+const tenantSubmenu: any[] = [
+  { icon: 'layer', text: 'Summary', link: '' },
+  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
+  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -93,20 +103,22 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               </Button>
             </div>
             <div className='menu-body'>
-              {submenus.map(({ icon, text, link }, menuItemIndex) => (
-                <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
-                  {({ isActive }) => (
-                    <motion.div
-                      whileTap={{ scale: 0.98 }}
-                      className={`menu-item ${isActive ? 'active' : ''}`}>
-                      <Icon icon={icon} color='black' size={20} />
-                      <Typography variant='body4' className='text'>
-                        {text}
-                      </Typography>
-                    </motion.div>
-                  )}
-                </NavLink>
-              ))}
+              {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
+                ({ icon, text, link }, menuItemIndex) => (
+                  <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
+                    {({ isActive }) => (
+                      <motion.div
+                        whileTap={{ scale: 0.98 }}
+                        className={`menu-item ${isActive ? 'active' : ''}`}>
+                        <Icon icon={icon} color='black' size={20} />
+                        <Typography variant='body4' className='text'>
+                          {text}
+                        </Typography>
+                      </motion.div>
+                    )}
+                  </NavLink>
+                )
+              )}
             </div>
 
             <div className='menu-footer'>
@@ -123,7 +135,9 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <Routes>
               <Route path='/' element={<Dashboard />} />
               <Route path='/account-settings' element={<ProfileDetails />} />
-              <Route path='/refine-your-search' element={<NewSetCriteria />} />
+              {profileStore.role === 'Tenant' && (
+                <Route path='/refine-your-search' element={<NewSetCriteria />} />
+              )}
               <Route path='/starred-matches' element={<StarredMatches />} />
               <Route path='/notification-settings' element={<NotificationSettings />} />
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />
