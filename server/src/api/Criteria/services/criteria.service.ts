@@ -4,10 +4,9 @@ import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import googleMapService from '../../../external-services/google-map.service';
-import { CurrencyCode, FloorSizeUnit } from '../../Property/property.interface';
+import { CurrencyCode } from '../../Property/property.interface';
 import userService from '../../User/user.service';
 import { Role } from '../../User/user.interface';
-import docusignService from '../../Docusign/services/docusign.service';
 
 const createCriteria = async (req: Request, res: Response): Promise<any> => {
   const data: CriteriaDocument = req.body;
@@ -58,6 +57,19 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
 
     if (!criteria) {
       return res.status(httpStatus.NOT_FOUND).send({ message: 'criteria not found' });
+    }
+
+    if (data.hasOwnProperty('distance_from_underground')) {
+      criteria.distance_from_underground = data.distance_from_underground;
+    }
+    if (data.hasOwnProperty('distance_from_schools')) {
+      criteria.distance_from_schools = data.distance_from_schools;
+    }
+    if (data.hasOwnProperty('distance_from_high_street')) {
+      criteria.distance_from_high_street = data.distance_from_high_street;
+    }
+    if (data.hasOwnProperty('distance_from_gym')) {
+      criteria.distance_from_gym = data.distance_from_gym;
     }
 
     if (data.hasOwnProperty('flat_details')) {
