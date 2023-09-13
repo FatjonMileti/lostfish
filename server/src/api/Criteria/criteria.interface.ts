@@ -1,11 +1,11 @@
 import { Document, ObjectId } from 'mongoose';
 import { FloorSizeUnit, OutsideSpace, ParkingDetails } from '../Property/property.interface';
 
-export type LookingForType = 'I’m looking for a place' | 'I own a place';
 export enum LookingForEnum {
   LOOKING_FOR_PLACE = 'I’m looking for a place',
   OWN_A_PLACE = 'I own a place'
 }
+
 export interface CriteriaDocument extends Document {
   area_of_interest: string;
   asset_address: {
@@ -36,6 +36,22 @@ export interface CriteriaDocument extends Document {
     floor: number;
     lift: boolean;
     security: boolean;
+  };
+  distance_from_underground: {
+    value: number;
+    unit: string;
+  };
+  distance_from_schools: {
+    value: number;
+    unit: string;
+  };
+  distance_from_high_street: {
+    value: number;
+    unit: string;
+  };
+  distance_from_gym: {
+    value: number;
+    unit: string;
   };
   outside_space: OutsideSpace[];
   budget: string;

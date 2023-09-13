@@ -49,6 +49,22 @@ const schema = new Schema<CriteriaDocument>({
   currency_code: String,
   looking_for: { type: String, enum: LookingForEnum },
   moving_time: String,
+  distance_from_underground: {
+    value: Number,
+    unit: String
+  },
+  distance_from_schools: {
+    value: Number,
+    unit: String
+  },
+  distance_from_high_street: {
+    value: Number,
+    unit: String
+  },
+  distance_from_gym: {
+    value: Number,
+    unit: String
+  },
   edited_at: Date,
   edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() },

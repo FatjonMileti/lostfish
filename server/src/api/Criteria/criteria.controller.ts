@@ -102,6 +102,22 @@ export class CriteriaController {
  *          "security": false,
  *     },
  *     "outside_space": ["Garden","Balcony"],
+ *     "distance_from_underground": {
+ *         "value": 1,
+ *         "unit": "km"
+ *      },
+ *      "distance_from_schools": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_high_street": {
+ *         "value": 200,
+ *         "unit": "ft"
+ *      },
+ *      "distance_from_gym": {
+ *          "value": 200,
+ *          "unit": "m"
+ *      },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
@@ -139,8 +155,24 @@ export class CriteriaController {
  *          "lift": true,
  *          "security": false,
  *     },
+ *     "distance_from_underground": {
+ *         "value": 1,
+ *         "unit": "km"
+ *      },
+ *      "distance_from_schools": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_high_street": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_gym": {
+ *          "value": 200,
+ *          "unit": "m"
+ *      },
  *     "outside_space": ["Garden"],
- *     "property_features": ["Park nearby","Shoping centers nearby"],
+ *     "property_features": ["Park nearby","Shopping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
  *     "looking_for": "I own a place",
