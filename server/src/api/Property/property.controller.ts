@@ -446,6 +446,13 @@ export class PropertyController {
  * @apiBody {Object} room_details
  * @apiBody {Number} room_details.number_of_bathrooms
  * @apiBody {Number} room_details.number_of_bedrooms
+ * @apiBody {Object} flat_details
+ * @apiBody {String} flat_details.property_purpose
+ * @apiBody {String} flat_details.floor
+ * @apiBody {String} flat_details.lift
+ * @apiBody {String} flat_details.security
+ * @apiBody {String[]} parking_details
+ * @apiBody {String[]} outside_space
  * @apiBody {Object} budget
  * @apiBody {Number} budget.min_budget
  * @apiBody {Number} budget.max_budget
