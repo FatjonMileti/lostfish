@@ -4,7 +4,6 @@ export const createAssetSchemaValidation = joi.object({
   name: joi.string(),
   title: joi.string(),
   area_of_interest: joi.string(),
-  frequency: joi.string().allow(''),
   radius: joi.string(),
   description: joi.string().allow(''),
   asset_address: joi.object({

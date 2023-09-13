@@ -17,7 +17,6 @@ const schema = new Schema<PropertyDocument>({
   asset_id: Number,
   name: { type: String },
   area_of_interest: String,
-  frequency: String,
   description: { type: String },
   title: { type: String },
   radius: String,

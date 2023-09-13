@@ -318,7 +318,6 @@ export class PropertyController {
  *     },
  *     "status_string": "Draft",
  *     "transaction_type_string": "Rent",
- *     "frequency": "Week",
  *     "property_type": "Detached",
  *     "asset_rent": {
  *         "rental_amount": "1200",
@@ -365,7 +364,6 @@ export class PropertyController {
  *      "title": "",
  *      "description": "",
  *     "area_of_interest": "",
- *     "frequency": "Week",
  *     "radius": "0",
  *     "status_string": "Draft",
  *     "transaction_type_string": "Rent",
@@ -429,7 +427,6 @@ export class PropertyController {
  * @apiBody {String} name
  * @apiBody {String} title
  * @apiBody {String} area_of_interest
- * @apiBody {String} frequency
  * @apiBody {String} radius
  * @apiBody {Object} asset_address
  * @apiBody {Number} asset_address.latitude

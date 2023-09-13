@@ -140,10 +140,6 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.area_of_interest = data.area_of_interest;
     }
 
-    if (data.hasOwnProperty('frequency')) {
-      asset.frequency = data.frequency;
-    }
-
     if (data.hasOwnProperty('radius')) {
       asset.radius = data.radius;
     }
