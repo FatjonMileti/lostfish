@@ -142,6 +142,7 @@ export interface PropertyDocument extends Document {
   asset_id: number;
   name: string;
   area_of_interest: string;
+  frequency: string;
   radius: string;
   description: string;
   title: string;

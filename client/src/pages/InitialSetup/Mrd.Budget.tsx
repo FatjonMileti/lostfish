@@ -2,6 +2,7 @@ import { styled } from '@mui/system';
 import { Typography } from '../../components/Typography';
 import React, { HTMLAttributes } from 'react';
 import { Slider } from '../../components/Slider';
+import {Select} from "../../components/Select/Select";
 export interface BudgetProps extends Omit<HTMLAttributes<HTMLDivElement>, 'value' | 'onChange'> {
   value: number[];
   onChange: (newValue: number[]) => void;
@@ -37,7 +38,7 @@ export const Budget = styled(({ className, value, onChange }: BudgetProps) => {
     display: grid;
     justify-items: center;
     width: 576px;
-
+    
     .slider-wrapper {
       display: grid;
       grid-template-columns: min-content auto min-content;

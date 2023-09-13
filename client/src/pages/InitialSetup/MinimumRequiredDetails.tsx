@@ -11,6 +11,7 @@ import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
 import { Budget } from './Mrd.Budget';
 import { Bedrooms } from './Mrd.Bedrooms';
+import {Select} from "../../components/Select/Select";
 
 type MinimumRequiredDataType = {
   transactionType?: string;
@@ -21,6 +22,7 @@ type MinimumRequiredDataType = {
     longitude?: number;
   };
   budget: number[];
+  frequency: string;
   nrOfBedrooms: number[];
 };
 
@@ -31,6 +33,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     whenDoYouWantToMove: undefined,
     areaOfInterest: undefined,
     budget: [1000, 5200],
+    frequency: 'Week',
     nrOfBedrooms: [1, 4]
   });
 
@@ -61,6 +64,10 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, budget }));
   };
 
+  const onFrequencyChange = (frequency: string) => {
+    setState((state) => ({ ...state, frequency }));
+  };
+
   const onNrOfBedroomsChange = (nrOfBedrooms: number[]) => {
     setState((state) => ({ ...state, nrOfBedrooms }));
   };
@@ -77,7 +84,8 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       room_details: {
         number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
       },
-      budget: `${state.budget[0]} - ${state.budget[1]}`
+      budget: `${state.budget[0]} - ${state.budget[1]}`,
+      frequency: `${state.frequency}`
     });
 
     await new Promise((resolve) => {
@@ -89,7 +97,8 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     criteriaStore.set({
       transactionType: data.transaction_type_string,
       whenDoYouWantToMove: data.moving_time,
-      areaOfInterest: data.area_of_interest
+      areaOfInterest: data.area_of_interest,
+      frequency: data.frequency
     });
 
     setLoading(false);
@@ -119,6 +128,12 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
                 transition={{ duration: 1 }}
                 style={{ display: 'grid', justifyItems: 'center' }}>
                 <Budget value={state.budget} onChange={onBudgetChange} />
+                <Select label='Frequency:' value={state.frequency} onChange={(e) => onFrequencyChange(e.target.value)}>
+                  <option></option>
+                  <option value='Week'>Week</option>
+                  <option value='Month'>Month</option>
+                  <option value='Year'>Year</option>
+                </Select>
                 {!pressedContinue && (
                   <Button size='large' className='continue-button' onClick={() => setPressedContinue(true)}>
                     Continue
@@ -161,6 +176,11 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     height: 100%;
     row-gap: 64px;
     align-content: center;
+
+    .select {
+      width: 30%;
+      margin-top: 48px;
+    }
 
     .continue-button {
       margin-top: 20px;

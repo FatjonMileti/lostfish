@@ -100,6 +100,10 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.radius = data.radius;
     }
 
+    if (data.hasOwnProperty('frequency')) {
+      criteria.frequency = data.frequency;
+    }
+
     if (data.hasOwnProperty('asset_address')) {
       criteria.asset_address = data.asset_address;
     }
