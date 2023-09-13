@@ -11,8 +11,9 @@ import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
 import { Checkbox } from '../../../components/Checkbox';
-import {Label} from '../../../components/Label'
+import { Label } from '../../../components/Label';
 import { useNavigate } from 'react-router-dom';
+import { IGridState } from '../../../react-app-env';
 
 enum DocumentType {
   PRIVACY_AGREEMENT = 'Lostfish privacy agreement',
@@ -108,7 +109,7 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
           })}
         {list.rows.length === 0 && (
           <div className='document-item'>
-              <Typography>Empty</Typography>
+            <Typography>Empty</Typography>
           </div>
         )}
       </div>
@@ -205,16 +206,8 @@ const SignedDocumentAgreement = (props: IAgreementDocument) => {
       </div>
 
       <div className='document-action-buttons'>
-        {item.signed_by_tenant && (
-          <Button onClick={() => downloadContract(item)}>
-            Download
-          </Button>
-        )}
-        {item.signed_by_landlord && (
-          <Button onClick={() => downloadContract(item)}>
-            Download
-          </Button>
-        )}
+        {item.signed_by_tenant && <Button onClick={() => downloadContract(item)}>Download</Button>}
+        {item.signed_by_landlord && <Button onClick={() => downloadContract(item)}>Download</Button>}
 
         {isLandlord && !item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
         {!isLandlord && !item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}

@@ -15,6 +15,7 @@ import Can from '../../components/Can';
 import { CASLAction } from '../../utils/ability.util';
 import { TPropertyDetails, usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
 import { useCriteriaStore } from '../../globalState/criteria';
+import { IProperty } from '../../react-app-env';
 
 export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();

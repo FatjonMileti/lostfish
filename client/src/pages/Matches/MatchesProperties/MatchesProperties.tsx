@@ -14,6 +14,7 @@ import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import SocketContext from '../../../context/SocketContext';
+import { IProperty } from '../../../react-app-env';
 
 export interface PropertyType {
   property: IProperty;

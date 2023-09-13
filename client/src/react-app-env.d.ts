@@ -1,5 +1,7 @@
 /// <reference types="react-scripts" />
 
+import { areaUnitType } from './pages/SetCriteria/criteria.types';
+
 declare interface IAPIResponse {
   docs: any;
   totalDocs: number;
@@ -36,6 +38,7 @@ declare interface IProperty {
   area_of_interest: string;
   property_type?: string;
   floor_size: string;
+  floor_size_unit: areaUnitType;
   specific_property_features?: string[];
   contract_details?: string[];
   room_details: {

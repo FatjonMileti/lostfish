@@ -17,7 +17,7 @@ import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from '../Home/home-background.png';
 import { Tab, Tabs } from '../../components/Tab';
-
+import { IGridState } from '../../react-app-env';
 
 const state: IGridState = {
   loading: true,
@@ -161,6 +161,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   description={p.description}
                   location={p.area_of_interest}
                   area={p.floor_size}
+                  areaUnit={p.floor_size_unit}
                   budget={p.budget}
                   roomsDetails={p.room_details}
                   propertyType={p.property_type}

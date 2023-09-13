@@ -87,6 +87,7 @@ export const NewPropertyV2 = styled(
         bathrooms: undefined,
         buildingType: '',
         area: undefined,
+        areaUnit: areaUnits[0],
         parkingSpot: undefined,
         epcRating: '',
         description: '',
@@ -133,6 +134,9 @@ export const NewPropertyV2 = styled(
         form.setValue('buildingType', data.property_type);
 
         form.setValue('area', data.floor_size);
+        if (data?.floor_size_unit) {
+          form.setValue('areaUnit', data.floor_size_unit);
+        }
         if (data.room_details) {
           form.setValue('bedrooms', data.room_details.number_of_bedrooms);
           form.setValue('bathrooms', data.room_details.number_of_bathrooms);
@@ -173,6 +177,7 @@ export const NewPropertyV2 = styled(
           title: form.getValues('title'),
           property_type: form.getValues('buildingType'),
           floor_size: form.getValues('area') || undefined,
+          floor_size_unit: form.getValues('areaUnit'),
           room_details: {
             number_of_bathrooms: form.getValues('bathrooms') || undefined,
             number_of_bedrooms: form.getValues('bedrooms') || undefined
@@ -227,6 +232,7 @@ export const NewPropertyV2 = styled(
           title: form.getValues('title'),
           property_type: form.getValues('buildingType'),
           floor_size: form.getValues('area'),
+          floor_size_unit: form.getValues('areaUnit'),
           room_details: {
             number_of_bathrooms: form.getValues('bathrooms'),
             number_of_bedrooms: form.getValues('bedrooms')
@@ -960,7 +966,7 @@ export const NewPropertyV2 = styled(
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             align-items: center;
-            column-gap: 24px;
+            column-gap: 16px;
 
             .switch-wrapper {
               display: flex;

@@ -11,6 +11,7 @@ import { Carousel } from './MatchesProperties.Carousel';
 import { NearestThings } from './ViewProperty.NearestThings';
 import { PropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
+import { areaUnits } from '../../SetCriteria/criteria.types';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: PropertyType;
@@ -36,6 +37,7 @@ export const ViewProperty = styled(
     parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
     parsedProperty.propertyType = property?.property_type || '';
     parsedProperty.propertyArea = property?.floor_size;
+    parsedProperty.propertyAreaUnit = property?.floor_size_unit;
     parsedProperty.parkingSpot = (property?.specific_property_features || []).includes('Parking spot');
     parsedProperty.energyCertificate = (property?.contract_details || []).includes('energyCertificate');
     parsedProperty.address = {
@@ -114,11 +116,14 @@ export const ViewProperty = styled(
               <div className='detail'>
                 <Icon icon='ruler' />
                 <Typography variant='body5'>
-                  {!isNaN(parseInt(parsedProperty.propertyArea || ''))
-                    ? parseInt(parsedProperty.propertyArea || '') * 10.76
-                    : ''}{' '}
-                  sqft/
-                  {parsedProperty.propertyArea} sqm
+                  {parsedProperty.propertyAreaUnit === areaUnits[1]
+                    ? parsedProperty.propertyArea
+                    : (parseInt(parsedProperty.propertyArea || '') * 10.764).toFixed(0)}{' '}
+                  {areaUnits[1]}/
+                  {parsedProperty.propertyAreaUnit === areaUnits[0]
+                    ? parsedProperty.propertyArea
+                    : (parseInt(parsedProperty.propertyArea || '') / 10.764).toFixed(0)}{' '}
+                  {areaUnits[0]}
                 </Typography>
               </div>
               <Typography variant='body4' className='dot'>
