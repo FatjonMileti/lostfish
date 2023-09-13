@@ -191,11 +191,31 @@ export class CriteriaController {
  * @apiBody {String} deposit_amount
  * @apiBody {String[]} contract_details
  * @apiBody {String[]} property_class
+ * @apiBody {String[]} parking_details
+ * @apiBody {String[]} outside_space
  * @apiBody {String[]} property_features An array of property features.
  * @apiBody {Number} floor_size
+ * @apiBody {String} floor_size_unit
  * @apiBody {Object} room_details
  * @apiBody {String} room_details.number_of_bathrooms
  * @apiBody {String} room_details.number_of_bedrooms
+ * @apiBody {Object} flat_details
+ * @apiBody {String} flat_details.property_purpose
+ * @apiBody {String} flat_details.floor
+ * @apiBody {String} flat_details.lift
+ * @apiBody {String} flat_details.security
+ * @apiBody {Object} distance_from_underground
+ * @apiBody {String} distance_from_underground.value
+ * @apiBody {String} distance_from_underground.unit
+ * @apiBody {Object} distance_from_schools
+ * @apiBody {String} distance_from_schools.value
+ * @apiBody {String} distance_from_schools.unit
+ * @apiBody {Object} distance_from_high_street
+ * @apiBody {String} distance_from_high_street.value
+ * @apiBody {String} distance_from_high_street.unit
+ * @apiBody {Object} distance_from_gym
+ * @apiBody {String} distance_from_gym.value
+ * @apiBody {String} distance_from_gym.unit
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements
  * @apiBody {String} budget
