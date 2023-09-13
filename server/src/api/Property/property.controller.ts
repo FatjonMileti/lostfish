@@ -308,8 +308,8 @@ export class PropertyController {
  * @apiExample {json} Example request body:
  *    {
  *     "name": "",
- *      "title": "",
- *      "description": "",
+ *     "title": "",
+ *     "description": "",
  *     "area_of_interest": "",
  *     "radius": "0",
  *     "asset_address": {
@@ -337,11 +337,20 @@ export class PropertyController {
  *        "max_budget": 2800,
  *      },
  *      "parking_spot": 1,
-        "epc_rating": B,
-        "location_details": "",
+ *      "parking_details": ["Garage"],
+ *      "flat_details" :{
+ *          "property_purpose": "Purpose built",
+ *          "floor": 15,
+ *          "lift": true,
+ *          "security": false
+ *      },
+ *      "outside_space": ["Garden","Balcony"],
+ *      "floor_size_unit": "sq.m",
+ *      "epc_rating": B,
+ *      "location_details": "",
  *     "property_features": ["Parks Nearby"],
  *     "specific_property_features": ["Garden","Terrace"],
- *     "property_images": [{"originalName":"filename.jpg","filename":"jhsdcjhg4t87fdsvidsvi","path":"/uploads/images/jhsdcjhg4t87fdsvidsvi"}],
+ *     "property_images": [{"key":"filename.jpg","link":"http://jhsdcjhg4t87fdsvidsvi.com"}],
  *     "credit_score_requirements": "Good",
  *     "contact_details": ["Guarantor"]
  * }
@@ -371,18 +380,27 @@ export class PropertyController {
  *         "available_from": ""
  *     },
  *     "floor_size": 0,
+ *     "floor_size_unit": "sq.m",
  *     "property_preference": "",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
- *      "budget": {
+ *     "budget": {
  *        "min_budget": 1500,
  *        "max_budget": 2800,
- *      },
- *      "parking_spot": 1,
-        "epc_rating": A,
-        "location_details": "",
+ *     },
+ *     "parking_spot": 1,
+ *     "parking_details": ["Garage"],
+ *     "flat_details" :{
+ *          "property_purpose": "Purpose built",
+ *          "floor": 15,
+ *          "lift": true,
+ *          "security": false,
+ *     },
+ *     "outside_space": ["Garden","Balcony"],
+ *     "epc_rating": A,
+ *     "location_details": "",
  *     "property_features": [""],
  *     "specific_property_features": [],
  *     "property_images": [],

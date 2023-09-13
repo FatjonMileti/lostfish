@@ -89,10 +89,35 @@ export class CriteriaController {
  *     "contract_details": [ "Guarantor", "Reviewed Property" ],
  *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
+ *     "floor_size_unit": "sq.m",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
+ *     "parking_details": ["Garage"],
+ *     "flat_details" :{
+ *          "property_purpose": "Purpose built",
+ *          "floor": 15,
+ *          "lift": true,
+ *          "security": false,
+ *     },
+ *     "outside_space": ["Garden","Balcony"],
+ *     "distance_from_underground": {
+ *         "value": 1,
+ *         "unit": "km"
+ *      },
+ *      "distance_from_schools": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_high_street": {
+ *         "value": 200,
+ *         "unit": "ft"
+ *      },
+ *      "distance_from_gym": {
+ *          "value": 200,
+ *          "unit": "m"
+ *      },
  *     "property_features": ["Park nearby","Shoping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
@@ -118,11 +143,36 @@ export class CriteriaController {
  *     "contract_details": [ "Guarantor", "Reviewed Property" ],
  *     "property_preferences": ["New Homes","Auction"],
  *     "floor_size": "80 - 100",
+ *     "floor_size_unit": "sq.m",
  *     "room_details": {
  *         "number_of_bathrooms": 1,
  *         "number_of_bedrooms": 1
  *     },
- *     "property_features": ["Park nearby","Shoping centers nearby"],
+ *     "parking_details": ["Garage"],
+ *     "flat_details" :{
+ *          "property_purpose": "Purpose built",
+ *          "floor": 15,
+ *          "lift": true,
+ *          "security": false,
+ *     },
+ *     "distance_from_underground": {
+ *         "value": 1,
+ *         "unit": "km"
+ *      },
+ *      "distance_from_schools": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_high_street": {
+ *         "value": 200,
+ *         "unit": "m"
+ *      },
+ *      "distance_from_gym": {
+ *          "value": 200,
+ *          "unit": "m"
+ *      },
+ *     "outside_space": ["Garden"],
+ *     "property_features": ["Park nearby","Shopping centers nearby"],
  *     "specific_property_features": ["Parking spot"],
  *     "credit_score_requirements": "Excellent",
  *     "looking_for": "I own a place",

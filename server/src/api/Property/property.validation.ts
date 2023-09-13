@@ -21,6 +21,7 @@ export const createAssetSchemaValidation = joi.object({
     available_from: joi.date().allow('')
   }),
   floor_size: joi.number().required(),
+  floor_size_unit: joi.string(),
   room_details: joi.object({
     number_of_bathrooms: joi.number().min(0),
     number_of_bedrooms: joi.number().min(0)
@@ -29,7 +30,15 @@ export const createAssetSchemaValidation = joi.object({
     min_budget: joi.number().min(0).required(),
     max_budget: joi.number().min(0).required()
   }),
+  flat_details: {
+    property_purpose: joi.string(),
+    floor: joi.number(),
+    lift: joi.boolean(),
+    security: joi.boolean()
+  },
+  outside_space: joi.array().items(joi.string()),
   parking_spot: joi.number().min(0),
+  parking_details: joi.array().items(joi.string()),
   epc_rating: joi.string().required(),
   location_details: joi.string().required(),
   property_features: joi.array().items(joi.string()),
@@ -61,6 +70,7 @@ export const createAssetSchemaValidationDraft = joi.object({
     available_from: joi.date().allow('')
   }),
   floor_size: joi.number().allow(''),
+  floor_size_unit: joi.string().allow(''),
   room_details: joi.object({
     number_of_bathrooms: joi.number().min(0).allow(''),
     number_of_bedrooms: joi.number().min(0).allow('')
@@ -69,7 +79,15 @@ export const createAssetSchemaValidationDraft = joi.object({
     min_budget: joi.number().min(0).allow(''),
     max_budget: joi.number().min(0).allow('')
   }),
+  flat_details: {
+    property_purpose: joi.string().allow(''),
+    floor: joi.number().allow(''),
+    lift: joi.boolean().allow(''),
+    security: joi.boolean().allow('')
+  },
+  outside_space: joi.array().items(joi.string().allow('')),
   parking_spot: joi.number().min(0).allow(''),
+  parking_details: joi.array().items(joi.string().allow('')),
   epc_rating: joi.string().allow(''),
   location_details: joi.string().allow(''),
   property_features: joi.array().items(joi.string().allow('')),
