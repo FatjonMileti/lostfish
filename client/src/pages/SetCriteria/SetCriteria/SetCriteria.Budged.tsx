@@ -2,18 +2,14 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../../components/Typography';
 import { UseFormReturn } from 'react-hook-form';
-import {
-  contractDetailsType,
-  contractDetailsTypes,
-  creditScoreSTypes,
-  CriteriaFormType
-} from '../criteria.types';
+import { CriteriaFormType } from '../criteria.types';
 
 import { Slider } from '../../../components/Slider';
 import { TextField } from '../../../components/TextField';
 import { Icon } from '../../../components/Icon';
 import { Label } from '../../../components/Label';
 import { Tab, Tabs } from '../../../components/Tab';
+import { ContractDetail, CreditScore } from '../criteria.contants';
 
 interface SetCriteriaBudgetProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -66,7 +62,7 @@ export const SetCriteriaBudget = styled(({ className, form }: SetCriteriaBudgetP
           Contract details
         </Typography>
         <div className='section-content'>
-          {contractDetailsTypes.map((contractDetail: contractDetailsType, contractDetailIndex) => {
+          {Object.values(ContractDetail).map((contractDetail, contractDetailIndex) => {
             const active = form.getValues('contractDetails')[contractDetail];
             return (
               <div key={contractDetailIndex}>
@@ -88,9 +84,9 @@ export const SetCriteriaBudget = styled(({ className, form }: SetCriteriaBudgetP
         </Typography>
         <div className='section-content'>
           <Tabs
-            value={creditScoreSTypes.indexOf(form.getValues('creditScore'))}
+            value={Object.values(CreditScore).indexOf(form.getValues('creditScore'))}
             onChange={(i: number) => {
-              form.setValue('creditScore', creditScoreSTypes[i]);
+              form.setValue('creditScore', Object.values(CreditScore)[i]);
             }}
             rounded
             variant='tertiary'>

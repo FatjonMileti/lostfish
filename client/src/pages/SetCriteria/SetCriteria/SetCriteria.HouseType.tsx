@@ -2,17 +2,13 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import {
-  PropertyPreferenceType,
-  propertyPreferences,
-  propertyTypes,
-  CriteriaFormType,
-  transactionTypes
-} from '../criteria.types';
+import { PropertyPreferenceType, CriteriaFormType } from '../criteria.types';
 
 import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
 import { Typography } from '../../../components/Typography';
+import { Select } from '../../../components/Select/Select';
+import { BuildPurpose, PropertyPreference, PropertyType, Transaction } from '../criteria.contants';
 
 interface SetCriteriaHouseTypeProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -34,9 +30,9 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
             <Tabs
               variant='tertiary'
               rounded
-              value={transactionTypes.indexOf(form.getValues('transactionType'))}
+              value={Object.values(Transaction).indexOf(form.getValues('transactionType'))}
               onChange={(i: number) => {
-                form.setValue(`transactionType`, transactionTypes[i]);
+                form.setValue(`transactionType`, Object.values(Transaction)[i]);
               }}>
               <Tab label='I’m looking to rent a place' />
               <Tab label='I’m looking to buy a place' disabled />
@@ -50,7 +46,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
           Property Type
         </Typography>
         <div className='section-content'>
-          {propertyTypes.map((propertyType, propertyTypeIndex) =>
+          {Object.values(PropertyType).map((propertyType, propertyTypeIndex) =>
             ((id: string) => (
               <div className='switch-wrapper' key={propertyTypeIndex}>
                 <Switch
@@ -65,6 +61,56 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
           )}
         </div>
       </div>
+      {!!form.getValues('propertyType.Flats') && (
+        <div className='section flat-details-section'>
+          <Typography className='section-title' variant='body4'>
+            Flat details
+          </Typography>
+
+          <div className='section-content'>
+            <Select label='Build Purpose' {...form.register('flatDetails.propertyPurpose')}>
+              <option></option>
+              {Object.values(BuildPurpose).map((purpose, i) => (
+                <option value={purpose} key={i}>
+                  {purpose}
+                </option>
+              ))}
+            </Select>
+
+            {((id: string) => (
+              <div className='switch-wrapper'>
+                <Switch
+                  id={id}
+                  size='medium'
+                  {...form.register('flatDetails.lift')}
+                  checked={!!form.getValues('flatDetails.lift')}
+                />
+                <label htmlFor={id}>lift</label>
+              </div>
+            ))(Date.now().toString())}
+            {((id: string) => (
+              <div className='switch-wrapper'>
+                <Switch
+                  id={id}
+                  size='medium'
+                  {...form.register('flatDetails.security')}
+                  checked={!!form.getValues('flatDetails.security')}
+                />
+                <label htmlFor={id}>security</label>
+              </div>
+            ))(Date.now().toString())}
+
+            <Select label='Floor' {...form.register('flatDetails.floor')}>
+              <option></option>
+              {Array.from({ length: 21 }, (_, i) => (
+                <option value={i} key={i}>
+                  {i}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+      )}
       <div className='section property-class-section'>
         <Typography className='section-title' variant='body4'>
           Property class
@@ -72,7 +118,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
         <div className='section-content'>
           {
             <>
-              {propertyPreferences.map(
+              {Object.values(PropertyPreference).map(
                 (propertyPreference: PropertyPreferenceType, propertyPreferenceIndex: number) =>
                   ((id: string) => (
                     <div className='tabs-wrapper' key={propertyPreferenceIndex}>
@@ -151,6 +197,52 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
             font-size: 14px;
             line-height: 20px;
             font-family: 'Roobert', serif;
+          }
+        }
+      }
+    }
+
+    .flat-details-section {
+      .section-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 24px;
+        row-gap: 24px;
+
+        .switch-wrapper {
+          display: flex;
+          column-gap: 8px;
+          align-items: center;
+          label {
+            color: #0d2a38;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            font-family: 'Roobert', serif;
+          }
+        }
+
+        .tabs-wrapper {
+          display: flex;
+          flex-direction: column;
+          row-gap: 8px;
+          align-items: flex-start;
+
+          label {
+            color: #000;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Roobert', serif;
+          }
+
+          .tabs {
+            column-gap: 0;
+
+            .tab {
+              padding: 12px 24px;
+              width: 148px;
+            }
           }
         }
       }

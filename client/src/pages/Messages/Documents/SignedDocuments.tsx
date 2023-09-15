@@ -165,11 +165,10 @@ export const SignedDocuments = styled((props: SignedDocumentsProps) => {
         .document-action-buttons {
           display: flex;
           column-gap: 16px;
-          
+
           .button {
-            marginRight: '5px';
+            marginright: '5px';
           }
-          
         }
       }
     }
@@ -198,9 +197,7 @@ const SignedDocumentLandlord = (props: ISignedDocumentLandlord) => {
       </div>
 
       <div className='document-action-buttons'>
-        <Button
-          onClick={() => downloadContract(item)}
-          disabled={!can_download}>
+        <Button onClick={() => downloadContract(item)} disabled={!can_download}>
           Download
         </Button>
         {!item.signed_by_landlord && <Button onClick={() => handleSign(item)}>Sign</Button>}
@@ -231,9 +228,7 @@ const SignedDocumentTenant = (props: ISignedDocumentTenant) => {
       </div>
 
       <div className='document-action-buttons'>
-        <Button
-          onClick={() => downloadContract(item)}
-          disabled={!can_download}>
+        <Button onClick={() => downloadContract(item)} disabled={!can_download}>
           Download
         </Button>
         {!item.signed_by_tenant && <Button onClick={() => handleSign(item)}>Sign</Button>}

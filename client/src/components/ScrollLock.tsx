@@ -4,7 +4,7 @@ export const ScrollLock = ({ lock = true }: { lock?: boolean }) => {
   const openedOnceRef = React.useRef(false);
   React.useEffect(() => {
     if (lock) {
-      document.body.style.overflow = 'hidden';
+      setTimeout(() => (document.body.style.overflow = 'hidden'));
       openedOnceRef.current = true;
     } else if (!lock && openedOnceRef.current) {
       document.body.style.overflow = 'unset';

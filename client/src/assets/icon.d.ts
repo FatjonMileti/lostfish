@@ -1,4 +1,7 @@
 export type IconNames = 
+  | "barbell"
+  | "mortarboard"
+  | "metro"
   | "research"
   | "layer"
   | "direction-tool"

@@ -1,5 +1,5 @@
 import PropertyModel from '../schemas/property.schema';
-import { CurrencyCode, MasterAssetTypeSring, PropertyDocument } from '../property.interface';
+import { CurrencyCode, FloorSizeUnit, MasterAssetTypeSring, PropertyDocument } from '../property.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
@@ -82,7 +82,6 @@ const findAll = async (req: Request, res: Response) => {
 const createAsset = async (req: Request, res: Response): Promise<any> => {
   const data: PropertyDocument = req.body;
   data.created_by = res.locals.user_id;
-  data.floor_size_unit = 'Meter Squared';
   data.currency_code = CurrencyCode.GBP;
   data.master_asset_type_string = MasterAssetTypeSring.Residential;
 
@@ -119,6 +118,22 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     if (data.hasOwnProperty('name')) {
       asset.name = data.name;
+    }
+
+    if (data.hasOwnProperty('flat_details')) {
+      asset.flat_details = data.flat_details;
+    }
+
+    if (data.hasOwnProperty('outside_space')) {
+      asset.outside_space = data.outside_space;
+    }
+
+    if (data.hasOwnProperty('parking_details')) {
+      asset.parking_details = data.parking_details;
+    }
+
+    if (data.hasOwnProperty('floor_size_unit')) {
+      asset.floor_size_unit = data.floor_size_unit;
     }
 
     if (data.hasOwnProperty('area_of_interest')) {
