@@ -2,7 +2,13 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { CriteriaFormType, whenDoYouWantToMoveType, whenDoYouWantToMoveTypes } from '../criteria.types';
+import {
+  CriteriaFormType,
+  DistanceUnit,
+  DistanceUnitType,
+  whenDoYouWantToMoveType,
+  whenDoYouWantToMoveTypes
+} from '../criteria.types';
 
 import { Label } from '../../../components/Label';
 import { Typography } from '../../../components/Typography';
@@ -10,6 +16,8 @@ import { AreaOfInterest } from '../../Properties/AreaOfInterest';
 import { Icon } from '../../../components/Icon';
 import { Select } from '../../../components/Select/Select';
 import { UseMyLocation } from './UseMyLocation';
+import { TextField } from '../../../components/TextField';
+import { areaUnits, areaUnitType } from '../../Properties/NewPropertiesV2/property.types';
 
 interface SetCriteriaLocationProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -19,6 +27,8 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
   React.useEffect(() => {
     form.watch();
   }, []);
+
+  console.log('form: ');
 
   return (
     <div className={className}>
@@ -83,6 +93,95 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
           })}
         </div>
       </div>
+      <div className='section near-things-section'>
+        <Typography className='section-title' variant='body4'>
+          Near things
+        </Typography>
+        <div className='section-content'>
+          <div className='distance-wrapper'>
+            <TextField
+              placeholder='Enter the distance from underground'
+              {...form.register('distanceFromUnderground.value')}
+              label={
+                <>
+                  <Icon className='area-icon' icon='metro' /> Distance from underground
+                </>
+              }
+              error={!!form.formState.errors.area}
+              helperText={form.formState.errors.area?.message?.toString()}
+              type='number'
+            />
+            <Select {...form.register('distanceFromUnderground.unit')}>
+              {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                <option value={unit} key={unitIndex}>
+                  {unit}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className='distance-wrapper'>
+            <TextField
+              placeholder='Enter the distance from scool'
+              {...form.register('distanceFromSchools.value')}
+              label={
+                <>
+                  <Icon className='area-icon' icon='mortarboard' /> Distance from school
+                </>
+              }
+              error={!!form.formState.errors.area}
+              helperText={form.formState.errors.area?.message?.toString()}
+              type='number'
+            />
+            <Select {...form.register('distanceFromSchools.unit')}>
+              {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                <option value={unit} key={unitIndex}>
+                  {unit}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className='distance-wrapper'>
+            <TextField
+              placeholder='Enter the distance from high street'
+              {...form.register('distanceFromHighStreet.value')}
+              label={
+                <>
+                  <Icon className='area-icon' icon='car' /> Distance from high street
+                </>
+              }
+              error={!!form.formState.errors.area}
+              helperText={form.formState.errors.area?.message?.toString()}
+              type='number'
+            />
+            <Select {...form.register('distanceFromHighStreet.unit')}>
+              {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                <option value={unit} key={unitIndex}>
+                  {unit}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className='distance-wrapper'>
+            <TextField
+              placeholder='Enter the distance from Gym'
+              {...form.register('distanceFromGym.value')}
+              label={
+                <>
+                  <Icon className='area-icon' icon='barbell' /> Distance from Gym
+                </>
+              }
+              type='number'
+            />
+            <Select {...form.register('distanceFromGym.unit')}>
+              {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                <option value={unit} key={unitIndex}>
+                  {unit}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
+      </div>
     </div>
   );
 })`
@@ -130,6 +229,28 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
           &.active {
             background-color: #eee0d3;
             border-color: #eee0d3;
+          }
+        }
+      }
+    }
+
+    .near-things-section {
+      .section-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        column-gap: 24px;
+        row-gap: 36px;
+
+        .distance-wrapper {
+          display: grid;
+          grid-template-columns: auto 70px;
+          column-gap: 4px;
+          align-items: flex-end;
+
+          label {
+            display: flex;
+            align-items: center;
+            column-gap: 4px;
           }
         }
       }

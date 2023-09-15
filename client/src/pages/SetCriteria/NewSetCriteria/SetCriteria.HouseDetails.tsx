@@ -2,12 +2,7 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import {
-  areaUnits,
-  CriteriaFormType,
-  specificPropertyFeaturesType,
-  specificPropertyFeaturesTypes
-} from '../criteria.types';
+import { areaUnits, CriteriaFormType, SpecificPropertyFeatures } from '../criteria.types';
 
 import { Slider } from '../../../components/Slider';
 import { Select } from '../../../components/Select/Select';
@@ -100,11 +95,8 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
         <div className='section-content'>
           {
             <>
-              {specificPropertyFeaturesTypes.map(
-                (
-                  specificPropertyFeature: specificPropertyFeaturesType,
-                  specificPropertyFeatureIndex: number
-                ) =>
+              {Object.values(SpecificPropertyFeatures).map(
+                (specificPropertyFeature, specificPropertyFeatureIndex: number) =>
                   ((id: string) => (
                     <div className='switch-wrapper' key={specificPropertyFeatureIndex}>
                       <Switch

@@ -14,9 +14,9 @@ import {
   creditScoreSTypes,
   criteriaFormSchema,
   CriteriaFormType,
-  flatDetailsBuildPurpose,
+  DistanceUnit,
   propertyTypes,
-  specificPropertyFeaturesTypes,
+  SpecificPropertyFeatures,
   transactionTypes
 } from '../criteria.types';
 
@@ -77,10 +77,7 @@ export const NewSetCriteria = styled(
           mainForm.setValue(`propertyType.${type}`, true);
         });
 
-        mainForm.setValue(
-          'flatDetails.propertyPurpose',
-          data?.flat_details?.property_purpose || flatDetailsBuildPurpose[0]
-        );
+        mainForm.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
 
         mainForm.setValue('flatDetails.lift', data?.flat_details?.lift);
         mainForm.setValue('flatDetails.security', data?.flat_details?.security);
@@ -138,6 +135,22 @@ export const NewSetCriteria = styled(
             return acc;
           }, {})
         );
+
+        if (data?.distance_from_underground) {
+          mainForm.setValue('distanceFromUnderground', data.distance_from_underground);
+        }
+
+        if (data?.distance_from_schools) {
+          mainForm.setValue('distanceFromSchools', data.distance_from_schools);
+        }
+
+        if (data?.distance_from_high_street) {
+          mainForm.setValue('distanceFromHighStreet', data.distance_from_high_street);
+        }
+
+        if (data?.distance_from_gym) {
+          mainForm.setValue('distanceFromGym', data.distance_from_gym);
+        }
       } catch (err) {
         throw err;
       } finally {
@@ -185,7 +198,10 @@ export const NewSetCriteria = styled(
           specific_property_features: Object.entries(mainForm.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
-
+          distance_from_underground: mainForm.getValues('distanceFromUnderground'),
+          distance_from_schools: mainForm.getValues('distanceFromSchools'),
+          distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
+          distance_from_gym: mainForm.getValues('distanceFromGym'),
           budget: `${mainForm.getValues('idealBudget')[0]} - ${mainForm.getValues('idealBudget')[1]}`,
           deposit_amount: mainForm.getValues('depositAmount'),
           credit_score_requirements: mainForm.getValues('creditScore'),
@@ -213,7 +229,7 @@ export const NewSetCriteria = styled(
         radius: undefined,
         propertyType: Object.fromEntries(propertyTypes.map((pt) => [pt, false])),
         flatDetails: {
-          propertyPurpose: flatDetailsBuildPurpose[0]
+          propertyPurpose: undefined
         },
         propertyClass: {
           'New home': true,
@@ -236,7 +252,25 @@ export const NewSetCriteria = styled(
         areaUnit: areaUnits[0],
         nrOfBedrooms: [1, 4],
         nrOfBathrooms: undefined,
-        specificPropertyFeatures: Object.fromEntries(specificPropertyFeaturesTypes.map((spf) => [spf, false]))
+        specificPropertyFeatures: Object.fromEntries(
+          Object.values(SpecificPropertyFeatures).map((spf) => [spf, false])
+        ),
+        distanceFromUnderground: {
+          value: undefined,
+          unit: DistanceUnit.Km
+        },
+        distanceFromSchools: {
+          value: undefined,
+          unit: DistanceUnit.Km
+        },
+        distanceFromHighStreet: {
+          value: undefined,
+          unit: DistanceUnit.Km
+        },
+        distanceFromGym: {
+          value: undefined,
+          unit: DistanceUnit.Km
+        }
       },
       resolver: yupResolver(criteriaFormSchema),
       mode: 'all'

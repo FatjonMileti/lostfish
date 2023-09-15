@@ -22,9 +22,21 @@ import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 
 import { ImageUpload } from './NewProperty.ImageUpload';
-import { areaUnits, propertyFormSchema, PropertyFormType } from './property.types';
+import {
+  areaUnits,
+  areaUnitType,
+  Building,
+  Parking,
+  propertyFormSchema,
+  PropertyFormType
+} from './property.types';
 import { Switch } from '../../../components/Switch';
-import { flatDetailsBuildPurpose } from '../../SetCriteria/criteria.types';
+import {
+  BuildPurpose,
+  Furnished,
+  OutsideSpace,
+  SpecificPropertyFeatures
+} from '../../SetCriteria/criteria.types';
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
@@ -85,10 +97,13 @@ export const NewPropertyV2 = styled(
         maxBudget: undefined,
         bedrooms: undefined,
         bathrooms: undefined,
-        buildingType: '',
+        buildingType: undefined,
+        flatDetails: {},
+        outsideSpace: {},
         area: undefined,
         areaUnit: areaUnits[0],
         parkingSpot: undefined,
+        parkingType: undefined,
         epcRating: '',
         description: '',
         locationDetails: '',
@@ -133,6 +148,27 @@ export const NewPropertyV2 = styled(
         form.setValue('title', data.title);
         form.setValue('buildingType', data.property_type);
 
+        form.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
+
+        form.setValue('flatDetails.lift', data?.flat_details?.lift);
+        form.setValue('flatDetails.security', data?.flat_details?.security);
+        if (data?.flat_details?.floor) {
+          form.setValue('flatDetails.floor', data.flat_details.floor);
+        }
+
+        form.setValue(
+          `outsideSpace.${OutsideSpace.Garden}`,
+          data.specific_property_features.includes(OutsideSpace.Garden)
+        );
+        form.setValue(
+          `outsideSpace.${OutsideSpace.Terrace}`,
+          data.specific_property_features.includes(OutsideSpace.Terrace)
+        );
+        form.setValue(
+          `outsideSpace.${OutsideSpace.Balcony}`,
+          data.specific_property_features.includes(OutsideSpace.Balcony)
+        );
+
         form.setValue('area', data.floor_size);
         if (data?.floor_size_unit) {
           form.setValue('areaUnit', data.floor_size_unit);
@@ -141,10 +177,20 @@ export const NewPropertyV2 = styled(
           form.setValue('bedrooms', data.room_details.number_of_bedrooms);
           form.setValue('bathrooms', data.room_details.number_of_bathrooms);
         }
+
+        if (data?.specific_property_features?.includes(Furnished.Unfurnished)) {
+          form.setValue('furniture', Furnished.Unfurnished);
+        } else if (data?.specific_property_features?.includes(Furnished.PartiallyFurnished)) {
+          form.setValue('furniture', Furnished.PartiallyFurnished);
+        } else if (data?.specific_property_features?.includes(Furnished.FullyFurnished)) {
+          form.setValue('furniture', Furnished.FullyFurnished);
+        }
+
         form.setValue('propertyImages', data.property_images);
         form.setValue('minBudget', data?.budget?.min_budget);
         form.setValue('maxBudget', data?.budget?.max_budget);
         form.setValue('parkingSpot', data.parking_spot);
+        form.setValue('parkingType', data?.parking_details?.[0] || undefined);
         form.setValue('epcRating', data.epc_rating);
         form.setValue('description', data.description);
         form.setValue('locationDetails', data.location_details);
@@ -153,9 +199,50 @@ export const NewPropertyV2 = styled(
       }
     };
 
-    const saveAsDraft = async () => {
-      setState((state) => ({ ...state, savingProperty: true }));
+    const generatePayload = () => {
+      return {
+        transaction_type_string: 'Rent',
 
+        area_of_interest: form.getValues('areaOfInterest'),
+
+        asset_address: form.getValues('location'),
+        title: form.getValues('title'),
+        property_type: form.getValues('buildingType'),
+        flat_details: {
+          property_purpose: form.getValues('flatDetails.propertyPurpose'),
+          floor: form.getValues('flatDetails.floor'),
+          lift: form.getValues('flatDetails.lift'),
+          security: form.getValues('flatDetails.security')
+        },
+        floor_size: form.getValues('area') || undefined,
+        floor_size_unit: form.getValues('areaUnit'),
+        room_details: {
+          number_of_bathrooms: form.getValues('bathrooms') || undefined,
+          number_of_bedrooms: form.getValues('bedrooms') || undefined
+        },
+        specific_property_features: [
+          form.getValues('furniture') ? [form.getValues('furniture')] : [],
+          form.getValues('outsideSpace')[OutsideSpace.Balcony] ? [OutsideSpace.Balcony] : [],
+          form.getValues('outsideSpace')[OutsideSpace.Terrace] ? [OutsideSpace.Terrace] : [],
+          form.getValues('outsideSpace')[OutsideSpace.Garden] ? [OutsideSpace.Garden] : []
+        ].flat(),
+
+        property_images: form.getValues('propertyImages'),
+
+        budget: {
+          min_budget: form.getValues('minBudget') || undefined,
+          max_budget: form.getValues('maxBudget') || undefined
+        },
+
+        parking_spot: form.getValues('parkingSpot') || undefined,
+        parking_details: form.getValues('parkingType') ? [form.getValues('parkingType')] : [],
+        epc_rating: form.getValues('epcRating'),
+        description: form.getValues('description'),
+        location_details: form.getValues('locationDetails')
+      };
+    };
+
+    const processNewImages = async () => {
       try {
         if (state.newImages.length > 0) {
           const newImagesLinks = await uploadImages(state.newImages);
@@ -167,34 +254,18 @@ export const NewPropertyV2 = styled(
           setGeneratedImages([]);
           form.setValue('propertyImages', [...form.getValues('propertyImages'), ...state.generatedImages]);
         }
+      } catch (err) {
+        throw err;
+      }
+    };
 
-        const payload = {
-          transaction_type_string: 'Rent',
+    const saveAsDraft = async () => {
+      setState((state) => ({ ...state, savingProperty: true }));
 
-          area_of_interest: form.getValues('areaOfInterest'),
+      try {
+        await processNewImages();
 
-          asset_address: form.getValues('location'),
-          title: form.getValues('title'),
-          property_type: form.getValues('buildingType'),
-          floor_size: form.getValues('area') || undefined,
-          floor_size_unit: form.getValues('areaUnit'),
-          room_details: {
-            number_of_bathrooms: form.getValues('bathrooms') || undefined,
-            number_of_bedrooms: form.getValues('bedrooms') || undefined
-          },
-
-          property_images: form.getValues('propertyImages'),
-
-          budget: {
-            min_budget: form.getValues('minBudget') || undefined,
-            max_budget: form.getValues('maxBudget') || undefined
-          },
-
-          parking_spot: form.getValues('parkingSpot') || undefined,
-          epc_rating: form.getValues('epcRating'),
-          description: form.getValues('description'),
-          location_details: form.getValues('locationDetails')
-        };
+        const payload = generatePayload();
 
         const { data } = await (propertyId
           ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
@@ -211,44 +282,12 @@ export const NewPropertyV2 = styled(
     };
 
     const startMatching = async () => {
+      setState((state) => ({ ...state, savingProperty: true }));
       try {
-        if (state.newImages.length > 0) {
-          const newImagesLinks = await uploadImages(state.newImages);
-          setNewImages([]);
-          form.setValue('propertyImages', [...form.getValues('propertyImages'), ...newImagesLinks]);
-        }
-
-        if (state.generatedImages.length > 0) {
-          setGeneratedImages([]);
-          form.setValue('propertyImages', [...form.getValues('propertyImages'), ...state.generatedImages]);
-        }
+        await processNewImages();
 
         const payload: any = {
-          transaction_type_string: 'Rent',
-
-          area_of_interest: form.getValues('areaOfInterest'),
-
-          asset_address: form.getValues('location'),
-          title: form.getValues('title'),
-          property_type: form.getValues('buildingType'),
-          floor_size: form.getValues('area'),
-          floor_size_unit: form.getValues('areaUnit'),
-          room_details: {
-            number_of_bathrooms: form.getValues('bathrooms'),
-            number_of_bedrooms: form.getValues('bedrooms')
-          },
-
-          property_images: form.getValues('propertyImages'),
-
-          budget: {
-            min_budget: form.getValues('minBudget'),
-            max_budget: form.getValues('maxBudget')
-          },
-
-          parking_spot: form.getValues('parkingSpot'),
-          epc_rating: form.getValues('epcRating'),
-          description: form.getValues('description'),
-          location_details: form.getValues('locationDetails'),
+          ...generatePayload(),
           status_string: 'Live'
         };
 
@@ -263,6 +302,8 @@ export const NewPropertyV2 = styled(
         navigate('/matches');
       } catch (err) {
         throw err;
+      } finally {
+        setState((state) => ({ ...state, savingProperty: false }));
       }
     };
 
@@ -518,12 +559,11 @@ export const NewPropertyV2 = styled(
                 error={!!form.formState.errors['buildingType']}
                 helperText={form.formState.errors['buildingType']?.message?.toString()}>
                 <option></option>
-                <option value='Detached'>Detached</option>
-                <option value='Semi-Detached'>Semi-Detached</option>
-                <option value='Terraced'>Terraced</option>
-                <option value='Flats'>Flats</option>
-                <option value='Bungalows'>Bungalows</option>
-                <option value='Farms/Land'>Farms/Land</option>
+                {Object.values(Building).map((type, typeIndex) => (
+                  <option value={type} key={typeIndex}>
+                    {type}
+                  </option>
+                ))}
               </Select>
 
               <div className='area-wrapper'>
@@ -541,7 +581,7 @@ export const NewPropertyV2 = styled(
                   type='number'
                 />
                 <Select {...register('areaUnit')}>
-                  {areaUnits.map((unit, unitIndex) => (
+                  {areaUnits.map((unit: areaUnitType, unitIndex: number) => (
                     <option value={unit} key={unitIndex}>
                       {unit}
                     </option>
@@ -561,12 +601,31 @@ export const NewPropertyV2 = styled(
                 error={!!form.formState.errors['parkingSpot']}
                 helperText={form.formState.errors['parkingSpot']?.message?.toString()}>
                 <option></option>
+                <option value='0'>0</option>
                 <option value='1'>1</option>
                 <option value='2'>2</option>
                 <option value='2'>3</option>
                 <option value='2'>4</option>
                 <option value='2'>5</option>
               </Select>
+
+              {form.getValues('parkingSpot') && form.getValues('parkingSpot') !== '0' && (
+                <Select
+                  label={
+                    <>
+                      <Icon icon='car' />
+                      Parking type
+                    </>
+                  }
+                  {...register('parkingType')}
+                  error={!!form.formState.errors['parkingType']}
+                  helperText={form.formState.errors['parkingType']?.message?.toString()}>
+                  <option></option>
+                  {Object.values(Parking).map((parking) => (
+                    <option value={parking}>{parking}</option>
+                  ))}
+                </Select>
+              )}
               <Select
                 label={
                   <>
@@ -588,6 +647,39 @@ export const NewPropertyV2 = styled(
                 <option value='G'>G</option>
               </Select>
             </div>
+            <div className='specific-property-features-section'>
+              <Typography variant='body4' className='label'>
+                Specific property features
+              </Typography>
+              <div className='section-content'>
+                <Select
+                  label='Furniture'
+                  {...form.register('furniture')}
+                  error={!!form.formState.errors['furniture']}
+                  helperText={form.formState.errors['furniture']?.message?.toString()}>
+                  <option></option>
+                  {Object.values(Furnished).map((furnished, i) => (
+                    <option value={furnished} key={i}>
+                      {furnished}
+                    </option>
+                  ))}
+                </Select>
+
+                {Object.values(OutsideSpace).map((space, spaceIndex: number) =>
+                  ((id: string) => (
+                    <div className='switch-wrapper' key={spaceIndex}>
+                      <Switch
+                        id={id}
+                        size='medium'
+                        {...form.register(`outsideSpace.${space}`)}
+                        checked={!!form.getValues('outsideSpace')[space]}
+                      />
+                      <label htmlFor={id}>{space}</label>
+                    </div>
+                  ))(React.useId())
+                )}
+              </div>
+            </div>
             {form.getValues('buildingType') === 'Flats' && (
               <div className='flat-details-section'>
                 <Typography variant='body4' className='label'>
@@ -596,7 +688,7 @@ export const NewPropertyV2 = styled(
                 <div className='section-content'>
                   <Select label='Build Purpose' {...form.register('flatDetails.propertyPurpose')}>
                     <option></option>
-                    {flatDetailsBuildPurpose.map((purpose, i) => (
+                    {Object.values(BuildPurpose).map((purpose, i) => (
                       <option value={purpose} key={i}>
                         {purpose}
                       </option>
@@ -905,11 +997,13 @@ export const NewPropertyV2 = styled(
             }
           }
         }
+
         .property-preferences-section {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           column-gap: 16px;
           row-gap: 24px;
+          align-items: flex-start;
 
           .variant-outlined {
             label {
@@ -958,7 +1052,29 @@ export const NewPropertyV2 = styled(
             align-items: flex-end;
           }
         }
+        .specific-property-features-section {
+          display: grid;
+          row-gap: 8px;
+          .section-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: center;
+            column-gap: 16px;
 
+            .switch-wrapper {
+              display: flex;
+              column-gap: 8px;
+              align-items: center;
+              label {
+                color: #0d2a38;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 20px;
+                font-family: 'Roobert', serif;
+              }
+            }
+          }
+        }
         .flat-details-section {
           display: grid;
           row-gap: 8px;

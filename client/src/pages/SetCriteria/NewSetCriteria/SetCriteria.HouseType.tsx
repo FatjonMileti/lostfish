@@ -8,7 +8,7 @@ import {
   propertyTypes,
   CriteriaFormType,
   transactionTypes,
-  flatDetailsBuildPurpose
+  BuildPurpose
 } from '../criteria.types';
 
 import { Switch } from '../../../components/Switch';
@@ -76,7 +76,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
           <div className='section-content'>
             <Select label='Build Purpose' {...form.register('flatDetails.propertyPurpose')}>
               <option></option>
-              {flatDetailsBuildPurpose.map((purpose, i) => (
+              {Object.values(BuildPurpose).map((purpose, i) => (
                 <option value={purpose} key={i}>
                   {purpose}
                 </option>

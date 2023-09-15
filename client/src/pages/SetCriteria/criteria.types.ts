@@ -18,7 +18,7 @@ export type CriteriaFormType = {
     'Park homes': boolean;
   };
   flatDetails?: {
-    propertyPurpose?: flatDetailsBuildPurposeType;
+    propertyPurpose?: BuildPurposeType;
     floor?: number;
     lift?: boolean;
     security?: boolean;
@@ -56,22 +56,57 @@ export type CriteriaFormType = {
   specificPropertyFeatures: {
     [key in specificPropertyFeaturesType]: boolean;
   };
+  distanceFromUnderground: DistanceType;
+  distanceFromSchools: DistanceType;
+  distanceFromHighStreet: DistanceType;
+  distanceFromGym: DistanceType;
 };
 
-export const specificPropertyFeaturesTypes = [
-  'Parking spot',
-  'Garden',
-  'Terrace',
-  'Fully furnished',
-  'Partially furnished',
-  'Unfurnished',
-  'Double glazing',
-  'Allows smoking',
-  'Allows pets',
-  'Close to public transport'
-] as const;
+export const DistanceUnit = {
+  Km: 'km',
+  M: 'm',
+  Ft: 'ft'
+} as const;
 
-export type specificPropertyFeaturesType = (typeof specificPropertyFeaturesTypes)[number];
+export type DistanceUnitType = ObjectValues<typeof DistanceUnit>;
+
+export type DistanceType = {
+  value?: number;
+  unit: DistanceUnitType;
+};
+
+export const Furnished = {
+  FullyFurnished: 'Fully furnished',
+  PartiallyFurnished: 'Partially furnished',
+  Unfurnished: 'Unfurnished'
+} as const;
+
+export type FurnishedType = ObjectValues<typeof Furnished>;
+
+export const OutsideSpace = {
+  Garden: 'Garden',
+  Balcony: 'Balcony',
+  Terrace: 'Terrace'
+} as const;
+
+export type OutsideSpaceType = ObjectValues<typeof OutsideSpace>;
+
+const OtherSpecificPropertyFeatures = {
+  ParkingSpot: 'Parking spot',
+  DoubleGlazing: 'Double glazing',
+  AllowsSmoking: 'Allows smoking',
+  AllowsPets: 'Allows pets',
+  CloseToPublicTransport: 'Close to public transport'
+} as const;
+
+export const SpecificPropertyFeatures = {
+  ...Furnished,
+  ...OutsideSpace,
+  ...OtherSpecificPropertyFeatures
+} as const;
+
+declare type ObjectValues<T> = T[keyof T];
+type specificPropertyFeaturesType = ObjectValues<typeof SpecificPropertyFeatures>;
 
 export const propertyPreferences = ['New home', 'Retirement home', 'Shared ownership', 'Auction'] as const;
 export type PropertyPreferenceType = (typeof propertyPreferences)[number];
@@ -106,9 +141,12 @@ export const whenDoYouWantToMoveTypes = [
 
 export type whenDoYouWantToMoveType = (typeof whenDoYouWantToMoveTypes)[number];
 
-export const flatDetailsBuildPurpose = ['Purpose built', 'Conversion'];
+export const BuildPurpose = {
+  PurposeBuilt: 'Purpose built',
+  Conversion: 'Conversion'
+} as const;
 
-export type flatDetailsBuildPurposeType = (typeof flatDetailsBuildPurpose)[number];
+export type BuildPurposeType = ObjectValues<typeof BuildPurpose>;
 
 export const areaUnits = ['sq.m', 'sq.ft'];
 
@@ -133,7 +171,10 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   flatDetails: yup
     .object()
     .shape({
-      propertyPurpose: yup.string().oneOf(flatDetailsBuildPurpose).optional(),
+      propertyPurpose: yup
+        .string()
+        .transform((value) => value || undefined)
+        .oneOf(Object.values(BuildPurpose)),
       floor: yup.number().optional(),
       lift: yup.boolean().optional(),
       security: yup.boolean().optional()
@@ -171,15 +212,32 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     .transform((value) => (isNaN(value) ? undefined : value))
     .required('Number of bathroom is required'),
   specificPropertyFeatures: yup.object().shape({
-    'Parking spot': yup.boolean().required(),
-    Garden: yup.boolean().required(),
-    Terrace: yup.boolean().required(),
-    'Fully furnished': yup.boolean().required(),
-    'Partially furnished': yup.boolean().required(),
-    Unfurnished: yup.boolean().required(),
-    'Double glazing': yup.boolean().required(),
-    'Allows smoking': yup.boolean().required(),
-    'Allows pets': yup.boolean().required(),
-    'Close to public transport': yup.boolean().required()
+    [SpecificPropertyFeatures.ParkingSpot]: yup.boolean().required(),
+    [SpecificPropertyFeatures.Garden]: yup.boolean().required(),
+    [SpecificPropertyFeatures.Balcony]: yup.boolean().required(),
+    [SpecificPropertyFeatures.Terrace]: yup.boolean().required(),
+    [SpecificPropertyFeatures.FullyFurnished]: yup.boolean().required(),
+    [SpecificPropertyFeatures.PartiallyFurnished]: yup.boolean().required(),
+    [SpecificPropertyFeatures.Unfurnished]: yup.boolean().required(),
+    [SpecificPropertyFeatures.DoubleGlazing]: yup.boolean().required(),
+    [SpecificPropertyFeatures.AllowsSmoking]: yup.boolean().required(),
+    [SpecificPropertyFeatures.AllowsPets]: yup.boolean().required(),
+    [SpecificPropertyFeatures.CloseToPublicTransport]: yup.boolean().required()
+  }),
+  distanceFromUnderground: yup.object().shape({
+    value: yup.number().positive(),
+    unit: yup.string().oneOf(Object.values(DistanceUnit)).required()
+  }),
+  distanceFromSchools: yup.object().shape({
+    value: yup.number().positive(),
+    unit: yup.string().oneOf(Object.values(DistanceUnit)).required()
+  }),
+  distanceFromHighStreet: yup.object().shape({
+    value: yup.number().positive(),
+    unit: yup.string().oneOf(Object.values(DistanceUnit)).required()
+  }),
+  distanceFromGym: yup.object().shape({
+    value: yup.number().positive(),
+    unit: yup.string().oneOf(Object.values(DistanceUnit)).required()
   })
 });
