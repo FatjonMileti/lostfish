@@ -22,7 +22,7 @@ type MinimumRequiredDataType = {
     longitude?: number;
   };
   budget: number[];
-  frequency: string;
+  budgetFor: string;
   nrOfBedrooms: number[];
 };
 
@@ -33,7 +33,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     whenDoYouWantToMove: undefined,
     areaOfInterest: undefined,
     budget: [1000, 5200],
-    frequency: 'Week',
+    budgetFor: 'Week',
     nrOfBedrooms: [1, 4]
   });
 
@@ -64,8 +64,8 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, budget }));
   };
 
-  const onFrequencyChange = (frequency: string) => {
-    setState((state) => ({ ...state, frequency }));
+  const onBudgetForChange = (budgetFor: string) => {
+    setState((state) => ({ ...state, budgetFor }));
   };
 
   const onNrOfBedroomsChange = (nrOfBedrooms: number[]) => {
@@ -85,7 +85,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
         number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
       },
       budget: `${state.budget[0]} - ${state.budget[1]}`,
-      frequency: `${state.frequency}`
+      budgetFor: `${state.budgetFor}`
     });
 
     await new Promise((resolve) => {
@@ -98,7 +98,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       transactionType: data.transaction_type_string,
       whenDoYouWantToMove: data.moving_time,
       areaOfInterest: data.area_of_interest,
-      frequency: data.frequency
+      budgetFor: data.budgetFor
     });
 
     setLoading(false);
@@ -128,11 +128,10 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
                 transition={{ duration: 1 }}
                 style={{ display: 'grid', justifyItems: 'center' }}>
                 <Budget value={state.budget} onChange={onBudgetChange} />
-                <Select label='Frequency:' value={state.frequency} onChange={(e) => onFrequencyChange(e.target.value)}>
+                <Select label='Budget for:' value={state.budgetFor} onChange={(e) => onBudgetForChange(e.target.value)}>
                   <option></option>
                   <option value='Week'>Week</option>
                   <option value='Month'>Month</option>
-                  <option value='Year'>Year</option>
                 </Select>
                 {!pressedContinue && (
                   <Button size='large' className='continue-button' onClick={() => setPressedContinue(true)}>

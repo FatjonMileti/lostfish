@@ -20,7 +20,7 @@ const schema = new Schema<CriteriaDocument>({
     text: { type: String }
   },
   radius: String,
-  frequency: String,
+  budgetFor: String,
   property_type: [String],
   property_preferences: [String],
   property_features: [String],
