@@ -8,7 +8,7 @@ import apartament from './image353.png';
 import { Avatar } from '../../components/Avatar';
 import { avatars } from './avatars';
 import { Button } from '../../components/Button';
-import { NewPropertyV2 } from '../Properties/NewPropertiesV2/NewProperty';
+import { NewProperty } from '../Properties/NewProperties/NewProperty';
 import { useNavigate } from 'react-router-dom';
 import { usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
 import { PotentialMatches } from './PotentialMatches';
@@ -31,7 +31,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   return (
     <div className={className}>
       {property && showNewPropertyModal && (
-        <NewPropertyV2
+        <NewProperty
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={property._id}
           setEditPropertyId={() => {}}

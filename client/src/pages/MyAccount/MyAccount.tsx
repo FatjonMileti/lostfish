@@ -23,7 +23,7 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
-import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Solicitors } from './Solicitors';
 
 const submenus: any[] = [
@@ -33,7 +33,8 @@ const submenus: any[] = [
   { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' }
+  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
+  { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
 const tenantSubmenu: any[] = [
@@ -132,7 +133,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               <Route path='/' element={<Dashboard />} />
               <Route path='/account-settings' element={<ProfileDetails />} />
               {profileStore.role === 'Tenant' && (
-                <Route path='/refine-your-search' element={<NewSetCriteria />} />
+                <Route path='/refine-your-search' element={<SetCriteria />} />
               )}
               <Route path='/starred-matches' element={<StarredMatches />} />
               <Route path='/notification-settings' element={<NotificationSettings />} />

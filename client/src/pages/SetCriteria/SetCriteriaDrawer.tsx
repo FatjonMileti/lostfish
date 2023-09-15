@@ -3,7 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
 import { Drawer } from '../../components/Drawer';
-import { NewSetCriteria } from './NewSetCriteria/NewSetCriteria';
+import { SetCriteria } from './SetCriteria/SetCriteria';
 
 import setCriteriaBackground from '../Home/home-background.png';
 
@@ -19,7 +19,7 @@ export const SetCriteriaDrawer = styled(
 
     return (
       <Drawer open={open} setOpen={setOpen} className={classNames(className, 'criteria-drawer')}>
-        <NewSetCriteria onClose={() => setOpen(false)} />
+        <SetCriteria onClose={() => setOpen(false)} />
       </Drawer>
     );
   }

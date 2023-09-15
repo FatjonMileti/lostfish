@@ -11,6 +11,7 @@ import { avatars } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
+import { AreaUnitType } from '../../SetCriteria/criteria.types';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;
@@ -20,6 +21,7 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   description: string;
   location: string;
   area: number;
+  areaUnit: AreaUnitType;
   budget: {
     min_budget: number;
     max_budget: number;
@@ -49,6 +51,7 @@ export const Property = styled(
     description,
     location,
     area,
+    areaUnit,
     budget,
     roomsDetails,
     propertyType,
@@ -84,7 +87,10 @@ export const Property = styled(
               )}
               {area && (
                 <div className='detail'>
-                  <Icon icon='ruler' /> <Typography variant='body5'>{area} sqm </Typography>
+                  <Icon icon='ruler' />{' '}
+                  <Typography variant='body5'>
+                    {area} {areaUnit}{' '}
+                  </Typography>
                 </div>
               )}
               {roomsDetails?.number_of_bedrooms && (
