@@ -28,7 +28,7 @@ const userSchema = yup.object().shape({
   email: yup.string().required('Email is required'),
   phone: yup.string().nullable(),
   description: yup.string().nullable(),
-  age: yup.number().min(18).max(110).nullable(),
+  age: yup.number().min(18, 'You must be 18 years or older').max(110).transform(value => value || undefined),
   have_pets: yup.string().nullable(),
   address: yup.string().nullable(),
   martial_status: yup.string().nullable()
@@ -183,7 +183,6 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 <Typography className='section-title' variant='body4'>
                   Personal details
                 </Typography>
-                <div className='personal-details'>
                   <div className='contact-information' style={{ marginBottom: '1rem' }}>
                     <TextField
                       type='number'
@@ -203,7 +202,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                       <option value='Married'>Married</option>
                     </Select>
                     <Select
-                      label='Have pets'
+                      label='Pets?'
                       {...profileDetailsForm.register('have_pets')}
                       error={!!profileDetailsForm.formState.errors['have_pets']}
                       helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
@@ -211,32 +210,26 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                       <option value='Yes'>Yes</option>
                       <option value='No'>No</option>
                     </Select>
-                    <FormControl>
-                      <FormLabel className='label'>User type</FormLabel>
-                      <Typography variant='body3' style={{ marginTop: '8px' }}>
+                    <div className='user-type'>
+                      <Typography className='label'>User type</Typography>
+                      <Typography variant='body4' className='user-type-content'>
                         {profileStore.role}
                       </Typography>
-                    </FormControl>
+                    </div>
                   </div>
                   <Textarea
                     rows={6}
                     label='Describe yourself (your matches will see this)'
                     {...profileDetailsForm.register('description')}
                     defaultValue=''></Textarea>
-                </div>
               </div>
 
               <div className='section'>
-                <Typography className='section-title' variant='body4'>
-                  Address
-                </Typography>
-                <div className='personal-details'>
                   <Textarea
                     rows={2}
-                    label=''
+                    label='Address'
                     {...profileDetailsForm.register('address')}
                     defaultValue=''></Textarea>
-                </div>
               </div>
             </div>
             <AccountSettings />
@@ -291,11 +284,28 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px 24px;
-      label {
-        font-weight: 600;
-        font-size: 12px;
-        line-height: 16px;
-        color: #0d2a38;
+      
+      .user-type {
+        display: flex;
+        flex-direction: column;
+        background-color: inherit;
+        row-gap: 4px;
+
+        font-family: 'Roobert', serif;
+        
+        .label {
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 16px;
+          color: #0d2a38;
+          font-family: 'Roobert', serif;
+        }
+        
+        .user-type-content {
+          padding: 12px;
+          color: #646464;
+          font-weight: 600;
+      }
 
         .required-asterisk {
           color: #b4263b;
@@ -304,9 +314,6 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
           line-height: 16px;
         }
       }
-    }
-
-    .personal-details {
     }
 
     .setup-avatar {
