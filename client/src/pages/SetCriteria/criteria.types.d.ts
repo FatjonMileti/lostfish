@@ -1,5 +1,6 @@
 import {
   AreaUnit,
+  BudgetFor,
   BuildPurpose,
   ContractDetail,
   CreditScore,
@@ -45,6 +46,7 @@ type CriteriaFormType = {
   whenDoYouWantToMove?: WhenDoYouWantToMoveType;
   transactionType: TransactionType;
   idealBudget: number[];
+  budgetFor: BudgetForType;
   depositAmount?: number;
   contractDetails: {
     [key in ContractDetailType]: boolean;
@@ -62,6 +64,8 @@ type CriteriaFormType = {
   distanceFromHighStreet: DistanceType;
   distanceFromGym: DistanceType;
 };
+
+type BudgetForType = ObjectValues<typeof BudgetFor>;
 
 type DistanceUnitType = ObjectValues<typeof DistanceUnit>;
 

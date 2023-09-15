@@ -2,6 +2,11 @@ import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { CriteriaFormType } from './criteria.types';
 
+export const BudgetFor = {
+  Month: 'Month',
+  Week: 'Week'
+} as const;
+
 export const DistanceUnit = {
   Km: 'km',
   M: 'm',
@@ -127,6 +132,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   whenDoYouWantToMove: yup.string().oneOf(Object.values(WhenDoYouWantToMove)).optional(),
   transactionType: yup.string().oneOf(Object.values(Transaction)).required(),
   idealBudget: yup.array().required(),
+  budgetFor: yup.string().oneOf(Object.values(BudgetFor)).required(),
   depositAmount: yup
     .number()
     .transform((value) => (isNaN(value) ? undefined : value))

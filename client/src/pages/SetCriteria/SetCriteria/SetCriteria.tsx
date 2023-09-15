@@ -23,6 +23,7 @@ import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import {
   AreaUnit,
+  BudgetFor,
   ContractDetail,
   CreditScore,
   criteriaFormSchema,
@@ -126,6 +127,11 @@ export const SetCriteria = styled(
           parseInt(data.budget.split('-')[0]),
           parseInt(data.budget.split('-')[1])
         ]);
+
+        if (data.budgetFor) {
+          mainForm.setValue('budgetFor', data.budgetFor);
+        }
+
         mainForm.setValue('depositAmount', data.deposit_amount);
         mainForm.setValue('creditScore', data.credit_score_requirements);
         mainForm.setValue(
@@ -203,6 +209,7 @@ export const SetCriteria = styled(
           distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
           distance_from_gym: mainForm.getValues('distanceFromGym'),
           budget: `${mainForm.getValues('idealBudget')[0]} - ${mainForm.getValues('idealBudget')[1]}`,
+          budgetFor: mainForm.getValues('budgetFor'),
           deposit_amount: mainForm.getValues('depositAmount'),
           credit_score_requirements: mainForm.getValues('creditScore'),
           contract_details: Object.entries(mainForm.getValues('contractDetails'))
@@ -245,6 +252,7 @@ export const SetCriteria = styled(
         whenDoYouWantToMove: undefined,
         transactionType: Transaction.Rent,
         idealBudget: [1000, 5000],
+        budgetFor: BudgetFor.Month,
         depositAmount: undefined,
         contractDetails: Object.fromEntries(Object.values(ContractDetail).map((cd) => [cd, false])),
         creditScore: CreditScore.Good,

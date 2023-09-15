@@ -11,7 +11,9 @@ import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
 import { Budget } from './Mrd.Budget';
 import { Bedrooms } from './Mrd.Bedrooms';
-import {Select} from "../../components/Select/Select";
+import { Select } from '../../components/Select/Select';
+import { BudgetFor, Transaction } from '../SetCriteria/criteria.contants';
+import { BudgetForType } from '../SetCriteria/criteria.types';
 
 type MinimumRequiredDataType = {
   transactionType?: string;
@@ -22,18 +24,18 @@ type MinimumRequiredDataType = {
     longitude?: number;
   };
   budget: number[];
-  budgetFor: string;
+  budgetFor: BudgetForType;
   nrOfBedrooms: number[];
 };
 
 interface MinimumRequiredDetailsProps extends HTMLAttributes<HTMLDivElement> {}
 export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDetailsProps) => {
   const [state, setState] = React.useState<MinimumRequiredDataType>({
-    transactionType: 'Rent',
+    transactionType: Transaction.Rent,
     whenDoYouWantToMove: undefined,
     areaOfInterest: undefined,
     budget: [1000, 5200],
-    budgetFor: 'Week',
+    budgetFor: BudgetFor.Month,
     nrOfBedrooms: [1, 4]
   });
 
@@ -64,7 +66,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, budget }));
   };
 
-  const onBudgetForChange = (budgetFor: string) => {
+  const onBudgetForChange = (budgetFor: BudgetForType) => {
     setState((state) => ({ ...state, budgetFor }));
   };
 
@@ -128,10 +130,15 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
                 transition={{ duration: 1 }}
                 style={{ display: 'grid', justifyItems: 'center' }}>
                 <Budget value={state.budget} onChange={onBudgetChange} />
-                <Select label='Budget for:' value={state.budgetFor} onChange={(e) => onBudgetForChange(e.target.value)}>
-                  <option></option>
-                  <option value='Week'>Week</option>
-                  <option value='Month'>Month</option>
+                <Select
+                  label='Budget for:'
+                  value={state.budgetFor}
+                  onChange={({ target: { value } }) => onBudgetForChange(value as BudgetForType)}>
+                  {Object.values(BudgetFor).map((bf, bfIndex) => (
+                    <option key={bfIndex} value={bf}>
+                      {bf}
+                    </option>
+                  ))}
                 </Select>
                 {!pressedContinue && (
                   <Button size='large' className='continue-button' onClick={() => setPressedContinue(true)}>

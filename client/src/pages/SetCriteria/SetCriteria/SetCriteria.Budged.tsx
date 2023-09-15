@@ -2,14 +2,15 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../../components/Typography';
 import { UseFormReturn } from 'react-hook-form';
-import { CriteriaFormType } from '../criteria.types';
+import { BudgetForType, CriteriaFormType } from '../criteria.types';
 
 import { Slider } from '../../../components/Slider';
 import { TextField } from '../../../components/TextField';
 import { Icon } from '../../../components/Icon';
 import { Label } from '../../../components/Label';
 import { Tab, Tabs } from '../../../components/Tab';
-import { ContractDetail, CreditScore } from '../criteria.contants';
+import { BudgetFor, ContractDetail, CreditScore } from '../criteria.contants';
+import { Select } from '../../../components/Select/Select';
 
 interface SetCriteriaBudgetProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -26,20 +27,34 @@ export const SetCriteriaBudget = styled(({ className, form }: SetCriteriaBudgetP
         <Typography className='section-title' variant='body4'>
           Budget (pcm)
         </Typography>
+
         <div className='section-content'>
-          <Slider
-            className='budget-slider'
-            value={form.getValues('idealBudget')}
-            min={100}
-            max={6000}
-            step={100}
-            onChange={(_, value) => {
-              form.setValue('idealBudget', Array.isArray(value) ? value : [value]);
-            }}
-            valueLabelDisplay='on'
-            valueLabelFormat={(value) => `£${value?.toLocaleString()}`}
-            size='small'
-          />
+          <div className='slider-wrapper'>
+            <Typography variant='body6' className='slider-label'>
+              Budget
+            </Typography>
+            <Slider
+              className='budget-slider'
+              value={form.getValues('idealBudget')}
+              min={100}
+              max={6000}
+              step={100}
+              onChange={(_, value) => {
+                form.setValue('idealBudget', Array.isArray(value) ? value : [value]);
+              }}
+              valueLabelDisplay='on'
+              valueLabelFormat={(value) => `£${value?.toLocaleString()}`}
+              size='small'
+            />
+          </div>
+
+          <Select label='Budget for:' {...form.register('nrOfBathrooms')}>
+            {Object.values(BudgetFor).map((bf, bfIndex) => (
+              <option key={bfIndex} value={bf}>
+                {bf}
+              </option>
+            ))}
+          </Select>
         </div>
       </div>
 
@@ -131,9 +146,17 @@ export const SetCriteriaBudget = styled(({ className, form }: SetCriteriaBudgetP
     .budget-section {
       .section-content {
         display: grid;
-        .budget-slider {
-          max-width: 441px;
-          margin-top: 16px;
+        grid-template-columns: 2fr 1fr;
+        column-gap: 24px;
+
+        .slider-wrapper {
+          .slider-label {
+            font-weight: 600;
+          }
+
+          .budget-slider {
+            margin-top: 16px;
+          }
         }
       }
     }
