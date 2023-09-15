@@ -16,7 +16,7 @@ import { TextField } from '../../../components/TextField';
 
 import { Map } from '../../../components/Map';
 import { NearestThings } from '../../Matches/MatchesProperties/ViewProperty.NearestThings';
-import { AreaOfInterest } from '../AreaOfInterest';
+import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
 
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
@@ -31,12 +31,7 @@ import {
   PropertyFormType
 } from './property.types';
 import { Switch } from '../../../components/Switch';
-import {
-  BuildPurpose,
-  Furnished,
-  OutsideSpace,
-  SpecificPropertyFeatures
-} from '../../SetCriteria/criteria.types';
+import { BuildPurpose, Furnished, OutsideSpace } from '../../SetCriteria/criteria.contants';
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
@@ -52,7 +47,7 @@ export interface NewPropertyStateType {
   deletePropertyConfirmationModal: boolean;
 }
 
-export const NewPropertyV2 = styled(
+export const NewProperty = styled(
   ({ className, showStore, propertyId, setEditPropertyId, fetchAssets }: NewPropertyProps) => {
     const [modalVisibility, setModalVisibility] = showStore;
 

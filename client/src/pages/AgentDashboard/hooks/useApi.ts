@@ -2,7 +2,6 @@ import { useUserStore } from '../../../globalState/user';
 import React from 'react';
 import axios from '../../../utils/axios';
 import config from '../../../config';
-import { IGridState } from '../../../react-app-env';
 
 const state: IGridState = {
   loading: true,

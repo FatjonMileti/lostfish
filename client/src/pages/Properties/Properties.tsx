@@ -12,12 +12,11 @@ import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
 import { Property } from './Property/Property';
 
-import { NewPropertyV2 } from './NewPropertiesV2/NewProperty';
+import { NewProperty } from './NewProperties/NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from '../Home/home-background.png';
 import { Tab, Tabs } from '../../components/Tab';
-import { IGridState } from '../../react-app-env';
 
 const state: IGridState = {
   loading: true,
@@ -96,7 +95,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       <Header />
       <Backdrop open={list.loading}></Backdrop>
       {showNewPropertyModal && (
-        <NewPropertyV2
+        <NewProperty
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={editPropertyId}
           setEditPropertyId={setEditPropertyId}

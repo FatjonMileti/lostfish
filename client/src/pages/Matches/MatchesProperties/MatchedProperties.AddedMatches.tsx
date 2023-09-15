@@ -12,7 +12,6 @@ import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
 import ellipse from '../../../assets/svg/Ellipse.svg';
-import { IProperty } from '../../../react-app-env';
 
 interface AddedMatchedProperty {
   _id: string;

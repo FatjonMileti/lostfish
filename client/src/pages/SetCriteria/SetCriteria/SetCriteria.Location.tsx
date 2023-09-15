@@ -2,22 +2,16 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import {
-  CriteriaFormType,
-  DistanceUnit,
-  DistanceUnitType,
-  whenDoYouWantToMoveType,
-  whenDoYouWantToMoveTypes
-} from '../criteria.types';
+import { CriteriaFormType, DistanceUnitType } from '../criteria.types';
 
 import { Label } from '../../../components/Label';
 import { Typography } from '../../../components/Typography';
-import { AreaOfInterest } from '../../Properties/AreaOfInterest';
+import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
 import { Icon } from '../../../components/Icon';
 import { Select } from '../../../components/Select/Select';
 import { UseMyLocation } from './UseMyLocation';
 import { TextField } from '../../../components/TextField';
-import { areaUnits, areaUnitType } from '../../Properties/NewPropertiesV2/property.types';
+import { DistanceUnit, WhenDoYouWantToMove } from '../criteria.contants';
 
 interface SetCriteriaLocationProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -71,7 +65,7 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
           Move in preferences
         </Typography>
         <div className='section-content'>
-          {whenDoYouWantToMoveTypes.map((when: whenDoYouWantToMoveType) => {
+          {Object.values(WhenDoYouWantToMove).map((when) => {
             const active = form.getValues('whenDoYouWantToMove') === when;
             return (
               <div key={when}>

@@ -8,17 +8,7 @@ import axios from '../../../utils/axios';
 import request from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
-import {
-  areaUnits,
-  contractDetailsTypes,
-  creditScoreSTypes,
-  criteriaFormSchema,
-  CriteriaFormType,
-  DistanceUnit,
-  propertyTypes,
-  SpecificPropertyFeatures,
-  transactionTypes
-} from '../criteria.types';
+import { CriteriaFormType } from '../criteria.types';
 
 import { SetCriteriaHouseDetails } from './SetCriteria.HouseDetails';
 import { SetCriteriaLocation } from './SetCriteria.Location';
@@ -31,6 +21,16 @@ import { Label } from '../../../components/Label';
 import { Backdrop } from '../../../components/Backdrop';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
+import {
+  AreaUnit,
+  ContractDetail,
+  CreditScore,
+  criteriaFormSchema,
+  DistanceUnit,
+  PropertyType,
+  SpecificPropertyFeature,
+  Transaction
+} from '../criteria.contants';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
 
@@ -39,7 +39,7 @@ interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   onClose?: () => void;
 }
 
-export const NewSetCriteria = styled(
+export const SetCriteria = styled(
   ({ className, afterRefineSearch = () => {}, onClose, ...otherProps }: SetCriteriaProps) => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
@@ -227,7 +227,7 @@ export const NewSetCriteria = styled(
         areaOfInterest: '',
         location: {},
         radius: undefined,
-        propertyType: Object.fromEntries(propertyTypes.map((pt) => [pt, false])),
+        propertyType: Object.fromEntries(Object.values(PropertyType).map((pt) => [pt, false])),
         flatDetails: {
           propertyPurpose: undefined
         },
@@ -243,17 +243,17 @@ export const NewSetCriteria = styled(
           'Shopping centers nearby': true
         },
         whenDoYouWantToMove: undefined,
-        transactionType: transactionTypes[0],
+        transactionType: Transaction.Rent,
         idealBudget: [1000, 5000],
         depositAmount: undefined,
-        contractDetails: Object.fromEntries(contractDetailsTypes.map((cd) => [cd, false])),
-        creditScore: creditScoreSTypes[0],
+        contractDetails: Object.fromEntries(Object.values(ContractDetail).map((cd) => [cd, false])),
+        creditScore: CreditScore.Good,
         area: [50, 100],
-        areaUnit: areaUnits[0],
+        areaUnit: AreaUnit.SquareMeter,
         nrOfBedrooms: [1, 4],
         nrOfBathrooms: undefined,
         specificPropertyFeatures: Object.fromEntries(
-          Object.values(SpecificPropertyFeatures).map((spf) => [spf, false])
+          Object.values(SpecificPropertyFeature).map((spf) => [spf, false])
         ),
         distanceFromUnderground: {
           value: undefined,

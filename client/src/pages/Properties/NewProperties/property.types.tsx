@@ -1,13 +1,7 @@
 import { ObjectSchema } from 'yup';
 import * as yup from 'yup';
-import {
-  BuildPurpose,
-  BuildPurposeType,
-  Furnished,
-  FurnishedType,
-  OutsideSpace,
-  OutsideSpaceType
-} from '../../SetCriteria/criteria.types';
+import { BuildPurposeType, FurnishedType, OutsideSpaceType } from '../../SetCriteria/criteria.types';
+import { BuildPurpose, Furnished, OutsideSpace } from '../../SetCriteria/criteria.contants';
 
 export type PropertyFormType = {
   title: string;

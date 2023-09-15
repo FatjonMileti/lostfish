@@ -11,7 +11,7 @@ import { avatars } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
-import { areaUnitType } from '../../SetCriteria/criteria.types';
+import { AreaUnitType } from '../../SetCriteria/criteria.types';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;
@@ -21,7 +21,7 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   description: string;
   location: string;
   area: number;
-  areaUnit: areaUnitType;
+  areaUnit: AreaUnitType;
   budget: {
     min_budget: number;
     max_budget: number;

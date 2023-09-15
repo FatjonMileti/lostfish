@@ -1,22 +1,6 @@
 /// <reference types="react-scripts" />
 
-import { areaUnitType } from './pages/SetCriteria/criteria.types';
-
-declare interface IAPIResponse {
-  docs: any;
-  totalDocs: number;
-  limit: number;
-  totalPages: number;
-  page: number;
-  pagingCounter: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  prevPage: number | null;
-  nextPage: number | null;
-  message?: string;
-}
-
-declare interface IGridState {
+interface IGridState {
   loading: boolean;
   rows: any[];
   totalRows: number;
@@ -32,13 +16,13 @@ declare interface IGridState {
   totalDocsUnfiltered?: number;
 }
 
-declare interface IProperty {
+interface IProperty {
   _id: string;
   property_images: { link: string }[];
   area_of_interest: string;
   property_type?: string;
   floor_size: string;
-  floor_size_unit: areaUnitType;
+  floor_size_unit: AreaUnitType;
   specific_property_features?: string[];
   contract_details?: string[];
   room_details: {

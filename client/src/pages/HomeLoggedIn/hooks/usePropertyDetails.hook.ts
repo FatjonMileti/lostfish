@@ -1,7 +1,6 @@
 import React from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axiosWithToken from '../../../utils/axios';
-import { IProperty } from '../../../react-app-env';
 
 export type TPropertyDetails = {
   property: string;

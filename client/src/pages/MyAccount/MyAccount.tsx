@@ -23,7 +23,7 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
-import { NewSetCriteria } from '../SetCriteria/NewSetCriteria/NewSetCriteria';
+import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Solicitors } from './Solicitors';
 
 const submenus: any[] = [
@@ -119,7 +119,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <Routes>
               <Route path='/' element={<Dashboard />} />
               <Route path='/account-settings' element={<ProfileDetails />} />
-              <Route path='/refine-your-search' element={<NewSetCriteria />} />
+              <Route path='/refine-your-search' element={<SetCriteria />} />
               <Route path='/starred-matches' element={<StarredMatches />} />
               <Route path='/notification-settings' element={<NotificationSettings />} />
               <Route path='/transaction-agreement' element={<TransactionAgreement />} />

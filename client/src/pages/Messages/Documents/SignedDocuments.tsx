@@ -9,7 +9,6 @@ import { IRoom } from '../messages.interface';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
-import { IGridState } from '../../../react-app-env';
 
 const state: IGridState = {
   loading: true,

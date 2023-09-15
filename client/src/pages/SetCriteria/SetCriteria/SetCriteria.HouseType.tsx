@@ -2,19 +2,13 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import {
-  PropertyPreferenceType,
-  propertyPreferences,
-  propertyTypes,
-  CriteriaFormType,
-  transactionTypes,
-  BuildPurpose
-} from '../criteria.types';
+import { PropertyPreferenceType, CriteriaFormType } from '../criteria.types';
 
 import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
 import { Typography } from '../../../components/Typography';
 import { Select } from '../../../components/Select/Select';
+import { BuildPurpose, PropertyPreference, PropertyType, Transaction } from '../criteria.contants';
 
 interface SetCriteriaHouseTypeProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -36,9 +30,9 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
             <Tabs
               variant='tertiary'
               rounded
-              value={transactionTypes.indexOf(form.getValues('transactionType'))}
+              value={Object.values(Transaction).indexOf(form.getValues('transactionType'))}
               onChange={(i: number) => {
-                form.setValue(`transactionType`, transactionTypes[i]);
+                form.setValue(`transactionType`, Object.values(Transaction)[i]);
               }}>
               <Tab label='I’m looking to rent a place' />
               <Tab label='I’m looking to buy a place' disabled />
@@ -52,7 +46,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
           Property Type
         </Typography>
         <div className='section-content'>
-          {propertyTypes.map((propertyType, propertyTypeIndex) =>
+          {Object.values(PropertyType).map((propertyType, propertyTypeIndex) =>
             ((id: string) => (
               <div className='switch-wrapper' key={propertyTypeIndex}>
                 <Switch
@@ -124,7 +118,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
         <div className='section-content'>
           {
             <>
-              {propertyPreferences.map(
+              {Object.values(PropertyPreference).map(
                 (propertyPreference: PropertyPreferenceType, propertyPreferenceIndex: number) =>
                   ((id: string) => (
                     <div className='tabs-wrapper' key={propertyPreferenceIndex}>

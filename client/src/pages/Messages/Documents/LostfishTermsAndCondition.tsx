@@ -13,7 +13,6 @@ import { Icon } from '../../../components/Icon';
 import { Checkbox } from '../../../components/Checkbox';
 import { Label } from '../../../components/Label';
 import { useNavigate } from 'react-router-dom';
-import { IGridState } from '../../../react-app-env';
 
 enum DocumentType {
   PRIVACY_AGREEMENT = 'Lostfish privacy agreement',

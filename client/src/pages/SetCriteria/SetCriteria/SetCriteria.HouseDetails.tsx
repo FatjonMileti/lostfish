@@ -2,12 +2,13 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { areaUnits, CriteriaFormType, SpecificPropertyFeatures } from '../criteria.types';
+import { CriteriaFormType } from '../criteria.types';
 
 import { Slider } from '../../../components/Slider';
 import { Select } from '../../../components/Select/Select';
 import { Switch } from '../../../components/Switch';
 import { Typography } from '../../../components/Typography';
+import { AreaUnit, SpecificPropertyFeature } from '../criteria.contants';
 
 interface SetCriteriaHouseDetailsProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -35,9 +36,9 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
                   <Switch
                     id={id}
                     size='small'
-                    checked={form.getValues('areaUnit') === areaUnits[1]}
+                    checked={form.getValues('areaUnit') === AreaUnit.SquareFoot}
                     onChange={({ target: { checked } }) =>
-                      form.setValue('areaUnit', checked ? areaUnits[1] : areaUnits[0])
+                      form.setValue('areaUnit', checked ? AreaUnit.SquareFoot : AreaUnit.SquareMeter)
                     }
                   />
                   <label htmlFor={id}>use sq.ft</label>
@@ -95,7 +96,7 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
         <div className='section-content'>
           {
             <>
-              {Object.values(SpecificPropertyFeatures).map(
+              {Object.values(SpecificPropertyFeature).map(
                 (specificPropertyFeature, specificPropertyFeatureIndex: number) =>
                   ((id: string) => (
                     <div className='switch-wrapper' key={specificPropertyFeatureIndex}>

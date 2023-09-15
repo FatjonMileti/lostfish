@@ -11,7 +11,8 @@ import { Carousel } from './MatchesProperties.Carousel';
 import { NearestThings } from './ViewProperty.NearestThings';
 import { PropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
-import { areaUnits } from '../../SetCriteria/criteria.types';
+
+import { AreaUnit } from '../../SetCriteria/criteria.contants';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: PropertyType;
@@ -116,14 +117,14 @@ export const ViewProperty = styled(
               <div className='detail'>
                 <Icon icon='ruler' />
                 <Typography variant='body5'>
-                  {parsedProperty.propertyAreaUnit === areaUnits[1]
+                  {parsedProperty.propertyAreaUnit === AreaUnit.SquareFoot
                     ? parsedProperty.propertyArea
                     : (parseInt(parsedProperty.propertyArea || '') * 10.764).toFixed(0)}{' '}
-                  {areaUnits[1]}/
-                  {parsedProperty.propertyAreaUnit === areaUnits[0]
+                  {AreaUnit.SquareFoot}/
+                  {parsedProperty.propertyAreaUnit === AreaUnit.SquareMeter
                     ? parsedProperty.propertyArea
                     : (parseInt(parsedProperty.propertyArea || '') / 10.764).toFixed(0)}{' '}
-                  {areaUnits[0]}
+                  {AreaUnit.SquareMeter}
                 </Typography>
               </div>
               <Typography variant='body4' className='dot'>

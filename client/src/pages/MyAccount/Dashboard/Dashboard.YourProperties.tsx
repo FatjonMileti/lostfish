@@ -8,7 +8,7 @@ import axios from '../../../utils/axios';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../../globalState/user';
 
-import { NewPropertyV2 } from '../../Properties/NewPropertiesV2/NewProperty';
+import { NewProperty } from '../../Properties/NewProperties/NewProperty';
 
 export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -56,7 +56,7 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
         )}
       </div>
       {showEditProperty && (
-        <NewPropertyV2
+        <NewProperty
           propertyId={property._id}
           showStore={[showEditProperty, setShowEditProperty]}
           setEditPropertyId={() => {}}
