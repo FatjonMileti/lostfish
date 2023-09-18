@@ -21,6 +21,7 @@ export interface CriteriaDocument extends Document {
     text: string;
   };
   radius: string;
+  budget_for: string;
   property_type: string[];
   property_preferences: string[];
   property_features: string[];
