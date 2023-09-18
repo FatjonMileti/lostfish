@@ -248,7 +248,6 @@ export default class SuggestionService {
     if (clientCriteria.budgetFor === 'Week') {
       const weeksInMonth = 4.34524;
       const [clientMinBudget, clientMaxBudget] = [minBudget * weeksInMonth, maxBudget * weeksInMonth];
-      console.log('aaaaaa: ', [clientMinBudget, clientMaxBudget]);
       if (
         property.budget &&
         property.budget.min_budget >= clientMinBudget &&
@@ -267,7 +266,6 @@ export default class SuggestionService {
         matchingCriteria++;
       }
     }
-    console.log('matchingCriteria: ', matchingCriteria);
     if (clientCriteria.specific_property_features.includes('Parking spot') && property.parking_spot > 0) {
       matchingCriteria++;
     }

@@ -128,8 +128,8 @@ export const SetCriteria = styled(
           parseInt(data.budget.split('-')[1])
         ]);
 
-        if (data.budgetFor) {
-          mainForm.setValue('budgetFor', data.budgetFor);
+        if (data.budget_for) {
+          mainForm.setValue('budgetFor', data.budget_for);
         }
 
         mainForm.setValue('depositAmount', data.deposit_amount);
@@ -209,7 +209,7 @@ export const SetCriteria = styled(
           distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
           distance_from_gym: mainForm.getValues('distanceFromGym'),
           budget: `${mainForm.getValues('idealBudget')[0]} - ${mainForm.getValues('idealBudget')[1]}`,
-          budgetFor: mainForm.getValues('budgetFor'),
+          budget_for: mainForm.getValues('budgetFor'),
           deposit_amount: mainForm.getValues('depositAmount'),
           credit_score_requirements: mainForm.getValues('creditScore'),
           contract_details: Object.entries(mainForm.getValues('contractDetails'))

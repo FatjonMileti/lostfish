@@ -48,7 +48,7 @@ export const SetCriteriaBudget = styled(({ className, form }: SetCriteriaBudgetP
             />
           </div>
 
-          <Select label='Budget for:' {...form.register('nrOfBathrooms')}>
+          <Select label='Budget for:' {...form.register('budgetFor')}>
             {Object.values(BudgetFor).map((bf, bfIndex) => (
               <option key={bfIndex} value={bf}>
                 {bf}

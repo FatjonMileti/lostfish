@@ -87,7 +87,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
         number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
       },
       budget: `${state.budget[0]} - ${state.budget[1]}`,
-      budgetFor: `${state.budgetFor}`
+      budget_for: `${state.budgetFor}`
     });
 
     await new Promise((resolve) => {
@@ -100,7 +100,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       transactionType: data.transaction_type_string,
       whenDoYouWantToMove: data.moving_time,
       areaOfInterest: data.area_of_interest,
-      budgetFor: data.budgetFor
+      budgetFor: data.budget_for
     });
 
     setLoading(false);

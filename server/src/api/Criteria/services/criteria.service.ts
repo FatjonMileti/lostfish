@@ -100,8 +100,8 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.radius = data.radius;
     }
 
-    if (data.hasOwnProperty('budgetFor')) {
-      criteria.budgetFor = data.budgetFor;
+    if (data.hasOwnProperty('budget_for')) {
+      criteria.budget_for = data.budget_for;
     }
 
     if (data.hasOwnProperty('asset_address')) {

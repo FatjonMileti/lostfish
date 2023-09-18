@@ -77,7 +77,7 @@ export class CriteriaController {
  * @apiExample {json} Example request body:
  *   {
  *     "area_of_interest": "London, Uk",
- *     "budgetFor": "Week",
+ *     "budget_for": "Week",
  *     "budget": "100 - 1000",
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
@@ -132,7 +132,7 @@ export class CriteriaController {
  * @apiExample {json} Example request body:
  *    {
  *     "area_of_interest": "London, Uk",
- *     "budgetFor": "Week",
+ *     "budget_for": "Week",
  *     "budget": "100 - 1000",
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
@@ -185,7 +185,7 @@ export class CriteriaController {
 /**
  * @apiDefine CreateCriteria
  * @apiBody {String} area_of_interest
- * @apiBody {String} budgetFor
+ * @apiBody {String} budget_for
  * @apiBody {Object} asset_address
  * @apiBody {Number} asset_address.latitude
  * @apiBody {Number} asset_address.longitude
