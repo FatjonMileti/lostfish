@@ -11,6 +11,9 @@ import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
 import { Budget } from './Mrd.Budget';
 import { Bedrooms } from './Mrd.Bedrooms';
+import { Select } from '../../components/Select/Select';
+import { BudgetFor, Transaction } from '../SetCriteria/criteria.contants';
+import { BudgetForType } from '../SetCriteria/criteria.types';
 
 type MinimumRequiredDataType = {
   transactionType?: string;
@@ -21,16 +24,18 @@ type MinimumRequiredDataType = {
     longitude?: number;
   };
   budget: number[];
+  budgetFor: BudgetForType;
   nrOfBedrooms: number[];
 };
 
 interface MinimumRequiredDetailsProps extends HTMLAttributes<HTMLDivElement> {}
 export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDetailsProps) => {
   const [state, setState] = React.useState<MinimumRequiredDataType>({
-    transactionType: 'Rent',
+    transactionType: Transaction.Rent,
     whenDoYouWantToMove: undefined,
     areaOfInterest: undefined,
     budget: [1000, 5200],
+    budgetFor: BudgetFor.Month,
     nrOfBedrooms: [1, 4]
   });
 
@@ -61,6 +66,10 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     setState((state) => ({ ...state, budget }));
   };
 
+  const onBudgetForChange = (budgetFor: BudgetForType) => {
+    setState((state) => ({ ...state, budgetFor }));
+  };
+
   const onNrOfBedroomsChange = (nrOfBedrooms: number[]) => {
     setState((state) => ({ ...state, nrOfBedrooms }));
   };
@@ -77,7 +86,8 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       room_details: {
         number_of_bedrooms: `${state.nrOfBedrooms[0]} - ${state.nrOfBedrooms[1]}`
       },
-      budget: `${state.budget[0]} - ${state.budget[1]}`
+      budget: `${state.budget[0]} - ${state.budget[1]}`,
+      budget_for: `${state.budgetFor}`
     });
 
     await new Promise((resolve) => {
@@ -89,7 +99,8 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     criteriaStore.set({
       transactionType: data.transaction_type_string,
       whenDoYouWantToMove: data.moving_time,
-      areaOfInterest: data.area_of_interest
+      areaOfInterest: data.area_of_interest,
+      budgetFor: data.budget_for
     });
 
     setLoading(false);
@@ -119,6 +130,16 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
                 transition={{ duration: 1 }}
                 style={{ display: 'grid', justifyItems: 'center' }}>
                 <Budget value={state.budget} onChange={onBudgetChange} />
+                <Select
+                  label='Budget for:'
+                  value={state.budgetFor}
+                  onChange={({ target: { value } }) => onBudgetForChange(value as BudgetForType)}>
+                  {Object.values(BudgetFor).map((bf, bfIndex) => (
+                    <option key={bfIndex} value={bf}>
+                      {bf}
+                    </option>
+                  ))}
+                </Select>
                 {!pressedContinue && (
                   <Button size='large' className='continue-button' onClick={() => setPressedContinue(true)}>
                     Continue
@@ -161,6 +182,11 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     height: 100%;
     row-gap: 64px;
     align-content: center;
+
+    .select {
+      width: 30%;
+      margin-top: 48px;
+    }
 
     .continue-button {
       margin-top: 20px;

@@ -10,6 +10,7 @@ import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
 import { includes } from 'lodash';
+import { number } from 'joi';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -244,18 +245,30 @@ export default class SuggestionService {
 
     const [minBudget, maxBudget] = clientCriteria.budget.split(' - ').map(Number);
 
-    if (
-      property.budget &&
-      property.budget.min_budget >= minBudget &&
-      property.budget.max_budget <= maxBudget
-    ) {
-      matchingCriteria++;
+    if (clientCriteria.budgetFor === 'Week') {
+      const weeksInMonth = 4.34524;
+      const [clientMinBudget, clientMaxBudget] = [minBudget * weeksInMonth, maxBudget * weeksInMonth];
+      if (
+        property.budget &&
+        property.budget.min_budget >= clientMinBudget &&
+        property.budget.max_budget <= clientMaxBudget
+      ) {
+        matchingCriteria++;
+      }
     }
 
+    if (clientCriteria.budgetFor === 'Month') {
+      if (
+        property.budget &&
+        property.budget.min_budget >= minBudget &&
+        property.budget.max_budget <= maxBudget
+      ) {
+        matchingCriteria++;
+      }
+    }
     if (clientCriteria.specific_property_features.includes('Parking spot') && property.parking_spot > 0) {
       matchingCriteria++;
     }
-
     return (matchingCriteria / 16) * 100;
   }
 }
