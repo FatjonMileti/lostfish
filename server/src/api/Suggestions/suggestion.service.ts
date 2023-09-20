@@ -314,7 +314,7 @@ export default class SuggestionService {
         matchingCriteria++;
       }
     }
-// // furniture
+    // // furniture
     if (
       (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED) &&
         property.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED)) ||
@@ -353,26 +353,26 @@ export default class SuggestionService {
         matchingCriteria++;
       }
 
-      if (clientCriteria.flat_details.property_purpose) {
-        if (clientCriteria.flat_details.property_purpose === property.flat_details.property_purpose) {
+      if (clientCriteria.flat_details?.property_purpose) {
+        if (clientCriteria.flat_details.property_purpose === property.flat_details?.property_purpose) {
           matchingCriteria++;
         }
       }
 
-      if (typeof clientCriteria.flat_details.lift === 'boolean') {
-        if (clientCriteria.flat_details.lift === property.flat_details.lift) {
+      if (typeof clientCriteria.flat_details?.lift === 'boolean') {
+        if (clientCriteria.flat_details.lift === property.flat_details?.lift) {
           matchingCriteria++;
         }
       }
 
-      if (typeof clientCriteria.flat_details.security === 'boolean') {
-        if (clientCriteria.flat_details.security === property.flat_details.security) {
+      if (typeof clientCriteria.flat_details?.security === 'boolean') {
+        if (clientCriteria.flat_details.security === property.flat_details?.security) {
           matchingCriteria++;
         }
       }
 
-      if (typeof clientCriteria.flat_details.floor) {
-        if (clientCriteria.flat_details.floor === property.flat_details.floor) {
+      if (typeof clientCriteria.flat_details?.floor === 'boolean') {
+        if (clientCriteria.flat_details.floor === property.flat_details?.floor) {
           matchingCriteria++;
         }
       }
