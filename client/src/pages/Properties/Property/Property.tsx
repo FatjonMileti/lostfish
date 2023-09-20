@@ -11,7 +11,8 @@ import { avatars } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
-import { AreaUnitType } from '../../SetCriteria/criteria.types';
+
+import { AreaUnitType } from '../NewProperties/property.types';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;

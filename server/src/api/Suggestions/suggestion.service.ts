@@ -1,6 +1,12 @@
 import { PaginateModel } from 'mongoose';
 import { IPagingOptions } from '../../middleware/paging';
-import { PropertyDocument } from '../Property/property.interface';
+import {
+  FloorSizeUnit,
+  ParkingDetails,
+  PropertyDocument,
+  PropertyType,
+  SpecificPropertyFeatures
+} from '../Property/property.interface';
 import { CriteriaDocument } from '../Criteria/criteria.interface';
 import MatchSchema from '../Match/match.schema';
 import { generateLinksForImages } from '../Property/helpers';
@@ -10,7 +16,6 @@ import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
 import { includes } from 'lodash';
-import { number } from 'joi';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -218,21 +223,48 @@ export default class SuggestionService {
     )
       matchingCriteria++;
     if (clientCriteria.credit_score_requirements === property.credit_score_requirements) matchingCriteria++;
-    if (clientCriteria.room_details.number_of_bedrooms === property.room_details.number_of_bedrooms) {
+
+    // Number of bedrooms
+    const criteriaNumberOfBedrooms = {
+      min: parseInt(clientCriteria.room_details.number_of_bedrooms?.split('-')[0], 10),
+      max: parseInt(clientCriteria.room_details.number_of_bedrooms?.split('-')[1], 10)
+    };
+    if (
+      property.room_details.number_of_bedrooms >= criteriaNumberOfBedrooms.min &&
+      property.room_details.number_of_bedrooms <= criteriaNumberOfBedrooms.max
+    ) {
       matchingCriteria++;
     }
+
+    // Number of bathrooms
+    const criteriaNumberOfBathrooms = {
+      min: parseInt(clientCriteria?.room_details.number_of_bathrooms?.split('-')[0], 10),
+      max: parseInt(clientCriteria?.room_details.number_of_bathrooms?.split('-')[1], 10)
+    };
     if (
-      clientCriteria?.room_details.number_of_bathrooms?.toString() ===
-      property?.room_details?.number_of_bathrooms?.toString()
-    )
+      property.room_details.number_of_bathrooms >= criteriaNumberOfBathrooms.min &&
+      property.room_details.number_of_bathrooms <= criteriaNumberOfBathrooms.max
+    ) {
       matchingCriteria++;
+    }
 
-    const floorSize: string[] = clientCriteria?.floor_size?.split('-') || [];
+    // Floor size
+    const criteriaFloorSizeSqm = {
+      min: parseInt(clientCriteria?.floor_size?.split('-')[0], 10),
+      max: parseInt(clientCriteria?.floor_size?.split('-')[1], 10)
+    };
+
+    const propertyFloorSizeSqm =
+      property.floor_size_unit === FloorSizeUnit.SQR_FT ? property.floor_size / 10.764 : property.floor_size;
+
+    if (clientCriteria.floor_size_unit === FloorSizeUnit.SQR_FT) {
+      criteriaFloorSizeSqm.min = criteriaFloorSizeSqm.min / 10.764;
+      criteriaFloorSizeSqm.max = criteriaFloorSizeSqm.max / 10.764;
+    }
 
     if (
-      floorSize.length > 0 &&
-      property.floor_size >= parseInt(floorSize[0], 10) &&
-      property.floor_size <= parseInt(floorSize[1], 10)
+      propertyFloorSizeSqm >= criteriaFloorSizeSqm.min &&
+      propertyFloorSizeSqm <= criteriaFloorSizeSqm.max
     ) {
       matchingCriteria++;
     }
@@ -266,10 +298,87 @@ export default class SuggestionService {
         matchingCriteria++;
       }
     }
+
+    // parking
     if (clientCriteria.specific_property_features.includes('Parking spot') && property.parking_spot > 0) {
       matchingCriteria++;
+
+      if (
+        (clientCriteria.parking_details.includes(ParkingDetails.Garage) &&
+          property.parking_details.includes(ParkingDetails.Garage)) ||
+        (clientCriteria.parking_details.includes(ParkingDetails.OffStreet) &&
+          property.parking_details.includes(ParkingDetails.OffStreet)) ||
+        (property.parking_details.includes(ParkingDetails.OnStreet) &&
+          property.parking_details.includes(ParkingDetails.OnStreet))
+      ) {
+        matchingCriteria++;
+      }
     }
-    return (matchingCriteria / 16) * 100;
+// // furniture
+    if (
+      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED) &&
+        property.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED)) ||
+      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.PARTIALLY_FURNISHED) &&
+        property.specific_property_features.includes(SpecificPropertyFeatures.PARTIALLY_FURNISHED)) ||
+      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.FULLY_FURNISHED) &&
+        property.specific_property_features.includes(SpecificPropertyFeatures.FULLY_FURNISHED))
+    ) {
+      matchingCriteria++;
+    }
+    //
+    // // Outside space
+    if (
+      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.BALCONY) &&
+      property.specific_property_features.includes(SpecificPropertyFeatures.BALCONY)
+    ) {
+      matchingCriteria++;
+    }
+    if (
+      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.GARDEN) &&
+      property.specific_property_features.includes(SpecificPropertyFeatures.GARDEN)
+    ) {
+      matchingCriteria++;
+    }
+    if (
+      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.TERRACE) &&
+      property.specific_property_features.includes(SpecificPropertyFeatures.TERRACE)
+    ) {
+      matchingCriteria++;
+    }
+    //
+    // // flat details
+    //
+    if (clientCriteria.property_type.includes(PropertyType.Flats)) {
+      if (property.property_type.includes(PropertyType.Flats)) {
+        matchingCriteria++;
+      }
+
+      if (clientCriteria.flat_details.property_purpose) {
+        if (clientCriteria.flat_details.property_purpose === property.flat_details.property_purpose) {
+          matchingCriteria++;
+        }
+      }
+
+      if (typeof clientCriteria.flat_details.lift === 'boolean') {
+        if (clientCriteria.flat_details.lift === property.flat_details.lift) {
+          matchingCriteria++;
+        }
+      }
+
+      if (typeof clientCriteria.flat_details.security === 'boolean') {
+        if (clientCriteria.flat_details.security === property.flat_details.security) {
+          matchingCriteria++;
+        }
+      }
+
+      if (typeof clientCriteria.flat_details.floor) {
+        if (clientCriteria.flat_details.floor === property.flat_details.floor) {
+          matchingCriteria++;
+        }
+      }
+    }
+
+    return (matchingCriteria / 26) * 100;
   }
 }
 

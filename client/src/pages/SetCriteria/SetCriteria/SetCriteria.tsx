@@ -22,7 +22,6 @@ import { Backdrop } from '../../../components/Backdrop';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 import {
-  AreaUnit,
   BudgetFor,
   ContractDetail,
   CreditScore,
@@ -32,6 +31,7 @@ import {
   SpecificPropertyFeature,
   Transaction
 } from '../criteria.contants';
+import { AreaUnit, Parking } from '../../Properties/NewProperties/property.constants';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
 
@@ -114,7 +114,11 @@ export const SetCriteria = styled(
           parseInt(data.room_details?.number_of_bedrooms.split('-')[1] || '0')
         ]);
 
-        mainForm.setValue('nrOfBathrooms', data.room_details?.number_of_bathrooms);
+        mainForm.setValue('nrOfBathrooms', [
+          parseInt(data.room_details?.number_of_bathrooms.split('-')[0] || '0'),
+          parseInt(data.room_details?.number_of_bathrooms.split('-')[1] || '0')
+        ]);
+
         mainForm.setValue(
           'specificPropertyFeatures',
           data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
@@ -122,6 +126,10 @@ export const SetCriteria = styled(
             return acc;
           }, {})
         );
+
+        mainForm.setValue('parkingType.On street', data.parking_details?.includes(Parking.OnStreet));
+        mainForm.setValue('parkingType.Off street', data.parking_details?.includes(Parking.OffStreet));
+        mainForm.setValue('parkingType.Garage', data.parking_details?.includes(Parking.Garage));
 
         mainForm.setValue('idealBudget', [
           parseInt(data.budget.split('-')[0]),
@@ -196,14 +204,21 @@ export const SetCriteria = styled(
           floor_size: `${mainForm.getValues('area')[0]}-${mainForm.getValues('area')[1]}`,
           floor_size_unit: mainForm.getValues('areaUnit'),
           room_details: {
-            number_of_bathrooms: mainForm.getValues('nrOfBathrooms') || undefined,
             number_of_bedrooms: `${mainForm.getValues('nrOfBedrooms')[0]}-${
               mainForm.getValues('nrOfBedrooms')[1]
-            }`
+            }`,
+            number_of_bathrooms: mainForm.getValues('nrOfBathrooms').join('-')
           },
           specific_property_features: Object.entries(mainForm.getValues('specificPropertyFeatures'))
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
+
+          parking_details: [
+            mainForm.getValues('parkingType')[Parking.Garage] ? [Parking.Garage] : [],
+            mainForm.getValues('parkingType')[Parking.OffStreet] ? [Parking.OffStreet] : [],
+            mainForm.getValues('parkingType')[Parking.OnStreet] ? [Parking.OnStreet] : []
+          ].flat(),
+
           distance_from_underground: mainForm.getValues('distanceFromUnderground'),
           distance_from_schools: mainForm.getValues('distanceFromSchools'),
           distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
@@ -259,7 +274,7 @@ export const SetCriteria = styled(
         area: [50, 100],
         areaUnit: AreaUnit.SquareMeter,
         nrOfBedrooms: [1, 4],
-        nrOfBathrooms: undefined,
+        nrOfBathrooms: [1, 3],
         specificPropertyFeatures: Object.fromEntries(
           Object.values(SpecificPropertyFeature).map((spf) => [spf, false])
         ),

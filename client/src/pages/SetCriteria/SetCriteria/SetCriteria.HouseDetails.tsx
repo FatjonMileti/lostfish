@@ -8,7 +8,8 @@ import { Slider } from '../../../components/Slider';
 import { Select } from '../../../components/Select/Select';
 import { Switch } from '../../../components/Switch';
 import { Typography } from '../../../components/Typography';
-import { AreaUnit, SpecificPropertyFeature } from '../criteria.contants';
+import { SpecificPropertyFeature } from '../criteria.contants';
+import { AreaUnit, Parking } from '../../Properties/NewProperties/property.constants';
 
 interface SetCriteriaHouseDetailsProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
@@ -80,13 +81,29 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
             />
           </div>
 
-          <Select label='Bathrooms' {...form.register('nrOfBathrooms')}>
-            <option></option>
-            <option value='1'>1</option>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
-          </Select>
+          <div className='slider-wrapper'>
+            <Typography variant='body6' className='slider-label'>
+              Bathrooms
+            </Typography>
+            <Slider
+              value={form.getValues('nrOfBathrooms')}
+              min={0}
+              max={4}
+              step={1}
+              onChange={(_, value) => form.setValue('nrOfBathrooms', Array.isArray(value) ? value : [value])}
+              valueLabelDisplay='on'
+              valueLabelFormat={(value) => value}
+              size='small'
+            />
+          </div>
+
+          {/*<Select label='Bathrooms' {...form.register('nrOfBathrooms')}>*/}
+          {/*  <option></option>*/}
+          {/*  <option value='1'>1</option>*/}
+          {/*  <option value='2'>2</option>*/}
+          {/*  <option value='3'>3</option>*/}
+          {/*  <option value='4'>4</option>*/}
+          {/*</Select>*/}
         </div>
       </div>
       <div className='section specific-property-features-section'>
@@ -114,6 +131,32 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
           }
         </div>
       </div>
+      {form.getValues('specificPropertyFeatures')[SpecificPropertyFeature.ParkingSpot] && (
+        <div className='section specific-property-features-section'>
+          <Typography className='section-title' variant='body4'>
+            Parking type
+          </Typography>
+          <div className='section-content'>
+            {
+              <>
+                {Object.values(Parking).map((pt, ptIndex: number) =>
+                  ((id: string) => (
+                    <div className='switch-wrapper' key={ptIndex}>
+                      <Switch
+                        id={id}
+                        size='medium'
+                        {...form.register(`parkingType.${pt}`)}
+                        checked={!!form.getValues('parkingType')[pt]}
+                      />
+                      <label htmlFor={id}>{pt}</label>
+                    </div>
+                  ))(Date.now().toString())
+                )}
+              </>
+            }
+          </div>
+        </div>
+      )}
     </div>
   );
 })`
@@ -163,7 +206,7 @@ export const SetCriteriaHouseDetails = styled(({ className, form }: SetCriteriaH
       &.rooms-details-section {
         .section-content {
           display: grid;
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: 1fr 1fr 1fr;
           column-gap: 24px;
           row-gap: 24px;
           align-items: center;

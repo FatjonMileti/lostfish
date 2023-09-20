@@ -12,7 +12,7 @@ import { NearestThings } from './ViewProperty.NearestThings';
 import { PropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
-import { AreaUnit } from '../../SetCriteria/criteria.contants';
+import { AreaUnit } from '../../Properties/NewProperties/property.constants';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: PropertyType;

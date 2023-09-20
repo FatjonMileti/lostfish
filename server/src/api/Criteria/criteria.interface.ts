@@ -31,7 +31,7 @@ export interface CriteriaDocument extends Document {
     number_of_bedrooms: string;
   };
   specific_property_features: string[];
-  parking_details: ParkingDetails;
+  parking_details: ParkingDetails[];
   flat_details: {
     property_purpose: string;
     floor: number;

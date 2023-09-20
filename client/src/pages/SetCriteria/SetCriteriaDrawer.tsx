@@ -19,7 +19,7 @@ export const SetCriteriaDrawer = styled(
 
     return (
       <Drawer open={open} setOpen={setOpen} className={classNames(className, 'criteria-drawer')}>
-        <SetCriteria onClose={() => setOpen(false)} />
+        <SetCriteria onClose={() => setOpen(false)} afterRefineSearch={afterRefineSearch} />
       </Drawer>
     );
   }
