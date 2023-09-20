@@ -22,16 +22,18 @@ import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 
 import { ImageUpload } from './NewProperty.ImageUpload';
-import {
-  areaUnits,
-  areaUnitType,
-  Building,
-  Parking,
-  propertyFormSchema,
-  PropertyFormType
-} from './property.types';
+
 import { Switch } from '../../../components/Switch';
-import { BuildPurpose, Furnished, OutsideSpace } from '../../SetCriteria/criteria.contants';
+import { PropertyFormType } from './property.types';
+import {
+  AreaUnit,
+  Building,
+  BuildPurpose,
+  Furnished,
+  OutsideSpace,
+  Parking,
+  propertyFormSchema
+} from './property.constants';
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
@@ -96,7 +98,7 @@ export const NewProperty = styled(
         flatDetails: {},
         outsideSpace: {},
         area: undefined,
-        areaUnit: areaUnits[0],
+        areaUnit: AreaUnit.SquareMeter,
         parkingSpot: undefined,
         parkingType: undefined,
         epcRating: '',
@@ -576,7 +578,7 @@ export const NewProperty = styled(
                   type='number'
                 />
                 <Select {...register('areaUnit')}>
-                  {areaUnits.map((unit: areaUnitType, unitIndex: number) => (
+                  {Object.values(AreaUnit).map((unit, unitIndex: number) => (
                     <option value={unit} key={unitIndex}>
                       {unit}
                     </option>

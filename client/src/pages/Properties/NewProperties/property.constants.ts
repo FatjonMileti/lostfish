@@ -1,41 +1,6 @@
-import { ObjectSchema } from 'yup';
 import * as yup from 'yup';
-import { BuildPurposeType, FurnishedType, OutsideSpaceType } from '../../SetCriteria/criteria.types';
-import { BuildPurpose, Furnished, OutsideSpace } from '../../SetCriteria/criteria.contants';
-
-export type PropertyFormType = {
-  title: string;
-  location: {
-    latitude?: number;
-    longitude?: number;
-  };
-  minBudget: number;
-  maxBudget: number;
-  bedrooms: number;
-  bathrooms: number;
-  buildingType: BuildingType;
-  flatDetails?: {
-    propertyPurpose?: BuildPurposeType;
-    floor?: number;
-    lift?: boolean;
-    security?: boolean;
-  };
-  furniture?: FurnishedType;
-  outsideSpace: {
-    [key in OutsideSpaceType]?: boolean;
-  };
-  area: number;
-  areaUnit: areaUnitType;
-  parkingSpot: string;
-  parkingType?: ParkingType;
-  epcRating: string;
-  description: string;
-  locationDetails: string;
-  areaOfInterest: string;
-  propertyImages: any[];
-};
-
-declare type ObjectValues<T> = T[keyof T];
+import { ObjectSchema } from 'yup';
+import { PropertyFormType } from './property.types';
 
 export const Parking = {
   Garage: 'Garage',
@@ -43,11 +8,6 @@ export const Parking = {
   OnStreet: 'On street'
 } as const;
 
-export type ParkingType = ObjectValues<typeof Parking>;
-
-export const areaUnits: string[] = ['sq.m', 'sq.ft'];
-
-export type areaUnitType = (typeof areaUnits)[number];
 export const Building = {
   Detached: 'Detached',
   SemiDetached: 'Semi-Detached',
@@ -56,9 +16,24 @@ export const Building = {
   Bungalows: 'Bungalows',
   FarmsLand: 'Farms/Land'
 } as const;
-
-export type BuildingType = ObjectValues<typeof Building>;
-
+export const BuildPurpose = {
+  PurposeBuilt: 'Purpose built',
+  Conversion: 'Conversion'
+} as const;
+export const Furnished = {
+  FullyFurnished: 'Fully furnished',
+  PartiallyFurnished: 'Partially furnished',
+  Unfurnished: 'Unfurnished'
+} as const;
+export const OutsideSpace = {
+  Garden: 'Garden',
+  Balcony: 'Balcony',
+  Terrace: 'Terrace'
+} as const;
+export const AreaUnit = {
+  SquareMeter: 'sq.m',
+  SquareFoot: 'sq.ft'
+} as const;
 export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().shape({
   title: yup.string().required('Title is required'),
   location: yup.object().shape({
@@ -112,7 +87,7 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .transform((value) => (isNaN(value) ? undefined : value))
     .min(1)
     .required('Area is required'),
-  areaUnit: yup.string().oneOf(areaUnits).required(),
+  areaUnit: yup.string().oneOf(Object.values(AreaUnit)).required(),
   parkingSpot: yup.string().required('Parking spot is required'),
   parkingType: yup
     .string()

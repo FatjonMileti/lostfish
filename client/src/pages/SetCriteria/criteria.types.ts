@@ -1,21 +1,17 @@
 import {
-  AreaUnit,
-  BuildPurpose,
   ContractDetail,
   CreditScore,
   DistanceUnit,
-  Furnished,
-  OutsideSpace,
   PropertyPreference,
   PropertyType,
   SpecificPropertyFeature,
   Transaction,
   WhenDoYouWantToMove
 } from './criteria.contants';
+import { AreaUnitType, BuildPurposeType, ParkingType } from '../Properties/NewProperties/property.types';
 
 declare type ObjectValues<T> = T[keyof T];
-
-type CriteriaFormType = {
+export type CriteriaFormType = {
   areaOfInterest: string;
   location: {
     latitude?: number;
@@ -53,9 +49,12 @@ type CriteriaFormType = {
   area: number[];
   areaUnit: AreaUnitType;
   nrOfBedrooms: number[];
-  nrOfBathrooms: number;
+  nrOfBathrooms: number[];
   specificPropertyFeatures: {
     [key in SpecificPropertyFeatureType]: boolean;
+  };
+  parkingType: {
+    [key in ParkingType]?: boolean;
   };
   distanceFromUnderground: DistanceType;
   distanceFromSchools: DistanceType;
@@ -63,20 +62,16 @@ type CriteriaFormType = {
   distanceFromGym: DistanceType;
 };
 
-type DistanceUnitType = ObjectValues<typeof DistanceUnit>;
+export type DistanceUnitType = ObjectValues<typeof DistanceUnit>;
 
 type DistanceType = {
   value?: number;
   unit: DistanceUnitType;
 };
 
-type FurnishedType = ObjectValues<typeof Furnished>;
-
-type OutsideSpaceType = ObjectValues<typeof OutsideSpace>;
-
 type SpecificPropertyFeatureType = ObjectValues<typeof SpecificPropertyFeature>;
 
-type PropertyPreferenceType = ObjectValues<typeof PropertyPreference>;
+export type PropertyPreferenceType = ObjectValues<typeof PropertyPreference>;
 
 type TransactionType = ObjectValues<typeof Transaction>;
 
@@ -85,9 +80,5 @@ type ContractDetailType = ObjectValues<typeof ContractDetail>;
 type CreditScoreType = ObjectValues<typeof CreditScore>;
 
 type WhenDoYouWantToMoveType = ObjectValues<typeof WhenDoYouWantToMove>;
-
-type BuildPurposeType = ObjectValues<typeof BuildPurpose>;
-
-type AreaUnitType = ObjectValues<typeof AreaUnit>;
 
 type PropertyTypeType = ObjectValues<typeof PropertyType>;

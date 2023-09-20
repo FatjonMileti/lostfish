@@ -49,6 +49,7 @@ export enum OutsideSpace {
 export enum SpecificPropertyFeatures {
   PARKING_SPOT = 'Parking spot',
   GARDEN = 'Garden',
+  BALCONY = 'Balcony',
   TERRACE = 'Terrace',
   FULLY_FURNISHED = 'Fully furnished',
   PARTIALLY_FURNISHED = 'Partially furnished',

@@ -1,21 +1,18 @@
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { CriteriaFormType } from './criteria.types';
+import {
+  AreaUnit,
+  BuildPurpose,
+  Furnished,
+  OutsideSpace,
+  Parking
+} from '../Properties/NewProperties/property.constants';
 
 export const DistanceUnit = {
   Km: 'km',
   M: 'm',
   Ft: 'ft'
-} as const;
-export const Furnished = {
-  FullyFurnished: 'Fully furnished',
-  PartiallyFurnished: 'Partially furnished',
-  Unfurnished: 'Unfurnished'
-} as const;
-export const OutsideSpace = {
-  Garden: 'Garden',
-  Balcony: 'Balcony',
-  Terrace: 'Terrace'
 } as const;
 
 const OtherSpecificPropertyFeature = {
@@ -75,16 +72,6 @@ export const WhenDoYouWantToMove = {
   IWantToTakeMyTime: 'I want to take my time'
 } as const;
 
-export const BuildPurpose = {
-  PurposeBuilt: 'Purpose built',
-  Conversion: 'Conversion'
-} as const;
-
-export const AreaUnit = {
-  SquareMeter: 'sq.m',
-  SquareFoot: 'sq.ft'
-} as const;
-
 export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
   location: yup.object().shape({
@@ -140,10 +127,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   area: yup.array().required(),
   areaUnit: yup.string().oneOf(Object.values(AreaUnit)).required(),
   nrOfBedrooms: yup.array().required(),
-  nrOfBathrooms: yup
-    .number()
-    .transform((value) => (isNaN(value) ? undefined : value))
-    .required('Number of bathroom is required'),
+  nrOfBathrooms: yup.array().required('Number of bathroom is required'),
   specificPropertyFeatures: yup.object().shape({
     [SpecificPropertyFeature.ParkingSpot]: yup.boolean().required(),
     [SpecificPropertyFeature.Garden]: yup.boolean().required(),
@@ -156,6 +140,11 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     [SpecificPropertyFeature.AllowsSmoking]: yup.boolean().required(),
     [SpecificPropertyFeature.AllowsPets]: yup.boolean().required(),
     [SpecificPropertyFeature.CloseToPublicTransport]: yup.boolean().required()
+  }),
+  parkingType: yup.object().shape({
+    [Parking.Garage]: yup.boolean().optional(),
+    [Parking.OffStreet]: yup.boolean().optional(),
+    [Parking.OnStreet]: yup.boolean().optional()
   }),
   distanceFromUnderground: yup.object().shape({
     value: yup.number().positive(),

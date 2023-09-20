@@ -8,7 +8,8 @@ import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
 import { Typography } from '../../../components/Typography';
 import { Select } from '../../../components/Select/Select';
-import { BuildPurpose, PropertyPreference, PropertyType, Transaction } from '../criteria.contants';
+import { PropertyPreference, PropertyType, Transaction } from '../criteria.contants';
+import { BuildPurpose } from '../../Properties/NewProperties/property.constants';
 
 interface SetCriteriaHouseTypeProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;
