@@ -62,8 +62,8 @@ const createFakeDataMaxDetails = (user: any) => {
     property_preference: faker.helpers.arrayElement(Object.values(PropertyPreferences)),
     credit_score_requirements: faker.helpers.arrayElement(Object.values(CreditScoreRequirement)),
     room_details: {
-      number_of_bathrooms: faker.number.int({ min: 1, max: 3 }),
-      number_of_bedrooms: faker.number.int({ min: 1, max: 5 })
+      number_of_bathrooms: faker.helpers.arrayElement(['1-2', '1-3']),
+      number_of_bedrooms: faker.helpers.arrayElement(['1-2', '1-5'])
     },
     transaction_type_string: TransactionTypeString.Rent,
     contract_details: faker.helpers.arrayElements(['Guarantor', 'Reviewed Property', 'Energy Certificate']),
