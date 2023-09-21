@@ -237,12 +237,12 @@ export default class SuggestionService {
 
     // Number of bathrooms
     const criteriaNumberOfBathrooms = {
-      min: parseInt(clientCriteria?.room_details.number_of_bathrooms?.split('-')[0], 10),
-      max: parseInt(clientCriteria?.room_details.number_of_bathrooms?.split('-')[1], 10)
+      min: parseInt(clientCriteria?.room_details?.number_of_bathrooms?.split('-')[0], 10),
+      max: parseInt(clientCriteria?.room_details?.number_of_bathrooms?.split('-')[1], 10)
     };
     if (
-      property.room_details.number_of_bathrooms >= criteriaNumberOfBathrooms.min &&
-      property.room_details.number_of_bathrooms <= criteriaNumberOfBathrooms.max
+      property.room_details?.number_of_bathrooms >= criteriaNumberOfBathrooms.min &&
+      property.room_details?.number_of_bathrooms <= criteriaNumberOfBathrooms.max
     ) {
       matchingCriteria++;
     }
