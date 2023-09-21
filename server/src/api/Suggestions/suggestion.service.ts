@@ -225,8 +225,8 @@ export default class SuggestionService {
 
     // Number of bedrooms
     const criteriaNumberOfBedrooms = {
-      min: parseInt(clientCriteria.room_details.number_of_bedrooms?.split('-')[0], 10),
-      max: parseInt(clientCriteria.room_details.number_of_bedrooms?.split('-')[1], 10)
+      min: parseInt(clientCriteria.room_details?.number_of_bedrooms?.split('-')[0], 10),
+      max: parseInt(clientCriteria.room_details?.number_of_bedrooms?.split('-')[1], 10)
     };
     if (
       property.room_details?.number_of_bedrooms >= criteriaNumberOfBedrooms?.min &&
