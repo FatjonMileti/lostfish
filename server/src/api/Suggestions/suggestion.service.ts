@@ -249,8 +249,8 @@ export default class SuggestionService {
 
     // Floor size
     const criteriaFloorSizeSqm = {
-      min: parseInt(clientCriteria?.floor_size?.split('-')[0], 10),
-      max: parseInt(clientCriteria?.floor_size?.split('-')[1], 10)
+      min: parseInt(clientCriteria?.floor_size?.split('-')?.[0], 10),
+      max: parseInt(clientCriteria?.floor_size?.split('-')?.[1], 10)
     };
 
     const propertyFloorSizeSqm =
