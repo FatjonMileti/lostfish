@@ -36,6 +36,22 @@ const schema = new Schema<PropertyDocument>({
     },
     text: { type: String }
   },
+  distance_from_underground: {
+    value: Number,
+    unit: String
+  },
+  distance_from_schools: {
+    value: Number,
+    unit: String
+  },
+  distance_from_high_street: {
+    value: Number,
+    unit: String
+  },
+  distance_from_gym: {
+    value: Number,
+    unit: String
+  },
   status_string: {
     type: String,
     enum: [...Object.values(StatusString), ...Object.values(RentStatusString)],

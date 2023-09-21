@@ -140,7 +140,7 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
               {...form.register('distanceFromHighStreet.value')}
               label={
                 <>
-                  <Icon className='area-icon' icon='car' /> Distance from high street
+                  <Icon className='area-icon' icon='shopping' /> Distance from high street
                 </>
               }
               error={!!form.formState.errors.area}

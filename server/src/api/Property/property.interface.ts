@@ -158,6 +158,22 @@ export interface PropertyDocument extends Document {
     country_code: CountryCode;
     text: string;
   };
+  distance_from_underground: {
+    value: number;
+    unit: string;
+  };
+  distance_from_schools: {
+    value: number;
+    unit: string;
+  };
+  distance_from_high_street: {
+    value: number;
+    unit: string;
+  };
+  distance_from_gym: {
+    value: number;
+    unit: string;
+  };
   status_string: StatusString | RentStatusString;
   transaction_type_string: TransactionTypeString;
   master_asset_type_string: MasterAssetTypeSring;

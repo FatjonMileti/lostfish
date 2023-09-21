@@ -1,17 +1,74 @@
 import axios from 'axios';
 import config from '../config/index';
-import createError from 'http-errors';
+
+import {
+  Client,
+  Distance,
+  LatLng,
+  PlacesNearbyRanking,
+  TravelMode
+} from '@googlemaps/google-maps-services-js';
+import { Place } from '@googlemaps/google-maps-services-js/src/common';
+
+const client = new Client({});
 
 const nearbyMapUrl: string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json';
 const mapGeocodeUrl: string = 'https://maps.googleapis.com/maps/api/geocode/json';
 
-const getNearestPlacesByType = async (queryData: any, type: string) => {
-  if (!queryData.latitude || !queryData.longitude) {
-    throw createError(400, { message: 'invalid_address' });
+// const getNearestPlacesByType = async (queryData: any, type: string) => {
+//   if (!queryData.latitude || !queryData.longitude) {
+//     throw createError(400, { message: 'invalid_address' });
+//   }
+//   const query = `?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=${type}&key=${config.googleKey}`;
+//   const { data } = await axios.get(`${nearbyMapUrl}${query}`);
+//   return data;
+// };
+
+const getNearestPlacesByType = async ({
+  location,
+  type
+}: {
+  location: LatLng;
+  type: 'subway_station' | string;
+}): Promise<
+  {
+    place: Place;
+    distance?: Distance;
+  }[]
+> => {
+  try {
+    const placesResponse = await client.placesNearby({
+      params: {
+        location,
+        radius: 2000,
+        type,
+        key: config.googleKey
+      }
+    });
+
+    return Promise.all(
+      placesResponse.data.results.slice(0, 3).map(async (result) => {
+        if (result.geometry?.location) {
+          const distance = await getDistanceFromPlace({
+            from: location,
+            to: result.geometry?.location
+          });
+
+          return {
+            place: result,
+            distance
+          };
+        } else {
+          return {
+            place: result
+          };
+        }
+      })
+    );
+  } catch (err: any) {
+    console.log(err?.code);
+    throw err;
   }
-  const query = `?location=${queryData.latitude}%2C${queryData.longitude}&rankby=distance&type=${type}&key=${config.googleKey}`;
-  const { data } = await axios.get(`${nearbyMapUrl}${query}`);
-  return data;
 };
 
 const getCoordinates = async (address: string) => {
@@ -73,8 +130,70 @@ const getAddress = async (lat: number, lng: number) => {
   }
 };
 
+const getDistanceFromPlace = async ({
+  from,
+  to
+}: {
+  from: LatLng;
+  to: LatLng;
+}): Promise<Distance | undefined> => {
+  try {
+    const distanceResponse = await client.distancematrix({
+      params: {
+        origins: [from],
+        destinations: [to],
+        mode: TravelMode.walking,
+        key: config.googleKey
+      }
+    });
+    return distanceResponse.data.rows?.[0]?.elements?.[0]?.distance;
+  } catch (err) {}
+};
+
+const getDistanceFrom = async ({
+  origin,
+  type,
+  travelMode = TravelMode.walking
+}: {
+  origin: LatLng;
+  type: 'subway_station' | string;
+  travelMode?: TravelMode;
+}): Promise<Distance | undefined> => {
+  try {
+    const placesResponse = await client.placesNearby({
+      params: {
+        location: origin,
+        radius: 2000,
+        type,
+        key: config.googleKey
+      }
+    });
+
+    if (placesResponse.data.results?.[0]?.geometry?.location) {
+      const subwayLocation = placesResponse.data.results[0].geometry.location;
+
+      const distanceResponse = await client.distancematrix({
+        params: {
+          origins: [origin],
+          destinations: [subwayLocation],
+          mode: travelMode,
+          key: config.googleKey
+        }
+      });
+
+      return distanceResponse.data.rows[0].elements[0].distance;
+    } else {
+      console.log(`No subway ${type} found nearby.`);
+    }
+  } catch (err: any) {
+    console.log(err);
+  }
+};
+
 export default {
   getNearestPlacesByType,
   getCoordinates,
-  getAddress
+  getAddress,
+
+  getDistanceFrom
 };

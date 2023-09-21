@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "shopping"
   | "barbell"
   | "mortarboard"
   | "metro"

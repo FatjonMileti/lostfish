@@ -32,10 +32,18 @@ export class MapController {
   private getNearestStations = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
-    try {
-      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'train_station');
+    const location = {
+      latitude: queryData?.latitude,
+      longitude: queryData?.longitude
+    };
 
-      return res.json({ ...data });
+    try {
+      const data = await this.googleMapService.getNearestPlacesByType({
+        type: 'subway_station',
+        location
+      });
+
+      return res.json(data);
     } catch (error: any) {
       return res.status(400).send(error?.request?.data);
     }
@@ -54,10 +62,17 @@ export class MapController {
   private getNearestSchools = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
-    try {
-      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'school');
+    const location = {
+      latitude: queryData?.latitude,
+      longitude: queryData?.longitude
+    };
 
-      return res.json({ ...data });
+    try {
+      const data = await this.googleMapService.getNearestPlacesByType({
+        type: 'school',
+        location
+      });
+      return res.json(data);
     } catch (error: any) {
       return res.status(400).send(error?.request?.data);
     }
@@ -76,10 +91,18 @@ export class MapController {
   private getNearestImportantPlaces = async (req: express.Request, res: express.Response) => {
     const queryData: any = req.query;
 
-    try {
-      const data = await this.googleMapService.getNearestPlacesByType(queryData, 'history');
+    const location = {
+      latitude: queryData?.latitude,
+      longitude: queryData?.longitude
+    };
 
-      return res.json({ ...data });
+    try {
+      const data = await this.googleMapService.getNearestPlacesByType({
+        type: 'store',
+        location
+      });
+
+      return res.json(data);
     } catch (error: any) {
       return res.status(400).send(error?.request?.data);
     }

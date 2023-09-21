@@ -23,6 +23,7 @@ import propertyDetailService from './property-detail.service';
 import { suggestionService } from '../../index';
 import PropertyViewSchema from '../schemas/property-view.schema';
 import { getPipelineBySort } from '../pipelines/PropertyAggregation';
+import { LatLng } from '@googlemaps/google-maps-services-js';
 
 const mailService = MailService.getInstance();
 
@@ -146,6 +147,72 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
 
     if (data.hasOwnProperty('description')) {
       asset.description = data.description;
+    }
+
+    if (data.asset_address?.latitude && data.asset_address?.longitude) {
+      // Location has changed
+
+      if (
+        asset.asset_address?.latitude !== data.asset_address?.latitude ||
+        asset.asset_address?.longitude !== data.asset_address?.longitude
+      ) {
+        const origin: LatLng = {
+          lat: data.asset_address?.latitude,
+          lng: data.asset_address?.longitude
+        };
+
+        // Underground
+        const distanceFromUnderground = await googleMapService.getDistanceFrom({
+          origin,
+          type: 'subway_station'
+        });
+        if (distanceFromUnderground) {
+          asset.distance_from_underground = {
+            value: distanceFromUnderground.value / 1000
+          };
+        } else {
+          asset.distance_from_underground = {};
+        }
+
+        // School
+        const distanceFromSchool = await googleMapService.getDistanceFrom({
+          origin,
+          type: 'school'
+        });
+        if (distanceFromSchool) {
+          asset.distance_from_schools = {
+            value: distanceFromSchool.value / 1000
+          };
+        } else {
+          asset.distance_from_schools = {};
+        }
+
+        // Gym
+        const distanceFromGym = await googleMapService.getDistanceFrom({
+          origin,
+          type: 'gym'
+        });
+        if (distanceFromGym) {
+          asset.distance_from_gym = {
+            value: distanceFromGym.value / 1000
+          };
+        } else {
+          asset.distance_from_gym = {};
+        }
+
+        // High street
+        const distanceFromHighStreet = await googleMapService.getDistanceFrom({
+          origin,
+          type: 'store'
+        });
+        if (distanceFromHighStreet) {
+          asset.distance_from_high_street = {
+            value: distanceFromHighStreet.value / 1000
+          };
+        } else {
+          asset.distance_from_high_street = {};
+        }
+      }
     }
 
     if (data.hasOwnProperty('asset_address')) {

@@ -33,6 +33,7 @@
     "@azure/storage-blob": "^12.15.0",
     "@casl/ability": "^6.5.0",
     "@faker-js/faker": "^8.0.2",
+    "@googlemaps/google-maps-services-js": "^3.3.38",
     "@socket.io/redis-adapter": "^8.1.0",
     "@types/debug": "^4.1.8",
     "@types/docusign-esign": "^5.19.1",

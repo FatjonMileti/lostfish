@@ -71,7 +71,7 @@ function App() {
           token: userStore.auth.access_token
         }
       };
-      console.log(socketOpt);
+      // console.log(socketOpt);
       // @ts-ignore
       const newSocket = io(config.apiUrl, {
         ...(process.env.REACT_APP_NODE_ENV !== 'development' && { transports: ['websocket'] }),

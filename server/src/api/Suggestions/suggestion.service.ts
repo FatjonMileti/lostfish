@@ -15,7 +15,6 @@ import createError from 'http-errors';
 import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
-import { includes } from 'lodash';
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -378,7 +377,35 @@ export default class SuggestionService {
       }
     }
 
-    return (matchingCriteria / 26) * 100;
+    // Distance from underground
+    if (clientCriteria.distance_from_underground?.value && property.distance_from_underground?.value) {
+      if (property.distance_from_underground.value <= clientCriteria.distance_from_underground.value) {
+        matchingCriteria++;
+      }
+    }
+
+    // Distance from school
+    if (clientCriteria.distance_from_schools?.value && property.distance_from_schools?.value) {
+      if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value) {
+        matchingCriteria++;
+      }
+    }
+
+    // Distance from gym
+    if (clientCriteria.distance_from_gym?.value && property.distance_from_gym?.value) {
+      if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value) {
+        matchingCriteria++;
+      }
+    }
+
+    // Distance from High street
+    if (clientCriteria.distance_from_high_street?.value && property.distance_from_high_street?.value) {
+      if (property.distance_from_high_street.value <= clientCriteria.distance_from_high_street.value) {
+        matchingCriteria++;
+      }
+    }
+
+    return (matchingCriteria / 30) * 100;
   }
 }
 

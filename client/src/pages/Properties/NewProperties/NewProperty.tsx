@@ -618,8 +618,10 @@ export const NewProperty = styled(
                   error={!!form.formState.errors['parkingType']}
                   helperText={form.formState.errors['parkingType']?.message?.toString()}>
                   <option></option>
-                  {Object.values(Parking).map((parking) => (
-                    <option value={parking}>{parking}</option>
+                  {Object.values(Parking).map((parking, parkingIndex) => (
+                    <option value={parking} key={parkingIndex}>
+                      {parking}
+                    </option>
                   ))}
                 </Select>
               )}

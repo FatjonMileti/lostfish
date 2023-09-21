@@ -12,11 +12,21 @@ interface NearestThingsProps extends HTMLAttributes<HTMLElement> {
     lng: number;
   };
 }
+
+type NearPlace = {
+  place: {
+    name: string;
+  };
+  distance?: {
+    value: number;
+    text: string;
+  };
+};
 export const NearestThings = styled(({ className, location }: NearestThingsProps) => {
   const [selectedButton, setSelectedButton] = React.useState('stations');
-  const [stations, setStations] = React.useState<{ name: string }[]>([]);
-  const [schools, setSchools] = React.useState<{ name: string }[]>([]);
-  const [importantPlaces, setImportantPlaces] = React.useState<{ name: string }[]>([]);
+  const [stations, setStations] = React.useState<NearPlace[]>([]);
+  const [schools, setSchools] = React.useState<NearPlace[]>([]);
+  const [importantPlaces, setImportantPlaces] = React.useState<NearPlace[]>([]);
 
   React.useEffect(() => {
     if (location.lat && location.lng) {
@@ -35,7 +45,7 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
         }
       });
 
-      if (data.status === 'OK') setStations(data.results);
+      setStations(data);
     } catch (error: any) {
       console.log(error);
     }
@@ -49,8 +59,7 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
           longitude: location.lng
         }
       });
-
-      if (data.status === 'OK') setSchools(data.results);
+      setSchools(data);
     } catch (error: any) {
       console.log(error);
     }
@@ -65,7 +74,7 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
         }
       });
 
-      if (data.status === 'OK') setImportantPlaces(data.results);
+      setImportantPlaces(data);
     } catch (error: any) {
       console.log(error);
     }
@@ -105,7 +114,11 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
             {stations.slice(0, 3).map((station, stationsIndex) => (
               <div key={stationsIndex} className='location'>
                 <Icon icon='bus' />
-                <Typography variant='body4'>{station.name}</Typography>
+                <Typography variant='body4'>
+                  {station.place.name}
+                  <span className='separator'> | </span>
+                  <span className='distance'>{station?.distance?.text}</span>
+                </Typography>
               </div>
             ))}
           </>
@@ -113,8 +126,10 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
           <>
             {schools.slice(0, 3).map((station, schoolIndex) => (
               <div key={schoolIndex} className='location'>
-                <Typography variant='body4' key={schoolIndex}>
-                  {station.name}
+                <Typography variant='body4'>
+                  {station.place.name}
+                  <span className='separator'> | </span>
+                  <span className='distance'>{station?.distance?.text}</span>
                 </Typography>
               </div>
             ))}
@@ -123,8 +138,10 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
           <>
             {importantPlaces.slice(0, 3).map((station, stationIndex) => (
               <div key={stationIndex} className='location'>
-                <Typography variant='body4' key={stationIndex}>
-                  {station.name}
+                <Typography variant='body4'>
+                  {station.place.name}
+                  <span className='separator'> | </span>
+                  <span className='distance'>{station?.distance?.text}</span>
                 </Typography>
               </div>
             ))}
@@ -176,6 +193,14 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
 
         display: flex;
         column-gap: 8px;
+
+        .separator {
+          color: #a7a7a7;
+        }
+
+        .distance {
+          color: #184d6d;
+        }
       }
     }
   }
