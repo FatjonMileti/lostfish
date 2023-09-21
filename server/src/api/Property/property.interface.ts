@@ -139,6 +139,11 @@ export enum FloorSizeUnit {
   SQR_MTRS = 'sq.m'
 }
 
+export enum DistanceUnit {
+  km = 'km',
+  mi = 'mi'
+}
+
 export interface PropertyDocument extends Document {
   asset_id: number;
   name: string;

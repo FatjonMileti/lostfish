@@ -16,8 +16,7 @@ export const BudgetFor = {
 
 export const DistanceUnit = {
   Km: 'km',
-  M: 'm',
-  Ft: 'ft'
+  Mi: 'mi'
 } as const;
 
 const OtherSpecificPropertyFeature = {
