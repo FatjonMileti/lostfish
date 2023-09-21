@@ -274,7 +274,7 @@ export default class SuggestionService {
       }
     }
 
-    const [minBudget, maxBudget] = clientCriteria?.budget?.split(' - ')?.map(Number);
+    const [minBudget, maxBudget] = clientCriteria?.budget?.split(' - ')?.map(Number) || [];
 
     if (clientCriteria.budgetFor === 'Week') {
       const weeksInMonth = 4.34524;
