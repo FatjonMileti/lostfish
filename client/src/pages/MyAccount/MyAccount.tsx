@@ -107,7 +107,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                       <motion.div
                         whileTap={{ scale: 0.98 }}
                         className={`menu-item ${isActive ? 'active' : ''}`}>
-                        <Icon icon={icon} color='black' size={20} />
+                        <Icon icon={icon} color='black' size={23} />
                         <Typography variant='body4' className='text'>
                           {text}
                         </Typography>
@@ -120,7 +120,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
             <div className='menu-footer'>
               <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
-                <Icon icon='sign-out' color='black' size={20} />
+                <Icon icon='sign-out' color='black' size={23} />
                 <Typography variant='body4' className='text'>
                   Sign out
                 </Typography>
