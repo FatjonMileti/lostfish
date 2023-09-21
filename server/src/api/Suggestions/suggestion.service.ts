@@ -229,8 +229,8 @@ export default class SuggestionService {
       max: parseInt(clientCriteria.room_details.number_of_bedrooms?.split('-')[1], 10)
     };
     if (
-      property.room_details.number_of_bedrooms >= criteriaNumberOfBedrooms.min &&
-      property.room_details.number_of_bedrooms <= criteriaNumberOfBedrooms.max
+      property.room_details?.number_of_bedrooms >= criteriaNumberOfBedrooms?.min &&
+      property.room_details?.number_of_bedrooms <= criteriaNumberOfBedrooms?.max
     ) {
       matchingCriteria++;
     }
