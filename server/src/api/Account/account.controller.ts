@@ -20,7 +20,7 @@ export class AccountController {
   private initializeRoutes() {
     this.router.post(
       '/login',
-      loginLimiter,
+      // loginLimiter,
       validator(
         joi.object({
           email: joi.string().required(),
