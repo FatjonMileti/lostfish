@@ -18,6 +18,7 @@ const generateDefaultUsers = async () => {
       last_name: role,
       email: `${role}@lostfish.com`,
       role,
+      has_completed_initial_setup: role === Role.Landlord || role === Role.Client,
       phone: faker.phone.number(),
       is_disabled: false,
       avatar: faker.helpers.arrayElement(['0', '1', '2', '3', '4', '5']),
@@ -30,6 +31,7 @@ const generateDefaultUsers = async () => {
 const generateRandomUser = async () => {
   const user: any = {
     role: faker.helpers.arrayElement(['Landlord', 'Tenant']),
+    has_completed_initial_setup: true,
     email: faker.internet.email(),
     phone: faker.phone.number(),
     first_name: faker.internet.displayName(),

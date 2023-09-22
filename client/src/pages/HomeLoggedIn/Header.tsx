@@ -1,11 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAbility } from '@casl/react';
-
 import { useProfileStore } from '../../globalState/profile';
-import { AbilityContext } from '../../context/AbilityContext';
-import { CASLAction } from '../../utils/ability.util';
 
 import { MenuButton } from '../../components/MenuButton';
 import { CircularProgress } from '../../components/CircularProgress';
@@ -14,6 +10,7 @@ import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from './avatars';
 
 import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
+import { Role } from '../../enums';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -22,12 +19,6 @@ export const Header = styled(({ className }: HeaderProps) => {
 
   const profileStore = useProfileStore();
 
-  const ability = useAbility(AbilityContext);
-
-  const canReadPropertyMenuItem = ability.can(CASLAction.Read, 'Menu', 'Property');
-  const canReadMatchesMenuItem = ability.can(CASLAction.Read, 'Menu', 'Match');
-  const canReadMessageMenuItem = ability.can(CASLAction.Read, 'Menu', 'Message');
-
   const trustScore = profileStore.trust_score;
 
   return (
@@ -35,26 +26,27 @@ export const Header = styled(({ className }: HeaderProps) => {
       <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
       <div className='middle-part'>
-        <div className='menu'>
-          <NavLink to='/'>
-            {({ isActive }) => <MenuButton active={isActive}>My dashboard</MenuButton>}
-          </NavLink>
-          {canReadMatchesMenuItem && (
+        {profileStore.hasCompletedInitialSetup && (
+          <div className='menu'>
+            <NavLink to='/'>
+              {({ isActive }) => <MenuButton active={isActive}>My dashboard</MenuButton>}
+            </NavLink>
+
             <NavLink to='/matches'>
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}
             </NavLink>
-          )}
-          {canReadPropertyMenuItem && (
-            <NavLink to='/properties'>
-              {({ isActive }) => <MenuButton active={isActive}>Properties</MenuButton>}
-            </NavLink>
-          )}
-          {canReadMessageMenuItem && (
+
+            {profileStore.role === Role.Landlord && (
+              <NavLink to='/properties'>
+                {({ isActive }) => <MenuButton active={isActive}>Properties</MenuButton>}
+              </NavLink>
+            )}
+
             <NavLink to='/messages'>
               {({ isActive }) => <MenuButton active={isActive}>Messages</MenuButton>}
             </NavLink>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className='right-part'>

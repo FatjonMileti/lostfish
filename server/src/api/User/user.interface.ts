@@ -55,6 +55,7 @@ export interface UserDocument extends Document {
   signed_transaction_agreement: boolean;
   transaction_agreement_link: string;
   role: Role;
+  has_completed_initial_setup: boolean;
   hash: string;
   last_login: Date;
   confirmation_token?: string;

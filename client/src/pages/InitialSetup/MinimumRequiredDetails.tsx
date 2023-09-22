@@ -14,6 +14,7 @@ import { Bedrooms } from './Mrd.Bedrooms';
 import { Select } from '../../components/Select/Select';
 import { BudgetFor, Transaction } from '../SetCriteria/criteria.contants';
 import { BudgetForType } from '../SetCriteria/criteria.types';
+import { useProfileStore } from '../../globalState/profile';
 
 type MinimumRequiredDataType = {
   transactionType?: string;
@@ -47,10 +48,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
 
   const { auth } = useUserStore();
   const criteriaStore = useCriteriaStore();
-
-  const onWhenChange = async (whenDoYouWantToMove: string) => {
-    setState((state) => ({ ...state, whenDoYouWantToMove }));
-  };
+  const profileStore = useProfileStore();
 
   const onAreaOfInterestChange = ({
     formattedAddress,
@@ -80,7 +78,6 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
     const { data } = await axios(auth.access_token).patch('/api/criteria', {
       looking_for: criteriaStore.lookingFor,
       transaction_type_string: state.transactionType,
-      // moving_time: state.whenDoYouWantToMove,
       area_of_interest: state.areaOfInterest,
       asset_address: state.location,
       room_details: {
@@ -90,11 +87,7 @@ export const MinimumRequiredDetails = styled(({ className }: MinimumRequiredDeta
       budget_for: `${state.budgetFor}`
     });
 
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
+    await profileStore.fetchProfile(auth.access_token);
 
     criteriaStore.set({
       transactionType: data.transaction_type_string,

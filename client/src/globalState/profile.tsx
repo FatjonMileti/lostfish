@@ -22,6 +22,7 @@ export interface ProfileStoreType {
   transaction_agreement_link: string | undefined;
   documents: IUser_Documents[];
   trust_score: number;
+  hasCompletedInitialSetup: boolean;
   set: (
     partial:
       | ProfileStoreType
@@ -51,7 +52,8 @@ const profileInitialState = {
   age: 0,
   address: '',
   martial_status: '',
-  have_pets: ''
+  have_pets: '',
+  hasCompletedInitialSetup: false
 };
 
 export const useProfileStore = create<ProfileStoreType>()(
@@ -67,6 +69,7 @@ export const useProfileStore = create<ProfileStoreType>()(
 
             set((profile) => ({
               ...profile,
+
               id: data._id,
               avatar: data.avatar,
               first_name: data.first_name,
@@ -84,7 +87,8 @@ export const useProfileStore = create<ProfileStoreType>()(
               age: data.age,
               address: data.address,
               martial_status: data.martial_status,
-              have_pets: data.have_pets ? 'Yes' : 'No'
+              have_pets: data.have_pets ? 'Yes' : 'No',
+              hasCompletedInitialSetup: data?.has_completed_initial_setup
             }));
           } catch (err: any) {
             if (err.response.code === 404) {

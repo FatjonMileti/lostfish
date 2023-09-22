@@ -29,6 +29,10 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
     type: String,
     default: Role.Client
   },
+  has_completed_initial_setup: {
+    type: Boolean,
+    default: false
+  },
   email: {
     type: String,
     index: true,

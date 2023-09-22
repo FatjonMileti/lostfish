@@ -76,6 +76,7 @@ export const AreaOfInterest = styled(({ className, areaOfInterest, onAreaChange 
         placeholder='E.g. Bristol or BA1 2LR'
         value={searchValue}
         onChange={({ target: { value } }) => onSearchChange(value)}
+        autoComplete='off'
       />
     </div>
   );

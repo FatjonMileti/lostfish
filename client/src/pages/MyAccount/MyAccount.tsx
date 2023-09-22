@@ -63,6 +63,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
     } catch (err) {
     } finally {
       userStore.set((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+      profileStore.reset();
       navigate('/');
     }
   };

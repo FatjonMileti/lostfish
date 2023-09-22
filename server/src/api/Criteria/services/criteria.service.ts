@@ -36,6 +36,7 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
     }
     if (data.looking_for === LookingForEnum.OWN_A_PLACE) {
       user.role = Role.Landlord;
+      user.has_completed_initial_setup = true;
     }
     // docusignService.createLostfishPrivacyAgreement(user._id).then(() => console.log('ok'));
     // docusignService.createLostfishTransactionAgreement(user._id).then(() => console.log('ok'));
@@ -51,6 +52,12 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
 
 const updateCriteria = async (req: Request, res: Response): Promise<any> => {
   try {
+    const user = await userService.findOne({ _id: res.locals.user_id });
+
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'not found' });
+    }
+
     const data: CriteriaDocument = req.body;
 
     const criteria: CriteriaDocument | null = await CriteriaModel.findOne({ created_by: res.locals.user_id });
@@ -156,6 +163,14 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.moving_time = data.moving_time;
     }
 
+    console.log('--------------data: ', JSON.parse(JSON.stringify(data)));
+
+    if (!!data.area_of_interest && !!data.budget && !!data.room_details?.number_of_bedrooms) {
+      //
+      user.has_completed_initial_setup = true;
+    }
+
+    await user.save();
     await criteria.save();
 
     res.status(httpStatus.OK).send(criteria);

@@ -46,13 +46,9 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
     try {
       setLoading(true);
 
-      const { data } = await axios(userStore.auth.access_token).post('/api/criteria', {
+      await axios(userStore.auth.access_token).post('/api/criteria', {
         looking_for: lookingFor,
         transaction_type_string: criteriaStore.transactionType
-      });
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
       });
 
       criteriaStore.set({ lookingFor });
@@ -60,7 +56,6 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
       await refreshToken(true);
 
       if (lookingFor === 'I own a place') {
-        await onSelectAvatar(0);
         navigate('/properties?newProperty=true');
       }
 

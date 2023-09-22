@@ -120,15 +120,7 @@ function App() {
                   path=''
                   element={
                     !!userStore.auth ? (
-                      <>
-                        {!profileStore.avatar ||
-                        !criteriaStore.lookingFor ||
-                        (userStore?.userDetails?.role === 'Tenant' && !criteriaStore.areaOfInterest) ? (
-                          <InitialSetup />
-                        ) : (
-                          <HomeLoggedIn />
-                        )}
-                      </>
+                      <>{profileStore.hasCompletedInitialSetup ? <HomeLoggedIn /> : <InitialSetup />}</>
                     ) : (
                       <Home />
                     )
@@ -140,10 +132,13 @@ function App() {
                 )}
 
                 <Route path='/agreement' element={<Agreement />} />
-                <Route path='/matches' element={!!userStore.auth ? <Matches /> : <Login />} />
+
+                <Route path='/matches' element={<Matches />} />
+
                 <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
                 <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
                 <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
+
                 <Route path='*' element={<NotFound />} />
               </Routes>
             </BrowserRouter>
