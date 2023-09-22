@@ -14,6 +14,8 @@ import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
 import { Header } from '../HomeLoggedIn/Header';
+import { Footer } from '../Home/Footer';
+
 import request from '../../utils/axios';
 
 import { useUserStore } from '../../globalState/user';
@@ -145,6 +147,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             </Routes>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );
@@ -155,12 +158,14 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
     display: grid;
     background-color: white;
 
-    grid-template-rows: min-content auto;
+    grid-template-rows: min-content auto min-content;
 
     .container-account {
       display: grid;
       //column-gap: 69px;
       padding: 36px;
+      min-height: calc(100vh - 104px);
+      box-sizing: border-box;
 
       grid-template-columns: 1fr min-content 2.79fr;
 
