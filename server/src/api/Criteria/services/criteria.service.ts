@@ -163,8 +163,6 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.moving_time = data.moving_time;
     }
 
-    console.log('--------------data: ', JSON.parse(JSON.stringify(data)));
-
     if (!!data.area_of_interest && !!data.budget && !!data.room_details?.number_of_bedrooms) {
       //
       user.has_completed_initial_setup = true;
