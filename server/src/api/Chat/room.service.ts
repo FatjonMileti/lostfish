@@ -83,7 +83,7 @@ const findAllProperties = async (query: any) => {
     { $match: { ...query } },
     {
       $lookup: {
-        from: 'assets',
+        from: 'properties',
         localField: 'property',
         foreignField: '_id',
         as: 'propertyDetails'
