@@ -26,7 +26,7 @@ export const Chatbox = styled(
     const [currentMessage, setCurrentMessage] = useState('');
     const [messageList, setMessageList] = useState<IMessageItem[]>([]);
 
-    const isAuthor = room.author._id === user_id.toString();
+    const isAuthor = room.author._id === user_id;
 
     const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
@@ -55,8 +55,10 @@ export const Chatbox = styled(
       }
     }, [messageList]);
 
-    const authorAvatar = getAvatarFormIndex(room.author.avatar);
-    const participantAvatar = getAvatarFormIndex(room.participant.avatar);
+    const avatarById = {
+      [room.author._id]: getAvatarFormIndex(room.author.avatar),
+      [room.participant._id]: getAvatarFormIndex(room.participant.avatar)
+    };
 
     const sendMessage = async () => {
       if (!currentMessage) {
@@ -115,7 +117,7 @@ export const Chatbox = styled(
               messageList[messageIndex - 1]?.sender?._id === authorId &&
               (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
 
-            const avatar = fromMe ? authorAvatar : participantAvatar;
+            const avatar = avatarById[authorId];
 
             return (
               <div
@@ -335,7 +337,6 @@ export const Chatbox = styled(
       }
 
       .send-button {
-        //padding-inline: 67px;
       }
     }
   }

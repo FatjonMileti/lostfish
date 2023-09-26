@@ -5,6 +5,7 @@ import { IRoom } from './messages.interface';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import moment from 'moment';
+import { useUserStore } from '../../globalState/user';
 
 export const Conversation = styled(
   (props: {
@@ -16,7 +17,11 @@ export const Conversation = styled(
   }) => {
     const { joinRoom, fullName, row, className, active } = props;
 
-    const avatar = getAvatarFormIndex(row?.participant?.avatar);
+    const userStore = useUserStore();
+
+    const avatar = getAvatarFormIndex(
+      userStore.userDetails?.user_id === row?.author?._id ? row?.participant?.avatar : row?.author?.avatar
+    );
 
     return (
       <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
@@ -68,7 +73,7 @@ export const Conversation = styled(
       align-items: center;
       justify-content: center;
       color: white;
-      font-family: Roobert;
+      font-family: Roobert, serif;
       font-size: 14px;
       font-weight: 500;
     }
