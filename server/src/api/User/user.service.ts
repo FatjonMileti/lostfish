@@ -13,8 +13,8 @@ import { randomUUID } from 'crypto';
 import verifyEmailTamplate from '../../utils/templates/defaultTemplate';
 import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
-import MatchSchema from '../Match/match.schema';
-import AssetSchema from '../Property/schemas/property.schema';
+import RoomSchema from '../Chat/schemas/room.schema';
+import MessageModel from '../Chat/schemas/message.schema';
 const mailService = MailService.getInstance();
 
 const getAll = async (req: Request, res: Response) => {
@@ -247,6 +247,27 @@ const createUser = async (req: Request, res: Response) => {
       subject: 'Test email',
       html: emailTemplate.html
     });
+
+    // send welcome message in chat
+    const agentUser = await UserModel.findOne({ role: Role.Agent });
+    if (agentUser) {
+      const newRoom = await RoomSchema.create({
+        author: agentUser._id,
+        participant: savedUser._id,
+        property: undefined
+      });
+
+      const { participant, author } = newRoom;
+
+      const message = {
+        room_id: newRoom._id,
+        participant,
+        author,
+        sender: agentUser._id,
+        message: 'Welcome to LostFish'
+      };
+      await MessageModel.create(message);
+    }
 
     return res.status(httpStatus.CREATED).json({ ...mapToUser(savedUser), hash: undefined });
   } catch (error: any) {

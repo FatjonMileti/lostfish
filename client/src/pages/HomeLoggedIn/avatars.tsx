@@ -4,13 +4,20 @@ import avatar2 from '../MyAccount/images/fancy-avatar-2.jpg';
 import avatar3 from '../MyAccount/images/fancy-avatar-3.jpg';
 import avatar4 from '../MyAccount/images/fancy-avatar-4.jpg';
 import avatar5 from '../MyAccount/images/fancy-avatar-5.jpg';
+import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
 
 export type AvatarType = { image: string; backgroundColor: string };
 
-export const getAvatarFormIndex = (avatarIndex: string = ''): string => {
-  if (isNaN(parseInt(avatarIndex))) return '';
-  const parsedAvatarIndex = parseInt(avatarIndex);
-  return avatars[parsedAvatarIndex]?.image || '';
+export const getAvatarFormIndex = (avatarkey: string = ''): string => {
+  // if (isNaN(parseInt(avatarkey))) return '';
+  const parsedAvatarIndex = parseInt(avatarkey);
+  return (
+    avatars[parsedAvatarIndex]?.image ||
+    {
+      lostfish: agentAvatar
+    }[avatarkey]?.image ||
+    ''
+  );
 };
 
 export const avatars: AvatarType[] = [
@@ -39,3 +46,8 @@ export const avatars: AvatarType[] = [
     backgroundColor: '#408140'
   }
 ];
+
+const agentAvatar: AvatarType = {
+  image: lostfishLogoColored,
+  backgroundColor: 'white'
+};

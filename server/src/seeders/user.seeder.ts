@@ -21,7 +21,7 @@ const generateDefaultUsers = async () => {
       has_completed_initial_setup: role === Role.Landlord || role === Role.Client,
       phone: faker.phone.number(),
       is_disabled: false,
-      avatar: faker.helpers.arrayElement(['0', '1', '2', '3', '4', '5']),
+      avatar: role === Role.Agent ? 'lostfish' : faker.helpers.arrayElement(['0', '1', '2', '3', '4', '5']),
       hash
     };
   });

@@ -34,6 +34,7 @@ export class ChatController {
     this.router.get('/room', this.checkIfRoomExist);
     this.router.get('/:id', paging({ sort: { created_at: -1 } }), validateId, this.getById);
     this.router.delete('/:id', validateId, this.delete);
+    this.router.get('/:id/contract-documents-status', validateId, this.getRoomContractDocuments);
   }
 
   /**
@@ -109,40 +110,52 @@ export class ChatController {
     const query: any = {
       room_id: { $eq: new mongoose.Types.ObjectId(id) }
     };
-
     const response = await roomService.getMessages(query, res.locals.paging_options, userId);
-
-    const room: any | null = await roomService.findOne({ _id: id });
-    if (room) {
-      const property = await assetService.findById(room.property as string);
-      response.property = {
-        id: property._id,
-        asset_address: property.asset_address,
-        area_of_interest: property.area_of_interest
-      };
-
-      const areDocumentsApproved = await documentService.canCompleteTransaction(
-        room.author,
-        room.participant
-      );
-
-      const landlord = room.author.role === Role.Landlord ? room.author._id : room.participant._id;
-      const tenant = room.author.role === Role.Client ? room.author._id : room.participant._id;
-
-      const isContractGenerated: IEnvelope | null = await docusignLocalService.findEnvelope({
-        tenant,
-        land_lord: landlord,
-        property: room.property as string,
-        document_type: { $eq: 'Rent Contract' }
-      });
-
-      if (res.locals.role === Role.Landlord) {
-        response.areDocumentsApproved = areDocumentsApproved ? areDocumentsApproved.approved : false;
-        response.isContractCreated = !!isContractGenerated;
-      }
-    }
-
     res.send(response);
+  };
+
+  /**
+   * @api {get} /api/chat/:id/contract-documents-status Get by room Id
+   * @apiDescription Get contract documents status
+   * @apiGroup Chat
+   * @apiSampleRequest /api/chat/:id/contract-documents-status
+   *
+   * @apiParam id chat id
+   * @apiPermission authorize
+   * @apiUse bearer
+   */
+
+  private getRoomContractDocuments = async (req: express.Request, res: express.Response) => {
+    try {
+      const roomId = req.params.id;
+      const room: any | null = await roomService.findOne({ _id: roomId });
+
+      if (room && room?.property && res.locals.role === Role.Landlord) {
+        const areDocumentsApproved = await documentService.canCompleteTransaction(
+          room.author,
+          room.participant
+        );
+
+        const landlord = room.author.role === Role.Landlord ? room.author._id : room.participant._id;
+        const tenant = room.author.role === Role.Client ? room.author._id : room.participant._id;
+
+        const isContractGenerated: IEnvelope | null = await docusignLocalService.findEnvelope({
+          tenant,
+          land_lord: landlord,
+          property: room.property as string,
+          document_type: { $eq: 'Rent Contract' }
+        });
+
+        res.send({
+          areDocumentsApproved: areDocumentsApproved ? areDocumentsApproved.approved : false,
+          isContractCreated: !!isContractGenerated
+        });
+      } else {
+        throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+      }
+    } catch (err) {
+      throw err;
+    }
   };
 
   /**

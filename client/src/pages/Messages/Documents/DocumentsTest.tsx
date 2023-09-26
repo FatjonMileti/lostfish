@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
@@ -15,21 +15,49 @@ import Can from '../../../components/Can';
 import { useUserStore } from '../../../globalState/user';
 import { NewRentingContract } from './NewRentingContract';
 import { CASLAction } from '../../../utils/ability.util';
+import request from '../../../utils/axios';
 
 interface DocumentsTestProps extends React.HTMLAttributes<HTMLDivElement> {
   room: IRoom;
-  documentState: {
-    areDocumentsApproved: boolean;
-    isContractCreated: boolean;
-  };
-  onReload: () => void;
 }
 
-export const DocumentsTest = styled(({ room, documentState, className, onReload }: DocumentsTestProps) => {
+export const DocumentsTest = styled(({ room, className }: DocumentsTestProps) => {
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const { userDetails } = useUserStore();
+  const [documentState, setDocumentState] = useState<{
+    areDocumentsApproved: boolean;
+    isContractCreated: boolean;
+  }>({ areDocumentsApproved: false, isContractCreated: false });
+
+  const userStore = useUserStore();
+
+  React.useEffect(() => {
+    if (room?.property) {
+      console.log('fetch document details...');
+      getDocumentStatus();
+    }
+  }, [room]);
+
+  const getDocumentStatus = async () => {
+    try {
+      const response = await request(userStore.auth.access_token).get(
+        `/api/chat/${room._id}/contract-documents-status`
+      );
+
+      setDocumentState((prevState) => ({
+        ...prevState,
+        isContractCreated: response.data.isContractCreated,
+        areDocumentsApproved: response.data.areDocumentsApproved
+      }));
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const onReload = () => {
+    getDocumentStatus();
+  };
 
   const onFinish = () => {
     alert('Contract created with success!');
@@ -41,7 +69,7 @@ export const DocumentsTest = styled(({ room, documentState, className, onReload 
     onReload();
   };
 
-  const tenant = room.participant._id === userDetails.user_id ? room.author : room.participant;
+  const tenant = room.participant._id === userStore.userDetails.user_id ? room.author : room.participant;
 
   return (
     <div className={classNames('documents', className)}>

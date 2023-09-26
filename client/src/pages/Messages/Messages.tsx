@@ -36,11 +36,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
   const [room, setRoom] = useState<IRoom | null>(null);
 
-  const [documentState, setDocumentState] = useState<{
-    areDocumentsApproved: boolean;
-    isContractCreated: boolean;
-  }>({ areDocumentsApproved: false, isContractCreated: false });
-
   const [messages, setMessages] = useState<IMessageItem[]>([]);
   const [conversations, setConversations] = useState<IRoom[]>([]);
 
@@ -139,11 +134,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       '/api/chat/' + roomId + '?pageSize=15&page=1'
     );
     setMessages(response.data.docs.reverse());
-    setDocumentState((prevState) => ({
-      ...prevState,
-      isContractCreated: response.data.isContractCreated,
-      areDocumentsApproved: response.data.areDocumentsApproved
-    }));
   };
 
   const handleReadMessages = async (room: IRoom) => {
@@ -259,19 +249,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             ) : (
               <div />
             )}
-            {room ? (
-              <DocumentsTest
-                room={room}
-                documentState={documentState}
-                onReload={() => {
-                  if (room) {
-                    getMessagesForRoom(room._id);
-                  }
-                }}
-              />
-            ) : (
-              <div />
-            )}
+            {room?.property ? <DocumentsTest room={room} /> : <div />}
           </div>
         )}
       </div>
