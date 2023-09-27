@@ -109,15 +109,19 @@ export const SetCriteria = styled(
           mainForm.setValue('areaUnit', data?.floor_size_unit);
         }
 
-        mainForm.setValue('nrOfBedrooms', [
-          parseInt(data.room_details?.number_of_bedrooms.split('-')[0] || '0'),
-          parseInt(data.room_details?.number_of_bedrooms.split('-')[1] || '0')
-        ]);
+        if (data.room_details?.number_of_bedrooms) {
+          mainForm.setValue('nrOfBedrooms', [
+            parseInt(data.room_details?.number_of_bedrooms?.split('-')[0] || '0'),
+            parseInt(data.room_details?.number_of_bedrooms?.split('-')[1] || '0')
+          ]);
+        }
 
-        mainForm.setValue('nrOfBathrooms', [
-          parseInt(data.room_details?.number_of_bathrooms.split('-')[0] || '0'),
-          parseInt(data.room_details?.number_of_bathrooms.split('-')[1] || '0')
-        ]);
+        if (data.room_details?.number_of_bathrooms) {
+          mainForm.setValue('nrOfBathrooms', [
+            parseInt(data.room_details?.number_of_bathrooms?.split('-')[0] || '0'),
+            parseInt(data.room_details?.number_of_bathrooms?.split('-')[1] || '0')
+          ]);
+        }
 
         mainForm.setValue(
           'specificPropertyFeatures',

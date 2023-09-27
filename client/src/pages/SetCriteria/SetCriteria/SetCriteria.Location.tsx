@@ -22,8 +22,6 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
     form.watch();
   }, []);
 
-  console.log('form: ');
-
   return (
     <div className={className}>
       <div className='section property-location-section'>
