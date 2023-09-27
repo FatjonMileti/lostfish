@@ -11,15 +11,14 @@ import { getAvatarFormIndex } from './avatars';
 
 import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
 import { Role } from '../../enums';
+import { useNotificationsStore } from '../../globalState/notifications';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
-
   const profileStore = useProfileStore();
-
-  const trustScore = profileStore.trust_score;
+  const notificationsStore = useNotificationsStore();
 
   return (
     <div className={`header ${className}`}>
@@ -43,7 +42,18 @@ export const Header = styled(({ className }: HeaderProps) => {
             )}
 
             <NavLink to='/messages'>
-              {({ isActive }) => <MenuButton active={isActive}>Messages</MenuButton>}
+              {({ isActive }) => (
+                <div>
+                  <MenuButton active={isActive}>
+                    <div className='messages-button-content'>
+                      Messages
+                      {notificationsStore.unreadMessages > 0 && (
+                        <span className='unread-messages-indicator' />
+                      )}
+                    </div>
+                  </MenuButton>
+                </div>
+              )}
             </NavLink>
           </div>
         )}
@@ -55,7 +65,7 @@ export const Header = styled(({ className }: HeaderProps) => {
             Match score
           </Typography>
           <Typography variant='body5' className='trust-score-percentage'>
-            {trustScore}%
+            {profileStore.trust_score}%
           </Typography>
         </div>
 
@@ -64,7 +74,7 @@ export const Header = styled(({ className }: HeaderProps) => {
             <CircularProgress
               className='circular-percentage'
               variant='determinate'
-              value={trustScore}
+              value={profileStore.trust_score}
               size='64px'
             />
             <Avatar image={getAvatarFormIndex(profileStore.avatar) || undefined} />
@@ -101,6 +111,18 @@ export const Header = styled(({ className }: HeaderProps) => {
         align-items: center;
         margin: 0;
         padding: 5px;
+
+        .messages-button-content {
+          display: flex;
+          align-items: center;
+          column-gap: 4px;
+          .unread-messages-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: #b4263b;
+            border-radius: 50%;
+          }
+        }
       }
     }
 

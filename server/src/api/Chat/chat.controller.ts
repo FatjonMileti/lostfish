@@ -115,7 +115,7 @@ export class ChatController {
   };
 
   /**
-   * @api {get} /api/chat/:id/contract-documents-status Get by room Id
+   * @api {get} /api/chat/:id/contract-documents-status Get contract documents status by room Id
    * @apiDescription Get contract documents status
    * @apiGroup Chat
    * @apiSampleRequest /api/chat/:id/contract-documents-status

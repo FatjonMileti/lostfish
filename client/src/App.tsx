@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { registerStore, useGlobalState } from './globalState/globalState';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
@@ -17,7 +16,6 @@ import SocketContext from './context/SocketContext';
 import { About } from './pages/About/About';
 import { Mission } from './pages/Mission/Mission';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
-import request from './utils/axios';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
@@ -33,31 +31,22 @@ import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
 import { InitialSetup } from './pages/InitialSetup/InitialSetup';
 import { useProfileStore } from './globalState/profile';
-import { CookieConsent } from './components/CookieConsent';
+import { useNotificationsStore } from './globalState/notifications';
 
-registerStore(
-  'notification',
-  {
-    unread: 0,
-    list: []
-  },
-  { persist: true }
-);
+import { CookieConsent } from './components/CookieConsent';
 
 function App() {
   const userStore = useUserStore();
   const criteriaStore = useCriteriaStore();
   const profileStore = useProfileStore();
-
-  const {
-    notification: [notification, setNotification]
-  } = useGlobalState();
+  const notificationsStore = useNotificationsStore();
 
   const [socket, setSocket] = useState<Socket | null>(null);
 
   React.useEffect(() => {
     if (userStore.auth) {
       criteriaStore.fetchCriteria(userStore.auth.access_token);
+      notificationsStore.fetchNotifications(userStore.auth.access_token);
     } else {
       criteriaStore.reset();
     }
@@ -80,19 +69,11 @@ function App() {
         }
       });
       setSocket(newSocket);
-
-      getUnreadMessages();
-
       return () => {
         newSocket.disconnect();
       };
     }
   }, [userStore?.userDetails?.user_id]);
-
-  const getUnreadMessages = async () => {
-    const response = await request(userStore.auth.access_token).get('/api/notification/unread');
-    setNotification((prevNotification: any) => ({ ...prevNotification, unread: response.data.unread }));
-  };
 
   const value = useMemo(() => ({ socket }), [socket]);
 
