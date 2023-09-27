@@ -285,7 +285,8 @@ export const SelectTransaction = styled(
           position: absolute;
           left: calc(50% - 70px);
           bottom: calc(50% - 134px);
-          width: 45%;
+          width: 150px;
+          height: 120px;
           color: white;
           font-size: 32px;
           z-index: 1;
@@ -295,7 +296,8 @@ export const SelectTransaction = styled(
           position: absolute;
           bottom: calc(50% - 134px);
           right: calc(50% - 70px);
-          width: 45%;
+          width: 150px;
+          height: 120px;
           color: white;
           font-size: 32px;
           z-index: 1;
