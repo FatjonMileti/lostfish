@@ -15,6 +15,8 @@ import MailService from '../../utils/email';
 import { resetPasswordTemplate } from '../../utils/templates/resetPasswordTemplate';
 import RoomSchema from '../Chat/schemas/room.schema';
 import MessageModel from '../Chat/schemas/message.schema';
+import notificationSender from '../../utils/notification-sender';
+import { NotificationType } from '../Notification/notification.interface';
 const mailService = MailService.getInstance();
 
 const getAll = async (req: Request, res: Response) => {
@@ -266,7 +268,15 @@ const createUser = async (req: Request, res: Response) => {
         sender: agentUser._id,
         message: 'Welcome to LostFish'
       };
-      await MessageModel.create(message);
+      const newMessage = await MessageModel.create(message);
+
+      await notificationSender.notifyUser({
+        user: savedUser._id,
+        entity: 'Message',
+        entity_id: newMessage._id,
+        data: newMessage,
+        type: NotificationType.CHAT
+      });
     }
 
     return res.status(httpStatus.CREATED).json({ ...mapToUser(savedUser), hash: undefined });
