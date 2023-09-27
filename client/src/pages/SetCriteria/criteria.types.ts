@@ -74,8 +74,7 @@ type DistanceType = {
 type SpecificPropertyFeatureType = ObjectValues<typeof SpecificPropertyFeature>;
 
 export type PropertyPreferenceType = ObjectValues<typeof PropertyPreference>;
-
-type TransactionType = ObjectValues<typeof Transaction>;
+export type TransactionType = ObjectValues<typeof Transaction>;
 
 type ContractDetailType = ObjectValues<typeof ContractDetail>;
 

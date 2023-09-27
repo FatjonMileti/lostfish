@@ -19,6 +19,8 @@ import { refreshToken } from '../Login/SessionMaintainer';
 import backgroundImg from '../Home/home-background.png';
 import classNames from 'classnames';
 import { Role } from '../../enums';
+import {SelectTransaction} from "./Mrd.SelectTransaction";
+import {TransactionType} from "../SetCriteria/criteria.types";
 
 export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -42,13 +44,18 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
     }
   };
 
+  const onSelectTransaction =  (transactionType: TransactionType) => {
+      criteriaStore.set({ transactionType });
+  }
+
   const onLookingForChange = async (lookingFor: string) => {
     try {
       setLoading(true);
 
+
       await axios(userStore.auth.access_token).post('/api/criteria', {
         looking_for: lookingFor,
-        transaction_type_string: criteriaStore.transactionType
+        transaction_type_string: criteriaStore.transactionType,
       });
 
       criteriaStore.set({ lookingFor });
@@ -71,7 +78,23 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
 
       <Backdrop open={loading}></Backdrop>
 
-      {!criteriaStore.lookingFor && (
+      {!criteriaStore.transactionType && (
+          <motion.div
+              key='SelectTransaction'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                duration: 1
+              }}>
+            <SelectTransaction
+                avatar={profileStore.avatar || ''}
+                selectTransaction={criteriaStore.transactionType}
+                onSelectTransaction={onSelectTransaction}
+            />
+          </motion.div>
+      )}
+
+      {!criteriaStore.lookingFor && criteriaStore.transactionType && (
         <motion.div
           key='WhatAreYouLookingFor'
           initial={{ opacity: 0 }}
