@@ -1,43 +1,41 @@
-import React, { HTMLAttributes, useContext, useEffect, useState } from 'react';
+import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
-import { Conversation } from './Conversation';
-import { Chatbox } from './Chatbox';
-import { Header } from '../HomeLoggedIn/Header';
+import { useLocation, useNavigate, Location } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import request from '../../utils/axios';
-import { useGlobalState, registerStore } from '../../globalState/globalState';
-import SocketContext from '../../context/SocketContext';
-import { IMessageItem, IRoom } from './messages.interface';
-import noMessages from './noMessages.png';
+
+import { Typography } from '../../components/Typography';
 import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 
-import { useUserStore } from '../../globalState/user';
-import { useLocation, useNavigate, Location } from 'react-router-dom';
-import axios from '../../utils/axios';
-
-import messagesBackground from '../Home/home-background.png';
+import { Conversation } from './Conversation';
+import { Chatbox } from './Chatbox';
+import { Header } from '../HomeLoggedIn/Header';
 import { DocumentsTest } from './Documents/DocumentsTest';
 import { MessagesProperties } from './Messages.Properties';
 
-registerStore('transactionAgreement', { signed: false });
+import axios from '../../utils/axios';
+
+import SocketContext from '../../context/SocketContext';
+import { useUserStore } from '../../globalState/user';
+import { useNotificationsStore } from '../../globalState/notifications';
+
+import { IMessageItem, IRoom } from './messages.interface';
+
+import noMessages from './noMessages.png';
+import messagesBackground from '../Home/home-background.png';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const {
-    transactionAgreement: [transactionAgreement, setTransactionAgreement]
-  } = useGlobalState();
-
   const userStore = useUserStore();
+  const notificationsStore = useNotificationsStore();
 
   const location: Location = useLocation();
 
-  const { socket } = useContext(SocketContext);
+  const { socket } = React.useContext(SocketContext);
 
-  const [room, setRoom] = useState<IRoom | null>(null);
+  const [room, setRoom] = React.useState<IRoom | null>(null);
 
-  const [messages, setMessages] = useState<IMessageItem[]>([]);
-  const [conversations, setConversations] = useState<IRoom[]>([]);
+  const [messages, setMessages] = React.useState<IMessageItem[]>([]);
+  const [conversations, setConversations] = React.useState<IRoom[]>([]);
 
   const [filterByProperty, setFilterByProperty] = React.useState('');
 
@@ -50,7 +48,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   };
 
   // @ts-ignore
-  useEffect(() => {
+  React.useEffect(() => {
     if (socket) {
       socket.on('update_message_list', reorderMessages);
 
@@ -111,7 +109,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const chatRooms = useQuery<IRoom[]>(
     ['messages'],
     async (): Promise<any[]> => {
-      const response = await request(userStore.auth.access_token).get('/api/chat', {
+      const response = await axios(userStore.auth.access_token).get('/api/chat', {
         params: {
           property: filterByProperty || undefined
         }
@@ -130,20 +128,28 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   }, [filterByProperty]);
 
   const getMessagesForRoom = async (roomId: string) => {
-    const response = await request(userStore.auth.access_token).get(
+    const response = await axios(userStore.auth.access_token).get(
       '/api/chat/' + roomId + '?pageSize=15&page=1'
     );
     setMessages(response.data.docs.reverse());
   };
 
   const handleReadMessages = async (room: IRoom) => {
-    return await request(userStore.auth.access_token).put('/api/chat/read', { room_id: room._id });
+    try {
+      await axios(userStore.auth.access_token).put('/api/chat/read', { room_id: room._id });
+      setConversations((conversations) =>
+        conversations.map((c) => (c._id !== room._id ? c : { ...c, unseen_messages: 0 }))
+      );
+      await notificationsStore.fetchNotifications(userStore.auth.access_token);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const joinRoom = async (roomObj: IRoom) => {
     try {
-      await handleReadMessages(roomObj);
       await getMessagesForRoom(roomObj._id);
+      await handleReadMessages(roomObj);
       setRoom(roomObj);
       if (socket) socket.emit('join_room', roomObj._id);
     } catch (err) {
@@ -217,7 +223,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             </div>
 
             {room ? (
-              transactionAgreement.signed || 1 == 1 ? (
+              1 == 1 ? (
                 <Chatbox
                   username={userStore.userDetails?.username}
                   room={room}
@@ -239,11 +245,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
                     legal view over the entire process. Don’t worry, all your progress will remain saved.
                   </Typography>
 
-                  <Button
-                    onClick={() => setTransactionAgreement({ signed: true })}
-                    className='go-to-transaction-button'>
-                    Go to transaction agreement
-                  </Button>
+                  <Button className='go-to-transaction-button'>Go to transaction agreement</Button>
                 </div>
               )
             ) : (
