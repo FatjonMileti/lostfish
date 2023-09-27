@@ -12,6 +12,8 @@ import { Switch } from '../../../components/Switch';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { motion } from 'framer-motion';
 import { useProfileStore } from '../../../globalState/profile';
+import { Button } from '../../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   properties: PropertyType[];
@@ -43,10 +45,9 @@ export const SuggestedMatches = styled(
 
     const suggestedMatch = properties[activeSlide];
     const property = suggestedMatch?.property;
-
     const criteriaStore = useCriteriaStore();
-
     const profileStore = useProfileStore();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
       getProperties();
@@ -88,7 +89,8 @@ export const SuggestedMatches = styled(
           ))(React.useId())}
         </div>
         <div className={classNames('matches-slider', className)}>
-          <div className='matches-slider-body'>
+          <div
+            className={classNames('matches-slider-body', { 'you-have-no-matches': properties.length === 0 })}>
             <div className='trust-score-section'>
               <Typography variant='body5' className='your-trust-score-text'>
                 Your match score
@@ -113,8 +115,9 @@ export const SuggestedMatches = styled(
               {properties.length === 0 && (
                 <div className='no-matches'>
                   <Typography variant='body1'>
-                    {`You haven’t got any new matches. 
-                    [TO DO - Find better behaviour]`}
+                    <Button size='large' onClick={() => navigate('/my-account/refine-your-search')}>
+                      Please relax your search criteria.
+                    </Button>
                   </Typography>
                 </div>
               )}
@@ -207,9 +210,14 @@ export const SuggestedMatches = styled(
       grid-template-columns: 1fr 3fr;
       column-gap: 24px;
 
+      &.you-have-no-matches {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
       .trust-score-section {
         display: grid;
         align-content: center;
+        max-width: 324px;
 
         .trust-score {
           margin-top: 4px;
@@ -255,12 +263,7 @@ export const SuggestedMatches = styled(
           display: grid;
           align-items: center;
           justify-items: center;
-          .typography {
-            text-align: center;
-            max-width: 60%;
-            color: lightgray;
-            font-family: Roobert, serif;
-          }
+          width: 100%;
         }
       }
     }

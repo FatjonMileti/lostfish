@@ -21,10 +21,10 @@ export const Matches = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
 })`
   &.matches-page {
     //background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
-    //height: 100vh;
+    height: 100vh;
 
-    //display: grid;
-    //grid-template-rows: min-content auto;
+    display: grid;
+    grid-template-rows: min-content auto;
 
     z-index: 0;
 

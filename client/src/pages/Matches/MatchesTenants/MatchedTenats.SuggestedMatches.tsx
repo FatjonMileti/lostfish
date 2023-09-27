@@ -12,6 +12,8 @@ import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { useProfileStore } from '../../../globalState/profile';
+import { Button } from '../../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: TenantType[];
@@ -43,8 +45,8 @@ export const SuggestedTenants = styled(
     const suggestedTenant: TenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
     const matchedProperty = suggestedTenant?.property;
-
     const profileStore = useProfileStore();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
       getTenants();
@@ -92,7 +94,7 @@ export const SuggestedTenants = styled(
           ))(React.useId())}
         </div>
         <div className={classNames('matches-slider', className)}>
-          <div className='matches-slider-body'>
+          <div className={classNames('matches-slider-body', { 'you-have-no-matches': tenants.length === 0 })}>
             <div className='trust-score-section'>
               <Typography variant='body5' className='your-trust-score-text'>
                 Your match score
@@ -116,10 +118,9 @@ export const SuggestedTenants = styled(
             <div className='slides-wrapper'>
               {tenants.length === 0 && (
                 <div className='no-matches'>
-                  <Typography variant='body1'>
-                    {`You haven’t got any new matches. 
-                    [TO DO - Find better behaviour]`}
-                  </Typography>
+                  <Button size='large' onClick={() => navigate('/properties')}>
+                    Please add more details to the properties
+                  </Button>
                 </div>
               )}
 
@@ -227,6 +228,10 @@ export const SuggestedTenants = styled(
       grid-template-columns: 1fr 2fr;
       column-gap: 24px;
 
+      &.you-have-no-matches {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
       .trust-score-section {
         display: grid;
         align-content: center;
@@ -274,13 +279,7 @@ export const SuggestedTenants = styled(
           display: grid;
           align-items: center;
           justify-items: center;
-          max-width: 100%;
-          .typography {
-            text-align: center;
-            max-width: 60%;
-            color: lightgray;
-            font-family: Roobert, serif;
-          }
+          width: 100%;
         }
       }
     }
