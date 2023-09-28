@@ -3,7 +3,7 @@ const router: Router = Router();
 import authorize from '../../middleware/authorize';
 import { loginLimiter } from '../../middleware/rateLimiter';
 import validator from '../../middleware/validator';
-import * as joi from 'joi';
+import joi from 'joi';
 import accountService from './services/account.service';
 import userService from '../User/user.service';
 import socialLoginService from './services/social-login.service';
@@ -20,7 +20,7 @@ export class AccountController {
   private initializeRoutes() {
     this.router.post(
       '/login',
-      // loginLimiter,
+      loginLimiter,
       validator(
         joi.object({
           email: joi.string().required(),

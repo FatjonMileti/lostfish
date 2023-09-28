@@ -26,8 +26,7 @@ const server: http.Server = http.createServer(app);
 const io: Server = new Server();
 
 if (config.useRedis) {
-  const redisURI = 'redis://localhost:6379';
-  const redis = new Redis(redisURI);
+  const redis = new Redis(config.redisUrl);
   const subClient = redis.duplicate();
   io.adapter(createAdapter(redis, subClient));
 

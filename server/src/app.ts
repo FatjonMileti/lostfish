@@ -19,6 +19,7 @@ import compression from 'compression';
 import routerApi from './api/index';
 
 // Internal Dependencies
+import { generalLimiter } from './middleware/rateLimiter';
 import config from './config/index';
 import dbConnect from './data';
 import MailService from './utils/email/index';
@@ -31,7 +32,7 @@ const app: Application = express();
 app.use(compression());
 
 // Apply rateLimiter to all endpoints
-// app.use(generalLimiter);
+app.use(generalLimiter);
 
 // Connect to the database if not in 'test' environment
 if (config.stage !== 'test') {

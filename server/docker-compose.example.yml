@@ -1,0 +1,33 @@
+version: "3.8"
+
+networks:
+  backend:
+    name: backend
+    driver: 'bridge'
+
+volumes:
+  mongo_db_data:
+
+services:
+
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+
+  mongo_db:
+    image: mongo:latest
+    command:
+      - '--logpath'
+      - '/var/log/mongodb/mongod.log'
+    volumes:
+      - mongo_db_data:/data/db
+    ports:
+      - 27017:${DB_PORT}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_DATABASE}
+    networks:
+      - backend

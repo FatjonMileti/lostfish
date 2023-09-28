@@ -1,17 +1,19 @@
-import { RateLimiterMongo, IRateLimiterMongoOptions, IRateLimiterRes } from 'rate-limiter-flexible';
-import { connection } from 'mongoose';
+import { RateLimiterRedis, IRateLimiterRedisOptions, IRateLimiterRes } from 'rate-limiter-flexible';
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import config from '../config/index';
+import Redis from 'ioredis';
+const redisClient = new Redis(config.redisUrl);
 
 //1000 req/hour/IP
-const general: RateLimiterMongo = new RateLimiterMongo(<IRateLimiterMongoOptions>{
-  storeClient: connection,
+const general: RateLimiterRedis = new RateLimiterRedis(<IRateLimiterRedisOptions>{
+  storeClient: redisClient,
   keyPrefix: 'ratelimit.general',
-  points: config.rateLimiter, // Number of points
-  duration: 60 * 60, // Per second(s)
+  points: 1000,
+  duration: 60 * 60,
   blockDuration: 60 * 60
 });
+
 export const generalLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await general.consume(req.ip, 1);
@@ -23,8 +25,8 @@ export const generalLimiter = async (req: Request, res: Response, next: NextFunc
 };
 
 //10 req/5 min/IP
-const login: RateLimiterMongo = new RateLimiterMongo(<IRateLimiterMongoOptions>{
-  storeClient: connection,
+const login: RateLimiterRedis = new RateLimiterRedis(<IRateLimiterRedisOptions>{
+  storeClient: redisClient,
   keyPrefix: 'ratelimit.login',
   points: 10, // Number of points
   duration: 60 * 5, // Per second(s)
