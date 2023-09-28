@@ -59,7 +59,9 @@ export interface UserDocument extends Document {
   hash: string;
   last_login: Date;
   confirmation_token?: string;
+  trust_score: number;
   rules?: any;
+  setTrustScore: () => void;
   edited_at?: Date;
   edited_by?: ObjectId | string;
   created_at: Date;

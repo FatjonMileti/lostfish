@@ -1,25 +1,54 @@
+import moment from 'moment';
 import { model, PaginateModel, Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import { UserDocument, Role } from './user.interface';
+import CriteriaSchema from '../Criteria/schemas/criteria.schema';
+import PropertySchema from '../Property/schemas/property.schema';
 
-function calculateProfileCompleteness(user: UserDocument): number {
+async function calculateProfileCompleteness(user: UserDocument): Promise<number> {
   let completeness = 0;
 
+  if (user.role === Role.Landlord) {
+    const nrOfProperty = await PropertySchema.countDocuments({ created_by: user._id });
+    if (nrOfProperty) completeness += 10;
+    const property = await PropertySchema.find({
+      created_by: user._id,
+      status_string: 'Live'
+    }).sort({ created_at: -1 });
+
+    if (property && property[0]?.property_images?.length) {
+      completeness += 20;
+    }
+  } else if (user.role === Role.Client) {
+    const criteria = await CriteriaSchema.findOne({ created_by: user._id });
+
+    if (criteria?.budget) completeness += 10;
+
+    if (
+      !(criteria?.floor_size === '0-0') &&
+      !(criteria?.room_details.number_of_bathrooms === '0-0') &&
+      !(criteria?.room_details.number_of_bedrooms === '0-0') &&
+      criteria?.specific_property_features.length
+    )
+      completeness += 20;
+  }
+
   // Calculate completeness based on each criteria
-  if (user.signed_transaction_agreement) completeness += 30;
+  if (user.signed_transaction_agreement) completeness += 20;
   if (user.avatar) completeness += 5;
-  if (user.first_name && user.last_name && user.email) completeness += 5;
-  if (user.description) completeness += 5;
-  if (user.agreed_application_policy) completeness += 20;
+  if (user.first_name && user.email) completeness += 10;
+  // if (user.description) completeness += 5;
+  if (user.agreed_application_policy) completeness += 10;
   if (user.address) completeness += 5;
 
   const numDocuments = user.documents ? user.documents.length : 0;
   if (numDocuments >= 1 && user.documents[0].key) completeness += 10;
-  if (numDocuments >= 2 && user.documents[1].key) completeness += 10;
-  if (numDocuments >= 3 && user.documents[2].key) completeness += 10;
+  // if (numDocuments >= 2 && user.documents[1].key) completeness += 10;
+  // if (numDocuments >= 3 && user.documents[2].key) completeness += 10;
+
+  if (moment().diff(moment(user.created_at, 'days')) >= 7) completeness += 10;
 
   completeness = Math.min(100, completeness);
-
   return completeness;
 }
 
@@ -80,6 +109,7 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
   signed_transaction_agreement: { type: Boolean, default: false },
   transaction_agreement_link: { type: String, default: undefined },
   last_login: Date,
+  trust_score: { type: Number, default: 0 },
   address: String,
   martial_status: String,
   have_pets: { type: Boolean, default: false },
@@ -98,8 +128,8 @@ schema.virtual('has_transaction_agreement').get(function () {
   return !!this.transaction_agreement_link;
 });
 
-schema.virtual('trust_score').get(function (this: UserDocument) {
-  return calculateProfileCompleteness(this);
+schema.method('setTrustScore', async function (this: UserDocument) {
+  this.trust_score = await calculateProfileCompleteness(this);
 });
 schema.set('toObject', { virtuals: true });
 schema.set('toJSON', { virtuals: true });

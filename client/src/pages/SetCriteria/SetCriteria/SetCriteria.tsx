@@ -32,6 +32,7 @@ import {
   Transaction
 } from '../criteria.contants';
 import { AreaUnit, Parking } from '../../Properties/NewProperties/property.constants';
+import { useProfileStore } from '../../../globalState/profile';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
 
@@ -47,6 +48,8 @@ export const SetCriteria = styled(
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const { auth } = useUserStore();
+
+    const profileStore = useProfileStore();
 
     React.useEffect(() => {
       loadCriteria().catch((err) => {
@@ -241,6 +244,7 @@ export const SetCriteria = styled(
         // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         afterRefineSearch();
+        profileStore.fetchProfile(auth.access_token);
       } catch (err) {
         throw err;
       } finally {

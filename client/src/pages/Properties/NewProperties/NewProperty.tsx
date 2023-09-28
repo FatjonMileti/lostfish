@@ -25,6 +25,7 @@ import { ImageUpload } from './NewProperty.ImageUpload';
 
 import { Switch } from '../../../components/Switch';
 import { PropertyFormType } from './property.types';
+import {useProfileStore} from "../../../globalState/profile";
 import {
   AreaUnit,
   Building,
@@ -56,6 +57,7 @@ export const NewProperty = styled(
     const { auth } = useUserStore();
 
     const navigate = useNavigate();
+    const profileStore = useProfileStore();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       newImages: [],
@@ -296,6 +298,7 @@ export const NewProperty = styled(
           setEditPropertyId(data._id);
         }
 
+       await profileStore.fetchProfile(auth.access_token);
         navigate('/matches');
       } catch (err) {
         throw err;
