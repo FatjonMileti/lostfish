@@ -59,11 +59,15 @@ export const SessionMaintainer = ({
   React.useEffect(() => {
     if (!user.auth) {
       setResumingSession(false);
-      clearTimeout(refreshTimeoutId);
+      if (refreshTimeoutId) {
+        clearTimeout(refreshTimeoutId);
+      }
       setRefreshTimeoutId(undefined);
       if (debug) console.log('No session');
       return;
     }
+
+    setResumingSession(true);
 
     const tokenExpirationTime = user.auth.expirationTime;
     const now = Date.now();
@@ -86,8 +90,10 @@ export const SessionMaintainer = ({
         });
       }
     } else {
-      if (debug)
+      if (debug) {
         console.log('Token has not expired yet, it expires in: ', `${(tokenExpirationTime - now) / 1000}s`);
+      }
+
       const timeoutId = setTimeout(refreshToken, timeUntilRefresh);
       setRefreshTimeoutId(timeoutId);
 
@@ -111,19 +117,6 @@ export const SessionMaintainer = ({
         .finally(() => {
           setResumingSession(false);
         });
-
-      // axios(user.auth.access_token)
-      //   .get('/api/account/me')
-      //   .then(() => {
-      //     if (debug) console.log('User still have access');
-      //   })
-      //   .catch((err) => {
-      //     if (debug) console.log('Error fetching user profile: ', err);
-      //     setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
-      //   })
-      //   .finally(() => {
-      //     setResumingSession(false);
-      //   });
     }
   }, [user.auth]);
 
