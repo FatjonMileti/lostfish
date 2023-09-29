@@ -1,6 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
@@ -18,20 +18,22 @@ import { avatars } from '../HomeLoggedIn/avatars';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { AccountSettings } from './AccountSettings';
-import { FormControl } from '@mui/material';
-import FormLabel from '@mui/material/FormLabel';
 import { Select } from '../../components/Select/Select';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
   last_name: yup.string().required('Last name is required'),
   email: yup.string().required('Email is required'),
-  phone: yup.string().nullable(),
-  description: yup.string().nullable(),
-  age: yup.number().min(18, 'You must be 18 years or older').max(110).transform(value => value || undefined),
-  have_pets: yup.string().nullable(),
-  address: yup.string().nullable(),
-  martial_status: yup.string().nullable()
+  phone: yup.string(),
+  description: yup.string().transform((value) => value || undefined),
+  age: yup
+    .number()
+    .min(18, 'You must be 18 years or older')
+    .max(110)
+    .transform((value) => value || undefined),
+  have_pets: yup.string().transform((value) => value || undefined),
+  address: yup.string().transform((value) => value || undefined),
+  martial_status: yup.string().transform((value) => value || undefined)
 });
 
 interface ProfileDetails {
@@ -70,10 +72,6 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     },
     mode: 'all'
   });
-
-  const handleSelectedAvatar = (index: number) => {
-    profileDetailsForm.setValue('avatar', index.toString());
-  };
 
   React.useEffect(() => {
     profileDetailsForm.watch();
@@ -132,21 +130,26 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             <Typography className='section-title' variant='body4'>
               Setup avatar
             </Typography>
-            <div className='setup-avatar'>
-              {avatars.map(({ image, backgroundColor }, avatarIndex) => {
-                const active = avatarIndex === parseInt(profileDetailsForm.getValues('avatar') || '');
-
-                return (
-                  <Avatar
-                    image={avatars[avatarIndex].image}
-                    onClick={() => handleSelectedAvatar(avatarIndex)}
-                    key={avatarIndex}
-                    className={`${active ? 'active' : ''}`}>
-                    <Icon icon='checked' color='black' size={10} />
-                  </Avatar>
-                );
-              })}
-            </div>
+            <Controller
+              name='avatar'
+              control={profileDetailsForm.control}
+              render={({ field }) => (
+                <div className='setup-avatar'>
+                  {avatars.map(({ image }, avatarIndex) => {
+                    const active = avatarIndex === parseInt(field.value || '');
+                    return (
+                      <Avatar
+                        image={image}
+                        onClick={() => field.onChange({ target: { value: avatarIndex } })}
+                        key={avatarIndex}
+                        className={`${active ? 'active' : ''}`}>
+                        <Icon icon='checked' color='black' size={10} />
+                      </Avatar>
+                    );
+                  })}
+                </div>
+              )}
+            />
           </div>
           <div className='sections-wrapper'>
             <div className='left-part'>
@@ -183,53 +186,53 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 <Typography className='section-title' variant='body4'>
                   Personal details
                 </Typography>
-                  <div className='contact-information' style={{ marginBottom: '1rem' }}>
-                    <TextField
-                      type='number'
-                      label='Age'
-                      {...profileDetailsForm.register('age')}
-                      error={!!profileDetailsForm.formState.errors?.age}
-                      helperText={profileDetailsForm.formState.errors?.age?.message}
-                    />
+                <div className='contact-information' style={{ marginBottom: '1rem' }}>
+                  <TextField
+                    type='number'
+                    label='Age'
+                    {...profileDetailsForm.register('age')}
+                    error={!!profileDetailsForm.formState.errors?.age}
+                    helperText={profileDetailsForm.formState.errors?.age?.message}
+                  />
 
-                    <Select
-                      label={<>Martial status</>}
-                      {...profileDetailsForm.register('martial_status')}
-                      error={!!profileDetailsForm.formState.errors['martial_status']}
-                      helperText={profileDetailsForm.formState.errors['martial_status']?.message?.toString()}>
-                      <option></option>
-                      <option value='Single'>Single</option>
-                      <option value='Married'>Married</option>
-                    </Select>
-                    <Select
-                      label='Pets?'
-                      {...profileDetailsForm.register('have_pets')}
-                      error={!!profileDetailsForm.formState.errors['have_pets']}
-                      helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
-                      <option></option>
-                      <option value='Yes'>Yes</option>
-                      <option value='No'>No</option>
-                    </Select>
-                    <div className='user-type'>
-                      <Typography className='label'>User type</Typography>
-                      <Typography variant='body4' className='user-type-content'>
-                        {profileStore.role}
-                      </Typography>
-                    </div>
+                  <Select
+                    label={<>Martial status</>}
+                    {...profileDetailsForm.register('martial_status')}
+                    error={!!profileDetailsForm.formState.errors['martial_status']}
+                    helperText={profileDetailsForm.formState.errors['martial_status']?.message?.toString()}>
+                    <option></option>
+                    <option value='Single'>Single</option>
+                    <option value='Married'>Married</option>
+                  </Select>
+                  <Select
+                    label='Pets?'
+                    {...profileDetailsForm.register('have_pets')}
+                    error={!!profileDetailsForm.formState.errors['have_pets']}
+                    helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
+                    <option></option>
+                    <option value='Yes'>Yes</option>
+                    <option value='No'>No</option>
+                  </Select>
+                  <div className='user-type'>
+                    <Typography className='label'>User type</Typography>
+                    <Typography variant='body4' className='user-type-content'>
+                      {profileStore.role}
+                    </Typography>
                   </div>
-                  <Textarea
-                    rows={6}
-                    label='Describe yourself (your matches will see this)'
-                    {...profileDetailsForm.register('description')}
-                    defaultValue=''></Textarea>
+                </div>
+                <Textarea
+                  rows={6}
+                  label='Describe yourself (your matches will see this)'
+                  {...profileDetailsForm.register('description')}
+                  defaultValue=''></Textarea>
               </div>
 
               <div className='section'>
-                  <Textarea
-                    rows={2}
-                    label='Address'
-                    {...profileDetailsForm.register('address')}
-                    defaultValue=''></Textarea>
+                <Textarea
+                  rows={2}
+                  label='Address'
+                  {...profileDetailsForm.register('address')}
+                  defaultValue=''></Textarea>
               </div>
             </div>
             <AccountSettings />
@@ -284,7 +287,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px 24px;
-      
+
       .user-type {
         display: flex;
         flex-direction: column;
@@ -292,7 +295,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         row-gap: 4px;
 
         font-family: 'Roobert', serif;
-        
+
         .label {
           font-weight: 600;
           font-size: 12px;
@@ -300,12 +303,12 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
           color: #0d2a38;
           font-family: 'Roobert', serif;
         }
-        
+
         .user-type-content {
           padding: 12px;
           color: #646464;
           font-weight: 600;
-      }
+        }
 
         .required-asterisk {
           color: #b4263b;
