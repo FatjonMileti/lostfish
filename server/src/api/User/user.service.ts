@@ -190,6 +190,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 
   try {
+    await user.setTrustScore();
     await user.save();
 
     res.status(httpStatus.OK).json(user);
