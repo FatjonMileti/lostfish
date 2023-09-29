@@ -49,7 +49,7 @@ export const ImproveTrustScoreModal = styled(
           <div className='modal-body'>
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Add a description about yourself • <span className='percentage'>5%</span>
+                Add a description about yourself • <span className='percentage'>25%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -80,7 +80,7 @@ export const ImproveTrustScoreModal = styled(
               <>
                 <div className='card'>
                   <Typography variant='body4' className='card-title'>
-                    Add more details to your search • <span className='percentage'>50%</span>
+                    Add more details to your search • <span className='percentage'>30%</span>
                   </Typography>
 
                   <Typography variant='body4' className='card-description'>
@@ -105,7 +105,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Solicitors • <span className='percentage'>10%</span>
+                Solicitors
               </Typography>
 
               <Typography variant='body4' className='card-description'>
@@ -163,7 +163,7 @@ export const ImproveTrustScoreModal = styled(
 
             <div className='card'>
               <Typography variant='body4' className='card-title'>
-                Get your account verified • <span className='percentage'> 30%</span>
+                Get your account verified • <span className='percentage'> 40%</span>
               </Typography>
 
               <Typography variant='body4' className='card-description'>

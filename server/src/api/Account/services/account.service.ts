@@ -35,6 +35,7 @@ const login = async (req: express.Request, res: express.Response) => {
   if (!passCheck) throw loginError('incorrect_password', 'Bad password');
 
   user.last_login = new Date();
+  await user.setTrustScore();
   await user.save();
 
   const { token, refresh } = generateTokens(user);

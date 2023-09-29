@@ -24,6 +24,7 @@ import { suggestionService } from '../../index';
 import PropertyViewSchema from '../schemas/property-view.schema';
 import { getPipelineBySort } from '../pipelines/PropertyAggregation';
 import { LatLng } from '@googlemaps/google-maps-services-js';
+import userService from '../../User/user.service';
 
 const mailService = MailService.getInstance();
 
@@ -113,6 +114,12 @@ const createAsset = async (req: Request, res: Response): Promise<any> => {
 
 const updateAsset = async (req: Request, res: Response): Promise<any> => {
   try {
+    const user = await userService.findOne({ _id: res.locals.user_id });
+
+    if (!user) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'not found' });
+    }
+
     const data: PropertyDocument = req.body;
     const id = req.params.id;
     const asset = await findById(id);
@@ -292,6 +299,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
     await propertyDetailService.findAndUpdateByPropertyId(asset._id, { property_score: propertyScore });
 
     await asset.save();
+    await user.setTrustScore();
+    await user.save();
     await AssetLog.create({ user: res.locals.user_id, action: LogAction.Update, ref: id, info: data });
     res.status(httpStatus.OK).send(asset);
   } catch (error: any) {
