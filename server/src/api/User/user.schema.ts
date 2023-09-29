@@ -11,12 +11,12 @@ async function calculateProfileCompleteness(user: UserDocument): Promise<number>
   if (user.role === Role.Landlord) {
     const nrOfProperty = await PropertySchema.countDocuments({ created_by: user._id });
     if (nrOfProperty) completeness += 10;
-    const property = await PropertySchema.find({
+    const property = await PropertySchema.findOne({
       created_by: user._id,
       status_string: 'Live'
-    }).sort({ created_at: -1 });
+    });
 
-    if (property && property[0]?.property_images?.length) {
+    if (property && property?.property_images?.length) {
       completeness += 20;
     }
   } else if (user.role === Role.Client) {

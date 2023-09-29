@@ -168,9 +168,9 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       user.has_completed_initial_setup = true;
     }
 
+    await criteria.save();
     await user.setTrustScore();
     await user.save();
-    await criteria.save();
 
     res.status(httpStatus.OK).send(criteria);
   } catch (error: any) {
