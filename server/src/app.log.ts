@@ -3,7 +3,9 @@ import { Request } from 'express';
 import * as rfs from 'rotating-file-stream';
 import morgan from 'morgan';
 
-morgan.token('req-body', (req: Request) => (req.url === '/login' ? '' : JSON.stringify(req.body)));
+morgan.token('req-body', (req: Request) =>
+  ['/login', '/register'].includes(req.url) ? '' : JSON.stringify(req.body)
+);
 
 export const logFormat: string =
   '[:date[iso]] :remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] :req-body - :response-time ms';
