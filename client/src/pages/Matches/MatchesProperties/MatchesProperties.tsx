@@ -233,7 +233,7 @@ export const MatchedSlide = styled(
 
       parsedProperty.title = property.title;
 
-      parsedProperty.image = property?.property_images[0].link || '';
+      parsedProperty.image = property?.property_images?.[0]?.link || '';
 
       parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
 
