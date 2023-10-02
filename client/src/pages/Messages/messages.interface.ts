@@ -3,6 +3,7 @@ interface IChatUser {
   last_name: string;
   username: string;
   _id: string;
+  avatar?: string;
 }
 
 interface ILastMessage {
@@ -29,4 +30,5 @@ export interface IRoom {
   last_message: ILastMessage | null;
   property: any;
   _id: string;
+  unseen_messages?: number;
 }

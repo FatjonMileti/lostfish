@@ -1,56 +1,78 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import classNames from 'classnames';
-import { Label } from '../../../components/Label';
-import { useProfileStore } from '../../../globalState/profile';
-import { Role } from '../../../enums';
-
-import { IMessageItem } from '../messages.interface';
 import { AnimatePresence, motion } from 'framer-motion';
+import classNames from 'classnames';
+
+import { Label } from '../../../components/Label';
+
+import { useProfileStore } from '../../../globalState/profile';
+
+import { Role } from '../../../enums';
+import { IMessageItem, IRoom } from '../messages.interface';
 
 type Question = {
-  message: string;
-  answers: string[];
+  [key: string]: string[];
 };
 
-const questions: Question[] = [
-  {
-    message: 'Do you have any pets?',
-    answers: ['Yes', 'No']
-  },
-  {
-    message: 'Do you have any children?',
-    answers: ['Yes, i do have children', 'No, i dont have children']
-  },
-  {
-    message: 'Do you know the move in date?',
-    answers: ['Yes, I know', 'No, I dont know']
-  }
-];
+const questions: Question = {
+  ['Do you have any pets?']: ['Yes', 'No'],
+  ['Do you have any children?']: ['Yes, i do have children', 'No, i dont have children'],
+  ['Do you know the move in date?']: ['Yes, I know', 'No, I dont know']
+};
+
+const useSuggestions = ({ room }: { room: IRoom }) => {
+  const questionsArray = Object.keys(questions);
+
+  const uniquesQuestionKey = ({ question }: { question: string }) => `${question}/${room._id}`;
+
+  const askedQuestions: { [key: string]: boolean } = JSON.parse(
+    localStorage.getItem('askedQuestions') || '{}'
+  );
+
+  const notAsked = (question: string) => !askedQuestions[uniquesQuestionKey({ question })];
+
+  const notAskedQuestions = questionsArray.filter(notAsked);
+
+  const markQuestionAsAsked = (question: string) => {
+    askedQuestions[uniquesQuestionKey({ question })] = true;
+    localStorage.setItem('askedQuestions', JSON.stringify(askedQuestions));
+  };
+
+  return {
+    questionsArray,
+    notAskedQuestions,
+    markQuestionAsAsked,
+    uniquesQuestionKey
+  };
+};
 
 interface SuggestedMessagesProps extends HTMLAttributes<HTMLDivElement> {
   sendMessage: ({ message }: { message: string }) => void;
   lastMessage?: IMessageItem;
+  room: IRoom;
 }
-export const SuggestedMessages = styled(({ className, sendMessage, lastMessage }: SuggestedMessagesProps) => {
-  const profileStore = useProfileStore();
+export const SuggestedMessages = styled(
+  ({ className, sendMessage, lastMessage, room }: SuggestedMessagesProps) => {
+    const profileStore = useProfileStore();
 
-  return (
-    <>
-      <div className={classNames(className, 'suggested-messages')}>
-        <AnimatePresence>
-          {profileStore.role === Role.Client && (
-            <SuggestedQuestions lastMessage={lastMessage} sendMessage={sendMessage} />
-          )}
-
-          {profileStore.role === Role.Landlord && (
-            <SuggestedAnswers lastMessage={lastMessage} sendMessage={sendMessage} />
-          )}
-        </AnimatePresence>
-      </div>
-    </>
-  );
-})`
+    return (
+      <>
+        {room.property && (
+          <div className={classNames(className, 'suggested-messages')}>
+            <AnimatePresence>
+              {{
+                [Role.Client]: <SuggestedAnswers lastMessage={lastMessage} sendMessage={sendMessage} />,
+                [Role.Landlord]: (
+                  <SuggestedQuestions lastMessage={lastMessage} sendMessage={sendMessage} room={room} />
+                )
+              }[profileStore.role] || null}
+            </AnimatePresence>
+          </div>
+        )}
+      </>
+    );
+  }
+)`
   &.suggested-messages {
     width: 100%;
     background-color: white;
@@ -69,33 +91,42 @@ export const SuggestedMessages = styled(({ className, sendMessage, lastMessage }
 interface SuggestedQuestionsProps extends HTMLAttributes<HTMLDivElement> {
   sendMessage: ({ message }: { message: string }) => void;
   lastMessage?: IMessageItem;
+  room: IRoom;
 }
-const SuggestedQuestions = styled(({ className, lastMessage, sendMessage }: SuggestedQuestionsProps) => {
-  return (
-    <>
-      {!questions.find((q) => q.message === lastMessage?.message) && (
-        <motion.div
-          key='suggestedQuestions'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.5 }}
-          className={classNames(className, 'questions')}>
-          {questions.map((question, questionIndex) => {
-            return (
-              <Label
-                variant='secondary'
-                key={questionIndex}
-                onClick={() => sendMessage({ message: question.message })}>
-                {question.message}
-              </Label>
-            );
-          })}
-        </motion.div>
-      )}
-    </>
-  );
-})`
+const SuggestedQuestions = styled(
+  ({ className, lastMessage, sendMessage, room }: SuggestedQuestionsProps) => {
+    const suggestions = useSuggestions({ room });
+
+    const askSuggestedQuestion = (question: string) => {
+      sendMessage({ message: question });
+      suggestions.markQuestionAsAsked(question);
+    };
+
+    if (suggestions.notAskedQuestions.length === 0) return null;
+
+    return (
+      <>
+        {!suggestions.questionsArray.includes(lastMessage?.message || '') && (
+          <motion.div
+            key='suggestedQuestions'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
+            className={classNames(className, 'questions')}>
+            {suggestions.notAskedQuestions.map((question, questionIndex) => {
+              return (
+                <Label variant='secondary' key={questionIndex} onClick={() => askSuggestedQuestion(question)}>
+                  {question}
+                </Label>
+              );
+            })}
+          </motion.div>
+        )}
+      </>
+    );
+  }
+)`
   &.questions {
   }
 `;
@@ -105,11 +136,7 @@ interface SuggestedAnswersProps extends HTMLAttributes<HTMLDivElement> {
   lastMessage?: IMessageItem;
 }
 const SuggestedAnswers = styled(({ className, lastMessage, sendMessage }: SuggestedAnswersProps) => {
-  let suggestedAnswers;
-
-  if (lastMessage) {
-    suggestedAnswers = questions.find((question) => question.message === lastMessage.message)?.answers;
-  }
+  let suggestedAnswers = questions[lastMessage?.message || ''];
 
   return (
     <>

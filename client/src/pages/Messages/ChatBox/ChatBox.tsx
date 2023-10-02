@@ -5,7 +5,7 @@ import { Icon } from '../../../components/Icon';
 import { Button } from '../../../components/Button';
 import React, { HTMLAttributes, MouseEventHandler, useEffect, useState } from 'react';
 import { Typography } from '../../../components/Typography';
-import { IMessageBody, IMessageItem } from '../messages.interface';
+import { IMessageBody, IMessageItem, IRoom } from '../messages.interface';
 import { Socket } from 'socket.io-client';
 import { Avatar } from '../../../components/Avatar';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
@@ -14,7 +14,7 @@ import { SuggestedMessages } from './SuggestedMessages';
 
 export interface ChatBoxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
-  room: any;
+  room: IRoom;
   user_id: string;
   messages: IMessageItem[];
   socket: Socket | null;
@@ -98,7 +98,10 @@ export const ChatBox = styled(
 
       setMessageList((prevMessages: IMessageItem[]) => [...prevMessages, messageItem]);
 
-      room.last_message.message = currentMessage;
+      room.last_message = {
+        message: currentMessage
+      };
+
       room.unseen_messages = 0;
       updateList && updateList(room);
     };
@@ -149,7 +152,11 @@ export const ChatBox = styled(
             })}
           </div>
 
-          <SuggestedMessages sendMessage={_sendMessage} lastMessage={messageList.slice(-1)?.[0]} />
+          <SuggestedMessages
+            room={room}
+            sendMessage={_sendMessage}
+            lastMessage={messageList.slice(-1)?.[0]}
+          />
         </div>
         <div className='write-box'>
           <TextField
