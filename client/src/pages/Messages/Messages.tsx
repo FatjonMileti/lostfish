@@ -8,7 +8,7 @@ import { Backdrop } from '../../components/Backdrop';
 import { Button } from '../../components/Button';
 
 import { Conversation } from './Conversation';
-import { Chatbox } from './Chatbox';
+import { ChatBox } from './ChatBox/ChatBox';
 import { Header } from '../HomeLoggedIn/Header';
 import { DocumentsTest } from './Documents/DocumentsTest';
 import { MessagesProperties } from './Messages.Properties';
@@ -224,7 +224,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
             {room ? (
               1 == 1 ? (
-                <Chatbox
+                <ChatBox
                   username={userStore.userDetails?.username}
                   room={room}
                   user_id={userStore.userDetails?.user_id}

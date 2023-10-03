@@ -163,6 +163,7 @@ export const SectionThree = styled(({ className }: HTMLAttributes<HTMLDivElement
         height: 100%;
         border-top-right-radius: 12px;
         border-bottom-right-radius: 12px;
+        background-position-x: center;
       }
     }
   }
