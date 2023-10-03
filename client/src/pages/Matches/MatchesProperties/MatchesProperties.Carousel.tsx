@@ -2,6 +2,7 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowButton } from '../../../components/ArrowButton';
+import {Icon} from "../../../components/Icon";
 
 export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
   indexStore?: [number, (i: number) => void];
@@ -22,6 +23,11 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
   return (
     <div className={`slider ${className}`}>
       <div className='slides-wrapper'>
+          {images?.length === 0 && (
+              <div className='no-images slide-item'>
+                  <Icon icon='image' size={128} />
+              </div>
+          )}
         {images.map((image: any, imageIndex: number) => (
           <motion.img
             src={image}
@@ -144,8 +150,16 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
         content: '';
         position: absolute;
         width: 100%;
-        height: 100%;
+        height: 100%
         z-index: 1;
+      }
+      
+      .no-images {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        color: #a7a7a7;
+        background-color: #8080800a;
       }
 
       .slide-item {
