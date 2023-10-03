@@ -162,11 +162,11 @@ export const ChatBox = styled(
           <TextField
             autoComplete='off'
             placeholder='Type your message here...'
-            endAdornment={
-              <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
-                <Icon icon='attach' color='#184D6D' size={18} />
-              </IconButton>
-            }
+            // endAdornment={
+            //   <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
+            //     <Icon icon='attach' color='#184D6D' size={18} />
+            //   </IconButton>
+            // }
             value={currentMessage}
             onChange={(event) => {
               setCurrentMessage(event.target.value);
