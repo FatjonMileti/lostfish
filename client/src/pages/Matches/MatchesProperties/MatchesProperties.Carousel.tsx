@@ -150,7 +150,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
         content: '';
         position: absolute;
         width: 100%;
-        height: 100%
+        height: 100%;
         z-index: 1;
       }
       
