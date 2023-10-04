@@ -85,21 +85,29 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
             House Details
           </Typography>
           <div className='section-content'>
-            {[PropertyType.Detached, PropertyType.SemiDetached, PropertyType.FarmsLand].map(
-              (propertyType, propertyTypeIndex) =>
-                ((id: string) => (
-                  <div className='switch-wrapper' key={propertyTypeIndex}>
-                    <Switch id={id} size='medium' {...form.register(`propertyType.${propertyType}`)} />
-                    <label htmlFor={id}>{propertyType}</label>
-                  </div>
-                ))(Date.now().toString())
-            )}
-
             <Select label='Home style' {...form.register('houseDetails.homeStyle')}>
               <option></option>
               {Object.values(HomeStyle).map((style, styleIndex) => (
                 <option value={style} key={styleIndex}>
                   {style}
+                </option>
+              ))}
+            </Select>
+
+            <Select label='Condition' {...form.register('houseDetails.condition')}>
+              <option></option>
+              {Object.values(Condition).map((style, styleIndex) => (
+                <option value={style} key={styleIndex}>
+                  {style}
+                </option>
+              ))}
+            </Select>
+
+            <Select label='Parking' {...form.register('houseDetails.parking')}>
+              <option></option>
+              {Object.values(Parking).map((pType, pTypeIndex) => (
+                <option value={pType} key={pTypeIndex}>
+                  {pType}
                 </option>
               ))}
             </Select>
@@ -208,14 +216,33 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
               </div>
             </div>
 
-            <Select label='Parking' {...form.register('houseDetails.parking')}>
-              <option></option>
-              {Object.values(Parking).map((style, styleIndex) => (
-                <option value={style} key={styleIndex}>
-                  {style}
-                </option>
-              ))}
-            </Select>
+            <div className='slider-wrapper'>
+              <Typography variant='body6' className='slider-label'>
+                Storeys
+              </Typography>
+              <Slider
+                value={form.getValues('houseDetails.storeys')}
+                min={1}
+                max={4}
+                step={1}
+                onChange={(_, value) =>
+                  form.setValue('houseDetails.storeys', Array.isArray(value) ? value : [value])
+                }
+                valueLabelDisplay='on'
+                valueLabelFormat={(value) => value}
+                size='small'
+              />
+            </div>
+
+            {[PropertyType.Detached, PropertyType.SemiDetached, PropertyType.FarmsLand].map(
+              (propertyType, propertyTypeIndex) =>
+                ((id: string) => (
+                  <div className='switch-wrapper' key={propertyTypeIndex}>
+                    <Switch id={id} size='medium' {...form.register(`propertyType.${propertyType}`)} />
+                    <label htmlFor={id}>{propertyType}</label>
+                  </div>
+                ))(Date.now().toString())
+            )}
 
             <div className='slider-wrapper'>
               <Typography variant='body6' className='slider-label'>
@@ -252,33 +279,6 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 size='small'
               />
             </div>
-
-            <div className='slider-wrapper'>
-              <Typography variant='body6' className='slider-label'>
-                Storeys
-              </Typography>
-              <Slider
-                value={form.getValues('houseDetails.storeys')}
-                min={1}
-                max={4}
-                step={1}
-                onChange={(_, value) =>
-                  form.setValue('houseDetails.storeys', Array.isArray(value) ? value : [value])
-                }
-                valueLabelDisplay='on'
-                valueLabelFormat={(value) => value}
-                size='small'
-              />
-            </div>
-
-            <Select label='Condition' {...form.register('houseDetails.condition')}>
-              <option></option>
-              {Object.values(Condition).map((style, styleIndex) => (
-                <option value={style} key={styleIndex}>
-                  {style}
-                </option>
-              ))}
-            </Select>
           </div>
         </div>
       )}
@@ -315,6 +315,24 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
               {Object.values(BuildPurpose).map((purpose, i) => (
                 <option value={purpose} key={i}>
                   {purpose}
+                </option>
+              ))}
+            </Select>
+
+            <Select label='Preferred floor' {...form.register('flatDetails.preferredFloor')}>
+              <option></option>
+              {Object.values(PreferredFloor).map((pf, pfIndex) => (
+                <option value={pf} key={pfIndex}>
+                  {pf}
+                </option>
+              ))}
+            </Select>
+
+            <Select label='Condition' {...form.register('flatDetails.condition')}>
+              <option></option>
+              {Object.values(Condition).map((style, styleIndex) => (
+                <option value={style} key={styleIndex}>
+                  {style}
                 </option>
               ))}
             </Select>
@@ -408,24 +426,6 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
               />
             </div>
 
-            <Select label='Condition' {...form.register('flatDetails.condition')}>
-              <option></option>
-              {Object.values(Condition).map((style, styleIndex) => (
-                <option value={style} key={styleIndex}>
-                  {style}
-                </option>
-              ))}
-            </Select>
-
-            <Select label='Preferred flor' {...form.register('flatDetails.preferredFloor')}>
-              <option></option>
-              {Object.values(PreferredFloor).map((pf, pfIndex) => (
-                <option value={pf} key={pfIndex}>
-                  {pf}
-                </option>
-              ))}
-            </Select>
-
             {form.getValues('flatDetails.propertyPurpose') === BuildPurpose.PurposeBuilt && (
               <>
                 {((id: string) => (
@@ -474,15 +474,6 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 ))(Date.now().toString())}
               </>
             )}
-
-            <Select label='Floor' {...form.register('flatDetails.floor')}>
-              <option></option>
-              {Array.from({ length: 21 }, (_, i) => (
-                <option value={i} key={i}>
-                  {i}
-                </option>
-              ))}
-            </Select>
           </div>
         </div>
       )}
