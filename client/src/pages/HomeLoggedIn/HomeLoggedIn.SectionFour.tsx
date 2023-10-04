@@ -20,7 +20,7 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
       {profileStore.role === 'Landlord' && <RecentMatchesTenants />}
       {profileStore.role === 'Tenant' && <RecentMatchesProperties />}
       <div className='bottom'>
-        <Button active={false} inverted size='large' onClick={() => navigate('/matches')}>
+        <Button variant='secondary' size='large' onClick={() => navigate('/matches')}>
           View all matches
         </Button>
       </div>
@@ -49,21 +49,6 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
     .bottom {
       display: flex;
       justify-content: center;
-      .button {
-        color: #184d6d;
-        background: none;
-        padding: 20px 32px;
-        border: 2px solid #184d6d;
-        border-radius: 250px;
-        font-family: Roobert;
-        font-size: 18px;
-        font-weight: 600;
-
-        &:hover {
-          background: #184d6d;
-          color: #fff;
-        }
-      }
     }
   }
 `;

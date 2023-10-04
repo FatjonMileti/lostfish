@@ -1,6 +1,7 @@
 import React, { JSXElementConstructor, ReactElement } from 'react';
 import { styled } from '@mui/system';
 import { motion, HTMLMotionProps } from 'framer-motion';
+import classNames from 'classnames';
 
 export interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'text' | 'outlined' | 'primary' | 'secondary';
@@ -30,9 +31,11 @@ export const Button = styled(
       <motion.button
         type={type}
         disabled={disabled}
-        className={`button ${className} variant-${variant} size-${size} ${inverted ? 'inverted' : ''} ${
-          disabled ? 'disabled' : ''
-        } ${active ? 'active' : ''}`}
+        className={classNames(className, 'button', `variant-${variant}`, `size-${size}`, {
+          inverted,
+          disabled,
+          active
+        })}
         {...rest}>
         {startIcon && React.cloneElement(startIcon, { className: 'start-icon' })}
         {children}
@@ -91,6 +94,7 @@ export const Button = styled(
     &.inverted {
       color: #0d2a38;
       background-color: #ffffff;
+
       &:hover {
         background-color: #c0daff;
       }
@@ -105,9 +109,11 @@ export const Button = styled(
     border: 2px solid #184d6d;
     color: #184d6d;
     background-color: inherit;
+
     &:hover {
       color: #0d2a38;
       background-color: white;
+      border: 2px solid #0d2a38;
     }
 
     &.active {

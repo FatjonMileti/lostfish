@@ -205,17 +205,17 @@ export const SectionOne = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             align-self: stretch;
 
             button {
-              color: #184d6d;
-              border: 1px solid #184d6d;
-              border-radius: 250px;
-              font-family: Roobert;
-              font-size: 18px;
-              font-weight: 600;
+              //color: #184d6d;
+              //border: 1px solid #184d6d;
+              //border-radius: 250px;
+              //font-family: Roobert;
+              //font-size: 18px;
+              //font-weight: 600;
 
-              &:hover {
-                background: #184d6d;
-                color: #fff;
-              }
+              //&:hover {
+              //  background: #184d6d;
+              //  color: #fff;
+              //}
             }
 
             .active {
@@ -364,7 +364,7 @@ const LandlordSectionMatches = ({
           )}
         </div>
         <div className='buttons'>
-          <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+          <Button size='large' onClick={() => navigate('/matches')}>
             View matches
           </Button>
         </div>
