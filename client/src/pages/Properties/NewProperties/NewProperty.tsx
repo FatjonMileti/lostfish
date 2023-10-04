@@ -68,8 +68,11 @@ export const NewProperty = styled(
     });
 
     React.useEffect(() => {
+      if(form)
       form.watch();
     }, []);
+
+
 
     const setNewImages = (newImages: File[]) => setState((state) => ({ ...state, newImages }));
 
@@ -188,7 +191,7 @@ export const NewProperty = styled(
         form.setValue('propertyImages', data.property_images);
         form.setValue('minBudget', data?.budget?.min_budget);
         form.setValue('maxBudget', data?.budget?.max_budget);
-        form.setValue('parkingSpot', data.parking_spot);
+        form.setValue('parkingSpot', data?.parking_spot?.toString() || undefined);
         form.setValue('parkingType', data?.parking_details?.[0] || undefined);
         form.setValue('epcRating', data.epc_rating);
         form.setValue('description', data.description);
@@ -379,9 +382,7 @@ export const NewProperty = styled(
               Save as draft
             </Button>
             <Button
-              variant='secondary'
               disabled={!form.formState.isValid}
-              active={form.formState.isValid}
               onClick={async () => {
                 await startMatching();
               }}>
@@ -498,7 +499,7 @@ export const NewProperty = styled(
                 <div className='label'>
                   <Icon icon='banknote' size={24} />
                   <Typography variant='body5'>
-                    Budget <span className='required-asterisk'> *</span>
+                    Budget per month<span className='required-asterisk'> *</span>
                   </Typography>
                 </div>
                 <div className='min-max'>
@@ -604,12 +605,12 @@ export const NewProperty = styled(
                 <option value='0'>0</option>
                 <option value='1'>1</option>
                 <option value='2'>2</option>
-                <option value='2'>3</option>
-                <option value='2'>4</option>
-                <option value='2'>5</option>
+                <option value='3'>3</option>
+                <option value='4'>4</option>
+                <option value='5'>5</option>
               </Select>
 
-              {form.getValues('parkingSpot') && form.getValues('parkingSpot') !== '0' && (
+              {!!form.getValues('parkingSpot') && form.getValues('parkingSpot') !== '0' && (
                 <Select
                   label={
                     <>

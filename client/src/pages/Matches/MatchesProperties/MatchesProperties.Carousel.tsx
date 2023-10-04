@@ -2,6 +2,7 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowButton } from '../../../components/ArrowButton';
+import { Icon } from '../../../components/Icon';
 
 export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
   indexStore?: [number, (i: number) => void];
@@ -22,6 +23,11 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
   return (
     <div className={`slider ${className}`}>
       <div className='slides-wrapper'>
+        {images?.length === 0 && (
+          <div className='no-images slide-item'>
+            <Icon icon='image' size={128} />
+          </div>
+        )}
         {images.map((image: any, imageIndex: number) => (
           <motion.img
             src={image}
@@ -36,12 +42,14 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       </div>
 
       <div className='slider-footer'>
-        <ArrowButton
-          hero
-          direction='left'
-          size='large'
-          className='arrow-button previous-button'
-          onClick={handlePrevClick}></ArrowButton>
+        {images.length >= 2 && (
+          <ArrowButton
+            hero
+            direction='left'
+            size='large'
+            className='arrow-button previous-button'
+            onClick={handlePrevClick}></ArrowButton>
+        )}
 
         <div className='dots-wrapper'>
           {images.map((image: any, imageIndex: number) => (
@@ -55,13 +63,14 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
             />
           ))}
         </div>
-
-        <ArrowButton
-          hero
-          direction='right'
-          size='large'
-          className='arrow-button next-button'
-          onClick={handleNextClick}></ArrowButton>
+        {images.length >= 2 && (
+          <ArrowButton
+            hero
+            direction='right'
+            size='large'
+            className='arrow-button next-button'
+            onClick={handleNextClick}></ArrowButton>
+        )}
       </div>
     </div>
   );
@@ -146,6 +155,14 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
         width: 100%;
         height: 100%;
         z-index: 1;
+      }
+
+      .no-images {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        color: #a7a7a7;
+        background-color: #8080800a;
       }
 
       .slide-item {
