@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
-import { CriteriaFormType } from './criteria.types';
+import { ConditionType, CriteriaFormType } from './criteria.types';
 import {
   AreaUnit,
   BuildPurpose,
@@ -8,6 +8,25 @@ import {
   OutsideSpace,
   Parking
 } from '../Properties/NewProperties/property.constants';
+
+export const PreferredFloor = {
+  Ground: 'Ground',
+  First: 'First',
+  AboveFirst: 'Above first',
+  Penthouse: 'Penthouse'
+} as const;
+
+export const Condition = {
+  NewlyRefurbished: 'Newly refurbished',
+  Good: 'Good',
+  WouldDoSomeWork: 'would do some work',
+  wouldDoAProject: 'would do a project'
+} as const;
+
+export const HomeStyle = {
+  Modern: 'Modern',
+  Period: 'Period'
+} as const;
 
 export const BudgetFor = {
   Month: 'Month',
@@ -47,7 +66,8 @@ export const PropertyType = {
   Flats: 'Flats',
   Bungalows: 'Bungalows',
   ParkHomes: 'Park homes',
-  FarmsLand: 'Farms/Land'
+  FarmsLand: 'Farms/Land',
+  House: 'House'
 } as const;
 
 export const Transaction = {
@@ -90,7 +110,8 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     Flats: yup.boolean().required(),
     Bungalows: yup.boolean().required(),
     'Farms/Land': yup.boolean().required(),
-    'Park homes': yup.boolean().required()
+    'Park homes': yup.boolean().required(),
+    House: yup.boolean().required()
   }),
   flatDetails: yup
     .object()
@@ -101,9 +122,32 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
         .oneOf(Object.values(BuildPurpose)),
       floor: yup.number().optional(),
       lift: yup.boolean().optional(),
-      security: yup.boolean().optional()
+      security: yup.boolean().optional(),
+      parkingSpace: yup.boolean(),
+      gymSpa: yup.boolean(),
+      nrOfBedrooms: yup.array().required(),
+      nrOfBathrooms: yup.array().required('Number of bathroom is required'),
+      preferredFloor: yup.string().oneOf(Object.values(PreferredFloor))
     })
     .optional(),
+  houseDetails: yup.object().shape({
+    homeStyle: yup
+      .string()
+      .transform((value) => value || undefined)
+      .oneOf(Object.values(HomeStyle)),
+    preferredSize: yup.object().shape({
+      size: yup.array(),
+      unit: yup.string().oneOf(Object.values(AreaUnit))
+    }),
+    garden: yup.object().shape({
+      size: yup.array(),
+      unit: yup.string().oneOf(Object.values(AreaUnit))
+    }),
+    storeys: yup.array(),
+    condition: yup.string().oneOf(Object.values(Condition)),
+    nrOfBedrooms: yup.array().required(),
+    nrOfBathrooms: yup.array().required()
+  }),
   propertyClass: yup.object().shape({
     'New home': yup.boolean().required(),
     'Retirement home': yup.boolean().required(),

@@ -1,8 +1,11 @@
 import {
   BudgetFor,
+  Condition,
   ContractDetail,
   CreditScore,
   DistanceUnit,
+  HomeStyle,
+  PreferredFloor,
   PropertyPreference,
   PropertyType,
   SpecificPropertyFeature,
@@ -12,6 +15,7 @@ import {
 import { AreaUnitType, BuildPurposeType, ParkingType } from '../Properties/NewProperties/property.types';
 
 declare type ObjectValues<T> = T[keyof T];
+
 export type CriteriaFormType = {
   areaOfInterest: string;
   location: {
@@ -27,6 +31,32 @@ export type CriteriaFormType = {
     floor?: number;
     lift?: boolean;
     security?: boolean;
+    parkingSpace?: boolean;
+    gymSpa?: boolean;
+    preferredSize?: {
+      size?: number[];
+      unit?: AreaUnitType;
+    };
+    nrOfBedrooms: number[];
+    nrOfBathrooms: number[];
+    condition?: ConditionType;
+    preferredFloor?: PreferredFloorType;
+  };
+  houseDetails?: {
+    homeStyle?: HomeStyleType;
+    preferredSize?: {
+      size?: number[];
+      unit?: AreaUnitType;
+    };
+    garden?: {
+      size?: number[];
+      unit?: AreaUnitType;
+    };
+    parking?: ParkingType;
+    storeys?: number[];
+    nrOfBedrooms: number[];
+    nrOfBathrooms: number[];
+    condition?: ConditionType;
   };
   propertyClass: {
     'New home': boolean;
@@ -85,3 +115,9 @@ type WhenDoYouWantToMoveType = ObjectValues<typeof WhenDoYouWantToMove>;
 type PropertyTypeType = ObjectValues<typeof PropertyType>;
 
 export type BudgetForType = ObjectValues<typeof BudgetFor>;
+
+export type HomeStyleType = ObjectValues<typeof HomeStyle>;
+
+export type ConditionType = ObjectValues<typeof Condition>;
+
+export type PreferredFloorType = ObjectValues<typeof PreferredFloor>;

@@ -259,7 +259,27 @@ export const SetCriteria = styled(
         radius: undefined,
         propertyType: Object.fromEntries(Object.values(PropertyType).map((pt) => [pt, false])),
         flatDetails: {
-          propertyPurpose: undefined
+          propertyPurpose: undefined,
+          preferredSize: {
+            size: [400, 4000],
+            unit: AreaUnit.SquareFoot
+          },
+          nrOfBedrooms: [1, 4],
+          nrOfBathrooms: [1, 3]
+        },
+        houseDetails: {
+          preferredSize: {
+            size: [1000, 10000],
+            unit: AreaUnit.SquareFoot
+          },
+          garden: {
+            size: [200, 1000],
+            unit: AreaUnit.SquareFoot
+          },
+          storeys: [1, 3],
+          condition: undefined,
+          nrOfBedrooms: [1, 4],
+          nrOfBathrooms: [1, 3]
         },
         propertyClass: {
           'New home': true,
