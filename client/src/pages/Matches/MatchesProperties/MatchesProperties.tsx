@@ -277,9 +277,9 @@ export const MatchedSlide = styled(
                 </Typography>
               </div>
               {image === '' && (
-                  <div className='no-images'>
-                    <Icon icon='image' size={128} />
-                  </div>
+                <div className='no-images'>
+                  <Icon icon='image' size={128} />
+                </div>
               )}
               <div className='slide-footer'>
                 <div className='left-part'>
@@ -332,12 +332,12 @@ export const MatchedSlide = styled(
     background-size: cover;
     background-position-y: center;
 
-
     box-shadow: 0 7.7px 23.2px 0 rgba(0, 0, 0, 0.25);
 
     display: grid;
     align-content: space-between;
     overflow: hidden;
+    position: relative;
 
     .not-available {
       width: 100%;
