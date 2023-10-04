@@ -139,7 +139,7 @@ export const SuggestedMatches = styled(
                     transition={{ ease: 'easeOut', duration: 0.5 }}>
                     <MatchedSlide
                       className={classNames({ active: propertyIndex === activeSlide })}
-                      image={`${property?.property_images?.[0].link || ''}`}
+                      image={`${property?.property_images?.[0]?.link || ''}`}
                       viewProperty={() => setPropertyToView(suggestedProperty)}
                       property={property}
                     />

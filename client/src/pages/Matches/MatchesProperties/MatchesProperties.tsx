@@ -214,7 +214,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
   }
 `;
 
-interface MatchedSlideProps extends Omit<HTMLMotionProps<'div'>, 'property'> {
+interface MatchedSlideProps extends Omit<HTMLAttributes<HTMLDivElement>, 'property'> {
   image: string;
   viewProperty: () => void;
   property?: PropertyType['property'];
@@ -233,7 +233,7 @@ export const MatchedSlide = styled(
 
       parsedProperty.title = property.title;
 
-      parsedProperty.image = property?.property_images[0].link || '';
+      parsedProperty.image = property?.property_images?.[0]?.link || '';
 
       parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
 
@@ -260,10 +260,9 @@ export const MatchedSlide = styled(
       parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
       parsedProperty.percentage = property?.percentage;
     }
-
     return (
       <>
-        <motion.div className={`match-property-slide ${className}`} {...rest}>
+        <div className={`match-property-slide ${className}`}>
           {deleted && (
             <div className='not-available'>
               <Typography>Not available!</Typography>
@@ -277,6 +276,11 @@ export const MatchedSlide = styled(
                   {parsedProperty.propertyOwnerName} • {property.percentage}%
                 </Typography>
               </div>
+              {image === '' && (
+                  <div className='no-images'>
+                    <Icon icon='image' size={128} />
+                  </div>
+              )}
               <div className='slide-footer'>
                 <div className='left-part'>
                   <Typography className='property-name'>{parsedProperty.title}</Typography>
@@ -310,7 +314,7 @@ export const MatchedSlide = styled(
               </div>
             </>
           )}
-        </motion.div>
+        </div>
       </>
     );
   }
@@ -328,6 +332,7 @@ export const MatchedSlide = styled(
     background-size: cover;
     background-position-y: center;
 
+
     box-shadow: 0 7.7px 23.2px 0 rgba(0, 0, 0, 0.25);
 
     display: grid;
@@ -341,6 +346,7 @@ export const MatchedSlide = styled(
       align-items: center;
       justify-content: center;
       margin-top: 32px;
+
       .typography {
         color: gray;
       }
@@ -368,6 +374,18 @@ export const MatchedSlide = styled(
       }
     }
 
+    .no-images {
+      display: grid;
+      justify-content: center;
+      color: #a7a7a7;
+      background-color: #faf5f5;
+      position: absolute;
+      inset: 0;
+      justify-items: center;
+      align-content: center;
+      z-index: -1;
+    }
+
     .slide-footer {
       visibility: hidden;
       padding: 24px;
@@ -380,6 +398,7 @@ export const MatchedSlide = styled(
       .left-part {
         display: grid;
         row-gap: 16px;
+
         .property-name {
           font-family: Roobert, serif;
           font-size: 18px;

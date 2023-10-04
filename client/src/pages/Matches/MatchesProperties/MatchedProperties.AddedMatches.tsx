@@ -78,7 +78,7 @@ export const AddedMatches = styled(
               </span>
             </Typography>
             <Typography variant='body5' className='sub-title'>
-              Displaying 1240 matches. Enter more details to refine your search.
+              Displaying {properties.length} matches. Enter more details to refine your search.
             </Typography>
           </div>
 
@@ -126,7 +126,7 @@ export const AddedMatches = styled(
                     <MatchedSlide
                       key={propertyIndex}
                       className={classNames({ active: propertyIndex === activeSlide })}
-                      image={`${property?.property_images?.[0].link || ''}`}
+                      image={`${property?.property_images?.[0]?.link || ''}`}
                       viewProperty={() => setPropertyToView(addedProperty)}
                       property={property}
                     />

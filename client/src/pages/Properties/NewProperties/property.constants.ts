@@ -60,7 +60,7 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .min(0, 'Must be greater then or equal to 0')
     .transform((value) => (isNaN(value) ? undefined : value))
     .required('Number of bathrooms is required'),
-  buildingType: yup.string().oneOf(Object.values(Building)).required('Building type is required'),
+  buildingType: yup.string().oneOf(Object.values(Building), 'Building type is required').required('Building type is required'),
   flatDetails: yup
     .object()
     .shape({
@@ -68,7 +68,7 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
         .string()
         .transform((value) => value || undefined)
         .oneOf(Object.values(BuildPurpose)),
-      floor: yup.number().optional(),
+      floor: yup.number().transform((value) => (isNaN(value) ? undefined : value)),
       lift: yup.boolean().optional(),
       security: yup.boolean().optional()
     })
@@ -88,11 +88,11 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .min(1)
     .required('Area is required'),
   areaUnit: yup.string().oneOf(Object.values(AreaUnit)).required(),
-  parkingSpot: yup.string().required('Parking spot is required'),
+  parkingSpot: yup.string().transform((value) => value || undefined).required('Parking spot is required'),
   parkingType: yup
     .string()
     .transform((value) => value || undefined)
-    .oneOf(Object.values(Parking)),
+    .oneOf(Object.values(Parking)).optional(),
   epcRating: yup.string().required('EPC Rating is required'),
   description: yup.string().required('Description is required'),
   locationDetails: yup.string().required('Description is required'),

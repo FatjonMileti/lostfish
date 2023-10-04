@@ -230,6 +230,7 @@ export const ViewProperty = styled(
       position: relative;
 
       background-color: white;
+      width: 100%;
 
       .modal-header {
         position: absolute;

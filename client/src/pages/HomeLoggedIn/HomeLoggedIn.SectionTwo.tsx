@@ -60,11 +60,17 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           <div
             className='left'
             style={{
-              backgroundImage: property ? `url(${property.property_images[0].link})` : '',
+              backgroundImage: property ? `url(${property.property_images?.[0]?.link})` : '',
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover'
             }}>
             <div className='img'>
+              {!property.property_images?.[0]?.link && (
+                <div className='no-images'>
+                  <Icon icon='image' size={128} />
+                </div>
+              )}
+
               <div className='top'>
                 <div className='left-part'>
                   <Typography className='property-name'>{property.title}</Typography>
@@ -108,10 +114,14 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 </div>
               </div>
               <div className='bottom'>
-                <Button active={true} inverted size='large' onClick={() => navigate('/matches')}>
+                <Button inverted size='large' onClick={() => navigate('/matches')}>
                   View matches
                 </Button>
-                <Button active={false} inverted size='large' onClick={() => setShowNewPropertyModal(true)}>
+                <Button
+                  variant='secondary'
+                  inverted
+                  size='large'
+                  onClick={() => setShowNewPropertyModal(true)}>
                   Edit property
                 </Button>
               </div>
@@ -252,6 +262,18 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           align-content: space-between;
           width: 100%;
           height: 452px;
+          position: relative;
+
+          .no-images {
+            display: grid;
+            justify-content: center;
+            color: #a7a7a7;
+            background-color: #faf5f5;
+            position: absolute;
+            inset: 0;
+            justify-items: center;
+            align-content: center;
+          }
 
           .top {
             display: flex;
@@ -260,6 +282,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             align-items: center;
             align-self: stretch;
             background: linear-gradient(180deg, rgba(38, 38, 38, 0.7) 0%, rgba(38, 38, 38, 0) 100%);
+            z-index: 1;
 
             .left-part {
               display: grid;
@@ -329,21 +352,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             gap: 24px;
             background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
             box-sizing: border-box;
-
-            button {
-              color: #fff;
-              background: none;
-              border: 2px solid #fff;
-              border-radius: 250px;
-              font-family: Roobert;
-              font-size: 18px;
-              font-weight: 600;
-
-              &:hover {
-                background: #fff;
-                color: #0d2a38;
-              }
-            }
+            z-index: 1;
 
             .active {
               background: #fff;
