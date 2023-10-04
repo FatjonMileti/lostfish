@@ -14,9 +14,14 @@ interface YourPropertyProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const YourProperty = styled(
-  ({ className, title, address, price, editProperty }: YourPropertyProps) => {
+  ({ className, title, image, address, price, editProperty }: YourPropertyProps) => {
     return (
       <div className={classNames(className, 'your-property')}>
+        {!image && (
+            <div className='no-images'>
+              <Icon icon='image' size={128} />
+            </div>
+        )}
         <div className='property-footer'>
           <Typography className='property-title' variant='body4'>
             {title}
@@ -53,6 +58,19 @@ export const YourProperty = styled(
     aspect-ratio: 1.34 / 1;
     background-repeat: no-repeat;
     background-size: cover;
+    position: relative;
+
+    .no-images {
+      display: grid;
+      justify-content: center;
+      color: #a7a7a7;
+      background-color: #faf5f5;
+      position: absolute;
+      inset: 0;
+      justify-items: center;
+      align-content: center;
+      z-index: -1;
+    }
 
     .property-footer {
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.8) 43.75%);

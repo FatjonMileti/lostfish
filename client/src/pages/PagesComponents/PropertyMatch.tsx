@@ -12,11 +12,15 @@ interface PropertyMatchProps extends HTMLAttributes<HTMLDivElement> {
   address: string;
   price: string;
 }
-
 export const PropertyMatch = styled(
-  ({ className, title, address, price, viewProperty }: PropertyMatchProps) => {
+  ({ className, title, address, price, image, viewProperty }: PropertyMatchProps) => {
     return (
       <div className={classNames(className, 'match-property')}>
+        {!image && (
+          <div className='no-images'>
+            <Icon icon='image' size={128} />
+          </div>
+        )}
         <div className='property-footer'>
           <Typography className='property-title' variant='body4'>
             {title}
@@ -55,6 +59,20 @@ export const PropertyMatch = styled(
     background-size: cover;
     width: 100%;
     height: 100%;
+    position: relative;
+
+    .no-images {
+      display: grid;
+      justify-content: center;
+      color: #a7a7a7;
+      background-color: #faf5f5;
+      position: absolute;
+      inset: 0;
+      justify-items: center;
+      align-content: center;
+      z-index: -1;
+    }
+
     .property-footer {
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.8) 43.75%);
       align-self: flex-end;
