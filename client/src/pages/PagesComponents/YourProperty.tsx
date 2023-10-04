@@ -70,6 +70,8 @@ export const YourProperty = styled(
       justify-items: center;
       align-content: center;
       z-index: -1;
+      border-top-right-radius: 12px;
+      border-top-left-radius: 12px;
     }
 
     .property-footer {

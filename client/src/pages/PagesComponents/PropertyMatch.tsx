@@ -70,6 +70,8 @@ export const PropertyMatch = styled(
       inset: 0;
       justify-items: center;
       align-content: center;
+      border-top-right-radius: 12px;
+      border-top-left-radius: 12px;
       z-index: -1;
     }
 
