@@ -14,7 +14,7 @@ export const Slider = styled(({ className, ...otherProps }: MuiSliderProps) => {
       &.MuiSlider-sizeSmall {
         height: 4px;
         width: calc(100% - 24px);
-        margin: 0 12px;
+        margin: 20px 12px 0 12px;
         .MuiSlider-thumb {
           width: 24px;
           height: 24px;

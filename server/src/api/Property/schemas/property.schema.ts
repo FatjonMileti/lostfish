@@ -9,6 +9,9 @@ import {
   StatusString,
   TransactionTypeString,
   RentStatusString,
+  BuildPurpose,
+  Floor,
+  House,
   OutsideSpace,
   ParkingDetails
 } from '../property.interface';
@@ -70,14 +73,37 @@ const schema = new Schema<PropertyDocument>({
   property_type: {
     type: String
   },
-  outside_space: [String],
   flat_details: {
-    property_purpose: String,
-    floor: Number,
+    property_purpose: {
+      type: String,
+      enum: BuildPurpose,
+      required: false
+    },
+    floor: {
+      type: String,
+      enum: Floor
+    },
+
     lift: Boolean,
-    security: Boolean
+    security: Boolean,
+    gym_spa: Boolean,
+    outside_space: [
+      {
+        type: String,
+        enum: OutsideSpace
+      }
+    ]
   },
-  parking_details: [String],
+  house_details: {
+    house_type: {
+      type: String,
+      enum: House
+    }
+  },
+  parking_details: {
+    type: String,
+    enum: ParkingDetails
+  },
   currency_code: {
     type: String,
     enum: Object.values(CurrencyCode),

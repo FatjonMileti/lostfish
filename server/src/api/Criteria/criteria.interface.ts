@@ -1,5 +1,16 @@
 import { Document, ObjectId } from 'mongoose';
-import { FloorSizeUnit, OutsideSpace, ParkingDetails } from '../Property/property.interface';
+import {
+  BuildPurpose,
+  FloorSizeUnit,
+  HomeStyle,
+  House,
+  OutsideSpace,
+  ParkingDetails,
+  Floor,
+  PropertyCondition,
+  PropertyType,
+  Range
+} from '../Property/property.interface';
 
 export enum LookingForEnum {
   LOOKING_FOR_PLACE = 'I’m looking for a place',
@@ -11,18 +22,56 @@ export interface CriteriaDocument extends Document {
   asset_address: {
     latitude: number;
     longitude: number;
-    street_number: string;
-    route: string;
-    neighbourhood: string;
-    postal_town: string;
-    postal_code: string;
-    administrative_area_level_1: string;
-    country_code: string;
-    text: string;
+    street_number?: string;
+    route?: string;
+    neighbourhood?: string;
+    postal_town?: string;
+    postal_code?: string;
+    administrative_area_level_1?: string;
+    country_code?: string;
+    text?: string;
   };
   radius: string;
   budget_for: string;
-  property_type: string[];
+
+  property_type: PropertyType[];
+
+  house_details: {
+    house_type: House[];
+    home_style?: HomeStyle;
+    preferred_size: {
+      size: Range;
+      unit: FloorSizeUnit;
+    };
+    condition?: PropertyCondition;
+    parking?: ParkingDetails;
+    garden: {
+      size: Range;
+      unit: FloorSizeUnit;
+    };
+    storeys: Range;
+    number_of_bathrooms: Range;
+    number_of_bedrooms: Range;
+  };
+
+  flat_details: {
+    property_purpose: BuildPurpose;
+    preferred_floor?: Floor;
+    condition?: PropertyCondition;
+    outside_space: OutsideSpace[];
+    preferred_size: {
+      size: Range;
+      unit: FloorSizeUnit;
+    };
+    number_of_bathrooms: Range;
+    number_of_bedrooms: Range;
+
+    lift: boolean;
+    security: boolean;
+    parking_space: boolean;
+    gym_spa: boolean;
+  };
+
   property_preferences: string[];
   property_features: string[];
   floor_size: string;
@@ -32,12 +81,7 @@ export interface CriteriaDocument extends Document {
   };
   specific_property_features: string[];
   parking_details: ParkingDetails[];
-  flat_details: {
-    property_purpose: string;
-    floor: number;
-    lift: boolean;
-    security: boolean;
-  };
+
   distance_from_underground: {
     value: number;
     unit: string;

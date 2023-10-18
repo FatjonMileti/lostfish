@@ -1,11 +1,13 @@
 import { faker } from '@faker-js/faker';
 import {
+  BuildPurpose,
   CountryCode,
   CreditScoreRequirement,
   CurrencyCode,
+  Floor,
   FloorSizeUnit,
+  House,
   PropertyFeatures,
-  PropertyPreferences,
   PropertyType,
   SpecificPropertyFeatures,
   TransactionTypeString
@@ -14,6 +16,7 @@ import userService from '../api/User/user.service';
 import { Role } from '../api/User/user.interface';
 import CriteriaSchema from '../api/Criteria/schemas/criteria.schema';
 import { MatchLog } from '../data/logs';
+import { CriteriaDocument, LookingForEnum } from '../api/Criteria/criteria.interface';
 
 const createFakeDataMinDetails = (user: any) => {
   return {
@@ -31,7 +34,7 @@ const createFakeDataMinDetails = (user: any) => {
   };
 };
 
-const createFakeDataMaxDetails = (user: any) => {
+const createFakeDataMaxDetails = (user: any): Partial<CriteriaDocument> => {
   return {
     area_of_interest: faker.location.streetAddress(),
     budget: faker.helpers.arrayElement(['1000 - 5000', '500 - 1500', '2000 - 10000']),
@@ -46,25 +49,73 @@ const createFakeDataMaxDetails = (user: any) => {
     deposit_amount: faker.number.int({ min: 100, max: 500 }).toString(),
     currency_code: faker.helpers.arrayElement(Object.values(CurrencyCode)),
     moving_time: faker.helpers.arrayElement(['This month']),
-    looking_for: 'I’m looking for a place',
+    looking_for: LookingForEnum.LOOKING_FOR_PLACE,
+    flat_details: {
+      property_purpose: faker.helpers.arrayElement(Object.values(BuildPurpose)),
+      preferred_floor: faker.helpers.arrayElement(Object.values(Floor)),
+
+      preferred_size: {
+        unit: FloorSizeUnit.SQR_FT,
+        size: {
+          min: 400,
+          max: 4000
+        }
+      },
+      number_of_bedrooms: {
+        min: 1,
+        max: 3
+      },
+      number_of_bathrooms: {
+        min: 1,
+        max: 4
+      },
+      outside_space: [],
+      lift: faker.helpers.arrayElement([true, false]),
+      security: faker.helpers.arrayElement([true, false]),
+      parking_space: faker.helpers.arrayElement([true, false]),
+      gym_spa: faker.helpers.arrayElement([true, false])
+    },
+    house_details: {
+      house_type: [House.Detached, House.SemiDetached, House.FarmsLand],
+      preferred_size: {
+        unit: FloorSizeUnit.SQR_FT,
+        size: {
+          min: 200,
+          max: 1000
+        }
+      },
+      garden: {
+        unit: FloorSizeUnit.SQR_FT,
+        size: {
+          min: 1000,
+          max: 10000
+        }
+      },
+      storeys: {
+        min: 1,
+        max: 3
+      },
+      number_of_bedrooms: {
+        min: 1,
+        max: 3
+      },
+      number_of_bathrooms: {
+        min: 1,
+        max: 4
+      }
+    },
     floor_size: faker.helpers.arrayElement(['50-100', '70-120', '100-200']),
     floor_size_unit: FloorSizeUnit.SQR_MTRS,
-    master_asset_type_string: 'Residential',
     property_preferences: faker.helpers.arrayElements([
       'New home',
       'Retirement home',
       'Shared ownership',
       'Auction'
     ]),
-    property_type: faker.helpers.arrayElement(Object.values(PropertyType)),
+    property_type: [faker.helpers.arrayElement(Object.values(PropertyType))],
     property_features: faker.helpers.arrayElements(Object.values(PropertyFeatures)),
     specific_property_features: faker.helpers.arrayElements(Object.values(SpecificPropertyFeatures)),
-    property_preference: faker.helpers.arrayElement(Object.values(PropertyPreferences)),
     credit_score_requirements: faker.helpers.arrayElement(Object.values(CreditScoreRequirement)),
-    room_details: {
-      number_of_bathrooms: faker.helpers.arrayElement(['1-2', '1-3']),
-      number_of_bedrooms: faker.helpers.arrayElement(['1-2', '1-5'])
-    },
     transaction_type_string: TransactionTypeString.Rent,
     contract_details: faker.helpers.arrayElements(['Guarantor', 'Reviewed Property', 'Energy Certificate']),
     created_by: user._id

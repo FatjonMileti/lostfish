@@ -1,9 +1,10 @@
 import { PaginateModel } from 'mongoose';
 import { IPagingOptions } from '../../middleware/paging';
 import {
+  BuildPurpose,
   DistanceUnit,
   FloorSizeUnit,
-  ParkingDetails,
+  Furniture,
   PropertyDocument,
   PropertyType,
   SpecificPropertyFeatures
@@ -16,6 +17,10 @@ import createError from 'http-errors';
 import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
+
+const toSquareMeters = (surface: number): number => {
+  return surface * 0.092903;
+};
 
 export default class SuggestionService {
   private assetModel: PaginateModel<PropertyDocument>;
@@ -117,7 +122,7 @@ export default class SuggestionService {
       const data: any[] = [];
 
       for (const property of myProperties) {
-        const processedProperties = matchesUsers.docs.map((item: MatchDocWithCreatedBY) => {
+        const processedProperties = matchesUsers.docs.map((item: CriteriaDocument) => {
           return this.makeSuggestionObject(item, matches, property);
         });
 
@@ -125,7 +130,7 @@ export default class SuggestionService {
       }
 
       matchesUsers.docs = data
-        .filter((item: any) => item.property.percentage > 20)
+        .filter((item: any) => item.property.percentage >= 20)
         .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
@@ -176,13 +181,13 @@ export default class SuggestionService {
   }
 
   private makeSuggestionObject = (
-    item: MatchDocWithCreatedBY,
+    item: CriteriaDocument,
     matches: MatchDocument[],
     property: PropertyDocument
   ) => {
-    const matchTenant: MatchDocument | undefined = matches.find((match: any) => {
+    const matchTenant: MatchDocument | undefined = matches.find((match: MatchDocument) => {
       return (
-        match.tenant.toString() === item?.created_by?._id.toString() &&
+        match.tenant.toString() === item?.created_by?.toString() &&
         match.property.toString() === property._id.toString()
       );
     });
@@ -208,76 +213,23 @@ export default class SuggestionService {
     );
   }
 
-  public calculateSimilarity(clientCriteria: any, property: any): number {
+  public calculateSimilarity(clientCriteria: CriteriaDocument, property: PropertyDocument): number {
+    let nrOfComparisons = 12;
+
     let matchingCriteria = 0;
 
+    // Area of interest
     if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 4;
-    if (clientCriteria.radius <= property.radius) matchingCriteria++;
+
+    // Radius
+    if (clientCriteria.radius >= property.radius) matchingCriteria++;
+
+    // property type
     if (clientCriteria.property_type.includes(property.property_type)) matchingCriteria++;
-    if (clientCriteria.property_preferences.includes(property.property_preference)) matchingCriteria++;
-    if (clientCriteria.deposit_amount >= property.asset_rent.deposit_amount) matchingCriteria++;
-    if (
-      clientCriteria.contract_details.every((i: string) =>
-        property.contract_details.includes(this.toCamelCase(i))
-      )
-    )
-      matchingCriteria++;
-    if (clientCriteria.credit_score_requirements === property.credit_score_requirements) matchingCriteria++;
 
-    // Number of bedrooms
-    const criteriaNumberOfBedrooms = {
-      min: parseInt(clientCriteria.room_details?.number_of_bedrooms?.split('-')?.[0], 10),
-      max: parseInt(clientCriteria.room_details?.number_of_bedrooms?.split('-')?.[1], 10)
-    };
-    if (
-      property.room_details?.number_of_bedrooms >= criteriaNumberOfBedrooms?.min &&
-      property.room_details?.number_of_bedrooms <= criteriaNumberOfBedrooms?.max
-    ) {
-      matchingCriteria++;
-    }
-
-    // Number of bathrooms
-    const criteriaNumberOfBathrooms = {
-      min: parseInt(clientCriteria?.room_details?.number_of_bathrooms?.split('-')?.[0], 10),
-      max: parseInt(clientCriteria?.room_details?.number_of_bathrooms?.split('-')?.[1], 10)
-    };
-    if (
-      property.room_details?.number_of_bathrooms >= criteriaNumberOfBathrooms.min &&
-      property.room_details?.number_of_bathrooms <= criteriaNumberOfBathrooms.max
-    ) {
-      matchingCriteria++;
-    }
-
-    // Floor size
-    const criteriaFloorSizeSqm = {
-      min: parseInt(clientCriteria?.floor_size?.split('-')?.[0], 10),
-      max: parseInt(clientCriteria?.floor_size?.split('-')?.[1], 10)
-    };
-
-    const propertyFloorSizeSqm =
-      property.floor_size_unit === FloorSizeUnit.SQR_FT ? property.floor_size / 10.764 : property.floor_size;
-
-    if (clientCriteria.floor_size_unit === FloorSizeUnit.SQR_FT) {
-      criteriaFloorSizeSqm.min = criteriaFloorSizeSqm.min / 10.764;
-      criteriaFloorSizeSqm.max = criteriaFloorSizeSqm.max / 10.764;
-    }
-
-    if (
-      propertyFloorSizeSqm >= criteriaFloorSizeSqm.min &&
-      propertyFloorSizeSqm <= criteriaFloorSizeSqm.max
-    ) {
-      matchingCriteria++;
-    }
-
-    for (const propertyType of clientCriteria.property_type) {
-      if (property.property_type === propertyType) {
-        matchingCriteria++;
-      }
-    }
-
+    // Budget
     const [minBudget, maxBudget] = clientCriteria?.budget?.split(' - ')?.map(Number) || [];
-
-    if (clientCriteria.budgetFor === 'Week') {
+    if (clientCriteria.budget_for === 'Week') {
       const weeksInMonth = 4.34524;
       const [clientMinBudget, clientMaxBudget] = [minBudget * weeksInMonth, maxBudget * weeksInMonth];
       if (
@@ -287,9 +239,7 @@ export default class SuggestionService {
       ) {
         matchingCriteria++;
       }
-    }
-
-    if (clientCriteria.budgetFor === 'Month') {
+    } else if (clientCriteria.budget_for === 'Month') {
       if (
         property.budget &&
         property.budget.min_budget >= minBudget &&
@@ -299,83 +249,142 @@ export default class SuggestionService {
       }
     }
 
-    // parking
-    if (clientCriteria.specific_property_features.includes('Parking spot') && property.parking_spot > 0) {
-      matchingCriteria++;
+    // House
 
+    if (property.property_type === PropertyType.House) {
+      nrOfComparisons += 4;
+      // Number of bedrooms
       if (
-        (clientCriteria.parking_details.includes(ParkingDetails.Garage) &&
-          property.parking_details.includes(ParkingDetails.Garage)) ||
-        (clientCriteria.parking_details.includes(ParkingDetails.OffStreet) &&
-          property.parking_details.includes(ParkingDetails.OffStreet)) ||
-        (property.parking_details.includes(ParkingDetails.OnStreet) &&
-          property.parking_details.includes(ParkingDetails.OnStreet))
+        property.room_details.number_of_bedrooms >= clientCriteria.house_details.number_of_bedrooms.min &&
+        property.room_details.number_of_bedrooms <= clientCriteria.house_details.number_of_bedrooms.max
+      ) {
+        matchingCriteria++;
+      }
+
+      // Number of bathrooms
+      if (
+        property.room_details.number_of_bathrooms >= clientCriteria.house_details.number_of_bathrooms.min &&
+        property.room_details.number_of_bathrooms <= clientCriteria.house_details.number_of_bathrooms.max
+      ) {
+        matchingCriteria++;
+      }
+
+      // Parking
+      if (!!clientCriteria.house_details.parking && property.parking_spot > 0) {
+        matchingCriteria++;
+        if (property.parking_details && clientCriteria.house_details.parking === property.parking_details) {
+          matchingCriteria++;
+        }
+      }
+
+      // Preferred size
+      if (
+        (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
+          ? clientCriteria.house_details.preferred_size.size.min
+          : toSquareMeters(clientCriteria.house_details.preferred_size.size.min)) >=
+          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
+            ? property.floor_size
+            : toSquareMeters(property.floor_size)) &&
+        (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
+          ? clientCriteria.house_details.preferred_size.size.max
+          : toSquareMeters(clientCriteria.house_details.preferred_size.size.max)) <=
+          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
+            ? property.floor_size
+            : toSquareMeters(property.floor_size))
       ) {
         matchingCriteria++;
       }
     }
-    // // furniture
-    if (
-      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED) &&
-        property.specific_property_features.includes(SpecificPropertyFeatures.UNFURNISHED)) ||
-      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.PARTIALLY_FURNISHED) &&
-        property.specific_property_features.includes(SpecificPropertyFeatures.PARTIALLY_FURNISHED)) ||
-      (clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.FULLY_FURNISHED) &&
-        property.specific_property_features.includes(SpecificPropertyFeatures.FULLY_FURNISHED))
-    ) {
-      matchingCriteria++;
-    }
-    //
-    // // Outside space
-    if (
-      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.BALCONY) &&
-      property.specific_property_features.includes(SpecificPropertyFeatures.BALCONY)
-    ) {
-      matchingCriteria++;
-    }
-    if (
-      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.GARDEN) &&
-      property.specific_property_features.includes(SpecificPropertyFeatures.GARDEN)
-    ) {
-      matchingCriteria++;
-    }
-    if (
-      clientCriteria.specific_property_features.includes(SpecificPropertyFeatures.TERRACE) &&
-      property.specific_property_features.includes(SpecificPropertyFeatures.TERRACE)
-    ) {
-      matchingCriteria++;
-    }
-    //
-    // // flat details
-    //
-    if (clientCriteria.property_type.includes(PropertyType.Flats)) {
-      if (property.property_type.includes(PropertyType.Flats)) {
+
+    // Flats
+    if (property.property_type === PropertyType.Flats) {
+      nrOfComparisons += 9;
+
+      // Number of bedrooms
+      if (
+        property.room_details.number_of_bedrooms >= clientCriteria.flat_details.number_of_bedrooms.min &&
+        property.room_details.number_of_bedrooms <= clientCriteria.flat_details.number_of_bedrooms.max
+      ) {
         matchingCriteria++;
       }
 
-      if (clientCriteria.flat_details?.property_purpose) {
+      // Number of bathrooms
+      if (
+        property.room_details?.number_of_bathrooms >= clientCriteria.flat_details.number_of_bathrooms.min &&
+        property.room_details?.number_of_bathrooms <= clientCriteria.flat_details.number_of_bathrooms.min
+      ) {
+        matchingCriteria++;
+      }
+
+      // Preferred size
+      if (
+        (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
+          ? clientCriteria.flat_details.preferred_size.size.min
+          : toSquareMeters(clientCriteria.flat_details.preferred_size.size.min)) >=
+          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
+            ? property.floor_size
+            : toSquareMeters(property.floor_size)) &&
+        (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
+          ? clientCriteria.flat_details.preferred_size.size.max
+          : toSquareMeters(clientCriteria.flat_details.preferred_size.size.max)) <=
+          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
+            ? property.floor_size
+            : toSquareMeters(property.floor_size))
+      ) {
+        matchingCriteria++;
+      }
+
+      // Preferred floor
+      if (clientCriteria.flat_details?.preferred_floor && property.flat_details?.floor) {
+        if (clientCriteria.flat_details.preferred_floor === property.flat_details.floor) {
+          matchingCriteria++;
+        }
+      }
+
+      // Build purpose
+      if (clientCriteria.flat_details?.property_purpose && property.flat_details?.property_purpose) {
         if (clientCriteria.flat_details.property_purpose === property.flat_details?.property_purpose) {
           matchingCriteria++;
         }
       }
 
-      if (typeof clientCriteria.flat_details?.lift === 'boolean') {
-        if (clientCriteria.flat_details.lift === property.flat_details?.lift) {
-          matchingCriteria++;
+      if (property.flat_details?.property_purpose === BuildPurpose.PurposeBuilt) {
+        // Lift
+        if (typeof clientCriteria.flat_details?.lift === 'boolean') {
+          if (clientCriteria.flat_details.lift === property.flat_details?.lift) {
+            matchingCriteria++;
+          }
         }
-      }
 
-      if (typeof clientCriteria.flat_details?.security === 'boolean') {
-        if (clientCriteria.flat_details.security === property.flat_details?.security) {
-          matchingCriteria++;
+        // Security
+        if (typeof clientCriteria.flat_details?.security === 'boolean') {
+          if (clientCriteria.flat_details.security === property.flat_details?.security) {
+            matchingCriteria++;
+          }
         }
-      }
 
-      if (typeof clientCriteria.flat_details?.floor === 'boolean') {
-        if (clientCriteria.flat_details.floor === property.flat_details?.floor) {
+        // Parking
+        if (clientCriteria.flat_details.parking_space && property.parking_spot > 0) {
+          matchingCriteria++;
+        }
+
+        // Gym/spa
+        if (clientCriteria.flat_details.gym_spa && property.flat_details) {
           matchingCriteria++;
         }
       }
+    }
+
+    // furniture
+    if (
+      (clientCriteria.specific_property_features.includes(Furniture.UNFURNISHED) &&
+        property.specific_property_features.includes(Furniture.UNFURNISHED)) ||
+      (clientCriteria.specific_property_features.includes(Furniture.PARTIALLY_FURNISHED) &&
+        property.specific_property_features.includes(Furniture.PARTIALLY_FURNISHED)) ||
+      (clientCriteria.specific_property_features.includes(Furniture.FULLY_FURNISHED) &&
+        property.specific_property_features.includes(Furniture.FULLY_FURNISHED))
+    ) {
+      matchingCriteria++;
     }
 
     // Distance from underground
@@ -436,7 +445,7 @@ export default class SuggestionService {
       }
     }
 
-    return (matchingCriteria / 30) * 100;
+    return (matchingCriteria / nrOfComparisons) * 100;
   }
 }
 

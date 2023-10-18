@@ -7,12 +7,15 @@ import {
   CreditScoreRequirement,
   CurrencyCode,
   FloorSizeUnit,
+  Furniture,
+  ParkingDetails,
   PropertyDocument,
   PropertyFeatures,
   PropertyPreferences,
   PropertyType,
   RentalFrequency,
   SpecificPropertyFeatures,
+  StatusString,
   TransactionTypeString
 } from '../api/Property/property.interface';
 import userService from '../api/User/user.service';
@@ -58,15 +61,13 @@ const generateProperty = async (index: number) => {
 
   await getImages();
 
-  const asset: any = {
+  const asset: Partial<PropertyDocument> = {
     title: faker.lorem.sentence(4),
     description: faker.lorem.paragraph({ min: 1, max: 2 }),
-    location_details: faker.lorem.text(),
     area_of_interest: faker.location.streetAddress(),
     radius: faker.helpers.arrayElement(['1', '5', '10', '50']),
     asset_address: {
       administrative_area_level_1: faker.location.country(),
-      country_code: faker.helpers.arrayElement(Object.values(CountryCode)),
       latitude: faker.location.latitude(),
       longitude: faker.location.longitude(),
       text: faker.location.streetAddress()
@@ -79,25 +80,35 @@ const generateProperty = async (index: number) => {
       deposit_amount: faker.number.int({ min: 100, max: 500 }),
       rental_amount: faker.number.int({ min: 500, max: 5000 }),
       rental_frequency: faker.helpers.arrayElement(Object.values(RentalFrequency))
-    },
+    } as any,
     parking_spot: faker.helpers.arrayElement([1, 2, 3, 4]),
+    parking_details: faker.helpers.arrayElement([undefined, ...Object.values(ParkingDetails)]),
+
     epc_rating: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
-    currency_code: faker.helpers.arrayElement(Object.values(CurrencyCode)),
     floor_size: faker.number.int({ min: 20, max: 250 }),
     floor_size_unit: FloorSizeUnit.SQR_MTRS,
-    master_asset_type_string: 'Residential',
     property_type: faker.helpers.arrayElement(Object.values(PropertyType)),
     property_features: faker.helpers.arrayElements(Object.values(PropertyFeatures)),
-    specific_property_features: faker.helpers.arrayElements(Object.values(SpecificPropertyFeatures)),
+
+    specific_property_features: faker.helpers.arrayElements([
+      ...Object.values(SpecificPropertyFeatures),
+      faker.helpers.arrayElement(Object.values(Furniture))
+    ]),
+
     property_preference: faker.helpers.arrayElement(Object.values(PropertyPreferences)),
+
     credit_score_requirements: faker.helpers.arrayElement(Object.values(CreditScoreRequirement)),
+
     room_details: {
       number_of_bathrooms: faker.number.int({ min: 1, max: 3 }),
       number_of_bedrooms: faker.number.int({ min: 1, max: 5 })
     },
-    status_string: faker.helpers.arrayElement(['Live', 'Draft']),
+    status_string: faker.helpers.arrayElement([StatusString.Live, StatusString.Draft]),
+
     transaction_type_string: TransactionTypeString.Rent,
+
     contract_details: faker.helpers.arrayElements(Object.values(ContractDetails)),
+
     property_images: faker.helpers.arrayElements(imagesTest, { min: 1, max: 6 })
   };
 

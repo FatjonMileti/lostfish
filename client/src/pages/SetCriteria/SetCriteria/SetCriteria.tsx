@@ -8,7 +8,7 @@ import axios from '../../../utils/axios';
 import request from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
-import { CriteriaFormType } from '../criteria.types';
+import { ApiCriteriaDocumentType, CriteriaFormType, HouseType, PropertyFeatureType } from '../criteria.types';
 
 import { SetCriteriaHouseDetails } from './SetCriteria.HouseDetails';
 import { SetCriteriaLocation } from './SetCriteria.Location';
@@ -27,12 +27,13 @@ import {
   CreditScore,
   criteriaFormSchema,
   DistanceUnit,
-  PropertyType,
   SpecificPropertyFeature,
   Transaction
 } from '../criteria.contants';
-import { AreaUnit, Parking } from '../../Properties/NewProperties/property.constants';
+import { AreaUnit, Parking, PropertyType } from '../../Properties/NewProperties/property.constants';
 import { useProfileStore } from '../../../globalState/profile';
+
+import { OutsideSpaceType } from '../../Properties/NewProperties/property.types';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
 
@@ -40,7 +41,6 @@ interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   afterRefineSearch?: () => void;
   onClose?: () => void;
 }
-
 export const SetCriteria = styled(
   ({ className, afterRefineSearch = () => {}, onClose, ...otherProps }: SetCriteriaProps) => {
     const [selectedTab, setSelectedTab] = React.useState(0);
@@ -60,18 +60,19 @@ export const SetCriteria = styled(
     const loadCriteria = async () => {
       try {
         setLoading(true);
-        const { data } = await request(auth.access_token).get('/api/criteria');
-
+        const { data } = await request(auth.access_token).get<ApiCriteriaDocumentType>('/api/criteria');
         // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         mainForm.setValue('transactionType', data.transaction_type_string);
 
         mainForm.setValue('areaOfInterest', data.area_of_interest);
 
-        mainForm.setValue('location', {
-          latitude: data?.asset_address?.latitude,
-          longitude: data?.asset_address?.longitude
-        });
+        if (data?.asset_address?.latitude && data?.asset_address?.longitude) {
+          mainForm.setValue('location', {
+            latitude: data.asset_address.latitude,
+            longitude: data.asset_address.longitude
+          });
+        }
 
         mainForm.setValue('radius', data.radius);
 
@@ -81,13 +82,58 @@ export const SetCriteria = styled(
           mainForm.setValue(`propertyType.${type}`, true);
         });
 
+        mainForm.setValue(
+          'houseDetails.houseType',
+          Object.fromEntries(
+            (data?.house_details?.house_type || []).map((key: HouseType) => [key, true])
+          ) as {
+            [key in HouseType]: boolean;
+          }
+        );
+        mainForm.setValue('houseDetails.homeStyle', data.house_details.home_style);
+
+        mainForm.setValue('houseDetails.condition', data.house_details?.condition);
+
+        mainForm.setValue('houseDetails.parking', data.house_details?.parking);
+
+        mainForm.setValue('houseDetails.preferredSize', data.house_details.preferred_size);
+        mainForm.setValue('houseDetails.garden', data.house_details.garden);
+        if (data.house_details?.storeys) {
+          mainForm.setValue('houseDetails.storeys', data.house_details.storeys);
+        }
+        mainForm.setValue('houseDetails.nrOfBedrooms', data.house_details.number_of_bedrooms);
+        mainForm.setValue('houseDetails.nrOfBathrooms', data.house_details.number_of_bathrooms);
+
+        // house_details: {
+        //   house_type: Object.entries(mainForm.getValues('houseDetails.houseType') || {})
+        //       .filter(([key, value]) => value)
+        //       .map(([key]) => key)
+        // },
+
         mainForm.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
+        mainForm.setValue('flatDetails.preferredFloor', data.flat_details.preferred_floor);
+        mainForm.setValue('flatDetails.condition', data.flat_details.condition);
+
+        (data.flat_details.outside_space || []).forEach((os) => {
+          mainForm.setValue(`flatDetails.outsideSpace.${os}`, true);
+        });
+
+        if (data.flat_details.preferred_size?.size && data.flat_details.preferred_size?.unit) {
+          mainForm.setValue('flatDetails.preferredSize', data.flat_details.preferred_size);
+        }
+
+        if (data.flat_details?.number_of_bedrooms?.max) {
+          mainForm.setValue('flatDetails.nrOfBedrooms', data.flat_details.number_of_bedrooms);
+        }
+
+        if (data.flat_details?.number_of_bathrooms?.max) {
+          mainForm.setValue('flatDetails.nrOfBathrooms', data.flat_details.number_of_bathrooms);
+        }
 
         mainForm.setValue('flatDetails.lift', data?.flat_details?.lift);
         mainForm.setValue('flatDetails.security', data?.flat_details?.security);
-        if (data?.flat_details?.floor) {
-          mainForm.setValue('flatDetails.floor', data.flat_details.floor);
-        }
+        mainForm.setValue('flatDetails.parkingSpace', data?.flat_details?.parking_space);
+        mainForm.setValue('flatDetails.gymSpa', data?.flat_details?.gym_spa);
 
         (
           Object.keys(mainForm.getValues('propertyClass')) as [keyof CriteriaFormType['propertyClass']]
@@ -131,7 +177,7 @@ export const SetCriteria = styled(
           data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
             acc[spf] = true;
             return acc;
-          }, {})
+          }, {}) as CriteriaFormType['specificPropertyFeatures']
         );
 
         mainForm.setValue('parkingType.On street', data.parking_details?.includes(Parking.OnStreet));
@@ -148,13 +194,14 @@ export const SetCriteria = styled(
         }
 
         mainForm.setValue('depositAmount', data.deposit_amount);
+
         mainForm.setValue('creditScore', data.credit_score_requirements);
         mainForm.setValue(
           'contractDetails',
           data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
             acc[cd] = true;
             return acc;
-          }, {})
+          }, {}) as CriteriaFormType['contractDetails']
         );
 
         if (data?.distance_from_underground) {
@@ -182,20 +229,45 @@ export const SetCriteria = styled(
     const handleSubmit = async () => {
       try {
         setLoading(true);
-        const payload = {
+        const payload: Partial<ApiCriteriaDocumentType> = {
           transaction_type_string: mainForm.getValues('transactionType'),
           area_of_interest: mainForm.getValues('areaOfInterest'),
           asset_address: mainForm.getValues('location'),
           radius: mainForm.getValues('radius'),
-          moving_time: mainForm.getValues('whenDoYouWantToMove'),
+          moving_time: mainForm.getValues('whenDoYouWantToMove') || undefined,
+
           property_type: Object.entries(mainForm.getValues('propertyType'))
             .filter(([key, value]) => value)
-            .map(([key, value]) => key),
+            .map(([key, value]) => key) as ApiCriteriaDocumentType['property_type'],
+          house_details: {
+            house_type: Object.entries(mainForm.getValues('houseDetails.houseType') || {})
+              .filter(([key, value]) => !!value)
+              .map(([key]) => key) as HouseType[],
+            home_style: mainForm.getValues('houseDetails.homeStyle') || undefined,
+            preferred_size: mainForm.getValues('houseDetails.preferredSize'),
+            condition: mainForm.getValues('houseDetails.condition') || undefined,
+            parking: mainForm.getValues('houseDetails.parking') || undefined,
+            garden: mainForm.getValues('houseDetails.garden'),
+            storeys: mainForm.getValues('houseDetails.storeys'),
+            number_of_bedrooms: mainForm.getValues('houseDetails.nrOfBedrooms'),
+            number_of_bathrooms: mainForm.getValues('houseDetails.nrOfBathrooms')
+          },
           flat_details: {
-            property_purpose: mainForm.getValues('flatDetails.propertyPurpose'),
-            floor: mainForm.getValues('flatDetails.floor'),
+            property_purpose: mainForm.getValues('flatDetails.propertyPurpose') || undefined,
+            preferred_floor: mainForm.getValues('flatDetails.preferredFloor') || undefined,
+            condition: mainForm.getValues('flatDetails.condition') || undefined,
+
+            outside_space: Object.entries(mainForm.getValues('flatDetails.outsideSpace'))
+              .filter(([key, value]) => value)
+              .map(([key, value]) => key) as OutsideSpaceType[],
+            preferred_size: mainForm.getValues('flatDetails.preferredSize'),
+            number_of_bedrooms: mainForm.getValues('flatDetails.nrOfBedrooms'),
+            number_of_bathrooms: mainForm.getValues('flatDetails.nrOfBathrooms'),
+
             lift: mainForm.getValues('flatDetails.lift'),
-            security: mainForm.getValues('flatDetails.security')
+            security: mainForm.getValues('flatDetails.security'),
+            gym_spa: mainForm.getValues('flatDetails.gymSpa'),
+            parking_space: mainForm.getValues('flatDetails.parkingSpace')
           },
           property_preferences: [
             mainForm.getValues('propertyClass.New home') ? ['New home'] : [],
@@ -203,11 +275,13 @@ export const SetCriteria = styled(
             mainForm.getValues('propertyClass.Shared ownership') ? ['Shared ownership'] : [],
             mainForm.getValues('propertyClass.Shared ownership') ? ['Auction'] : []
           ].flat(),
+
           property_features: [
             mainForm.getValues('propertyFeatures.Parks nearby') ? ['Parks nearby'] : [],
             mainForm.getValues('propertyFeatures.Public transport nearby') ? ['Public transport nearby'] : [],
             mainForm.getValues('propertyFeatures.Shopping centers nearby') ? ['Shopping centers nearby'] : []
-          ].flat(),
+          ].flat() as PropertyFeatureType[],
+
           floor_size: `${mainForm.getValues('area')[0]}-${mainForm.getValues('area')[1]}`,
           floor_size_unit: mainForm.getValues('areaUnit'),
           room_details: {
@@ -220,11 +294,11 @@ export const SetCriteria = styled(
             .filter(([key, value]) => value)
             .map(([key, value]) => key),
 
-          parking_details: [
-            mainForm.getValues('parkingType')[Parking.Garage] ? [Parking.Garage] : [],
-            mainForm.getValues('parkingType')[Parking.OffStreet] ? [Parking.OffStreet] : [],
-            mainForm.getValues('parkingType')[Parking.OnStreet] ? [Parking.OnStreet] : []
-          ].flat(),
+          // parking_details: [
+          //   mainForm.getValues('parkingType')[Parking.Garage] ? [Parking.Garage] : [],
+          //   mainForm.getValues('parkingType')[Parking.OffStreet] ? [Parking.OffStreet] : [],
+          //   mainForm.getValues('parkingType')[Parking.OnStreet] ? [Parking.OnStreet] : []
+          // ].flat(),
 
           distance_from_underground: mainForm.getValues('distanceFromUnderground'),
           distance_from_schools: mainForm.getValues('distanceFromSchools'),
@@ -258,29 +332,59 @@ export const SetCriteria = styled(
         location: {},
         radius: undefined,
         propertyType: Object.fromEntries(Object.values(PropertyType).map((pt) => [pt, false])),
+
         flatDetails: {
           propertyPurpose: undefined,
           preferredSize: {
-            size: [400, 4000],
+            size: {
+              min: 400,
+              max: 4000
+            },
             unit: AreaUnit.SquareFoot
           },
-          nrOfBedrooms: [1, 4],
-          nrOfBathrooms: [1, 3]
+          condition: undefined,
+          outsideSpace: {},
+          nrOfBedrooms: {
+            min: 1,
+            max: 4
+          },
+          nrOfBathrooms: {
+            min: 1,
+            max: 3
+          }
         },
+
         houseDetails: {
+          houseType: undefined,
           preferredSize: {
-            size: [1000, 10000],
+            size: {
+              min: 1000,
+              max: 10000
+            },
             unit: AreaUnit.SquareFoot
           },
           garden: {
-            size: [200, 1000],
+            size: {
+              min: 200,
+              max: 1000
+            },
             unit: AreaUnit.SquareFoot
           },
-          storeys: [1, 3],
+          storeys: {
+            min: 1,
+            max: 3
+          },
           condition: undefined,
-          nrOfBedrooms: [1, 4],
-          nrOfBathrooms: [1, 3]
+          nrOfBedrooms: {
+            min: 1,
+            max: 4
+          },
+          nrOfBathrooms: {
+            min: 1,
+            max: 3
+          }
         },
+
         propertyClass: {
           'New home': true,
           'Retirement home': true,

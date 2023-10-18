@@ -2,6 +2,17 @@ import { Schema, model, PaginateModel } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { CriteriaDocument, LookingForEnum } from '../criteria.interface';
+import {
+  BuildPurpose,
+  FloorSizeUnit,
+  HomeStyle,
+  House,
+  OutsideSpace,
+  ParkingDetails,
+  Floor,
+  PropertyCondition,
+  Range
+} from '../../Property/property.interface';
 
 const schema = new Schema<CriteriaDocument>({
   area_of_interest: String,
@@ -22,6 +33,102 @@ const schema = new Schema<CriteriaDocument>({
   radius: String,
   budget_for: String,
   property_type: [String],
+  house_details: {
+    house_type: [
+      {
+        type: String,
+        enum: House
+      }
+    ],
+    home_style: {
+      type: String,
+      enum: HomeStyle
+    },
+    preferred_size: {
+      size: {
+        min: Number,
+        max: Number
+      },
+      unit: {
+        type: String,
+        enum: FloorSizeUnit
+      }
+    },
+    condition: {
+      type: String,
+      enum: PropertyCondition
+    },
+    parking: {
+      type: String,
+      enum: ParkingDetails
+    },
+    garden: {
+      size: {
+        min: Number,
+        max: Number
+      },
+      unit: {
+        type: String,
+        enum: FloorSizeUnit
+      }
+    },
+    storeys: {
+      min: Number,
+      max: Number
+    },
+    number_of_bathrooms: {
+      min: Number,
+      max: Number
+    },
+    number_of_bedrooms: {
+      min: Number,
+      max: Number
+    }
+  },
+
+  flat_details: {
+    property_purpose: {
+      type: String,
+      enum: BuildPurpose
+    },
+    preferred_floor: {
+      type: String,
+      enum: Floor
+    },
+    condition: {
+      type: String,
+      enum: PropertyCondition
+    },
+    outside_space: [
+      {
+        type: String,
+        enum: OutsideSpace
+      }
+    ],
+    preferred_size: {
+      size: {
+        min: Number,
+        max: Number
+      },
+      unit: {
+        type: String,
+        enum: FloorSizeUnit
+      }
+    },
+    number_of_bathrooms: {
+      min: Number,
+      max: Number
+    },
+    number_of_bedrooms: {
+      min: Number,
+      max: Number
+    },
+
+    lift: Boolean,
+    security: Boolean,
+    parking_space: Boolean,
+    gym_spa: Boolean
+  },
   property_preferences: [String],
   property_features: [String],
   floor_size: String,
@@ -29,12 +136,7 @@ const schema = new Schema<CriteriaDocument>({
     number_of_bathrooms: String,
     number_of_bedrooms: String
   },
-  flat_details: {
-    property_purpose: String,
-    floor: Number,
-    lift: Boolean,
-    security: Boolean
-  },
+
   parking_details: [String],
   floor_size_unit: String,
   specific_property_features: [String],

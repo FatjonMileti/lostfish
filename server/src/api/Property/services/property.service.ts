@@ -132,8 +132,8 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.flat_details = data.flat_details;
     }
 
-    if (data.hasOwnProperty('outside_space')) {
-      asset.outside_space = data.outside_space;
+    if (data.hasOwnProperty('house_details')) {
+      asset.house_details = data.house_details;
     }
 
     if (data.hasOwnProperty('parking_details')) {

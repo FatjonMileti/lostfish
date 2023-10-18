@@ -1,19 +1,25 @@
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
-import { ConditionType, CriteriaFormType } from './criteria.types';
+import { CriteriaFormType, OtherSpecificPropertyFeature } from './criteria.types';
 import {
   AreaUnit,
   BuildPurpose,
+  Floor,
   Furnished,
   OutsideSpace,
-  Parking
+  Parking,
+  PropertyType
 } from '../Properties/NewProperties/property.constants';
 
-export const PreferredFloor = {
-  Ground: 'Ground',
-  First: 'First',
-  AboveFirst: 'Above first',
-  Penthouse: 'Penthouse'
+export const PropertyFeature = {
+  ParksNearby: 'Parks nearby',
+  PublicTransportNearby: 'Public transport nearby',
+  ShoppingCentersNearby: 'Shopping centers nearby'
+} as const;
+
+export const LookingFor = {
+  LookingForAPlace: 'I’m looking for a place',
+  OwnAPlace: 'I own a place'
 } as const;
 
 export const Condition = {
@@ -38,17 +44,8 @@ export const DistanceUnit = {
   Mi: 'mi'
 } as const;
 
-const OtherSpecificPropertyFeature = {
-  ParkingSpot: 'Parking spot',
-  DoubleGlazing: 'Double glazing',
-  AllowsSmoking: 'Allows smoking',
-  AllowsPets: 'Allows pets',
-  CloseToPublicTransport: 'Close to public transport'
-} as const;
-
 export const SpecificPropertyFeature = {
   ...Furnished,
-  ...OutsideSpace,
   ...OtherSpecificPropertyFeature
 } as const;
 
@@ -59,15 +56,10 @@ export const PropertyPreference = {
   Auction: 'Auction'
 } as const;
 
-export const PropertyType = {
+export const House = {
   Detached: 'Detached',
   SemiDetached: 'Semi-Detached',
-  Terraced: 'Terraced',
-  Flats: 'Flats',
-  Bungalows: 'Bungalows',
-  ParkHomes: 'Park homes',
-  FarmsLand: 'Farms/Land',
-  House: 'House'
+  FarmsLand: 'Farms/Land'
 } as const;
 
 export const Transaction = {
@@ -99,19 +91,18 @@ export const WhenDoYouWantToMove = {
 export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().shape({
   areaOfInterest: yup.string().required(),
   location: yup.object().shape({
-    latitude: yup.number().optional(),
-    longitude: yup.number().optional()
+    latitude: yup.number().required(),
+    longitude: yup.number().required()
   }),
-  radius: yup.number().optional(),
+  radius: yup.string().optional(),
   propertyType: yup.object().shape({
-    Detached: yup.boolean().required(),
-    'Semi-Detached': yup.boolean().required(),
-    Terraced: yup.boolean().required(),
-    Flats: yup.boolean().required(),
-    Bungalows: yup.boolean().required(),
-    'Farms/Land': yup.boolean().required(),
-    'Park homes': yup.boolean().required(),
-    House: yup.boolean().required()
+    [PropertyType.House]: yup.boolean().required(),
+    [PropertyType.Flats]: yup.boolean().required()
+  }),
+  houseType: yup.object().shape({
+    [House.Detached]: yup.boolean().required(),
+    [House.SemiDetached]: yup.boolean().required(),
+    [House.FarmsLand]: yup.boolean().required()
   }),
   flatDetails: yup
     .object()
@@ -120,33 +111,76 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
         .string()
         .transform((value) => value || undefined)
         .oneOf(Object.values(BuildPurpose)),
-      floor: yup.number().optional(),
-      lift: yup.boolean().optional(),
-      security: yup.boolean().optional(),
-      parkingSpace: yup.boolean(),
-      gymSpa: yup.boolean(),
-      nrOfBedrooms: yup.array().required(),
-      nrOfBathrooms: yup.array().required('Number of bathroom is required'),
-      preferredFloor: yup.string().oneOf(Object.values(PreferredFloor))
+      preferredFloor: yup
+        .string()
+        .transform((value) => value || undefined)
+        .oneOf(Object.values(Floor)),
+      condition: yup.string().oneOf(Object.values(Condition)),
+
+      preferredSize: yup.object().shape({
+        size: yup.object().shape({
+          min: yup.number().required(),
+          max: yup.number().required()
+        }),
+        unit: yup.string().oneOf(Object.values(AreaUnit)).required()
+      }),
+      nrOfBedrooms: yup.object().shape({
+        min: yup.number().required(),
+        max: yup.number().required()
+      }),
+      nrOfBathrooms: yup.object().shape({
+        min: yup.number().required(),
+        max: yup.number().required()
+      }),
+
+      outsideSpace: yup.object().shape({
+        [OutsideSpace.Balcony]: yup.boolean().required(),
+        [OutsideSpace.Terrace]: yup.boolean().required(),
+        [OutsideSpace.Garden]: yup.boolean().required()
+      }),
+      lift: yup.boolean().required(),
+      security: yup.boolean().required(),
+      parkingSpace: yup.boolean().required(),
+      gymSpa: yup.boolean().required()
     })
     .optional(),
   houseDetails: yup.object().shape({
+    houseType: yup.object().shape({
+      [House.Detached]: yup.boolean().required(),
+      [House.SemiDetached]: yup.boolean().required(),
+      [House.FarmsLand]: yup.boolean().required()
+    }),
     homeStyle: yup
       .string()
       .transform((value) => value || undefined)
       .oneOf(Object.values(HomeStyle)),
     preferredSize: yup.object().shape({
-      size: yup.array(),
-      unit: yup.string().oneOf(Object.values(AreaUnit))
+      size: yup.object().shape({
+        min: yup.number().required(),
+        max: yup.number().required()
+      }),
+      unit: yup.string().oneOf(Object.values(AreaUnit)).required()
     }),
     garden: yup.object().shape({
-      size: yup.array(),
-      unit: yup.string().oneOf(Object.values(AreaUnit))
+      size: yup.object().shape({
+        min: yup.number().required(),
+        max: yup.number().required()
+      }),
+      unit: yup.string().oneOf(Object.values(AreaUnit)).required()
     }),
-    storeys: yup.array(),
+    storeys: yup.object().shape({
+      min: yup.number().required(),
+      max: yup.number().required()
+    }),
     condition: yup.string().oneOf(Object.values(Condition)),
-    nrOfBedrooms: yup.array().required(),
-    nrOfBathrooms: yup.array().required()
+    nrOfBedrooms: yup.object().shape({
+      min: yup.number().required(),
+      max: yup.number().required()
+    }),
+    nrOfBathrooms: yup.object().shape({
+      min: yup.number().required(),
+      max: yup.number().required()
+    })
   }),
   propertyClass: yup.object().shape({
     'New home': yup.boolean().required(),
@@ -177,11 +211,8 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   areaUnit: yup.string().oneOf(Object.values(AreaUnit)).required(),
   nrOfBedrooms: yup.array().required(),
   nrOfBathrooms: yup.array().required('Number of bathroom is required'),
+
   specificPropertyFeatures: yup.object().shape({
-    [SpecificPropertyFeature.ParkingSpot]: yup.boolean().required(),
-    [SpecificPropertyFeature.Garden]: yup.boolean().required(),
-    [SpecificPropertyFeature.Balcony]: yup.boolean().required(),
-    [SpecificPropertyFeature.Terrace]: yup.boolean().required(),
     [SpecificPropertyFeature.FullyFurnished]: yup.boolean().required(),
     [SpecificPropertyFeature.PartiallyFurnished]: yup.boolean().required(),
     [SpecificPropertyFeature.Unfurnished]: yup.boolean().required(),
@@ -190,6 +221,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     [SpecificPropertyFeature.AllowsPets]: yup.boolean().required(),
     [SpecificPropertyFeature.CloseToPublicTransport]: yup.boolean().required()
   }),
+
   parkingType: yup.object().shape({
     [Parking.Garage]: yup.boolean().optional(),
     [Parking.OffStreet]: yup.boolean().optional(),

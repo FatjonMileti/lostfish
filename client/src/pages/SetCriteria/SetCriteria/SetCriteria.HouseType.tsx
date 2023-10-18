@@ -8,15 +8,15 @@ import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
 import { Typography } from '../../../components/Typography';
 import { Select } from '../../../components/Select/Select';
+import { Condition, HomeStyle, House, PropertyPreference, Transaction } from '../criteria.contants';
 import {
-  Condition,
-  HomeStyle,
-  PreferredFloor,
-  PropertyPreference,
-  PropertyType,
-  Transaction
-} from '../criteria.contants';
-import { AreaUnit, BuildPurpose, Parking } from '../../Properties/NewProperties/property.constants';
+  AreaUnit,
+  BuildPurpose,
+  Floor,
+  OutsideSpace,
+  Parking,
+  PropertyType
+} from '../../Properties/NewProperties/property.constants';
 import { Slider } from '../../../components/Slider';
 import { AreaUnitType } from '../../Properties/NewProperties/property.types';
 
@@ -63,7 +63,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
           Property Type
         </Typography>
         <div className='section-content'>
-          {[PropertyType.House, PropertyType.Flats].map((propertyType, propertyTypeIndex) =>
+          {Object.values(PropertyType).map((propertyType, propertyTypeIndex) =>
             ((id: string) => (
               <div className='switch-wrapper' key={propertyTypeIndex}>
                 <Switch
@@ -123,7 +123,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                   render={({ field }) => {
                     return (
                       <Slider
-                        value={field.value}
+                        value={[field?.value?.min, field?.value?.max]}
                         min={
                           form.getValues('houseDetails.preferredSize.unit') === AreaUnit.SquareFoot
                             ? 1000
@@ -136,7 +136,12 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                         }
                         step={1}
                         onChange={(_, value) => {
-                          field.onChange({ target: { value: Array.isArray(value) ? value : [value] } });
+                          if (Array.isArray(value)) {
+                            form.setValue('houseDetails.preferredSize.size', {
+                              min: value[0],
+                              max: value[1]
+                            });
+                          }
                         }}
                         valueLabelDisplay='on'
                         valueLabelFormat={(value) => value?.toLocaleString()}
@@ -151,13 +156,15 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                   onChange={(e) => {
                     const unit = e.target.value as AreaUnitType;
                     const size = form.getValues('houseDetails.preferredSize.size');
+
                     form.setValue('houseDetails.preferredSize.unit', unit);
-                    if (Array.isArray(size)) {
-                      form.setValue(
-                        'houseDetails.preferredSize.size',
-                        size.map(unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter)
-                      );
-                    }
+
+                    const convertUnit = unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter;
+
+                    form.setValue('houseDetails.preferredSize.size', {
+                      min: convertUnit(size.min),
+                      max: convertUnit(size.max)
+                    });
                   }}>
                   {Object.values(AreaUnit).map((unit, unitIndex: number) => (
                     <option value={unit} key={unitIndex}>
@@ -179,12 +186,19 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                   render={({ field }) => {
                     return (
                       <Slider
-                        value={field.value}
+                        value={[field?.value?.min, field?.value?.max]}
                         min={form.getValues('houseDetails.garden.unit') === AreaUnit.SquareFoot ? 200 : 20}
                         max={form.getValues('houseDetails.garden.unit') === AreaUnit.SquareFoot ? 1000 : 100}
                         step={1}
                         onChange={(_, value) => {
-                          field.onChange({ target: { value: Array.isArray(value) ? value : [value] } });
+                          if (Array.isArray(value)) {
+                            form.setValue('houseDetails.garden.size', {
+                              min: value[0],
+                              max: value[1]
+                            });
+                          }
+
+                          // field.onChange({ target: { value: Array.isArray(value) ? value : [value] } });
                         }}
                         valueLabelDisplay='on'
                         valueLabelFormat={(value) => value?.toLocaleString()}
@@ -200,12 +214,13 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                     const unit = e.target.value as AreaUnitType;
                     const size = form.getValues('houseDetails.garden.size');
                     form.setValue('houseDetails.garden.unit', unit);
-                    if (Array.isArray(size)) {
-                      form.setValue(
-                        'houseDetails.garden.size',
-                        size.map(unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter)
-                      );
-                    }
+
+                    const convertUnit = unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter;
+
+                    form.setValue('houseDetails.garden.size', {
+                      min: convertUnit(size.min),
+                      max: convertUnit(size.max)
+                    });
                   }}>
                   {Object.values(AreaUnit).map((unit, unitIndex: number) => (
                     <option value={unit} key={unitIndex}>
@@ -221,27 +236,39 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 Storeys
               </Typography>
               <Slider
-                value={form.getValues('houseDetails.storeys')}
+                value={[
+                  form.getValues('houseDetails.storeys')?.min,
+                  form.getValues('houseDetails.storeys')?.max
+                ]}
                 min={1}
                 max={4}
                 step={1}
-                onChange={(_, value) =>
-                  form.setValue('houseDetails.storeys', Array.isArray(value) ? value : [value])
-                }
+                onChange={(_, value) => {
+                  if (Array.isArray(value)) {
+                    form.setValue('houseDetails.storeys', {
+                      min: value[0],
+                      max: value[1]
+                    });
+                  }
+                }}
                 valueLabelDisplay='on'
                 valueLabelFormat={(value) => value}
                 size='small'
               />
             </div>
 
-            {[PropertyType.Detached, PropertyType.SemiDetached, PropertyType.FarmsLand].map(
-              (propertyType, propertyTypeIndex) =>
-                ((id: string) => (
-                  <div className='switch-wrapper' key={propertyTypeIndex}>
-                    <Switch id={id} size='medium' {...form.register(`propertyType.${propertyType}`)} />
-                    <label htmlFor={id}>{propertyType}</label>
-                  </div>
-                ))(Date.now().toString())
+            {Object.values(House).map((houseType, houseTypeIndex) =>
+              ((id: string) => (
+                <div className='switch-wrapper' key={houseTypeIndex}>
+                  <Switch
+                    id={id}
+                    size='medium'
+                    {...form.register(`houseDetails.houseType.${houseType}`)}
+                    checked={!!form.getValues('houseDetails.houseType')?.[houseType]}
+                  />
+                  <label htmlFor={id}>{houseType}</label>
+                </div>
+              ))(Date.now().toString())
             )}
 
             <div className='slider-wrapper'>
@@ -249,13 +276,21 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 Bedrooms
               </Typography>
               <Slider
-                value={form.getValues('houseDetails.nrOfBedrooms')}
+                value={[
+                  form.getValues('houseDetails.nrOfBedrooms')?.min,
+                  form.getValues('houseDetails.nrOfBedrooms')?.max
+                ]}
                 min={1}
                 max={5}
                 step={1}
-                onChange={(_, value) =>
-                  form.setValue('houseDetails.nrOfBedrooms', Array.isArray(value) ? value : [value])
-                }
+                onChange={(_, value) => {
+                  if (Array.isArray(value)) {
+                    form.setValue('houseDetails.nrOfBedrooms', {
+                      min: value[0],
+                      max: value[1]
+                    });
+                  }
+                }}
                 valueLabelDisplay='on'
                 valueLabelFormat={(value) => value}
                 size='small'
@@ -267,13 +302,21 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 Bathrooms
               </Typography>
               <Slider
-                value={form.getValues('houseDetails.nrOfBathrooms')}
+                value={[
+                  form.getValues('houseDetails.nrOfBathrooms')?.min,
+                  form.getValues('houseDetails.nrOfBathrooms')?.max
+                ]}
                 min={1}
                 max={4}
                 step={1}
-                onChange={(_, value) =>
-                  form.setValue('houseDetails.nrOfBathrooms', Array.isArray(value) ? value : [value])
-                }
+                onChange={(_, value) => {
+                  if (Array.isArray(value)) {
+                    form.setValue('houseDetails.nrOfBathrooms', {
+                      min: value[0],
+                      max: value[1]
+                    });
+                  }
+                }}
                 valueLabelDisplay='on'
                 valueLabelFormat={(value) => value}
                 size='small'
@@ -321,7 +364,7 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
 
             <Select label='Preferred floor' {...form.register('flatDetails.preferredFloor')}>
               <option></option>
-              {Object.values(PreferredFloor).map((pf, pfIndex) => (
+              {Object.values(Floor).map((pf, pfIndex) => (
                 <option value={pf} key={pfIndex}>
                   {pf}
                 </option>
@@ -337,49 +380,60 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
               ))}
             </Select>
 
+            {Object.values(OutsideSpace).map((space, spaceTypeIndex) =>
+              ((id: string) => (
+                <div className='switch-wrapper' key={spaceTypeIndex}>
+                  <Switch
+                    id={id}
+                    size='medium'
+                    {...form.register(`flatDetails.outsideSpace.${space}`)}
+                    checked={!!form.getValues('flatDetails.outsideSpace')[space]}
+                  />
+                  <label htmlFor={id}>{space}</label>
+                </div>
+              ))(Date.now().toString())
+            )}
+
             <div className='slider-wrapper'>
               <Typography variant='body6' className='slider-label'>
                 Preferred size
               </Typography>
               <div className='slider-unit-wrapper'>
-                <Controller
-                  control={form.control}
-                  render={({ field }) => {
-                    return (
-                      <Slider
-                        value={field.value}
-                        min={
-                          form.getValues('flatDetails.preferredSize.unit') === AreaUnit.SquareFoot ? 400 : 40
-                        }
-                        max={
-                          form.getValues('flatDetails.preferredSize.unit') === AreaUnit.SquareFoot
-                            ? 4000
-                            : 400
-                        }
-                        step={1}
-                        onChange={(_, value) => {
-                          field.onChange({ target: { value: Array.isArray(value) ? value : [value] } });
-                        }}
-                        valueLabelDisplay='on'
-                        valueLabelFormat={(value) => value?.toLocaleString()}
-                        size='small'
-                      />
-                    );
+                <Slider
+                  value={[
+                    form.getValues('flatDetails.preferredSize.size')?.min,
+                    form.getValues('flatDetails.preferredSize.size')?.max
+                  ]}
+                  min={form.getValues('flatDetails.preferredSize.unit') === AreaUnit.SquareFoot ? 400 : 40}
+                  max={form.getValues('flatDetails.preferredSize.unit') === AreaUnit.SquareFoot ? 4000 : 400}
+                  step={1}
+                  onChange={(_, value) => {
+                    console.log('change', value);
+                    if (Array.isArray(value)) {
+                      form.setValue('flatDetails.preferredSize.size', {
+                        min: value[0],
+                        max: value[1]
+                      });
+                    }
                   }}
-                  name='flatDetails.preferredSize.size'
+                  valueLabelDisplay='on'
+                  valueLabelFormat={(value) => value?.toLocaleString()}
+                  size='small'
                 />
+
                 <Select
                   value={form.getValues('flatDetails.preferredSize.unit')}
                   onChange={(e) => {
                     const unit = e.target.value as AreaUnitType;
                     const size = form.getValues('flatDetails.preferredSize.size');
                     form.setValue('flatDetails.preferredSize.unit', unit);
-                    if (Array.isArray(size)) {
-                      form.setValue(
-                        'flatDetails.preferredSize.size',
-                        size.map(unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter)
-                      );
-                    }
+
+                    const convertUnit = unit === AreaUnit.SquareFoot ? toSquareFoot : toSquareMeter;
+
+                    form.setValue('flatDetails.preferredSize.size', {
+                      min: convertUnit(size.min),
+                      max: convertUnit(size.max)
+                    });
                   }}>
                   {Object.values(AreaUnit).map((unit, unitIndex: number) => (
                     <option value={unit} key={unitIndex}>
@@ -395,13 +449,21 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 Bedrooms
               </Typography>
               <Slider
-                value={form.getValues('flatDetails.nrOfBedrooms')}
+                value={[
+                  form.getValues('flatDetails.nrOfBedrooms')?.min,
+                  form.getValues('flatDetails.nrOfBedrooms')?.max
+                ]}
                 min={1}
                 max={5}
                 step={1}
-                onChange={(_, value) =>
-                  form.setValue('flatDetails.nrOfBedrooms', Array.isArray(value) ? value : [value])
-                }
+                onChange={(_, value) => {
+                  if (Array.isArray(value)) {
+                    form.setValue('flatDetails.nrOfBedrooms', {
+                      min: value[0],
+                      max: value[1]
+                    });
+                  }
+                }}
                 valueLabelDisplay='on'
                 valueLabelFormat={(value) => value}
                 size='small'
@@ -413,13 +475,21 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                 Bathrooms
               </Typography>
               <Slider
-                value={form.getValues('flatDetails.nrOfBathrooms')}
+                value={[
+                  form.getValues('flatDetails.nrOfBathrooms')?.min,
+                  form.getValues('flatDetails.nrOfBathrooms')?.max
+                ]}
                 min={1}
                 max={4}
                 step={1}
-                onChange={(_, value) =>
-                  form.setValue('flatDetails.nrOfBathrooms', Array.isArray(value) ? value : [value])
-                }
+                onChange={(_, value) => {
+                  if (Array.isArray(value)) {
+                    form.setValue('flatDetails.nrOfBathrooms', {
+                      min: value[0],
+                      max: value[1]
+                    });
+                  }
+                }}
                 valueLabelDisplay='on'
                 valueLabelFormat={(value) => value}
                 size='small'
@@ -466,8 +536,8 @@ export const SetCriteriaHouseType = styled(({ className, form }: SetCriteriaHous
                     <Switch
                       id={id}
                       size='medium'
-                      {...form.register('flatDetails.parkingSpace')}
-                      checked={!!form.getValues('flatDetails.parkingSpace')}
+                      {...form.register('flatDetails.gymSpa')}
+                      checked={!!form.getValues('flatDetails.gymSpa')}
                     />
                     <label htmlFor={id}>gym/spa</label>
                   </div>

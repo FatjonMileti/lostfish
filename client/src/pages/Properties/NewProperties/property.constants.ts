@@ -1,34 +1,50 @@
 import * as yup from 'yup';
 import { ObjectSchema } from 'yup';
 import { PropertyFormType } from './property.types';
+import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 
+export const PropertyType = {
+  // Detached: 'Detached',
+  // SemiDetached: 'Semi-Detached',
+  // Terraced: 'Terraced',
+  Flats: 'Flats',
+  // Bungalows: 'Bungalows',
+  // ParkHomes: 'Park homes',
+  // FarmsLand: 'Farms/Land',
+  House: 'House'
+} as const;
+
+export const Floor = {
+  Ground: 'Ground',
+  First: 'First',
+  AboveFirst: 'Above first',
+  Penthouse: 'Penthouse'
+} as const;
 export const Parking = {
   Garage: 'Garage',
   OffStreet: 'Off street',
   OnStreet: 'On street'
 } as const;
 
-export const Building = {
+export const House = {
   Detached: 'Detached',
   SemiDetached: 'Semi-Detached',
-  Terraced: 'Terraced',
-  Flats: 'Flats',
-  Bungalows: 'Bungalows',
   FarmsLand: 'Farms/Land'
 } as const;
+
 export const BuildPurpose = {
   PurposeBuilt: 'Purpose built',
   Conversion: 'Conversion'
 } as const;
-export const Furnished = {
-  FullyFurnished: 'Fully furnished',
-  PartiallyFurnished: 'Partially furnished',
-  Unfurnished: 'Unfurnished'
-} as const;
+export enum Furnished {
+  FullyFurnished = 'Fully furnished',
+  PartiallyFurnished = 'Partially furnished',
+  Unfurnished = 'Unfurnished'
+}
 export const OutsideSpace = {
   Garden: 'Garden',
   Balcony: 'Balcony',
-  Terrace: 'Terrace'
+  Terrace: 'Roof terrace'
 } as const;
 export const AreaUnit = {
   SquareMeter: 'sq.m',
@@ -60,7 +76,7 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .min(0, 'Must be greater then or equal to 0')
     .transform((value) => (isNaN(value) ? undefined : value))
     .required('Number of bathrooms is required'),
-  buildingType: yup.string().oneOf(Object.values(Building), 'Building type is required').required('Building type is required'),
+  propertyType: yup.string().oneOf(Object.values(PropertyType)).required(),
   flatDetails: yup
     .object()
     .shape({
@@ -68,31 +84,51 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
         .string()
         .transform((value) => value || undefined)
         .oneOf(Object.values(BuildPurpose)),
-      floor: yup.number().transform((value) => (isNaN(value) ? undefined : value)),
-      lift: yup.boolean().optional(),
-      security: yup.boolean().optional()
+      floor: yup
+        .string()
+        .transform((value) => value || undefined)
+        .oneOf(Object.values(Floor)),
+      lift: yup.boolean().required(),
+      security: yup.boolean().required(),
+      gymSpa: yup.boolean().required(),
+      outsideSpace: yup.object().shape({
+        [OutsideSpace.Terrace]: yup.boolean().optional(),
+        [OutsideSpace.Balcony]: yup.boolean().optional(),
+        [OutsideSpace.Garden]: yup.boolean().optional()
+      })
     })
     .optional(),
+  houseDetails: yup.object().shape({
+    houseType: yup
+      .string()
+      .transform((value) => value || undefined)
+      .oneOf(Object.values(House))
+  }),
   furniture: yup
     .string()
     .transform((value) => value || undefined)
     .oneOf(Object.values(Furnished)),
-  outsideSpace: yup.object().shape({
-    [OutsideSpace.Terrace]: yup.boolean().optional(),
-    [OutsideSpace.Balcony]: yup.boolean().optional(),
-    [OutsideSpace.Garden]: yup.boolean().optional()
+  specificPropertyFeatures: yup.object().shape({
+    [OtherSpecificPropertyFeature.DoubleGlazing]: yup.boolean().required(),
+    [OtherSpecificPropertyFeature.AllowsSmoking]: yup.boolean().required(),
+    [OtherSpecificPropertyFeature.AllowsPets]: yup.boolean().required(),
+    [OtherSpecificPropertyFeature.CloseToPublicTransport]: yup.boolean().required()
   }),
   area: yup
     .number()
-    .transform((value) => (isNaN(value) ? undefined : value))
+    // .transform((value) => (isNaN(value) ? undefined : value))
+    .transform((value) => value || undefined)
     .min(1)
     .required('Area is required'),
   areaUnit: yup.string().oneOf(Object.values(AreaUnit)).required(),
-  parkingSpot: yup.string().transform((value) => value || undefined).required('Parking spot is required'),
+  parkingSpot: yup
+    .string()
+    .transform((value) => value || undefined)
+    .required('Parking spot is required'),
   parkingType: yup
     .string()
     .transform((value) => value || undefined)
-    .oneOf(Object.values(Parking)).optional(),
+    .oneOf(Object.values(Parking)),
   epcRating: yup.string().required('EPC Rating is required'),
   description: yup.string().required('Description is required'),
   locationDetails: yup.string().required('Description is required'),

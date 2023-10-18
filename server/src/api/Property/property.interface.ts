@@ -40,20 +40,47 @@ export enum ParkingDetails {
   OnStreet = 'On street'
 }
 
+export enum Floor {
+  Ground = 'Ground',
+  First = 'First',
+  AboveFirst = 'Above first',
+  Penthouse = 'Penthouse'
+}
+
 export enum OutsideSpace {
   Garden = 'Garden',
   Balcony = 'Balcony',
   RoofTerrace = 'Roof terrace'
 }
 
-export enum SpecificPropertyFeatures {
-  PARKING_SPOT = 'Parking spot',
-  GARDEN = 'Garden',
-  BALCONY = 'Balcony',
-  TERRACE = 'Terrace',
+export enum House {
+  Detached = 'Detached',
+  SemiDetached = 'Semi-Detached',
+  FarmsLand = 'Farms/Land'
+}
+
+export enum BuildPurpose {
+  PurposeBuilt = 'Purpose built',
+  Conversion = 'Conversion'
+}
+
+export enum HomeStyle {
+  Modern = 'Modern',
+  Period = 'Period'
+}
+
+export interface Range {
+  min: number;
+  max: number;
+}
+
+export enum Furniture {
   FULLY_FURNISHED = 'Fully furnished',
   PARTIALLY_FURNISHED = 'Partially furnished',
-  UNFURNISHED = 'Unfurnished',
+  UNFURNISHED = 'Unfurnished'
+}
+
+export enum SpecificPropertyFeatures {
   DOUBLE_GLAZING = 'Double glazing',
   ALLOWS_SMOKING = 'Allows smoking',
   ALLOW_PETS = 'Allows pets',
@@ -95,12 +122,8 @@ export enum MasterAssetTypeSring {
 }
 
 export enum PropertyType {
-  'Detached' = 'Detached',
-  'Semi-Detached' = 'Semi-Detached',
-  'Terraced' = 'Terraced',
   'Flats' = 'Flats',
-  'Bungalows' = 'Bungalows',
-  'Farms/Land' = 'Farms/Land'
+  House = 'House'
 }
 
 export enum CurrencyCode {
@@ -129,9 +152,9 @@ export enum CreditScoreRequirement {
 }
 
 export enum ContractDetails {
-  guarantor = 'guarantor',
-  reviewedProperty = 'reviewedProperty',
-  energyCertificate = 'energyCertificate'
+  Guarantor = 'Guarantor',
+  ReviewedProperty = 'Reviewed Property',
+  EnergyCertificate = 'Energy Certificate'
 }
 
 export enum FloorSizeUnit {
@@ -144,6 +167,13 @@ export enum DistanceUnit {
   mi = 'mi'
 }
 
+export enum PropertyCondition {
+  NewlyRefurbished = 'Newly refurbished',
+  Good = 'Good',
+  WouldDoSomeWork = 'would do some work',
+  wouldDoAProject = 'would do a project'
+}
+
 export interface PropertyDocument extends Document {
   asset_id: number;
   name: string;
@@ -154,13 +184,13 @@ export interface PropertyDocument extends Document {
   asset_address: {
     latitude: number;
     longitude: number;
-    street_number: string;
-    route: string;
-    neighbourhood: string;
-    postal_town: string;
-    postal_code: string;
-    administrative_area_level_1: string;
-    country_code: CountryCode;
+    street_number?: string;
+    route?: string;
+    neighbourhood?: string;
+    postal_town?: string;
+    postal_code?: string;
+    administrative_area_level_1?: string;
+    country_code?: CountryCode;
     text: string;
   };
   distance_from_underground: {
@@ -184,14 +214,19 @@ export interface PropertyDocument extends Document {
   master_asset_type_string: MasterAssetTypeSring;
   property_type: PropertyType;
   currency_code: CurrencyCode;
-  outside_space: OutsideSpace[];
   flat_details: {
-    property_purpose: string;
-    floor: number;
+    property_purpose?: BuildPurpose;
+    floor?: Floor;
+
     lift: boolean;
     security: boolean;
+    gym_spa: boolean;
+    outside_space: OutsideSpace[];
   };
-  parking_details: ParkingDetails[];
+  house_details: {
+    house_type?: House;
+  };
+  parking_details?: ParkingDetails;
   asset_attribute: any[];
   room_details: {
     number_of_bathrooms: number;
@@ -216,7 +251,7 @@ export interface PropertyDocument extends Document {
     available_from: Date;
   };
   statistics: any;
-  specific_property_features: SpecificPropertyFeatures[];
+  specific_property_features: (SpecificPropertyFeatures | Furniture)[];
   property_images: object[];
   credit_score_requirements: CreditScoreRequirement;
   contract_details: ContractDetails[];

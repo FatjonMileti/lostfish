@@ -123,6 +123,10 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.property_type = data.property_type;
     }
 
+    if (data.hasOwnProperty('house_details')) {
+      criteria.house_details = data.house_details;
+    }
+
     if (req.body.hasOwnProperty('deposit_amount')) {
       criteria.deposit_amount = data.deposit_amount;
     }
@@ -159,9 +163,9 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
       criteria.looking_for = data.looking_for;
     }
 
-    if (data.hasOwnProperty('moving_time')) {
-      criteria.moving_time = data.moving_time;
-    }
+    // if (data.hasOwnProperty('moving_time')) {
+    criteria.moving_time = data.moving_time;
+    // }
 
     if (!!data.area_of_interest && !!data.budget && !!data.room_details?.number_of_bedrooms) {
       //
