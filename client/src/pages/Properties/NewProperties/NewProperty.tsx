@@ -404,78 +404,6 @@ export const NewProperty = styled(
               helperText={form.formState.errors.title?.message?.toString()}
               type='string'
             />
-            <div className='upload-wrapper'>
-              <div className='label'>
-                <Typography variant='body5'>
-                  Media <span className='required-asterisk'> *</span>
-                </Typography>
-              </div>
-              <ImageUpload
-                className='upload'
-                onNewImages={(files) => {
-                  setNewImages([...state.newImages, ...files]);
-                }}
-                onGenerateImages={(files) => {
-                  setGeneratedImages([...state.generatedImages, ...files]);
-                }}
-              />
-              <Controller
-                render={({ field: { value = [], onChange } }) => (
-                  <>
-                    <div className='images-list'>
-                      {value.map((image: any, imageIndex: number) => (
-                        <div key={imageIndex} className='image-wrapper'>
-                          <IconButton
-                            size='large'
-                            className='remove-button'
-                            onClick={async () => {
-                              onChange({
-                                target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
-                              });
-                            }}>
-                            <Icon icon='minus' size={11} />
-                          </IconButton>
-                          <img alt='property image' src={`${image?.link}`} />
-                        </div>
-                      ))}
-
-                      {state.newImages.length > 0 &&
-                        state.newImages.map((image: any, imageIndex: number) => (
-                          <div key={imageIndex} className='image-wrapper'>
-                            <IconButton
-                              size='large'
-                              className='remove-button'
-                              onClick={() => {
-                                setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
-                              }}>
-                              <Icon icon='minus' size={11} />
-                            </IconButton>
-                            <img alt='property image' src={URL.createObjectURL(image)} />
-                          </div>
-                        ))}
-                      {state.generatedImages.length > 0 &&
-                        state.generatedImages.map((image: any, imageIndex: number) => (
-                          <div key={imageIndex} className='image-wrapper'>
-                            <IconButton
-                              size='large'
-                              className='remove-button'
-                              onClick={() => {
-                                setGeneratedImages(
-                                  state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
-                                );
-                              }}>
-                              <Icon icon='minus' size={11} />
-                            </IconButton>
-                            <img alt='property image' src={image.link} />
-                          </div>
-                        ))}
-                    </div>
-                  </>
-                )}
-                control={form.control}
-                name='propertyImages'
-              />
-            </div>
             <div className='property-preferences-section'>
               <AreaOfInterest
                 placeholder='Enter location'
@@ -750,6 +678,78 @@ export const NewProperty = styled(
               error={!!form.formState.errors['locationDetails']}
               helperText={form.formState.errors['locationDetails']?.message?.toString()}
             />
+            <div className='upload-wrapper'>
+              <div className='label'>
+                <Typography variant='body5'>
+                  Media <span className='required-asterisk'> *</span>
+                </Typography>
+              </div>
+              <ImageUpload
+                  className='upload'
+                  onNewImages={(files) => {
+                    setNewImages([...state.newImages, ...files]);
+                  }}
+                  onGenerateImages={(files) => {
+                    setGeneratedImages([...state.generatedImages, ...files]);
+                  }}
+              />
+              <Controller
+                  render={({ field: { value = [], onChange } }) => (
+                      <>
+                        <div className='images-list'>
+                          {value.map((image: any, imageIndex: number) => (
+                              <div key={imageIndex} className='image-wrapper'>
+                                <IconButton
+                                    size='large'
+                                    className='remove-button'
+                                    onClick={async () => {
+                                      onChange({
+                                        target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
+                                      });
+                                    }}>
+                                  <Icon icon='minus' size={11} />
+                                </IconButton>
+                                <img alt='property image' src={`${image?.link}`} />
+                              </div>
+                          ))}
+
+                          {state.newImages.length > 0 &&
+                              state.newImages.map((image: any, imageIndex: number) => (
+                                  <div key={imageIndex} className='image-wrapper'>
+                                    <IconButton
+                                        size='large'
+                                        className='remove-button'
+                                        onClick={() => {
+                                          setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
+                                        }}>
+                                      <Icon icon='minus' size={11} />
+                                    </IconButton>
+                                    <img alt='property image' src={URL.createObjectURL(image)} />
+                                  </div>
+                              ))}
+                          {state.generatedImages.length > 0 &&
+                              state.generatedImages.map((image: any, imageIndex: number) => (
+                                  <div key={imageIndex} className='image-wrapper'>
+                                    <IconButton
+                                        size='large'
+                                        className='remove-button'
+                                        onClick={() => {
+                                          setGeneratedImages(
+                                              state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
+                                          );
+                                        }}>
+                                      <Icon icon='minus' size={11} />
+                                    </IconButton>
+                                    <img alt='property image' src={image.link} />
+                                  </div>
+                              ))}
+                        </div>
+                      </>
+                  )}
+                  control={form.control}
+                  name='propertyImages'
+              />
+            </div>
             <Map
               address={{
                 lat: form.getValues('location').latitude || 0,
