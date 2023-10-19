@@ -1,6 +1,8 @@
 import { styled } from '@mui/system';
 import React, { DialogHTMLAttributes } from 'react';
 import { ScrollLock } from './ScrollLock';
+import { AnimatePresence, motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   open?: boolean;
@@ -9,6 +11,38 @@ export interface ModalProps extends DialogHTMLAttributes<HTMLDialogElement> {
   closeModal?: () => void;
   preMount?: boolean;
 }
+
+const backdropVariants = {
+  open: {
+    backdropFilter: 'blur(2px)',
+    transition: {
+      duration: 0.1
+    }
+  },
+  closed: {
+    backdropFilter: 'blur(0px)',
+    transition: {
+      duration: 0.1,
+      delay: 0.1
+    }
+  }
+};
+
+const modalVariants = {
+  open: {
+    opacity: 1,
+    transition: {
+      delay: 0.1,
+      duration: 0.1
+    }
+  },
+  closed: {
+    opacity: 0,
+    transition: {
+      duration: 0.1
+    }
+  }
+};
 
 export const Modal = styled(
   ({
@@ -20,26 +54,38 @@ export const Modal = styled(
     disableScrollLock = false,
     preMount = false
   }: ModalProps) => {
-    return (
+    return createPortal(
       <>
         <ScrollLock lock={open && !disableScrollLock} />
-        {(open || preMount) && (
-          <div
-            onClick={onBackdropClick}
-            style={{
-              display: open ? 'initial' : 'none',
-              position: 'fixed',
-              inset: 0,
-              zIndex: '99',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              backdropFilter: 'blur(2px)'
-            }}>
-            <div className={`modal ${className}`} onClick={(e) => e.stopPropagation()}>
-              <div className='modal-container'>{children}</div>
-            </div>
-          </div>
-        )}
-      </>
+
+        <AnimatePresence>
+          {(open || preMount) && (
+            <motion.div
+              animate='open'
+              exit='closed'
+              variants={backdropVariants}
+              initial={{ opacity: 'blur(0px)' }}
+              onClick={onBackdropClick}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: '99',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)'
+              }}>
+              <motion.div
+                animate='open'
+                exit='closed'
+                initial={{ opacity: 0 }}
+                variants={modalVariants}
+                className={`modal ${className}`}
+                onClick={(e) => e.stopPropagation()}>
+                <div className='modal-container'>{children}</div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>,
+      document.body
     );
   }
 )`

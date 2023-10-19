@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '../../../components/Icon';
 import { Button } from '../../../components/Button';
 import { IResolveParams, LoginSocialFacebook } from 'reactjs-social-login';
+import { SocialAccountButton } from '../../../components/SocialAccountButton';
 
 type FacebookLoginProps = {
   appId: string;
@@ -26,9 +27,7 @@ export const LoginWithFacebook: React.FC<FacebookLoginProps> = ({
       onReject={(error) => {
         onLoginFailure('failed_to_login_facebook');
       }}>
-      <Button variant='secondary'>
-        <Icon icon='facebook' />
-      </Button>
+      <SocialAccountButton icon='facebook-f' />
     </LoginSocialFacebook>
   );
 };

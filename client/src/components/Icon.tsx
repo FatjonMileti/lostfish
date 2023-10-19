@@ -3,6 +3,7 @@ import iconSet from '../assets/selection.json';
 import { styled } from '@mui/system';
 
 import { IconNames } from '../assets/icon';
+
 interface IconPropsSpecific extends Omit<IconProps, 'icon'> {
   icon: IconNames;
 }

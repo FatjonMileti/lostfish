@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "close"
   | "shopping"
   | "barbell"
   | "mortarboard"
@@ -15,7 +16,6 @@ export type IconNames =
   | "exclude"
   | "dashboard"
   | "right-arrow"
-  | "close"
   | "star-solid"
   | "bathtub"
   | "double-bed"

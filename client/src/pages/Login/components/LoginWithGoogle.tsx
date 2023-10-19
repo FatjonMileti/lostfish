@@ -3,6 +3,7 @@ import { Icon } from '../../../components/Icon';
 import React, { useCallback } from 'react';
 import config from '../../../config';
 import { LoginSocialGoogle, IResolveParams } from 'reactjs-social-login';
+import { SocialAccountButton } from '../../../components/SocialAccountButton';
 export const LoginWithGoogle = (props: any) => {
   const { onSuccess } = props;
 
@@ -24,9 +25,7 @@ export const LoginWithGoogle = (props: any) => {
       onReject={(err) => {
         console.log(err);
       }}>
-      <Button variant='secondary'>
-        <Icon icon='google' />
-      </Button>
+      <SocialAccountButton icon='google' />
     </LoginSocialGoogle>
   );
 };
