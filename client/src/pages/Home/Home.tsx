@@ -8,33 +8,38 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
+import { LoginModal } from '../Login/LoginModal';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
+  const [showLoginModal, setShowLoginModal] = React.useState(true);
   const navigate = useNavigate();
   return (
-    <div className={classNames('home-page', className)}>
-      <Header />
-      <div className='container'>
-        <Typography variant='h2'>Looking for your next home?</Typography>
-        <Typography variant='body4' className='description'>
-          Our goal is to revolutionise the property industry by using technology and data to empower and
-          inform customers in the buying, selling, and renting process.
-        </Typography>
+    <>
+      <LoginModal open={showLoginModal} onBackdropClick={() => setShowLoginModal(false)} />
+      <div className={classNames('home-page', className)}>
+        <Header onSigInClick={() => setShowLoginModal(true)} />
+        <div className='container'>
+          <Typography variant='h2'>Looking for your next home?</Typography>
+          <Typography variant='body4' className='description'>
+            Our goal is to revolutionise the property industry by using technology and data to empower and
+            inform customers in the buying, selling, and renting process.
+          </Typography>
 
-        <div className='potential-matches-list'>
-          <Avatar image={getAvatarFormIndex('0')} />
-          <Avatar image={getAvatarFormIndex('1')} />
-          <Avatar image={getAvatarFormIndex('2')} />
-          <Avatar image={getAvatarFormIndex('3')} />
-          <Avatar image={getAvatarFormIndex('4')} />
-          <Avatar image={getAvatarFormIndex('5')} />
+          <div className='potential-matches-list'>
+            <Avatar image={getAvatarFormIndex('0')} />
+            <Avatar image={getAvatarFormIndex('1')} />
+            <Avatar image={getAvatarFormIndex('2')} />
+            <Avatar image={getAvatarFormIndex('3')} />
+            <Avatar image={getAvatarFormIndex('4')} />
+            <Avatar image={getAvatarFormIndex('5')} />
+          </div>
+
+          <Button size='large' onClick={() => navigate('/create-account')} className='create-account-button'>
+            Join our community
+          </Button>
         </div>
-
-        <Button size='large' onClick={() => navigate('/create-account')} className='create-account-button'>
-          Join our community
-        </Button>
       </div>
-    </div>
+    </>
   );
 })`
   &.home-page {

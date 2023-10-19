@@ -20,7 +20,7 @@ import { LoginWithTwitter } from './components/LoginWithTwitter';
 import axiosWithToken from '../../utils/axios';
 import { Header } from './Header';
 import { buildAbilityFor } from '../../utils/ability.util';
-// import { useUserStore } from '../../globalState/user';
+
 import config from '../../config';
 import loginIllustration from './loginIllustration.png';
 import { useUserStore } from '../../globalState/user';
@@ -35,15 +35,9 @@ export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessT
 
 export const Login = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const loginForm = useForm({ resolver: yupResolver(schema), mode: 'all' });
-
-  const [cookies, setCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
-
   const [showPassword, setShowPassword] = React.useState(false);
-
   const user = useUserStore();
-
   const [loading, setLoading] = React.useState(false);
-
   const navigate = useNavigate();
 
   React.useEffect(() => {

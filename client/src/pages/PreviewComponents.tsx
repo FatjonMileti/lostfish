@@ -28,6 +28,8 @@ import { Label } from '../components/Label';
 import { Avatar } from '../components/Avatar';
 import { avatars } from './HomeLoggedIn/avatars';
 import { Select } from '../components/Select/Select';
+import { CloseButton } from '../components/CloseButton';
+import { SocialAccountButton } from '../components/SocialAccountButton';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -41,6 +43,65 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
       <LoadingMatch />
       <div className='grouped'>
         <div>
+          <Typography variant='body5'>{"<SocialAccountButton icon='twitter'/> "}</Typography>
+          <SocialAccountButton icon='twitter' />
+        </div>
+        <div className='close-buttons'>
+          <Typography variant='body5'>{'<CloseButton />'}</Typography>
+          <div className='content-wrapper'>
+            <div>
+              <CloseButton size='large' inverted={false} background={true} />
+              <ul>
+                <li>size: large</li>
+                <li> inverted: false</li>
+                <li>background: true</li>
+              </ul>
+            </div>
+            <div>
+              <CloseButton size='large' inverted={false} background={false} />
+              <ul>
+                <li>size: large</li>
+                <li>inverted: false</li>
+                <li>background: false</li>
+              </ul>
+            </div>
+            <div>
+              <CloseButton size='large' inverted={true} background={true} />
+              <ul>
+                <li>size: large</li>
+                <li>inverted: true</li>
+                <li>background: true</li>
+              </ul>
+            </div>
+
+            <div>
+              <CloseButton size='small' inverted={false} background={true} />
+              <ul>
+                <li>size: small</li>
+                <li> inverted: false</li>
+                <li>background: true</li>
+              </ul>
+            </div>
+            <div>
+              <CloseButton size='small' inverted={false} background={false} />
+              <ul>
+                <li>size: small</li>
+                <li>inverted: false</li>
+                <li>background: false</li>
+              </ul>
+            </div>
+            <div>
+              <CloseButton size='small' inverted={true} background={true} />
+              <ul>
+                <li>size: small</li>
+                <li>inverted: true</li>
+                <li>background: true</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div>
+          <Typography variant='body5'>{'<Avatar image={avatar.png} />'}</Typography>
           <Avatar image={avatars[0].image} />
           <Avatar image={avatars[1].image} style={{ width: '100px', height: '100px' }} />
         </div>
@@ -327,6 +388,13 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     .grouped {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+
+    .close-buttons {
+      .content-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .buttons {

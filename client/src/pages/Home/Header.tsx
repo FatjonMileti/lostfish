@@ -6,13 +6,15 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
 import { MenuButton } from '../../components/MenuButton';
 
-export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  onSigInClick?: () => void;
+}
 
-export const Header = styled(({ className }: HeaderProps) => {
+export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProps) => {
   const navigate = useNavigate();
   return (
     <div className={`header ${className}`}>
-      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')}/>
+      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
       <div className='menu-desktop'>
         <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
@@ -23,7 +25,7 @@ export const Header = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='right'>
-        <Button variant='secondary' className='join-button' size='small' onClick={() => navigate('/login')}>
+        <Button variant='secondary' className='join-button' size='small' onClick={onSigInClick}>
           Sign In
         </Button>
       </div>

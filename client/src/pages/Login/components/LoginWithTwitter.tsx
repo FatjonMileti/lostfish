@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '../../../components/Button';
 import { Icon } from '../../../components/Icon';
 import config from '../../../config';
+import { SocialAccountButton } from '../../../components/SocialAccountButton';
 
 // twitter oauth Url constructor
 function getTwitterOauthUrl() {
@@ -24,9 +25,5 @@ export const LoginWithTwitter = (props: any) => {
     const url = getTwitterOauthUrl();
     window.location.href = url;
   };
-  return (
-    <Button variant='secondary' onClick={() => goTo()}>
-      <Icon icon='twitter' />
-    </Button>
-  );
+  return <SocialAccountButton icon='twitter' onClick={() => goTo()} />;
 };
