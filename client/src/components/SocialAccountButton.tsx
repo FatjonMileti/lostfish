@@ -29,8 +29,8 @@ export const SocialAccountButton = styled(({ className, icon }: SocialAccountBut
       }
     }
     .icon {
-      height: 16px;
-      width: 16px;
+      height: 16px !important;
+      width: 16px !important;
       color: #0d2a38;
     }
   }
