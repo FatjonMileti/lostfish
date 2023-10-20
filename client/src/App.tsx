@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import NotFound from './pages/404';
-import { Login } from './pages/Login/Login';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
@@ -84,7 +83,6 @@ function App() {
           <UserProvider>
             <BrowserRouter>
               <Routes>
-                <Route path='/login' element={<Login />} />
                 <Route path='/policy-agreement' element={<PolicyAgreement />} />
                 <Route path='/agreement/:id' element={<AgreementDetails />} />
                 <Route path='/components' element={<PreviewComponents />} />
@@ -109,16 +107,16 @@ function App() {
                 />
 
                 {userStore?.userDetails?.role === 'Landlord' && (
-                  <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Login />} />
+                  <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Home />} />
                 )}
 
                 <Route path='/agreement' element={<Agreement />} />
 
                 <Route path='/matches' element={<Matches />} />
 
-                <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Login />} />
-                <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Login />} />
-                <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Login />} />
+                <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Home />} />
+                <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Home />} />
+                <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Home />} />
 
                 <Route path='*' element={<NotFound />} />
               </Routes>

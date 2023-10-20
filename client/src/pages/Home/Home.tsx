@@ -9,15 +9,37 @@ import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import { LoginModal } from '../Login/LoginModal';
+import { CreateAccountModal } from '../CreateAccount/CreateAccountmodal';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showLoginModal, setShowLoginModal] = React.useState(true);
+  const [showCreateAccountModal, setShowCreateAccountModal] = React.useState(false);
   const navigate = useNavigate();
+
+  const onSigInClick = () => {
+    setShowCreateAccountModal(false);
+    setShowLoginModal(true);
+  };
+
+  const onCreateAccountClick = () => {
+    setShowLoginModal(false);
+    setShowCreateAccountModal(true);
+  };
   return (
     <>
-      <LoginModal open={showLoginModal} onBackdropClick={() => setShowLoginModal(false)} />
+      <LoginModal
+        open={showLoginModal}
+        onBackdropClick={() => setShowLoginModal(false)}
+        onCreateAccountClick={onCreateAccountClick}
+      />
+      <CreateAccountModal
+        open={showCreateAccountModal}
+        onBackdropClick={() => setShowCreateAccountModal(false)}
+        onSigInClick={onSigInClick}
+      />
+
       <div className={classNames('home-page', className)}>
-        <Header onSigInClick={() => setShowLoginModal(true)} />
+        <Header onSigInClick={onSigInClick} />
         <div className='container'>
           <Typography variant='h2'>Looking for your next home?</Typography>
           <Typography variant='body4' className='description'>
@@ -34,7 +56,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             <Avatar image={getAvatarFormIndex('5')} />
           </div>
 
-          <Button size='large' onClick={() => navigate('/create-account')} className='create-account-button'>
+          <Button size='large' onClick={onCreateAccountClick} className='create-account-button'>
             Join our community
           </Button>
         </div>

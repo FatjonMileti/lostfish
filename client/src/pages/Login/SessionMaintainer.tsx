@@ -3,7 +3,7 @@ import axios from '../../utils/axios';
 import config from '../../config';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT } from './Login';
+import { decodeJWT } from './LoginModal';
 import { Backdrop } from '../../components/Backdrop';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';

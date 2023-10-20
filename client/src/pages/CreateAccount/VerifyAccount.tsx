@@ -4,11 +4,10 @@ import axios, { AxiosError } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import config from '../../config';
-import { useGlobalState } from '../../globalState/globalState';
 import { Backdrop } from '../../components/Backdrop';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
-import { decodeJWT } from '../Login/Login';
+import { decodeJWT } from '../Login/LoginModal';
 import { useUserStore } from '../../globalState/user';
 export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const setUser = useUserStore((user) => user.set);

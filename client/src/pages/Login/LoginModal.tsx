@@ -36,9 +36,11 @@ const schema = yup.object().shape({
 
 export const decodeJWT = (accessToken: string) => JSON.parse(window.atob(accessToken.split('.')[1]));
 
-interface LoginModalProps extends ModalProps {}
+interface LoginModalProps extends ModalProps {
+  onCreateAccountClick?: () => void;
+}
 
-export const LoginModal = styled(({ className, ...otherProps }: LoginModalProps) => {
+export const LoginModal = styled(({ className, onCreateAccountClick, ...otherProps }: LoginModalProps) => {
   const loginForm = useForm({ resolver: yupResolver(schema), mode: 'all' });
   const [showPassword, setShowPassword] = React.useState(false);
   const userStore = useUserStore();
@@ -168,7 +170,7 @@ export const LoginModal = styled(({ className, ...otherProps }: LoginModalProps)
             <Typography variant='body4' className='new-to-lostfish'>
               New to Lostfish?
             </Typography>
-            <Label variant='tertiary' onClick={() => navigate('/create-account')}>
+            <Label variant='tertiary' onClick={onCreateAccountClick}>
               Create account
             </Label>
           </div>
@@ -282,11 +284,6 @@ export const LoginModal = styled(({ className, ...otherProps }: LoginModalProps)
           display: flex;
           justify-content: center;
           column-gap: 24px;
-
-          .button {
-            padding-inline: 28px;
-            border-width: 2px;
-          }
         }
 
         .content {
