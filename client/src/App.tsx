@@ -15,7 +15,6 @@ import SocketContext from './context/SocketContext';
 import { About } from './pages/About/About';
 import { Mission } from './pages/Mission/Mission';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
-import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
 import { UserProvider } from './context/UserProvider';
@@ -93,7 +92,7 @@ function App() {
                 <Route path='/google/redirect' element={<RedirectUriPage />} />
                 <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                 <Route path='/activate-account/:token' element={<VerifyAccount />} />
-                <Route path='/reset-password/:token' element={<ResetPassword />} />
+                {/*<Route path='/reset-password/:token' element={<ResetPassword />} />*/}
 
                 <Route
                   path=''
