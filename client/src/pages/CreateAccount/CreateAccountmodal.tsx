@@ -104,7 +104,10 @@ export const CreateAccountModal = styled(
             onSigInClick();
           }}
         />
-        <Modal {...otherProps} className={classNames('create-account-modal', className)}>
+        <Modal
+          {...otherProps}
+          onBackdropClick={onBackdropClick}
+          className={classNames('create-account-modal', className)}>
           <div className='modal-header'>
             <Typography variant='body3' className='title'>
               Create account
