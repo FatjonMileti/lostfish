@@ -1,16 +1,20 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
+
 import { Header } from './Header';
-import homeBackground from './home-background.png';
-import { Button } from '../../components/Button';
-import { Typography } from '../../components/Typography';
-import { Avatar } from '../../components/Avatar';
-import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import { LoginModal } from '../Login/LoginModal';
 import { CreateAccountModal } from '../CreateAccount/CreateAccountmodal';
 import { ForgotPasswordModal } from '../ForgotPassword/ForgotPasswordModal';
 import { ResetPasswordModal } from '../ResetPassword/ResetPasswordModal';
+import { SectionOne } from '../About/About.SectionOne';
+import { SectionTwo } from '../About/About.SectionTwo';
+import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
+import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
+import { SectionFour } from '../About/About.SectionFour';
+import { Footer } from './Footer';
+
+import backgroundImg from '../About/forest.jpeg';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showLoginModal, setShowLoginModal] = React.useState(false);
@@ -53,26 +57,13 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       <ResetPasswordModal />
       <div className={classNames('home-page', className)}>
         <Header onSigInClick={onSigInClick} />
-        <div className='container'>
-          <Typography variant='h2'>Looking for your next home?</Typography>
-          <Typography variant='body4' className='description'>
-            Our goal is to revolutionise the property industry by using technology and data to empower and
-            inform customers in the buying, selling, and renting process.
-          </Typography>
 
-          <div className='potential-matches-list'>
-            <Avatar image={getAvatarFormIndex('0')} />
-            <Avatar image={getAvatarFormIndex('1')} />
-            <Avatar image={getAvatarFormIndex('2')} />
-            <Avatar image={getAvatarFormIndex('3')} />
-            <Avatar image={getAvatarFormIndex('4')} />
-            <Avatar image={getAvatarFormIndex('5')} />
-          </div>
-
-          <Button size='large' onClick={onCreateAccountClick} className='create-account-button'>
-            Join our community
-          </Button>
-        </div>
+        <SectionOne />
+        <SectionTwo />
+        <SectionFive onCreateAccountClick={onCreateAccountClick} />
+        <SectionThree />
+        <SectionFour />
+        <Footer />
       </div>
     </>
   );
@@ -81,9 +72,9 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     position: relative;
     min-height: 100vh;
     display: grid;
-    z-index: 1;
-
-    justify-items: center;
+    grid-template-rows: min-content auto;
+    background: linear-gradient(180deg, #FFFBF3 18.95%, #FFF 100%);
+    z-index: 0;
 
     &::before {
       content: '';
@@ -91,63 +82,17 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      background: url(${homeBackground}), lightgray 50% / cover no-repeat;
+      height: 100vh;
+      background-image: url(${backgroundImg});
+      background-repeat: no-repeat;
       opacity: 0.05;
-
+      background-position-y: top;
       background-size: cover;
-      background-position-y: center;
       z-index: -1;
     }
 
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-
-      background: linear-gradient(148deg, #fffbf3 18.95%, #fff 100%), #fff;
-
-      background-position-y: top;
-      background-size: cover;
-      z-index: -2;
-    }
-
     .header {
-      position: absolute;
-    }
-
-    .container {
-      display: grid;
-      justify-items: center;
-      align-content: center;
-      width: 672px;
-      max-width: 100vw;
-      align-self: center;
-
-      .description {
-        margin-top: 16px;
-      }
-
-      .potential-matches-list {
-        margin-top: 32px;
-        display: flex;
-        .avatar {
-          height: 80px;
-          width: 80px;
-          margin-left: -12px;
-          z-index: 1;
-          &:first-of-type {
-            margin-left: 0;
-          }
-        }
-      }
-
-      .create-account-button {
-        margin-top: 48px;
-      }
+      z-index: 1;
     }
   }
 `;
