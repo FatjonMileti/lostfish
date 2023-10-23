@@ -49,14 +49,13 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
   );
 })`
   & {
-    width: 100%;
     position: relative;
-    display: flex;
-    padding: 64px 36px;
-    flex-direction: column;
-    align-items: center;
-    gap: 48px;
+    display: grid;
+    padding: 88px 36px;
     box-sizing: border-box;
+    justify-items: center;
+    gap: 48px;
+    
     background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 100%, lightgray 50%);
 
     &::before {
@@ -66,17 +65,12 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url(${backgroundImg});
+      //background-image: url(${backgroundImg});
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
       opacity: 0.1;
       z-index: -1;
-    }
-
-    .typography {
-      font-weight: 400;
-      line-height: 48px;
     }
 
     .section-content {

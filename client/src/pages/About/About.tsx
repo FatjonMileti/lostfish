@@ -6,19 +6,17 @@ import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionFour } from './About.SectionFour';
 import { Footer } from '../Home/Footer';
-import backgroundImg from '../Home/home-background.png';
-import {SectionZero} from "./About.SectionZero";
-import {SectionImg} from "./About.SectionImg";
+import  backgroundImg from './forest.jpeg';
+import { SectionTwo } from './About.SectionTwo';
 
 export const About = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`about-page ${className}`}>
       <Header />
-        <SectionZero />
-        <SectionImg />
       <SectionOne />
-      <SectionThree />
+      <SectionTwo />
       <SectionFive />
+      <SectionThree />
       <SectionFour />
       <Footer />
     </div>
@@ -29,7 +27,7 @@ export const About = styled(({ className }: React.HTMLAttributes<HTMLDivElement>
     min-height: 100vh;
     display: grid;
     grid-template-rows: min-content auto;
-    background: linear-gradient(148deg, #FFFBF3 18.95%, #FFF 100%);
+    background: linear-gradient(148deg, #fffbf3 18.95%, #fff 100%);
     z-index: 0;
 
     &::before {
