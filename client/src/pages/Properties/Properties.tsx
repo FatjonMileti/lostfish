@@ -220,7 +220,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
     .container {
       padding: 24px 36px 64px 36px;
-      min-height: calc(100vh - 104px);
+      min-height: calc(100vh - 112px);
       box-sizing: border-box;
       display: grid;
       row-gap: 32px;

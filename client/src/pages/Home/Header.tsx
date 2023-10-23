@@ -1,10 +1,9 @@
 import { Button } from '../../components/Button';
 import React from 'react';
 import { styled } from '@mui/system';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
-import { MenuButton } from '../../components/MenuButton';
+import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSigInClick?: () => void;
@@ -16,13 +15,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
     <div className={`header ${className}`}>
       <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
-      <div className='menu-desktop'>
-        <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
-        <NavLink to='/about'>{({ isActive }) => <MenuButton active={isActive}>About</MenuButton>}</NavLink>
-        <NavLink to='/mission'>
-          {({ isActive }) => <MenuButton active={isActive}>Mission</MenuButton>}
-        </NavLink>
-      </div>
+      <div className='menu-desktop'></div>
 
       <div className='right'>
         <Button variant='secondary' className='join-button' size='small' onClick={onSigInClick}>
@@ -34,7 +27,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
 })`
   &.header {
     width: 100%;
-    height: 104px;
+    height: 112px;
     align-items: center;
 
     padding: 20px 36px;
@@ -50,7 +43,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
     }
 
     .logo {
-      height: 64px;
+      height: 42px;
       width: auto;
       cursor: pointer;
     }

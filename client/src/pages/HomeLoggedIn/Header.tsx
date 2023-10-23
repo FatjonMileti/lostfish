@@ -9,7 +9,7 @@ import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from './avatars';
 
-import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
+import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
 import { Role } from '../../enums';
 import { useNotificationsStore } from '../../globalState/notifications';
 
@@ -94,7 +94,7 @@ export const Header = styled(({ className }: HeaderProps) => {
     justify-content: space-between;
 
     .logo {
-      height: 64px;
+      height: 42px;
       width: auto;
       cursor: pointer;
     }
