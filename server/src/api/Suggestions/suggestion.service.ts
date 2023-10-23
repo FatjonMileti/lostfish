@@ -255,6 +255,7 @@ export default class SuggestionService {
       nrOfComparisons += 4;
       // Number of bedrooms
       if (
+        clientCriteria.house_details.number_of_bedrooms &&
         property.room_details.number_of_bedrooms >= clientCriteria.house_details.number_of_bedrooms.min &&
         property.room_details.number_of_bedrooms <= clientCriteria.house_details.number_of_bedrooms.max
       ) {
@@ -263,6 +264,7 @@ export default class SuggestionService {
 
       // Number of bathrooms
       if (
+        clientCriteria.house_details.number_of_bathrooms &&
         property.room_details.number_of_bathrooms >= clientCriteria.house_details.number_of_bathrooms.min &&
         property.room_details.number_of_bathrooms <= clientCriteria.house_details.number_of_bathrooms.max
       ) {
@@ -279,6 +281,7 @@ export default class SuggestionService {
 
       // Preferred size
       if (
+        clientCriteria.house_details.preferred_size &&
         (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
           ? clientCriteria.house_details.preferred_size.size.min
           : toSquareMeters(clientCriteria.house_details.preferred_size.size.min)) >=
@@ -302,15 +305,15 @@ export default class SuggestionService {
 
       // Number of bedrooms
       if (
-        property.room_details.number_of_bedrooms >= clientCriteria.flat_details.number_of_bedrooms.min &&
-        property.room_details.number_of_bedrooms <= clientCriteria.flat_details.number_of_bedrooms.max
+        property.room_details.number_of_bedrooms >= clientCriteria.flat_details.number_of_bedrooms?.min &&
+        property.room_details.number_of_bedrooms <= clientCriteria.flat_details.number_of_bedrooms?.max
       ) {
         matchingCriteria++;
       }
 
       // Number of bathrooms
       if (
-        property.room_details?.number_of_bathrooms >= clientCriteria.flat_details.number_of_bathrooms.min &&
+        property.room_details?.number_of_bathrooms >= clientCriteria.flat_details.number_of_bathrooms?.min &&
         property.room_details?.number_of_bathrooms <= clientCriteria.flat_details.number_of_bathrooms.min
       ) {
         matchingCriteria++;
@@ -318,6 +321,7 @@ export default class SuggestionService {
 
       // Preferred size
       if (
+        clientCriteria.flat_details.preferred_size &&
         (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
           ? clientCriteria.flat_details.preferred_size.size.min
           : toSquareMeters(clientCriteria.flat_details.preferred_size.size.min)) >=
