@@ -31,7 +31,6 @@ export const ViewProperty = styled(
     parsedProperty.areaOfInterest = property.area_of_interest;
     parsedProperty.title = property?.title;
     parsedProperty.description = property?.description;
-    parsedProperty.locationDetails = property?.location_details;
     parsedProperty.numberOfBedrooms = property?.room_details?.number_of_bedrooms;
     parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
     parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
@@ -156,14 +155,6 @@ export const ViewProperty = styled(
             </Typography>
             <Typography variant='body4' className='section-description'>
               {parsedProperty.description}
-            </Typography>
-          </div>
-          <div className='section'>
-            <Typography variant='body4' className='label'>
-              Location details
-            </Typography>
-            <Typography variant='body4' className='section-description'>
-              {parsedProperty.locationDetails}
             </Typography>
           </div>
           <Map className='view-property-map' address={parsedProperty.address} />

@@ -238,7 +238,6 @@ export interface PropertyDocument extends Document {
   };
   parking_spot: number;
   epc_rating: string;
-  location_details: string;
   floor_size: number;
   floor_size_unit: FloorSizeUnit;
   property_features: PropertyFeatures[];

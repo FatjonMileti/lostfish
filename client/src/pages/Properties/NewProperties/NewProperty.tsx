@@ -126,7 +126,6 @@ export const NewProperty = styled(
         parkingType: undefined,
         epcRating: '',
         description: '',
-        locationDetails: '',
         areaOfInterest: '',
         propertyImages: []
       },
@@ -254,7 +253,6 @@ export const NewProperty = styled(
 
         form.setValue('epcRating', data.epc_rating);
         form.setValue('description', data.description);
-        form.setValue('locationDetails', data.location_details);
       } catch (err) {
         throw err;
       }
@@ -303,7 +301,6 @@ export const NewProperty = styled(
       payload['floor_size_unit'] = form.getValues('areaUnit');
 
       payload['description'] = form.getValues('description');
-      payload['location_details'] = form.getValues('locationDetails');
 
       payload['parking_spot'] = form.getValues('parkingSpot')
         ? parseInt(form.getValues('parkingSpot'))
@@ -442,7 +439,7 @@ export const NewProperty = styled(
           !!form.getValues('area') &&
           !!form.getValues('parkingSpot') &&
           !!form.getValues('epcRating'),
-        !!form.getValues('description') && !!form.getValues('locationDetails'),
+        !!form.getValues('description'),
         true
       ].filter((d) => d).length
     ).toFixed(0);
@@ -810,15 +807,6 @@ export const NewProperty = styled(
               error={!!form.formState.errors.description}
               helperText={form.formState.errors.description?.message?.toString()}
             />
-            <Textarea
-              placeholder='Enter location details'
-              label='Location details'
-              {...register('locationDetails')}
-              required
-              rows={4}
-              error={!!form.formState.errors['locationDetails']}
-              helperText={form.formState.errors['locationDetails']?.message?.toString()}
-            />
             <div className='upload-wrapper'>
               <div className='label'>
                 <Typography variant='body5'>
@@ -962,21 +950,7 @@ export const NewProperty = styled(
                 },
                 {
                   name: ' Enter property details',
-                  checked:
-                    !!form.getValues('propertyType') &&
-                    !!form.getValues('bedrooms') &&
-                    !!form.getValues('bathrooms') &&
-                    !!form.getValues('area') &&
-                    !!form.getValues('parkingSpot') &&
-                    !!form.getValues('epcRating')
-                },
-                {
-                  name: ' Select points of interest',
-                  checked: !!form.getValues('description') && !!form.getValues('locationDetails')
-                },
-                {
-                  name: ' Enter facilities & amenities',
-                  checked: true
+                  checked: !!form.getValues('description')
                 }
               ].map((progressItem, progressItemIndex) => (
                 <div
