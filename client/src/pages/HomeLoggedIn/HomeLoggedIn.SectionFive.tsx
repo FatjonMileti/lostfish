@@ -7,83 +7,91 @@ import image3 from './paper3.png';
 import { Button } from '../../components/Button';
 import { useUserStore } from '../../globalState/user';
 
-export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const userStore = useUserStore();
-  return (
-    <div className={className}>
-      <div className='images'>
-        <div className='image image-1'>
-          <div className='content'>
-            <Typography variant='body3' className='title'>
+export const SectionFive = styled(
+  ({
+    className,
+    onCreateAccountClick = () => {}
+  }: HTMLAttributes<HTMLDivElement> & { onCreateAccountClick?: () => void }) => {
+    const userStore = useUserStore();
+    return (
+      <div className={className}>
+        <div className='images'>
+          <div className='image image-1'>
+            <div className='content'>
+              <Typography variant='body3' className='title'>
                 What really is AI?
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+            </div>
           </div>
-        </div>
-        <div className='image image-2'>
-          <div className='content'>
-            <Typography variant='body3' className='title'>
+          <div className='image image-2'>
+            <div className='content'>
+              <Typography variant='body3' className='title'>
                 Why AI?
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+            </div>
           </div>
-        </div>
-        <div className='image image-3'>
-          <div className='content'>
-            <Typography variant='body3' className='title'>
+          <div className='image image-3'>
+            <div className='content'>
+              <Typography variant='body3' className='title'>
                 How to get started
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
-            <Typography variant='body4' className='description'>
-              Our goal is to increase transparency and trust in the process to achieve the best results for
-              customers in a quick, calm, and informed manner.
-            </Typography>
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Our goal is to increase transparency and trust in the process to achieve the best results for
+                customers in a quick, calm, and informed manner.
+              </Typography>
+            </div>
           </div>
         </div>
+        {!userStore.auth ? (
+          <Button variant='primary' size='large' className='create-account' onClick={onCreateAccountClick}>
+            Create account
+          </Button>
+        ) : null}
       </div>
-      {!userStore.auth ? (
-        <Button variant='primary' size='large' className='create-account'>
-          Create account
-        </Button>
-      ) : null}
-    </div>
-  );
-})`
+    );
+  }
+)`
   & {
     display: grid;
     padding: 64px 36px;
     box-sizing: border-box;
-    background: #fff;
+
     gap: 48px;
+
+    background: #f7f1e7;
+    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.1) inset;
 
     .images {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       align-items: flex-start;
       gap: 24px;
-      
+
       .image-1 {
-          background-image: url(${image1});
-        
+        background-image: url(${image1});
+
         .content {
-          background: linear-gradient(180deg, rgba(229, 21, 90, 0.8) 0%, rgba(13, 42, 56, 0.8) 80%)
+          background: linear-gradient(180deg, rgba(229, 21, 90, 0.8) 0%, rgba(13, 42, 56, 0.8) 80%);
         }
       }
 
@@ -91,7 +99,7 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
         background-image: url(${image2});
 
         .content {
-          background: linear-gradient(180deg, rgba(192, 218, 255, 0.8) 0%, rgba(13, 42, 56, 0.8) 75%)
+          background: linear-gradient(180deg, rgba(192, 218, 255, 0.8) 0%, rgba(13, 42, 56, 0.8) 75%);
         }
       }
 
@@ -99,7 +107,7 @@ export const SectionFive = styled(({ className }: HTMLAttributes<HTMLDivElement>
         background-image: url(${image3});
 
         .content {
-          background: linear-gradient(180deg, rgba(24, 77, 109, 0.8) 0%, rgba(13, 42, 56, 0.8) 70%)
+          background: linear-gradient(180deg, rgba(24, 77, 109, 0.8) 0%, rgba(13, 42, 56, 0.8) 70%);
         }
       }
 

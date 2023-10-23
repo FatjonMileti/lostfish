@@ -16,13 +16,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
     <div className={`header ${className}`}>
       <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
-      <div className='menu-desktop'>
-        <NavLink to='/'>{({ isActive }) => <MenuButton active={isActive}>Home</MenuButton>}</NavLink>
-        <NavLink to='/about'>{({ isActive }) => <MenuButton active={isActive}>About</MenuButton>}</NavLink>
-        <NavLink to='/mission'>
-          {({ isActive }) => <MenuButton active={isActive}>Mission</MenuButton>}
-        </NavLink>
-      </div>
+      <div className='menu-desktop'></div>
 
       <div className='right'>
         <Button variant='secondary' className='join-button' size='small' onClick={onSigInClick}>
@@ -34,7 +28,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
 })`
   &.header {
     width: 100%;
-    height: 104px;
+    height: 112px;
     align-items: center;
 
     padding: 20px 36px;

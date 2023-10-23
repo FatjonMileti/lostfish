@@ -12,7 +12,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   );
 })`
   &.header {
-    height: 104px;
+    height: 112px;
     align-items: center;
 
     padding: 20px 36px;

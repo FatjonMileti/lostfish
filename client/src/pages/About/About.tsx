@@ -6,7 +6,7 @@ import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionFour } from './About.SectionFour';
 import { Footer } from '../Home/Footer';
-import  backgroundImg from './forest.jpeg';
+import backgroundImg from './forest.jpeg';
 import { SectionTwo } from './About.SectionTwo';
 
 export const About = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
