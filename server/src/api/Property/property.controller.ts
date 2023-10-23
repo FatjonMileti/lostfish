@@ -347,7 +347,6 @@ export class PropertyController {
  *      "outside_space": ["Garden","Balcony"],
  *      "floor_size_unit": "sq.m",
  *      "epc_rating": B,
- *      "location_details": "",
  *     "property_features": ["Parks Nearby"],
  *     "specific_property_features": ["Garden","Terrace"],
  *     "property_images": [{"key":"filename.jpg","link":"http://jhsdcjhg4t87fdsvidsvi.com"}],
@@ -400,7 +399,6 @@ export class PropertyController {
  *     },
  *     "outside_space": ["Garden","Balcony"],
  *     "epc_rating": A,
- *     "location_details": "",
  *     "property_features": [""],
  *     "specific_property_features": [],
  *     "property_images": [],
@@ -458,7 +456,6 @@ export class PropertyController {
  * @apiBody {Number} budget.max_budget
  * @apiBody {Number} parking_spot
  * @apiBody {String} epc_rating
- * @apiBody {String} location_details
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements
  * @apiBody {Object[]} property_images An array of property images

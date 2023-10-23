@@ -55,7 +55,6 @@ export type PropertyFormType = {
   parkingType?: ParkingType;
   epcRating: string;
   description: string;
-  locationDetails: string;
   areaOfInterest: string;
   propertyImages: any[];
 };
