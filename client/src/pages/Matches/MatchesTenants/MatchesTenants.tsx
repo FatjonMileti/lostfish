@@ -263,23 +263,32 @@ export const MatchedSlide = styled(
   }
 )`
   &.match-property-slide {
+    padding: 24px;
     display: grid;
-    row-gap: 16px;
-    width: 372px;
+    row-gap: 24px;
     height: auto;
     flex-shrink: 0;
     align-content: space-between;
     opacity: 0.5;
+    width: 440px;
+    box-sizing: border-box;
+
+    justify-items: center;
 
     &.active {
       z-index: 1;
       opacity: 1;
+      background-color: white;
+      border-radius: 16px;
+
+      /* Card Shadow */
+      box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .avatar {
       position: relative;
-      width: 372px;
-      height: 372px;
+      width: 324px;
+      height: 324px;
       overflow: hidden;
       flex-shrink: 0;
       cursor: pointer;
@@ -297,7 +306,6 @@ export const MatchedSlide = styled(
       .tenant-details {
         display: flex;
         column-gap: 8px;
-        padding: 20px 32px;
         font-weight: 700;
         align-items: center;
 

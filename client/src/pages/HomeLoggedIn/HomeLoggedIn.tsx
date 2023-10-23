@@ -13,6 +13,7 @@ import Can from '../../components/Can';
 import backgroundImg from '../Home/home-background.png';
 
 import { CASLAction } from '../../utils/ability.util';
+import { SuggestionsTenants } from '../Matches/MatchesTenants/SuggestionsTenants';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -24,6 +25,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       <Backdrop open={loading}></Backdrop>
 
       <div className='container'>
+        <SuggestionsTenants />
         <SectionOne />
         <Can do={CASLAction.Update} on='Property'>
           <SectionTwo />
@@ -72,7 +74,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       //background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
       //background-position-y: top;
       background: linear-gradient(180deg, rgba(255, 251, 243, 0.99) 18.95%, rgba(255, 255, 255, 0.95) 100%),
-      rgba(255, 255, 255, 0.2);
+        rgba(255, 255, 255, 0.2);
       background-size: cover;
       z-index: -2;
     }
