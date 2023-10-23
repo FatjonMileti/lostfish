@@ -376,7 +376,7 @@ const sendResetPasswordInstructions = async (req: express.Request, res: express.
     await user.save();
 
     const emailTemplate = resetPasswordTemplate({
-      link: `${process.env.FRONTEND_URL}/reset-password/${user.confirmation_token}`,
+      link: `${process.env.FRONTEND_URL}?resetPasswordToken=${user.confirmation_token}`,
       userName: user.first_name + user.last_name
     });
 
@@ -406,7 +406,7 @@ const sendChangePasswordInstructions = async (req: express.Request, res: express
     await user.save();
 
     const emailTemplate = resetPasswordTemplate({
-      link: `${process.env.FRONTEND_URL}/reset-password/${user.confirmation_token}`,
+      link: `${process.env.FRONTEND_URL}?resetPasswordToken=${user.confirmation_token}`,
       userName: user.first_name + user.last_name
     });
 

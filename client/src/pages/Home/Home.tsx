@@ -4,20 +4,22 @@ import classNames from 'classnames';
 import { Header } from './Header';
 import homeBackground from './home-background.png';
 import { Button } from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import { LoginModal } from '../Login/LoginModal';
 import { CreateAccountModal } from '../CreateAccount/CreateAccountmodal';
+import { ForgotPasswordModal } from '../ForgotPassword/ForgotPasswordModal';
+import { ResetPasswordModal } from '../ResetPassword/ResetPasswordModal';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const [showLoginModal, setShowLoginModal] = React.useState(true);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = React.useState(false);
-  const navigate = useNavigate();
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = React.useState(false);
 
   const onSigInClick = () => {
     setShowCreateAccountModal(false);
+    setShowForgotPasswordModal(false);
     setShowLoginModal(true);
   };
 
@@ -25,19 +27,30 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     setShowLoginModal(false);
     setShowCreateAccountModal(true);
   };
+
+  const onForgotPasswordClick = () => {
+    setShowLoginModal(false);
+    setShowForgotPasswordModal(true);
+  };
   return (
     <>
       <LoginModal
         open={showLoginModal}
         onBackdropClick={() => setShowLoginModal(false)}
         onCreateAccountClick={onCreateAccountClick}
+        onForgotPasswordClick={onForgotPasswordClick}
       />
       <CreateAccountModal
         open={showCreateAccountModal}
         onBackdropClick={() => setShowCreateAccountModal(false)}
         onSigInClick={onSigInClick}
       />
-
+      <ForgotPasswordModal
+        open={showForgotPasswordModal}
+        onBackdropClick={() => setShowForgotPasswordModal(false)}
+        onSigInClick={onSigInClick}
+      />
+      <ResetPasswordModal />
       <div className={classNames('home-page', className)}>
         <Header onSigInClick={onSigInClick} />
         <div className='container'>

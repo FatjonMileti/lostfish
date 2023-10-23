@@ -55,6 +55,7 @@ export const Typography = styled(
     font-size: 16px;
     line-height: 24px;
     font-family: 'Roobert', serif;
+    font-weight: 400;
   }
 
   &.body5 {
