@@ -122,7 +122,6 @@ const schema = new Schema<PropertyDocument>({
   },
   parking_spot: Number,
   epc_rating: String,
-  location_details: String,
   property_features: [String],
   specific_property_features: [String],
   credit_score_requirements: String,

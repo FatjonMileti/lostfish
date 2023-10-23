@@ -131,7 +131,6 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .oneOf(Object.values(Parking)),
   epcRating: yup.string().required('EPC Rating is required'),
   description: yup.string().required('Description is required'),
-  locationDetails: yup.string().required('Description is required'),
   areaOfInterest: yup.string().required('Location is required'),
   propertyImages: yup.array().required()
 });

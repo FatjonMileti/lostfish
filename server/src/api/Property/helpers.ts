@@ -30,7 +30,7 @@ export const getPropertyScore = (property: PropertyDocument) => {
         !!property.floor_size &&
         !!property.parking_spot &&
         !!property.epc_rating,
-      !!property.description && !!property.location_details,
+      !!property.description,
       true
     ].filter((d) => d).length
   ).toFixed(0);
