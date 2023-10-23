@@ -56,7 +56,7 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
     justify-items: center;
     gap: 48px;
     
-    background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 100%, lightgray 50%);
+    background: linear-gradient(180deg, #F3F4F5 18.95%, #FFF 100%);
 
     &::before {
       content: '';

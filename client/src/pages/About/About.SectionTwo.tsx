@@ -41,6 +41,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     align-items: center;
     gap: 48px;
     box-sizing: border-box;
+    background-color: #F3F4F5;
     opacity: 1;
     position: relative;
     z-index: 1;
