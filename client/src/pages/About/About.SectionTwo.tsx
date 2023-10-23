@@ -4,36 +4,38 @@ import { Typography } from '../../components/Typography';
 import image from './45.png';
 import multimedia from './start.svg';
 
-export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  return (
-    <div className={className}>
-      <div className='welcome'>
-        <Typography className='perfect-match'>
-          We use <span className='perfect-match-red'>Artificial Intelligence </span>
-          to reimagine the real estate industry
-        </Typography>
-        <Typography variant='body4' className='texts'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-          et dolore magna aliqua.
-          <br />
-          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat.
-        </Typography>
-      </div>
-      <div className='section-content'>
-        <div className='img'>
-          <div className='content'>
-            <div className='multimedia'>
-              {' '}
-              <div className='icon'></div>{' '}
+export const SectionTwo = styled(
+  React.forwardRef<HTMLDivElement>(({ className }: HTMLAttributes<HTMLDivElement>, ref) => {
+    return (
+      <div className={className} ref={ref}>
+        <div className='welcome'>
+          <Typography className='perfect-match'>
+            We use <span className='perfect-match-red'>Artificial Intelligence </span>
+            to reimagine the real estate industry
+          </Typography>
+          <Typography variant='body4' className='texts'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliqua.
+            <br />
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat.
+          </Typography>
+        </div>
+        <div className='section-content'>
+          <div className='img'>
+            <div className='content'>
+              <div className='multimedia'>
+                {' '}
+                <div className='icon'></div>{' '}
+              </div>
+              <Typography variant='body2'>How Lostfish works</Typography>
             </div>
-            <Typography variant='body2'>How Lostfish works</Typography>
           </div>
         </div>
       </div>
-    </div>
-  );
-})`
+    );
+  })
+)`
   & {
     display: grid;
     padding: 88px 36px;
@@ -41,7 +43,7 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     align-items: center;
     gap: 48px;
     box-sizing: border-box;
-    background-color: #F3F4F5;
+    background-color: #f3f4f5;
     opacity: 1;
     position: relative;
     z-index: 1;

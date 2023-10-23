@@ -21,6 +21,8 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   const [showCreateAccountModal, setShowCreateAccountModal] = React.useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = React.useState(false);
 
+  const section2Ref = React.useRef<HTMLDivElement>(null);
+
   const onSigInClick = () => {
     setShowCreateAccountModal(false);
     setShowForgotPasswordModal(false);
@@ -58,8 +60,8 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       <div className={classNames('home-page', className)}>
         <Header onSigInClick={onSigInClick} />
 
-        <SectionOne />
-        <SectionTwo />
+        <SectionOne section2Ref={section2Ref} />
+        <SectionTwo ref={section2Ref} />
         <SectionFive onCreateAccountClick={onCreateAccountClick} />
         <SectionThree />
         <SectionFour />
@@ -73,7 +75,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     min-height: 100vh;
     display: grid;
     grid-template-rows: min-content auto;
-    background: linear-gradient(180deg, #FFFBF3 18.95%, #FFF 100%);
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%);
     z-index: 0;
 
     &::before {

@@ -1,10 +1,9 @@
 import { Button } from '../../components/Button';
 import React from 'react';
 import { styled } from '@mui/system';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
-import { MenuButton } from '../../components/MenuButton';
+import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSigInClick?: () => void;
@@ -44,7 +43,7 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
     }
 
     .logo {
-      height: 64px;
+      height: 42px;
       width: auto;
       cursor: pointer;
     }
