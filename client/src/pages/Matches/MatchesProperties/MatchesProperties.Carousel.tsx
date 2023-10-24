@@ -147,7 +147,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       overflow: hidden;
       position: relative;
       max-width: 100%;
-      max-height: 576px;
+      max-height: 640px;
 
       :before {
         content: '';
@@ -168,7 +168,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       .slide-item {
         flex-shrink: 0;
         width: 100%;
-        aspect-ratio: 3 / 2;
+        aspect-ratio: 9 / 4;
         object-fit: contain;
       }
     }

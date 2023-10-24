@@ -13,6 +13,7 @@ import { PropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
 import { AreaUnit } from '../../Properties/NewProperties/property.constants';
+import { CloseButton } from '../../../components/CloseButton';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: PropertyType;
@@ -49,33 +50,34 @@ export const ViewProperty = styled(
     return (
       <Modal className={classNames('view-property-modal', className)} {...rest}>
         <div className='modal-header'>
-          <div className='avatar-wrapper'>
-            <Avatar image={parsedProperty.avatar} />
-            <Typography variant='body4'>{parsedProperty.propertyOwnerName}</Typography>
-            <Typography variant='body4' className='dot'>
-              •
-            </Typography>
-            <Typography variant='body4'>{property.percentage}%</Typography>
+          <Typography variant='body2'>Property details</Typography>
+          <div className='buttons'>
+            <div className='like-buttons'>
+              <IconButton size='large'>
+                <Icon icon='eye' size={12} />
+              </IconButton>
+              <IconButton size='large'>
+                <Icon icon='eye' size={12} />
+              </IconButton>
+            </div>
+            <CloseButton onClick={closeModal} />
           </div>
-          <IconButton className='close-modal-button' size='large' onClick={closeModal}>
-            <Icon icon='close' size={18} />
-          </IconButton>
         </div>
 
-        <Carousel
-          indexStore={[activeImageIndex, setActiveImageIndex]}
-          images={parsedProperty.images}></Carousel>
-
-        <div className='description'>
+        <div className='modal-content'>
+          <Carousel
+            indexStore={[activeImageIndex, setActiveImageIndex]}
+            images={parsedProperty.images}></Carousel>
+            <div className='details-side'>
           <div className='description-header'>
             <div className='title'>
               <Typography variant='body2'>{parsedProperty.title}</Typography>
-              <IconButton
-                size='large'
-                className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}
-                onClick={starProperty}>
-                <Icon icon='star' size={20} />
-              </IconButton>
+              {/*<IconButton*/}
+              {/*  size='large'*/}
+              {/*  className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}*/}
+              {/*  onClick={starProperty}>*/}
+              {/*  <Icon icon='star' size={20} />*/}
+              {/*</IconButton>*/}
             </div>
             <div className='property-details'>
               <div className='detail'>
@@ -153,9 +155,7 @@ export const ViewProperty = styled(
             <Typography variant='body4' className='label'>
               Description
             </Typography>
-            <Typography variant='body4' className='section-description'>
-              {parsedProperty.description}
-            </Typography>
+            <Typography variant='body4'>{parsedProperty.description}</Typography>
           </div>
           <Map className='view-property-map' address={parsedProperty.address} />
 
@@ -186,112 +186,85 @@ export const ViewProperty = styled(
                   <Typography variant='body4'>Private patio garden</Typography>
                 </li>
                 <li>
-                  <Typography variant='body4'>Private patio garden</Typography>
+                  <Typography variant='body4'>Duplex apartment</Typography>
                 </li>
               </ul>
             </div>
           </div>
+            </div>
         </div>
       </Modal>
     );
   }
 )`
   &.view-property-modal {
-    overflow-y: auto;
-    max-height: calc(100vh - 80px);
-    height: auto;
-    width: 1020px;
+    width: 100vw;
+    height: 100vh;
 
-    && {
-      border-radius: 0;
-      max-width: 100vw;
-      top: calc(50% + 40px);
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: none;
-    }
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 100vh;
+    max-width: 100vw;
+
+    border-radius: 0;
 
     .modal-container {
-      border-radius: 12px;
-      overflow: hidden;
       padding: 0 !important;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
-      position: relative;
-
-      background-color: white;
-      width: 100%;
+      display: grid;
+      grid-template-rows: max-content auto;
 
       .modal-header {
-        position: absolute;
-        top: 0;
-        z-index: 2;
-        transform: translate3d(0, 0, 0);
-
         display: flex;
         width: 100%;
-        padding: 32px;
-        justify-content: space-between;
-        align-items: flex-start;
+        padding: 20px 36px;
         box-sizing: border-box;
+        justify-content: space-between;
+        align-items: center;
 
-        background: linear-gradient(180deg, rgba(38, 38, 38, 0.7) 0%, rgba(38, 38, 38, 0) 100%);
+        border-bottom: 2px solid #f3f4f5;
+        /* Nav Shadow */
+        box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
 
-        .avatar-wrapper {
+        .buttons {
           display: flex;
           align-items: center;
-          gap: 8px;
-          border-radius: 244px;
+          gap: 32px;
 
-          .typography {
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
+          .icon-button {
+            padding: 16px;
+            width: 56px;
+            height: 56px;
           }
 
-          .dot {
-            color: #cfd5d5;
-          }
-        }
-
-        .close-modal-button {
-          padding: 15px;
-          z-index: 1;
-          &:hover {
-            background: #184d6d;
-            color: #fff;
+          .like-buttons {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
           }
         }
       }
 
-      .description {
-        display: flex;
-        padding: 32px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 24px;
-        align-self: stretch;
+      .modal-content {
+        display: grid;
+        overflow-y: auto;
+        height: 100%;
+        box-sizing: border-box;
+        
+        .details-side {
+          display: grid;
+          padding: 32px;
+          box-sizing: border-box;
+          gap: 24px;
 
         .description-header {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
+          display: grid;
           gap: 24px;
-          align-self: stretch;
 
           .title {
             display: flex;
-            align-items: center;
+            justify-content: space-between;
             gap: 24px;
-            align-self: stretch;
-
-            .typography {
-              flex: 1 0 0;
-              font-weight: 400;
-              line-height: 40px;
-            }
 
             .stared-button {
               padding: 12px;
@@ -331,32 +304,22 @@ export const ViewProperty = styled(
         }
 
         .section {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
+          display: grid;
           gap: 8px;
-          align-self: stretch;
 
           .label {
-            color: #0d2a38;
+            font-size: 18px;
             font-weight: 700;
           }
-
-          .section-description {
-            align-self: stretch;
-            font-weight: 400;
-          }
         }
+
         .view-property-map {
-          height: 240px;
+          height: 480px;
         }
 
         .facilities-wrapper {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
+          display: grid;
           gap: 8px;
-          align-self: stretch;
 
           .label {
             font-size: 18px;
@@ -365,18 +328,14 @@ export const ViewProperty = styled(
           }
 
           .facilities {
-            display: flex;
-            align-items: flex-start;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-content: space-between;
             gap: 8px;
-            align-self: stretch;
-
-            .typography {
-              flex: 1 0 0;
-              font-style: normal;
-              font-weight: 400;
-            }
           }
         }
+      }
       }
     }
   }
