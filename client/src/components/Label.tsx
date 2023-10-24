@@ -74,7 +74,7 @@ export const Label = styled(
 
       &.size-medium {
         height: 48px;
-        padding: 12px 24px;
+        padding: 12px 20px;
         font-size: 16px;
         line-height: 24px;
       }
@@ -138,7 +138,7 @@ export const Label = styled(
 
       &.size-medium {
         height: 48px;
-        padding: 12px 24px;
+        padding: 12px 20px;
         font-size: 16px;
         line-height: 24px;
       }

@@ -4,18 +4,23 @@ import classNames from 'classnames';
 import { Typography } from '../../../components/Typography';
 import { useSuggestedTenants } from './useSuggestedTenants';
 import { motion } from 'framer-motion';
-import { MatchedSlide, TenantType } from './MatchesTenants';
+import { TenantType } from './MatchesTenants';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from './ViewProfile';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { IconButton } from '../../../components/IconButton';
-import { Icon } from '../../../components/Icon';
+import { MatchButton } from '../../../components/MatchButton';
+import { UnMatchButton } from '../../../components/UnMatchButton';
+import { TenantCard } from '../../../components/TenantCard';
+import axios from '../../../utils/axios';
+import { useUserStore } from '../../../globalState/user';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
   const suggestedTenants = useSuggestedTenants();
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [tenantToView, setTenantToView] = React.useState<TenantType | null>(null);
+
+  const userStore = useUserStore();
 
   const suggestedTenant: TenantType = suggestedTenants.tenants[activeSlide];
   const matchedProperty = suggestedTenant?.property;
@@ -27,6 +32,26 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
   };
 
   console.log('suggestedTenants: ', suggestedTenants);
+
+  const likeProperty = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+    try {
+      await axios(userStore.auth.access_token).post('/api/match/tenant', {
+        tenant: tenantId,
+        chosen: true,
+        property: propertyId
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const dislikeProperty = async ({ matchId }: { matchId: string }) => {
+    try {
+      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
+    } catch (err) {
+      throw err;
+    }
+  };
 
   return (
     <>
@@ -47,30 +72,26 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
           )}
         </div>
 
-        <div className='slides-wrapper'>
+        <motion.div className='slides-wrapper'>
           {suggestedTenants.tenants.map((tenant, tenantIndex) => {
             const { criteria: tenantCriteria } = tenant;
 
             return (
-              <motion.div
+              <TenantCard
                 key={tenantIndex}
                 animate={{
-                  x: `${-100 * activeSlide}% `,
-                  opacity: tenantIndex === activeSlide ? 1 : 0.5
+                  x: `calc(${-100 * activeSlide}% - ${activeSlide * 24}px)`
                 }}
-                transition={{ ease: 'easeOut', duration: 0.5 }}>
-                <MatchedSlide
-                  active={tenantIndex === activeSlide}
-                  avatar={getAvatarFormIndex(tenantCriteria.avatar)}
-                  name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
-                  onViewProfileClick={() => setTenantToView(suggestedTenant)}
-                  setActiveSlide={() => {}}
-                  percentage={matchedProperty.percentage}
-                />
-              </motion.div>
+                transition={{ duration: 0.4 }}
+                name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
+                avatar={getAvatarFormIndex(tenantCriteria.avatar)}
+                inView={tenantIndex === activeSlide}
+                percentage={matchedProperty.percentage}
+                onViewProfileClick={() => setTenantToView(suggestedTenant)}
+              />
             );
           })}
-        </div>
+        </motion.div>
 
         {suggestedTenants.tenants.length > 0 && (
           <div className='matches-slider-footer'>
@@ -81,52 +102,54 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               size='large'
             />
             <div className='match-actions'>
-              <IconButton
-                className='remove-button'
-                size='large'
-                disabled={!suggestedTenant?.matchId}
-                onClick={() => {
-                  // if (suggestedTenant?.matchId) {
-                  //   removeTenantMatch(suggestedTenant?.matchId);
-                  // }
-                }}>
-                <Icon icon='close' size={28} />
-              </IconButton>
-
-              <IconButton
-                size='large'
-                inverted
-                className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}
-                onClick={() => {
-                  // checkTenant(
-                  //   criteria.tenantId,
-                  //   !suggestedTenant.chosen,
-                  //   suggestedTenant?.starred,
-                  //   matchedProperty?._id
-                  // );
-                }}>
-                <Icon icon='checked' size={28} />
-              </IconButton>
-
-              <IconButton
-                className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}
-                size='large'
-                onClick={() => {
-                  // starTenant(
-                  //   criteria.tenantId,
-                  //   suggestedTenant?.chosen,
-                  //   !suggestedTenant.starred,
-                  //   matchedProperty?._id
-                  // );
-                }}>
-                <Icon icon='star-solid' size={28} />
-              </IconButton>
+              {/*<IconButton*/}
+              {/*  className='remove-button'*/}
+              {/*  size='large'*/}
+              {/*  disabled={!suggestedTenant?.matchId}*/}
+              {/*  onClick={() => {*/}
+              {/*    // if (suggestedTenant?.matchId) {*/}
+              {/*    //   removeTenantMatch(suggestedTenant?.matchId);*/}
+              {/*    // }*/}
+              {/*  }}>*/}
+              {/*  <Icon icon='close' size={28} />*/}
+              {/*</IconButton>*/}
+              <UnMatchButton size='large' />
+              {/*<IconButton*/}
+              {/*  size='large'*/}
+              {/*  inverted*/}
+              {/*  className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}*/}
+              {/*  onClick={() => {*/}
+              {/*    // checkTenant(*/}
+              {/*    //   criteria.tenantId,*/}
+              {/*    //   !suggestedTenant.chosen,*/}
+              {/*    //   suggestedTenant?.starred,*/}
+              {/*    //   matchedProperty?._id*/}
+              {/*    // );*/}
+              {/*  }}>*/}
+              {/*  <Icon icon='checked' size={28} />*/}
+              {/*</IconButton>*/}
+              {/*<IconButton*/}
+              {/*  className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}*/}
+              {/*  size='large'*/}
+              {/*  onClick={() => {*/}
+              {/*    // starTenant(*/}
+              {/*    //   criteria.tenantId,*/}
+              {/*    //   suggestedTenant?.chosen,*/}
+              {/*    //   !suggestedTenant.starred,*/}
+              {/*    //   matchedProperty?._id*/}
+              {/*    // );*/}
+              {/*  }}>*/}
+              {/*  <Icon icon='star-solid' size={28} />*/}
+              {/*</IconButton>*/}
+              <MatchButton size='large' />
             </div>
             <ArrowButton
               direction='right'
               onClick={next}
               size='large'
-              style={{ visibility: suggestedTenants.tenants.length === 1 ? 'hidden' : 'initial' }}
+              style={{
+                visibility: activeSlide === suggestedTenants.tenants.length - 1 ? 'hidden' : 'initial'
+              }}
             />
           </div>
         )}
@@ -173,6 +196,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
 
     .slides-wrapper {
       display: flex;
+      column-gap: 24px;
       width: 440px;
       box-sizing: border-box;
 
@@ -192,7 +216,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
 
       .match-actions {
         display: flex;
-        column-gap: 24px;
+        column-gap: 48px;
         align-items: center;
 
         .star-button {

@@ -71,14 +71,18 @@ export class MatchController {
   private createMatchProperty = async (req: Request, res: Response) => {
     try {
       const matchData: Partial<MatchDocument> = req.body;
+
       const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+
       const match = await this.matchService.createMatch({
         ...matchData,
         type,
         landlord: res.locals.user_id,
         created_by: res.locals.user_id
       });
+
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+
       return res.status(201).json(match);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to create a match.' });

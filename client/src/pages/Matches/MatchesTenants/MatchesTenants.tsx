@@ -14,6 +14,7 @@ import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
 import { mapTenant } from './serializers';
+import { Label } from '../../../components/Label';
 
 export interface TenantType {
   id: string;
@@ -243,20 +244,18 @@ export const MatchedSlide = styled(
             <Typography variant='body4' className='tenant-name'>
               {name}
             </Typography>
-            <Typography variant='body4' className='tenant-dot'>
-              •
-            </Typography>
+
             <Typography variant='body4' className='tenant-match-percentage'>
-              {percentage ?? '34'}%
+              {percentage ?? '34'}% Match rate
             </Typography>
           </div>
-          <Button
-            size='small'
+          <Label
+            size='medium'
             variant='secondary'
             className='view-profile-button'
             onClick={onViewProfileClick}>
             View profile
-          </Button>
+          </Label>
         </motion.div>
       </motion.div>
     );
@@ -300,23 +299,32 @@ export const MatchedSlide = styled(
     }
 
     .action-buttons {
+      width: 100%;
       display: flex;
+      justify-content: space-between;
+      column-gap: 16px;
       align-items: center;
 
       .tenant-details {
-        display: flex;
-        column-gap: 8px;
-        font-weight: 700;
+        display: grid;
+        row-gap: 4px;
+
         align-items: center;
 
-        .tenant-dot,
+        .tenant-name {
+          font-weight: 700;
+        }
+
         .tenant-match-percentage {
           color: #c4b1a3;
+          font-weight: 700;
         }
       }
 
       .view-profile-button {
         flex-shrink: 0;
+        padding: 16px 20px;
+        height: 56px;
       }
     }
   }

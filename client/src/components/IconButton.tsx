@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
+import classNames from 'classnames';
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'small' | 'medium' | 'large';
@@ -20,9 +21,10 @@ export const IconButton = styled(
     return (
       <button
         type={type}
-        className={`icon-button ${className} ${size} ${inverted ? 'inverted' : ''} ${
-          noBackground ? 'no-background' : ''
-        }`}
+        className={classNames('icon-button', className, `size-${size}`, {
+          inverted,
+          'no-background': noBackground
+        })}
         {...rest}>
         {children}
       </button>
@@ -72,15 +74,15 @@ export const IconButton = styled(
       }
     }
 
-    &.small {
+    &.size-small {
       padding: 6px;
     }
 
-    &.medium {
+    &.size-medium {
       padding: 12px;
     }
 
-    &.large {
+    &.size-large {
       padding: 18px;
     }
   }

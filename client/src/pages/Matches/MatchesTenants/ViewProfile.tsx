@@ -212,6 +212,8 @@ export const ViewProfile = styled(({ className, closeViewProfile, criteria }: Vi
       .modal-content {
         display: grid;
         grid-template-columns: 1fr 0.7fr;
+        height: 100%;
+        overflow-y: auto;
 
         ${(props) => props.theme.breakpoints.down('laptop')} {
           grid-template-columns: 1fr;

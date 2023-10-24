@@ -1,10 +1,10 @@
 import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
-import { IconButton } from './IconButton';
+import { IconButton, IconButtonProps } from './IconButton';
 import { Icon } from './Icon';
 import classNames from 'classnames';
 
-export interface CloseButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface CloseButtonProps extends IconButtonProps {
   inverted?: boolean;
   background?: boolean;
   size?: 'large' | 'small';
@@ -33,6 +33,8 @@ export const CloseButton = styled(
     box-sizing: border-box;
     border-style: solid;
     border-color: transparent;
+
+    transition: all 0.2s ease-in-out;
 
     &:hover {
       background: #e7e7e7;

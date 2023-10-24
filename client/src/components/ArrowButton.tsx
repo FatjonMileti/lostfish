@@ -1,6 +1,7 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Icon } from './Icon';
+import classNames from 'classnames';
 
 export interface ArrowButtonProps extends HTMLAttributes<HTMLButtonElement> {
   size?: 'small' | 'medium' | 'large';
@@ -21,9 +22,7 @@ export const ArrowButton = styled(
     return (
       <button
         type='button'
-        className={`arrow-button ${className} size-${size} ${inverted ? 'inverted' : ''} ${
-          hero ? 'hero' : ''
-        }`}
+        className={classNames('arrow-button', className, `size-${size}`, { inverted, hero })}
         {...rest}>
         <Icon icon={`arrow-${direction}`} />
       </button>

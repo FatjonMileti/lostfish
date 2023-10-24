@@ -30,6 +30,8 @@ import { avatars } from './HomeLoggedIn/avatars';
 import { Select } from '../components/Select/Select';
 import { CloseButton } from '../components/CloseButton';
 import { SocialAccountButton } from '../components/SocialAccountButton';
+import { MatchButton } from '../components/MatchButton';
+import { UnMatchButton } from '../components/UnMatchButton';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -42,6 +44,25 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
       <div className='grouped'>
+        <div>
+          <div>
+            {'<MatchButton />'}
+            <MatchButton />
+          </div>
+          <div>
+            {"<MatchButton size='large'/>"}
+            <MatchButton size='large' />
+          </div>
+
+          <div>
+            {'<UnMatchButton />'}
+            <UnMatchButton />
+          </div>
+          <div>
+            {"<UnMatchButton size='large'/>"}
+            <UnMatchButton size='large' />
+          </div>
+        </div>
         <div>
           <Typography variant='body5'>{"<SocialAccountButton icon='twitter'/> "}</Typography>
           <SocialAccountButton icon='twitter' />
