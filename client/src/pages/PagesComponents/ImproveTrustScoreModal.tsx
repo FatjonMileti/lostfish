@@ -9,6 +9,7 @@ import { Label } from '../../components/Label';
 import { useProfileStore } from '../../globalState/profile';
 import { useNavigate } from 'react-router-dom';
 import { SetCriteriaDrawer } from '../SetCriteria/SetCriteriaDrawer';
+import { CloseButton } from '../../components/CloseButton';
 
 interface ImproveTrustScoreModalProps extends ModalProps {
   afterRefineSearch?: () => void;
@@ -41,9 +42,7 @@ export const ImproveTrustScoreModal = styled(
                 {profileStore.trust_score}%
               </Typography>
             </div>
-            <IconButton size='large' onClick={closeModal}>
-              <Icon icon='close' size={12} />
-            </IconButton>
+            <CloseButton onClick={closeModal} />
           </div>
 
           <div className='modal-body'>

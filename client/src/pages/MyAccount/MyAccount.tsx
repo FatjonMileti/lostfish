@@ -77,74 +77,76 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
         closeModal={() => setImproveTrustScoreModalVisibility(false)}
       />
       <div className={`my-account-page ${className}`}>
-        <Header />
-        <div className='container-account'>
-          <div className='left-menu'>
-            <div className='menu-header'>
-              <Avatar
-                image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined}
-              />
+        <div className='header-and-content-wrapper'>
+          <Header />
+          <div className='container-account'>
+            <div className='left-menu'>
+              <div className='menu-header'>
+                <Avatar
+                  image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined}
+                />
 
-              <div>
-                <Typography variant='body3' className='name'>
-                  {`${profileStore.first_name} ${profileStore.last_name}`}
-                </Typography>
-                <div className='trust-score'>
-                  <Typography variant='body4' className='trust-score-title'>
-                    Match score:
+                <div>
+                  <Typography variant='body3' className='name'>
+                    {`${profileStore.first_name} ${profileStore.last_name}`}
                   </Typography>
-                  <Typography
-                    variant='body4'
-                    className='trust-score-percentage'
-                    onClick={() => setImproveTrustScoreModalVisibility(true)}>
-                    {profileStore.trust_score}%
-                  </Typography>
+                  <div className='trust-score'>
+                    <Typography variant='body4' className='trust-score-title'>
+                      Match score:
+                    </Typography>
+                    <Typography
+                      variant='body4'
+                      className='trust-score-percentage'
+                      onClick={() => setImproveTrustScoreModalVisibility(true)}>
+                      {profileStore.trust_score}%
+                    </Typography>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className='menu-body'>
-              {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
-                ({ icon, text, link }, menuItemIndex) => (
-                  <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
-                    {({ isActive }) => (
-                      <motion.div
-                        whileTap={{ scale: 0.98 }}
-                        className={`menu-item ${isActive ? 'active' : ''}`}>
-                        <Icon icon={icon} color='black' size={23} />
-                        <Typography variant='body4' className='text'>
-                          {text}
-                        </Typography>
-                      </motion.div>
-                    )}
-                  </NavLink>
-                )
-              )}
-            </div>
+              <div className='menu-body'>
+                {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
+                  ({ icon, text, link }, menuItemIndex) => (
+                    <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
+                      {({ isActive }) => (
+                        <motion.div
+                          whileTap={{ scale: 0.98 }}
+                          className={`menu-item ${isActive ? 'active' : ''}`}>
+                          <Icon icon={icon} color='black' size={23} />
+                          <Typography variant='body4' className='text'>
+                            {text}
+                          </Typography>
+                        </motion.div>
+                      )}
+                    </NavLink>
+                  )
+                )}
+              </div>
 
-            <div className='menu-footer'>
-              <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
-                <Icon icon='sign-out' color='black' size={23} />
-                <Typography variant='body4' className='text'>
-                  Sign out
-                </Typography>
-              </motion.div>
+              <div className='menu-footer'>
+                <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
+                  <Icon icon='sign-out' color='black' size={23} />
+                  <Typography variant='body4' className='text'>
+                    Sign out
+                  </Typography>
+                </motion.div>
+              </div>
             </div>
-          </div>
-          <div className='line'></div>
-          <div className='right-content'>
-            <Routes>
-              <Route path='/' element={<Dashboard />} />
-              <Route path='/account-settings' element={<ProfileDetails />} />
-              {profileStore.role === 'Tenant' && (
-                <Route path='/refine-your-search' element={<SetCriteria />} />
-              )}
-              <Route path='/starred-matches' element={<StarredMatches />} />
-              <Route path='/notification-settings' element={<NotificationSettings />} />
-              <Route path='/transaction-agreement' element={<TransactionAgreement />} />
-              <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
-              <Route path='/help-and-support' element={<HelpAndSupport />} />
-              <Route path='/solicitors' element={<Solicitors />} />
-            </Routes>
+            <div className='line'></div>
+            <div className='right-content'>
+              <Routes>
+                <Route path='/' element={<Dashboard />} />
+                <Route path='/account-settings' element={<ProfileDetails />} />
+                {profileStore.role === 'Tenant' && (
+                  <Route path='/refine-your-search' element={<SetCriteria />} />
+                )}
+                <Route path='/starred-matches' element={<StarredMatches />} />
+                <Route path='/notification-settings' element={<NotificationSettings />} />
+                <Route path='/transaction-agreement' element={<TransactionAgreement />} />
+                <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
+                <Route path='/help-and-support' element={<HelpAndSupport />} />
+                <Route path='/solicitors' element={<Solicitors />} />
+              </Routes>
+            </div>
           </div>
         </div>
         <Footer />
@@ -154,169 +156,173 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 })`
   &.my-account-page {
     position: relative;
-    min-height: 100vh;
     display: grid;
     background-color: white;
+    grid-template-rows: auto min-content;
 
-    grid-template-rows: min-content auto min-content;
-
-    .container-account {
+    .header-and-content-wrapper {
+      min-height: 100vh;
       display: grid;
-      //column-gap: 69px;
-      padding: 36px;
-      min-height: calc(100vh - 112px);
-      box-sizing: border-box;
+      grid-template-rows: min-content auto;
 
-      grid-template-columns: 1fr min-content 2.79fr;
-
-      .left-menu {
+      .container-account {
         display: grid;
-        grid-template-rows: min-content auto min-content;
-        row-gap: 32px;
+        //column-gap: 69px;
+        padding: 36px;
+        min-height: calc(100vh - 112px);
+        box-sizing: border-box;
 
-        padding-right: 69px;
+        grid-template-columns: 1fr min-content 2.79fr;
 
-        .menu-header {
-          display: flex;
-          column-gap: 16px;
-          align-items: center;
-          .avatar {
-            height: 65px;
-            width: 65px;
-          }
+        .left-menu {
+          display: grid;
+          grid-template-rows: min-content auto min-content;
+          row-gap: 32px;
 
-          .name {
-            font-weight: 700;
-            font-size: 20px;
-            color: #0d2a38;
-          }
+          padding-right: 69px;
 
-          .trust-score {
+          .menu-header {
             display: flex;
-            column-gap: 4px;
-            .trust-score-title {
-              color: #646464;
+            column-gap: 16px;
+            align-items: center;
+            .avatar {
+              height: 65px;
+              width: 65px;
             }
 
-            .trust-score-percentage {
-              color: #e5155a;
+            .name {
               font-weight: 700;
+              font-size: 20px;
+              color: #0d2a38;
+            }
+
+            .trust-score {
+              display: flex;
+              column-gap: 4px;
+              .trust-score-title {
+                color: #646464;
+              }
+
+              .trust-score-percentage {
+                color: #e5155a;
+                font-weight: 700;
+
+                :hover {
+                  cursor: pointer;
+                }
+              }
+            }
+
+            .details-button {
+              padding: 12px 16px;
+              gap: 8px;
+              border: 2px solid #184d6d;
+              color: #184d6d;
+            }
+          }
+
+          .menu-body {
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+            > a {
+              text-decoration: none;
+              color: black;
+            }
+
+            .menu-item {
+              display: grid;
+              grid-template-columns: min-content auto min-content;
+              align-items: center;
+              padding: 12px 14px;
+              .text {
+                margin-left: 10px;
+              }
+              .arrow {
+                margin-left: 16px;
+              }
+
+              &.active,
+              :hover {
+                background-color: #f7f1e7;
+                border-radius: 8px;
+                .text {
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+
+          .menu-footer {
+            .menu-item {
+              color: #b4263b;
+              display: grid;
+              grid-template-columns: min-content auto;
+              align-items: center;
+              padding: 12px 14px;
+              .text {
+                margin-left: 10px;
+              }
+
+              .icon {
+                color: #b4263b;
+              }
 
               :hover {
+                background-color: #f7f1e7;
+                border-radius: 8px;
                 cursor: pointer;
+                .text {
+                  font-weight: 600;
+                }
               }
             }
           }
 
-          .details-button {
-            padding: 12px 16px;
-            gap: 8px;
-            border: 2px solid #184d6d;
-            color: #184d6d;
+          .log-out-button {
+            align-self: flex-end;
           }
         }
 
-        .menu-body {
-          display: flex;
-          flex-direction: column;
-          row-gap: 8px;
-          > a {
-            text-decoration: none;
-            color: black;
+        .line {
+          width: 2px;
+          background-color: #f3f4f5;
+        }
+
+        .right-content {
+          padding-left: 69px;
+          z-index: 0;
+          position: relative;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(${backgroundImg});
+            opacity: 0.05;
+
+            background-size: cover;
+            background-position-x: right;
+            background-position-y: bottom;
+            background-repeat: no-repeat;
+            z-index: -1;
           }
 
-          .menu-item {
-            display: grid;
-            grid-template-columns: min-content auto min-content;
-            align-items: center;
-            padding: 12px 14px;
-            .text {
-              margin-left: 10px;
-            }
-            .arrow {
-              margin-left: 16px;
-            }
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
 
-            &.active,
-            :hover {
-              background-color: #f7f1e7;
-              border-radius: 8px;
-              .text {
-                font-weight: 600;
-              }
-            }
+            background-position-y: top;
+            background-size: cover;
+            z-index: -2;
           }
-        }
-
-        .menu-footer {
-          .menu-item {
-            color: #b4263b;
-            display: grid;
-            grid-template-columns: min-content auto;
-            align-items: center;
-            padding: 12px 14px;
-            .text {
-              margin-left: 10px;
-            }
-
-            .icon {
-              color: #b4263b;
-            }
-
-            :hover {
-              background-color: #f7f1e7;
-              border-radius: 8px;
-              cursor: pointer;
-              .text {
-                font-weight: 600;
-              }
-            }
-          }
-        }
-
-        .log-out-button {
-          align-self: flex-end;
-        }
-      }
-
-      .line {
-        width: 2px;
-        background-color: #f3f4f5;
-      }
-
-      .right-content {
-        padding-left: 69px;
-        z-index: 0;
-        position: relative;
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: url(${backgroundImg});
-          opacity: 0.05;
-
-          background-size: cover;
-          background-position-x: right;
-          background-position-y: bottom;
-          background-repeat: no-repeat;
-          z-index: -1;
-        }
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-
-          background-position-y: top;
-          background-size: cover;
-          z-index: -2;
         }
       }
     }

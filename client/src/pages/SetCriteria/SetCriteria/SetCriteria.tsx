@@ -34,8 +34,9 @@ import { AreaUnit, Parking, PropertyType } from '../../Properties/NewProperties/
 import { useProfileStore } from '../../../globalState/profile';
 
 import { OutsideSpaceType } from '../../Properties/NewProperties/property.types';
+import { CloseButton } from '../../../components/CloseButton';
 
-const tabLabels = ['Location', 'House type', 'Budget', 'House details', 'Features', 'Amenities'];
+const tabLabels = ['Location', 'House type', 'Budget', 'House details'];
 
 interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   afterRefineSearch?: () => void;
@@ -447,11 +448,7 @@ export const SetCriteria = styled(
                 disabled={loading}>
                 Save changes
               </Button>
-              {onClose && (
-                <IconButton size='large' onClick={onClose}>
-                  <Icon icon='close' size={12} />
-                </IconButton>
-              )}
+              {onClose && <CloseButton onClick={onClose} />}
             </div>
           </div>
           <div className='criteria-tabs-bar'>
