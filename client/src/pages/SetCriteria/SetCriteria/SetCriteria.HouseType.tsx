@@ -8,10 +8,10 @@ import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
 import { Typography } from '../../../components/Typography';
 import { Select } from '../../../components/Select/Select';
-import { Condition, HomeStyle, House, PropertyPreference, Transaction } from '../criteria.contants';
+import { HomeStyle, House, PropertyPreference, Transaction } from '../criteria.contants';
 import {
   AreaUnit,
-  BuildPurpose,
+  BuildPurpose, Condition,
   Floor,
   OutsideSpace,
   Parking,

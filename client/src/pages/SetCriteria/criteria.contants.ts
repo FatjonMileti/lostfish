@@ -1,9 +1,10 @@
 import * as yup from 'yup';
-import { ObjectSchema } from 'yup';
-import { CriteriaFormType, OtherSpecificPropertyFeature } from './criteria.types';
+import {ObjectSchema} from 'yup';
+import {CriteriaFormType, OtherSpecificPropertyFeature} from './criteria.types';
 import {
   AreaUnit,
   BuildPurpose,
+  Condition,
   Floor,
   Furnished,
   OutsideSpace,
@@ -20,13 +21,6 @@ export const PropertyFeature = {
 export const LookingFor = {
   LookingForAPlace: 'I’m looking for a place',
   OwnAPlace: 'I own a place'
-} as const;
-
-export const Condition = {
-  NewlyRefurbished: 'Newly refurbished',
-  Good: 'Good',
-  WouldDoSomeWork: 'would do some work',
-  wouldDoAProject: 'would do a project'
 } as const;
 
 export const HomeStyle = {
