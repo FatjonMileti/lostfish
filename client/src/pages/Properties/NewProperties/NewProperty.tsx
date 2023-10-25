@@ -521,7 +521,7 @@ export const NewProperty = styled(
                 <div className='label'>
                   <Icon icon='banknote' size={24} />
                   <Typography variant='body5'>
-                    Budget per month<span className='required-asterisk'> *</span>
+                    Price per month<span className='required-asterisk'> *</span>
                   </Typography>
                 </div>
                 <div className='min-max'>
