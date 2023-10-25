@@ -41,10 +41,11 @@ import {
   OutsideSpace,
   Parking,
   propertyFormSchema,
-  PropertyType
+  PropertyType, Condition
 } from './property.constants';
-import { Transaction } from '../../SetCriteria/criteria.contants';
+import {Transaction} from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
+import {number} from "yup";
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -125,6 +126,7 @@ export const NewProperty = styled(
         parkingSpot: undefined,
         parkingType: undefined,
         epcRating: '',
+        condition: undefined,
         description: '',
         areaOfInterest: '',
         propertyImages: []
@@ -252,6 +254,7 @@ export const NewProperty = styled(
         );
 
         form.setValue('epcRating', data.epc_rating);
+        form.setValue('condition', data.condition);
         form.setValue('description', data.description);
       } catch (err) {
         throw err;
@@ -309,6 +312,7 @@ export const NewProperty = styled(
       payload['parking_details'] = form.getValues('parkingType') || undefined;
 
       payload['epc_rating'] = form.getValues('epcRating');
+      payload['condition'] = form.getValues('condition');
 
       payload['specific_property_features'] = [
         form.getValues('specificPropertyFeatures.Allows smoking')
@@ -668,6 +672,15 @@ export const NewProperty = styled(
                 <option value='G'>G</option>
               </Select>
 
+              <Select label='Condition' {...form.register('condition')}>
+                <option></option>
+                {Object.values(Condition).map((style, styleIndex) => (
+                    <option value={style} key={styleIndex}>
+                      {style}
+                    </option>
+                ))}
+              </Select>
+
               {form.getValues('propertyType') === PropertyType.House && (
                 <Select
                   label={
@@ -897,28 +910,42 @@ export const NewProperty = styled(
               </Typography>
               <div className='facilities'>
                 <ul>
-                  <li>
-                    <Typography variant='body4'>Open plan reception/dining room</Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'> Two double bedrooms</Typography>
-                  </li>
+                  {!!form.getValues('propertyType')? <li>
+                    <Typography variant='body4'>{form.getValues('propertyType')}</Typography>
+                  </li> : ''}
+
+                  {!!form.getValues('parkingSpot') && Number(form.getValues('parkingSpot') ) > 0 ? (
+                      <li>
+                        <Typography variant='body4'>
+                          {Number(form.getValues('parkingSpot') ) === 1
+                              ? 'Parking spot: ' + form.getValues('parkingSpot')
+                              : 'Parking spots: ' + form.getValues('parkingSpot')}
+                          {!!form.getValues('parkingType') ? ', ' + form.getValues('parkingType'): ''}
+                        </Typography>
+                      </li>
+                  ) : (
+                      ''
+                  )}
+                  {!!form.getValues('condition') ? (
+                      <li>
+                        <Typography variant='body4'> {'Condition: ' + form.getValues('condition')} </Typography>
+                      </li>
+                  ) : (
+                      ''
+                  )}
                 </ul>
 
-                <ul>
-                  <li>
-                    <Typography variant='body4'>Two bathrooms (en-suite) </Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'>Private patio garden</Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'>Duplex apartment</Typography>
-                  </li>
-                </ul>
+                {/*<ul>*/}
+                {/*  <li>*/}
+                {/*    <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
+                {/*  </li>*/}
+                {/*  <li>*/}
+                {/*    <Typography variant='body4'>Private patio garden</Typography>*/}
+                {/*  </li>*/}
+                {/*  <li>*/}
+                {/*    <Typography variant='body4'>Duplex apartment</Typography>*/}
+                {/*  </li>*/}
+                {/*</ul>*/}
               </div>
             </div>
           </div>
@@ -1121,7 +1148,7 @@ export const NewProperty = styled(
           grid-template-columns: repeat(4, 1fr);
           column-gap: 16px;
           row-gap: 24px;
-          align-items: flex-start;
+          align-items: flex-end;
 
           .variant-outlined {
             label {

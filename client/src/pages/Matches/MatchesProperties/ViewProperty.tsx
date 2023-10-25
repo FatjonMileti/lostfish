@@ -45,6 +45,8 @@ export const ViewProperty = styled(
       lat: property?.asset_address?.latitude,
       lng: property?.asset_address?.longitude
     };
+    parsedProperty.houseType = property?.house_details?.house_type;
+    parsedProperty.propertyType = property?.property_type;
     parsedProperty.isPropertyStarred = propertyToView.starred;
 
     return (
@@ -68,130 +70,146 @@ export const ViewProperty = styled(
           <Carousel
             indexStore={[activeImageIndex, setActiveImageIndex]}
             images={parsedProperty.images}></Carousel>
-            <div className='details-side'>
-          <div className='description-header'>
-            <div className='title'>
-              <Typography variant='body2'>{parsedProperty.title}</Typography>
-              {/*<IconButton*/}
-              {/*  size='large'*/}
-              {/*  className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}*/}
-              {/*  onClick={starProperty}>*/}
-              {/*  <Icon icon='star' size={20} />*/}
-              {/*</IconButton>*/}
-            </div>
-            <div className='property-details'>
-              <div className='detail'>
-                <Icon icon='location' />
-                <Typography variant='body5'>{parsedProperty.areaOfInterest}</Typography>
+          <div className='details-side'>
+            <div className='description-header'>
+              <div className='title'>
+                <Typography variant='body2'>{parsedProperty.title}</Typography>
+                {/*<IconButton*/}
+                {/*  size='large'*/}
+                {/*  className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}*/}
+                {/*  onClick={starProperty}>*/}
+                {/*  <Icon icon='star' size={20} />*/}
+                {/*</IconButton>*/}
               </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='banknote' />
-                <Typography variant='body5'>£{parsedProperty.rentingPrice?.toLocaleString()} PCM</Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='double-bed' />
-                <Typography variant='body5'>{parsedProperty.numberOfBedrooms}</Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='bathtub' />
-                <Typography variant='body5'>{parsedProperty.numberOfBathrooms}</Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='building' />
-                <Typography variant='body5'>{parsedProperty.propertyType}</Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              <div className='detail'>
-                <Icon icon='ruler' />
-                <Typography variant='body5'>
-                  {parsedProperty.propertyAreaUnit === AreaUnit.SquareFoot
-                    ? parsedProperty.propertyArea
-                    : (parseInt(parsedProperty.propertyArea || '') * 10.764).toFixed(0)}{' '}
-                  {AreaUnit.SquareFoot}/
-                  {parsedProperty.propertyAreaUnit === AreaUnit.SquareMeter
-                    ? parsedProperty.propertyArea
-                    : (parseInt(parsedProperty.propertyArea || '') / 10.764).toFixed(0)}{' '}
-                  {AreaUnit.SquareMeter}
-                </Typography>
-              </div>
-              <Typography variant='body4' className='dot'>
-                •
-              </Typography>
-              {parsedProperty.parkingSpot && (
-                <>
-                  <div className='detail'>
-                    <Icon icon='car' />
-                    <Typography variant='body5'>Parking Spot</Typography>
-                  </div>
-                  <Typography variant='body4' className='dot'>
-                    •
-                  </Typography>
-                </>
-              )}
-
-              {parsedProperty.energyCertificate && (
+              <div className='property-details'>
                 <div className='detail'>
-                  <Icon icon='temperature' />
-                  <Typography variant='body5'>EPC Rating: C*</Typography>
+                  <Icon icon='location' />
+                  <Typography variant='body5'>{parsedProperty.areaOfInterest}</Typography>
                 </div>
-              )}
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                <div className='detail'>
+                  <Icon icon='banknote' />
+                  <Typography variant='body5'>
+                    £{parsedProperty.rentingPrice?.toLocaleString()} PCM
+                  </Typography>
+                </div>
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                <div className='detail'>
+                  <Icon icon='double-bed' />
+                  <Typography variant='body5'>{parsedProperty.numberOfBedrooms}</Typography>
+                </div>
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                <div className='detail'>
+                  <Icon icon='bathtub' />
+                  <Typography variant='body5'>{parsedProperty.numberOfBathrooms}</Typography>
+                </div>
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                <div className='detail'>
+                  <Icon icon='building' />
+                  <Typography variant='body5'>{parsedProperty.propertyType}</Typography>
+                </div>
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                <div className='detail'>
+                  <Icon icon='ruler' />
+                  <Typography variant='body5'>
+                    {parsedProperty.propertyAreaUnit === AreaUnit.SquareFoot
+                      ? parsedProperty.propertyArea
+                      : (parseInt(parsedProperty.propertyArea || '') * 10.764).toFixed(0)}{' '}
+                    {AreaUnit.SquareFoot}/
+                    {parsedProperty.propertyAreaUnit === AreaUnit.SquareMeter
+                      ? parsedProperty.propertyArea
+                      : (parseInt(parsedProperty.propertyArea || '') / 10.764).toFixed(0)}{' '}
+                    {AreaUnit.SquareMeter}
+                  </Typography>
+                </div>
+                <Typography variant='body4' className='dot'>
+                  •
+                </Typography>
+                {parsedProperty.parkingSpot && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='car' />
+                      <Typography variant='body5'>Parking Spot</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+
+                {parsedProperty.energyCertificate && (
+                  <div className='detail'>
+                    <Icon icon='temperature' />
+                    <Typography variant='body5'>EPC Rating: C*</Typography>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className='section'>
+              <Typography variant='body4' className='label'>
+                Description
+              </Typography>
+              <Typography variant='body4'>{parsedProperty.description}</Typography>
+            </div>
+            <Map className='view-property-map' address={parsedProperty.address} />
+
+            <NearestThings location={parsedProperty.address} />
+
+            <div className='facilities-wrapper'>
+              <Typography variant='body4' className='label'>
+                Facilities
+              </Typography>
+              <div className='facilities'>
+                <ul>
+                  <li>
+                    <Typography variant='body4'>{parsedProperty.propertyType}</Typography>
+                  </li>
+                  {!!property.parking_spot && property.parking_spot > 0 ? (
+                    <li>
+                      <Typography variant='body4'>
+                        {property.parking_spot === 1
+                          ? 'Parking spot: ' + property.parking_spot
+                          : 'Parking spots: ' + property.parking_spot}
+                        {!!property.parking_details ? ', ' + property.parking_details : ''}
+                      </Typography>
+                    </li>
+                  ) : (
+                    ''
+                  )}
+
+                  {!!property.condition ? (
+                    <li>
+                      <Typography variant='body4'> {'Condition: ' + property.condition} </Typography>
+                    </li>
+                  ) : (
+                    ''
+                  )}
+                </ul>
+
+                <ul>
+                  {/*<li>*/}
+                  {/*  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
+                  {/*</li>*/}
+                  {/*<li>*/}
+                  {/*  <Typography variant='body4'>Private patio garden</Typography>*/}
+                  {/*</li>*/}
+                  {/*<li>*/}
+                  {/*  <Typography variant='body4'>Duplex apartment</Typography>*/}
+                  {/*</li>*/}
+                </ul>
+              </div>
             </div>
           </div>
-          <div className='section'>
-            <Typography variant='body4' className='label'>
-              Description
-            </Typography>
-            <Typography variant='body4'>{parsedProperty.description}</Typography>
-          </div>
-          <Map className='view-property-map' address={parsedProperty.address} />
-
-          <NearestThings location={parsedProperty.address} />
-
-          <div className='facilities-wrapper'>
-            <Typography variant='body4' className='label'>
-              Facilities
-            </Typography>
-            <div className='facilities'>
-              <ul>
-                <li>
-                  <Typography variant='body4'>Open plan reception/dining room</Typography>
-                </li>
-                <li>
-                  <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography>
-                </li>
-                <li>
-                  <Typography variant='body4'> Two double bedrooms</Typography>
-                </li>
-              </ul>
-
-              <ul>
-                <li>
-                  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>
-                </li>
-                <li>
-                  <Typography variant='body4'>Private patio garden</Typography>
-                </li>
-                <li>
-                  <Typography variant='body4'>Duplex apartment</Typography>
-                </li>
-              </ul>
-            </div>
-          </div>
-            </div>
         </div>
       </Modal>
     );
@@ -250,92 +268,92 @@ export const ViewProperty = styled(
         overflow-y: auto;
         height: 100%;
         box-sizing: border-box;
-        
+
         .details-side {
           display: grid;
           padding: 32px;
           box-sizing: border-box;
           gap: 24px;
 
-        .description-header {
-          display: grid;
-          gap: 24px;
-
-          .title {
-            display: flex;
-            justify-content: space-between;
+          .description-header {
+            display: grid;
             gap: 24px;
 
-            .stared-button {
-              padding: 12px;
-              border: 2px solid #184d6d;
-
-              &:hover {
-                border: 2px solid #fff;
-                background: #184d6d;
-                color: #fff;
-              }
-
-              &.active {
-                border: 2px solid #fff;
-                background: #184d6d;
-                color: #fff;
-              }
-            }
-          }
-
-          .property-details {
-            color: #000;
-            font-weight: 700;
-            display: flex;
-            column-gap: 8px;
-            align-items: center;
-
-            .detail {
+            .title {
               display: flex;
-              column-gap: 4px;
+              justify-content: space-between;
+              gap: 24px;
+
+              .stared-button {
+                padding: 12px;
+                border: 2px solid #184d6d;
+
+                &:hover {
+                  border: 2px solid #fff;
+                  background: #184d6d;
+                  color: #fff;
+                }
+
+                &.active {
+                  border: 2px solid #fff;
+                  background: #184d6d;
+                  color: #fff;
+                }
+              }
+            }
+
+            .property-details {
+              color: #000;
+              font-weight: 700;
+              display: flex;
+              column-gap: 8px;
               align-items: center;
+
+              .detail {
+                display: flex;
+                column-gap: 4px;
+                align-items: center;
+              }
+
+              .dot {
+                color: #a7a7a7;
+              }
             }
-
-            .dot {
-              color: #a7a7a7;
-            }
-          }
-        }
-
-        .section {
-          display: grid;
-          gap: 8px;
-
-          .label {
-            font-size: 18px;
-            font-weight: 700;
-          }
-        }
-
-        .view-property-map {
-          height: 480px;
-        }
-
-        .facilities-wrapper {
-          display: grid;
-          gap: 8px;
-
-          .label {
-            font-size: 18px;
-            color: #0d2a38;
-            font-weight: 700;
           }
 
-          .facilities {
-            width: 100%;
+          .section {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            justify-content: space-between;
             gap: 8px;
+
+            .label {
+              font-size: 18px;
+              font-weight: 700;
+            }
+          }
+
+          .view-property-map {
+            height: 480px;
+          }
+
+          .facilities-wrapper {
+            display: grid;
+            gap: 8px;
+
+            .label {
+              font-size: 18px;
+              color: #0d2a38;
+              font-weight: 700;
+            }
+
+            .facilities {
+              width: 100%;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              justify-content: space-between;
+              gap: 8px;
+            }
           }
         }
-      }
       }
     }
   }

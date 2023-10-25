@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import { ObjectSchema } from 'yup';
-import { PropertyFormType } from './property.types';
-import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
+import {ObjectSchema} from 'yup';
+import {PropertyFormType} from './property.types';
+import {OtherSpecificPropertyFeature} from '../../SetCriteria/criteria.types';
 
 export const PropertyType = {
   // Detached: 'Detached',
@@ -50,6 +50,14 @@ export const AreaUnit = {
   SquareMeter: 'sq.m',
   SquareFoot: 'sq.ft'
 } as const;
+
+export const Condition = {
+  NewlyRefurbished: 'Newly refurbished',
+  Good: 'Good',
+  WouldDoSomeWork: 'Would do some work',
+  wouldDoAProject: 'Would do a project'
+} as const;
+
 export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().shape({
   title: yup.string().required('Title is required'),
   location: yup.object().shape({
@@ -130,6 +138,7 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .transform((value) => value || undefined)
     .oneOf(Object.values(Parking)),
   epcRating: yup.string().required('EPC Rating is required'),
+  condition: yup.string().oneOf(Object.values(Condition)).transform((value) => value || undefined),
   description: yup.string().required('Description is required'),
   areaOfInterest: yup.string().required('Location is required'),
   propertyImages: yup.array().required()
