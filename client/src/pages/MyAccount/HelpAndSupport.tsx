@@ -1,8 +1,9 @@
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
+import {Checkbox} from "../../components/Checkbox";
 
 export const HelpAndSupport = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -52,6 +53,10 @@ export const HelpAndSupport = styled(({ className }: HTMLAttributes<HTMLDivEleme
             </Typography>
           </div>
         </div>
+        <div className="assistance">
+          <Checkbox /> <Typography variant='body4'>Organise assistance with viewing the property ?</Typography>
+        </div>
+
       </div>
     </div>
   );
@@ -77,6 +82,10 @@ export const HelpAndSupport = styled(({ className }: HTMLAttributes<HTMLDivEleme
           display: grid;
           row-gap: 16px;
         }
+      }
+      .assistance {
+        display: flex;
+        gap: 8px;
       }
     }
   }
