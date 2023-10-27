@@ -466,7 +466,8 @@ export const NewProperty = styled(
                 variant='secondary'
                 className='delete-button'
                 startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}>
+                onClick={onDeleteClick}
+              >
                 Delete property
               </Button>
             )}
