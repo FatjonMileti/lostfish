@@ -4,6 +4,7 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
 import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
+import { Label } from '../../components/Label';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSigInClick?: () => void;
@@ -18,9 +19,9 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
       <div className='menu-desktop'></div>
 
       <div className='right'>
-        <Button variant='secondary' className='join-button' size='small' onClick={onSigInClick}>
+        <Label variant='secondary' className='join-button' size='large' onClick={onSigInClick}>
           Sign In
-        </Button>
+        </Label>
       </div>
     </div>
   );

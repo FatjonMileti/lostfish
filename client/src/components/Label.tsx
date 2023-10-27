@@ -135,10 +135,19 @@ export const Label = styled(
       }
 
       &.size-small {
-        font-size: 14px;
-        line-height: 20px;
-        height: 24px;
         padding: 0;
+        height: 24px;
+
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+          color: #0d2a38;
+          border-bottom: 2px solid #0d2a38;
+        }
       }
 
       &.size-medium {
@@ -170,6 +179,15 @@ export const Label = styled(
         height: 48px;
         padding: 12px 24px;
         font-size: 16px;
+        line-height: 24px;
+      }
+
+      &.size-large {
+        height: 64px;
+        padding: 18px 30px;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
         line-height: 24px;
       }
     }

@@ -4,14 +4,19 @@ import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
+import { avatars } from '../HomeLoggedIn/avatars';
+import { Avatar } from '../../components/Avatar';
+import HomeImg from './89.png';
+import classNames from 'classnames';
 
+import backgroundImg from './forest.jpeg';
 export const SectionOne = styled(
   ({
     className,
     section2Ref
   }: HTMLAttributes<HTMLDivElement> & { section2Ref?: React.RefObject<HTMLDivElement> }) => {
     return (
-      <div className={className}>
+      <div className={classNames('section-one', className)}>
         <div className='section-content'>
           <div className='welcome'>
             <Typography className='perfect-match'>
@@ -26,11 +31,9 @@ export const SectionOne = styled(
           </div>
 
           <div className='refine-search'>
-            <div className='looking-for'>
-              <Icon icon='search' size={32} />
-              <Typography variant='body4' className='looking-for-text'>
-                What are you looking for?
-              </Typography>
+            <div className='match-intersection'>
+              <Avatar image={avatars[1].image} className='left-side thumbnail' />
+              <div className='right-side thumbnail'></div>
             </div>
             <Button variant='primary' size='large' className='start-matching'>
               Start matching
@@ -40,29 +43,43 @@ export const SectionOne = styled(
         <div className='bottom'>
           <Typography variant='body4'>Keen to find out how we’re doing it? </Typography>
 
-          <Label
-            variant='tertiary'
-            size='small'
-            className='scroll-down'
-            onClick={() => section2Ref?.current?.scrollIntoView({ behavior: 'smooth' })}>
-            Scroll down
-            <Icon icon='arrow-right-1' size={16} />
-          </Label>
+          <div className='scroll-down-text-and-icon-wrapper'>
+            <Label
+              variant='tertiary'
+              size='small'
+              className='scroll-down'
+              onClick={() => section2Ref?.current?.scrollIntoView({ behavior: 'smooth' })}>
+              Scroll down
+              <Icon icon='arrow-right' size={24} />
+            </Label>
+          </div>
         </div>
       </div>
     );
   }
 )`
-  & {
-    width: 100%;
-    height: calc(100vh - 112px);
+  &.section-one {
+    min-height: calc(100vh - 112px);
     display: grid;
     padding: 176px 36px 64px 36px;
     justify-content: center;
     align-content: space-between;
     box-sizing: border-box;
     position: relative;
-    z-index: 1;
+    row-gap: 32px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url(${backgroundImg});
+      background-repeat: no-repeat;
+      opacity: 0.05;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -1;
+      top: -112px;
+    }
 
     .section-content {
       display: grid;
@@ -96,23 +113,44 @@ export const SectionOne = styled(
       .refine-search {
         width: max-content;
         display: flex;
-        padding: 12px 12px 12px 24px;
+        padding: 12px;
         box-sizing: border-box;
         align-items: center;
         margin: 0 auto;
-        gap: 64px;
+        gap: 24px;
         background-color: #fff;
         border-radius: 25000px;
+        box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
 
-        .looking-for {
+        .match-intersection {
           display: flex;
-          align-items: center;
-          gap: 8px;
 
-          .looking-for-text {
-            color: #0d2a38;
-            font-size: 18px;
-            font-weight: 700;
+          .thumbnail {
+            border-radius: 50%;
+            height: 64px;
+            width: 64px;
+          }
+
+          .left-side {
+            position: relative;
+            margin-right: -16px;
+            overflow: hidden;
+            :after {
+              background-color: #ffffff;
+              clip-path: circle(50%);
+              width: 100%;
+              height: 100%;
+              content: '';
+              position: absolute;
+              left: calc(100% - 16px);
+            }
+          }
+
+          .right-side {
+            background-image: url(${HomeImg});
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
           }
         }
 
@@ -133,6 +171,7 @@ export const SectionOne = styled(
         font-size: 16px;
         line-height: 24px;
         font-weight: 700;
+        column-gap: 4px;
 
         .icon {
           rotate: 90deg;
