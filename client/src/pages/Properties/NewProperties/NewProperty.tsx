@@ -41,11 +41,14 @@ import {
   OutsideSpace,
   Parking,
   propertyFormSchema,
-  PropertyType, Condition
+  PropertyType,
+  Condition
 } from './property.constants';
-import {Transaction} from '../../SetCriteria/criteria.contants';
+import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
-import {number} from "yup";
+import { number } from 'yup';
+import { Label } from '../../../components/Label';
+import {CloseButton} from "../../../components/CloseButton";
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -456,35 +459,18 @@ export const NewProperty = styled(
         onClose={() => setModalVisibility(false)}>
         <Backdrop open={state.savingProperty}></Backdrop>
         <div className='header'>
-          <Typography variant='body2'>Add property for rent</Typography>
+          <Typography variant='body2'>Add property</Typography>
           <div className='right-side'>
             {propertyId && (
               <Button
+                variant='secondary'
                 className='delete-button'
                 startIcon={<Icon icon='trash' size={20} />}
                 onClick={onDeleteClick}>
                 Delete property
               </Button>
             )}
-            <Button
-              variant='secondary'
-              disabled={Object.values(formState.errors).length > 0}
-              onClick={async () => {
-                await saveAsDraft();
-                fetchAssets();
-              }}>
-              Save as draft
-            </Button>
-            <Button
-              disabled={!form.formState.isValid}
-              onClick={async () => {
-                await startMatching();
-              }}>
-              Start matching
-            </Button>
-            <IconButton size='large' noBackground onClick={() => setModalVisibility(false)}>
-              <Icon icon='close' size={12} />
-            </IconButton>
+                <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
           </div>
         </div>
         <div className='container'>
@@ -675,9 +661,9 @@ export const NewProperty = styled(
               <Select label='Condition' {...form.register('condition')}>
                 <option></option>
                 {Object.values(Condition).map((style, styleIndex) => (
-                    <option value={style} key={styleIndex}>
-                      {style}
-                    </option>
+                  <option value={style} key={styleIndex}>
+                    {style}
+                  </option>
                 ))}
               </Select>
 
@@ -827,69 +813,69 @@ export const NewProperty = styled(
                 </Typography>
               </div>
               <ImageUpload
-                  className='upload'
-                  onNewImages={(files) => {
-                    setNewImages([...state.newImages, ...files]);
-                  }}
-                  onGenerateImages={(files) => {
-                    setGeneratedImages([...state.generatedImages, ...files]);
-                  }}
+                className='upload'
+                onNewImages={(files) => {
+                  setNewImages([...state.newImages, ...files]);
+                }}
+                onGenerateImages={(files) => {
+                  setGeneratedImages([...state.generatedImages, ...files]);
+                }}
               />
               <Controller
-                  render={({ field: { value = [], onChange } }) => (
-                      <>
-                        <div className='images-list'>
-                          {value.map((image: any, imageIndex: number) => (
-                              <div key={imageIndex} className='image-wrapper'>
-                                <IconButton
-                                    size='large'
-                                    className='remove-button'
-                                    onClick={async () => {
-                                      onChange({
-                                        target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
-                                      });
-                                    }}>
-                                  <Icon icon='minus' size={11} />
-                                </IconButton>
-                                <img alt='property image' src={`${image?.link}`} />
-                              </div>
-                          ))}
-
-                          {state.newImages.length > 0 &&
-                              state.newImages.map((image: any, imageIndex: number) => (
-                                  <div key={imageIndex} className='image-wrapper'>
-                                    <IconButton
-                                        size='large'
-                                        className='remove-button'
-                                        onClick={() => {
-                                          setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
-                                        }}>
-                                      <Icon icon='minus' size={11} />
-                                    </IconButton>
-                                    <img alt='property image' src={URL.createObjectURL(image)} />
-                                  </div>
-                              ))}
-                          {state.generatedImages.length > 0 &&
-                              state.generatedImages.map((image: any, imageIndex: number) => (
-                                  <div key={imageIndex} className='image-wrapper'>
-                                    <IconButton
-                                        size='large'
-                                        className='remove-button'
-                                        onClick={() => {
-                                          setGeneratedImages(
-                                              state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
-                                          );
-                                        }}>
-                                      <Icon icon='minus' size={11} />
-                                    </IconButton>
-                                    <img alt='property image' src={image.link} />
-                                  </div>
-                              ))}
+                render={({ field: { value = [], onChange } }) => (
+                  <>
+                    <div className='images-list'>
+                      {value.map((image: any, imageIndex: number) => (
+                        <div key={imageIndex} className='image-wrapper'>
+                          <IconButton
+                            size='large'
+                            className='remove-button'
+                            onClick={async () => {
+                              onChange({
+                                target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
+                              });
+                            }}>
+                            <Icon icon='minus' size={11} />
+                          </IconButton>
+                          <img alt='property image' src={`${image?.link}`} />
                         </div>
-                      </>
-                  )}
-                  control={form.control}
-                  name='propertyImages'
+                      ))}
+
+                      {state.newImages.length > 0 &&
+                        state.newImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={URL.createObjectURL(image)} />
+                          </div>
+                        ))}
+                      {state.generatedImages.length > 0 &&
+                        state.generatedImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setGeneratedImages(
+                                  state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
+                                );
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={image.link} />
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                )}
+                control={form.control}
+                name='propertyImages'
               />
             </div>
             <Map
@@ -910,28 +896,32 @@ export const NewProperty = styled(
               </Typography>
               <div className='facilities'>
                 <ul>
-                  {!!form.getValues('propertyType')? <li>
-                    <Typography variant='body4'>{form.getValues('propertyType')}</Typography>
-                  </li> : ''}
-
-                  {!!form.getValues('parkingSpot') && Number(form.getValues('parkingSpot') ) > 0 ? (
-                      <li>
-                        <Typography variant='body4'>
-                          {Number(form.getValues('parkingSpot') ) === 1
-                              ? 'Parking spot: ' + form.getValues('parkingSpot')
-                              : 'Parking spots: ' + form.getValues('parkingSpot')}
-                          {!!form.getValues('parkingType') ? ', ' + form.getValues('parkingType'): ''}
-                        </Typography>
-                      </li>
+                  {!!form.getValues('propertyType') ? (
+                    <li>
+                      <Typography variant='body4'>{form.getValues('propertyType')}</Typography>
+                    </li>
                   ) : (
-                      ''
+                    ''
+                  )}
+
+                  {!!form.getValues('parkingSpot') && Number(form.getValues('parkingSpot')) > 0 ? (
+                    <li>
+                      <Typography variant='body4'>
+                        {Number(form.getValues('parkingSpot')) === 1
+                          ? 'Parking spot: ' + form.getValues('parkingSpot')
+                          : 'Parking spots: ' + form.getValues('parkingSpot')}
+                        {!!form.getValues('parkingType') ? ', ' + form.getValues('parkingType') : ''}
+                      </Typography>
+                    </li>
+                  ) : (
+                    ''
                   )}
                   {!!form.getValues('condition') ? (
-                      <li>
-                        <Typography variant='body4'> {'Condition: ' + form.getValues('condition')} </Typography>
-                      </li>
+                    <li>
+                      <Typography variant='body4'> {'Condition: ' + form.getValues('condition')} </Typography>
+                    </li>
                   ) : (
-                      ''
+                    ''
                   )}
                 </ul>
 
@@ -994,15 +984,43 @@ export const NewProperty = styled(
             </div>
           </div>
         </div>
+        <div className='footer'>
+          <Button
+            startIcon={<Icon icon='arrow-left-1' size={16} />}
+            className='back-button'
+            variant='secondary'
+            size='large'
+            onClick={() => setModalVisibility(false)}>
+            Back
+          </Button>
+          <Label
+            variant='primary'
+            disabled={!form.formState.isValid}
+            size='large'
+            special
+            className='start-matching-button'
+            onClick={async () => {
+              await startMatching();
+            }}>
+            Start matching
+          </Label>
+          <Button
+            size='large'
+            disabled={Object.values(formState.errors).length > 0}
+            onClick={async () => {
+              await saveAsDraft();
+              fetchAssets();
+            }}>
+            Save as draft
+          </Button>
+        </div>
         <Modal
           disableScrollLock
           open={state.deletePropertyConfirmationModal}
           className='delete-confirm-modal'
           onBackdropClick={onCancelDelete}>
           <div className='modal-header'>
-            <IconButton size='large' noBackground onClick={onCancelDelete}>
-              <Icon icon='close' size={12} />
-            </IconButton>
+            <CloseButton onClick={onCancelDelete} />
           </div>
           <Typography variant='body2' className='title'>
             Are you sure you want to delete the property?
@@ -1025,12 +1043,11 @@ export const NewProperty = styled(
 )`
   &.new-property-modal {
     overflow-y: auto;
-    max-height: calc(100vh - 80px);
+    max-height: 100vh;
     height: auto;
     width: 100vw;
-    top: calc(50% + 40px);
 
-    border-radius: 12px 12px 0px 0px;
+    border-radius: 0px;
 
     .modal-container {
       padding: 0;
@@ -1039,38 +1056,24 @@ export const NewProperty = styled(
     .header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 36px 36px 16px 36px;
-
-      .body2 {
-        font-weight: 400;
-        line-height: 40px;
-      }
+      padding: 24px 36px;
+      border-bottom: 2px solid #f3f4f5;
+      box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
 
       .right-side {
         display: flex;
         column-gap: 16px;
+        align-items: center;
 
         .delete-button {
           color: #e5155a;
-          background-color: white;
-          border: none;
-          .icon {
-            color: #e5155a;
-          }
+          border-color: #e5155a;
         }
 
-        .button {
-          padding: 12px 20px;
-          &.active {
-            color: #fff;
-            background-color: #184d6d;
-            border: 1px solid #184d6d;
-          }
-
-          .icon {
-            color: #e5155a;
-          }
+        .exit-button {
+          padding: 16px;
+          width: 56px;
+          height: 56px;
         }
       }
     }
@@ -1339,6 +1342,22 @@ export const NewProperty = styled(
             }
           }
         }
+      }
+    }
+    .footer {
+      display: flex;
+      padding: 24px 36px;
+      justify-content: space-between;
+      align-items: center;
+      
+      .back-button {
+        //.icon {
+        //  width: 24px !important;
+        //  height: 24px !important;
+        //}
+      }
+
+      .start-matching-button {
       }
     }
     .delete-confirm-modal {
