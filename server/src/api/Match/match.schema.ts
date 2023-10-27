@@ -26,6 +26,11 @@ const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
       default: false
     },
 
+    disliked: {
+      type: Boolean,
+      default: false
+    },
+
     type: { type: String, enum: MatchingType },
 
     property: { type: Schema.Types.ObjectId, ref: 'property' },

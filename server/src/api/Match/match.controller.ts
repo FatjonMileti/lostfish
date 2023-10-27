@@ -38,7 +38,6 @@ export class MatchController {
     router.get('/count', authorize(), this.countMatches);
     router.post('/tenants', authorize(), this.likeTenant);
     router.post('/properties', authorize(), this.likeProperty);
-
     router.get('/:id', authorize(), validateId, this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
@@ -126,6 +125,13 @@ export class MatchController {
       return res.status(201).json(match);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
+
+  private dislikeTenant = async (req: Request, res: Response) => {
+    try {
+    } catch (err) {
+      throw err;
     }
   };
 

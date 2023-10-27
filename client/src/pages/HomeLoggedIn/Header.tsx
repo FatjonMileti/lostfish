@@ -39,10 +39,6 @@ export const Header = styled(({ className }: HeaderProps) => {
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}
             </NavLink>
 
-            <NavLink to='/my-matches'>
-              {({ isActive }) => <MenuButton active={isActive}>My matches</MenuButton>}
-            </NavLink>
-
             {profileStore.role === Role.Landlord && (
               <NavLink to='/properties'>
                 {({ isActive }) => <MenuButton active={isActive}>Properties</MenuButton>}

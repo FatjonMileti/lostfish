@@ -13,6 +13,7 @@ export interface MatchDocument extends Document {
   chosen: boolean;
   starred: boolean;
   matched: boolean;
+  disliked: boolean;
   type: MatchingType;
   created_by?: ObjectIdField | string;
   edited_by?: ObjectIdField | string;

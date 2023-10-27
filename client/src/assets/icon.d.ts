@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "watch"
   | "email"
   | "filter"
   | "arrow-right"
