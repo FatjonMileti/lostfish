@@ -52,7 +52,6 @@ export const SectionTwo = styled(
       width: 904px;
       display: grid;
       justify-self: center;
-      align-items: center;
       gap: 24px;
 
       .perfect-match {
@@ -74,7 +73,6 @@ export const SectionTwo = styled(
       }
     }
     .section-content {
-      width: 100%;
       display: grid;
       align-items: center;
       justify-content: center;
@@ -92,8 +90,8 @@ export const SectionTwo = styled(
         align-content: end;
         overflow: hidden;
 
-        height: 40em;
-        width: 63.75em;
+        min-width: 1020px;
+        aspect-ratio: 1.6 / 1;
 
         box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
 
