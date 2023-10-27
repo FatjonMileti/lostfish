@@ -140,6 +140,12 @@ export const Button = styled(
         border: 2px solid #c0daff;
       }
     }
+
+    &.size-large {
+      padding: 18px 30px;
+      font-size: 18px;
+      height: 64px;
+    }
   }
   //
 
