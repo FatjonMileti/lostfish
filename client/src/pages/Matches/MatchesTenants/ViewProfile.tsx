@@ -15,9 +15,18 @@ interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
   closeViewProfile: () => void;
   criteria: any;
   likeTenant?: () => void;
+  dislikeTenant?: () => void;
+  disableLikeTenant?: boolean;
 }
 export const ViewProfile = styled(
-  ({ className, closeViewProfile, likeTenant = () => {}, criteria }: ViewProfileProps) => {
+  ({
+    className,
+    closeViewProfile,
+    likeTenant = () => {},
+    dislikeTenant = () => {},
+    disableLikeTenant = false,
+    criteria
+  }: ViewProfileProps) => {
     const {
       propertyType,
       propertyPreferences,
@@ -40,8 +49,8 @@ export const ViewProfile = styled(
           <Typography variant='body2'>Profile details</Typography>
           <div className='modal-header-right-content'>
             <div className='action-buttons'>
-              <UnMatchButton />
-              <MatchButton onClick={likeTenant} />
+              <UnMatchButton onClick={dislikeTenant} />
+              <MatchButton onClick={likeTenant} disabled={disableLikeTenant} />
             </div>
             <CloseButton onClick={closeViewProfile} />
           </div>

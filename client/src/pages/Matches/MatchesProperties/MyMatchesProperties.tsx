@@ -19,14 +19,16 @@ import { SuggestedPropertyType } from './MatchesProperties';
 import { ViewProperty } from './ViewProperty';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { PropertyCard } from '../../../components/PropertyCard';
+import { useMatchedProperties } from './useMatchedProperties';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
 export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) => {
-  const suggestedProperties = useSuggestedProperties();
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
   const navigate = useNavigate();
   const userStore = useUserStore();
+
+  const suggestedProperties = useMatchedProperties({ chosen: true });
 
   const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
     try {
@@ -74,18 +76,22 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             <div className='content'>
               {suggestedProperties.properties.map((suggestion, suggestionIndex) => {
                 const { property } = suggestion;
+
+                console.log('suggestion: ', suggestion);
+
                 return (
                   <PropertyCard
                     key={suggestionIndex}
                     name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
                     avatar={getAvatarFormIndex(property.created_by?.avatar)}
                     inView={true}
-                    matched={suggestion.chosen}
+                    // matched={}
                     percentage={property.percentage}
                     onViewPropertyClick={() => setPropertyToView(suggestion)}
                     image={`${property?.property_images?.[0]?.link || ''}`}
                     size='large'
                     property={property}
+                    awaitingMatch={suggestion.chosen}
                   />
                 );
               })}

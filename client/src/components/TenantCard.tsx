@@ -46,7 +46,14 @@ export const TenantCard = styled(
               {name}
             </Typography>
 
-            {awaitingMatch && null}
+            {awaitingMatch && (
+              <div className='awaiting-match'>
+                <Icon icon='watch' />
+                <Typography className='awaiting-match-text' variant='body5'>
+                  Awaiting match
+                </Typography>
+              </div>
+            )}
             {matched && (
               <div className='matched-indicator'>
                 <Icon icon='like' />
@@ -154,6 +161,15 @@ export const TenantCard = styled(
         .tenant-name {
           font-weight: 700;
           line-break: anywhere;
+        }
+
+        .awaiting-match {
+          display: flex;
+          column-gap: 4px;
+          color: #a7a7a7;
+          .awaiting-match-text {
+            font-weight: 700;
+          }
         }
 
         .tenant-match-percentage {

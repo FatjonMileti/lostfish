@@ -84,11 +84,21 @@ export const PropertyCard = styled(
         {!deleted && (
           <>
             <div className='slide-header'>
-              <Avatar image={parsedProperty.avatar} />
-              <div>
-                <Typography variant='body4'>{parsedProperty.propertyOwnerName}</Typography>
-                <Typography variant='body4'>{property.percentage}% Match rate</Typography>
+              <div className='header-left-content'>
+                <Avatar image={parsedProperty.avatar} />
+                <div>
+                  <Typography variant='body5'>{parsedProperty.propertyOwnerName}</Typography>
+                  <Typography variant='body5'>{property.percentage}% Match rate</Typography>
+                </div>
               </div>
+              {awaitingMatch && (
+                <div className='awaiting-match'>
+                  <Icon icon='watch' />
+                  <Typography className='awaiting-match-text' variant='body6'>
+                    Awaiting match
+                  </Typography>
+                </div>
+              )}
             </div>
             {image === '' && (
               <div className='no-images'>
@@ -198,17 +208,39 @@ export const PropertyCard = styled(
       padding: 24px;
       background: linear-gradient(180deg, rgba(38, 38, 38, 0.8) 0%, rgba(38, 38, 38, 0) 100%);
       display: flex;
-      column-gap: 8px;
+      column-gap: 24px;
       align-items: center;
+      justify-content: space-between;
 
-      .avatar {
-        height: 44px;
-        width: 44px;
+      .header-left-content {
+        display: flex;
+        column-gap: 8px;
+        align-items: center;
+
+        .avatar {
+          height: 44px;
+          width: 44px;
+        }
+
+        .typography {
+          color: white;
+          font-weight: 700;
+        }
       }
 
-      .typography {
+      .awaiting-match {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: #a7a7a7;
         color: white;
-        font-weight: 700;
+        border-radius: 25px;
+        transition: width 1s ease;
+
+        .awaiting-match-text {
+          font-weight: 700;
+          margin-left: 4px;
+        }
       }
     }
 

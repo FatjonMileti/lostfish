@@ -26,7 +26,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const notificationsStore = useNotificationsStore();
   const location = useLocation();
 
-  const matchesCount = useMatchesCount({ matched: false });
+  const matchesCount = useMatchesCount({ chosen: false });
 
   return (
     <div className={`header ${className}`}>

@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
 import { Header } from '../../HomeLoggedIn/Header';
 import classNames from 'classnames';
-import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { Backdrop } from '../../../components/Backdrop';
 import React, { HTMLAttributes } from 'react';
 import { TenantCard } from '../../../components/TenantCard';
@@ -16,14 +15,17 @@ import { Label } from '../../../components/Label';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useMatchesCount } from '../useMatchesCount';
+import { useMatchedTenants } from './useMatchedTenants';
 
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 
 export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
-  const suggestedTenants = useSuggestedTenants();
+  const matchedTenants = useMatchedTenants({ chosen: true });
   const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
   const navigate = useNavigate();
   const userStore = useUserStore();
+
+  const matchesCount = useMatchesCount({ chosen: true });
 
   const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
     try {
@@ -31,18 +33,16 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     } catch (err) {}
   };
 
-  const likeTenant = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+  const dislikeTenant = async ({ matchId }: { matchId: string }) => {
     try {
-      await axios(userStore.auth.access_token).post('/api/match/tenants', {
-        tenant: tenantId,
-        property: propertyId
-      });
+      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
 
       if (tenantToView) {
         setTenantToView(null);
       }
 
-      await suggestedTenants.reFetch();
+      matchedTenants.reFetch();
+      matchesCount.refetch();
     } catch (err) {
       throw err;
     }
@@ -50,7 +50,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
 
   return (
     <>
-      <Backdrop open={suggestedTenants.loading}></Backdrop>
+      <Backdrop open={matchedTenants.loading}></Backdrop>
       <div className={classNames('my-matches-tenants', className)}>
         <div className='header-and-content-wrapper'>
           <Header />
@@ -70,8 +70,9 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
             </div>
 
             <div className='content'>
-              {suggestedTenants.tenants.map((tenant, tenantIndex) => {
+              {matchedTenants.tenants.map((tenant, tenantIndex) => {
                 const { criteria: tenantCriteria } = tenant;
+
                 return (
                   <TenantCard
                     key={tenantIndex}
@@ -81,7 +82,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     inView={true}
                     percentage={tenant?.property.percentage}
                     onViewProfileClick={() => setTenantToView(tenant)}
-                    matched={tenant.chosen}
+                    // matched={tenant.chosen}
+                    awaitingMatch={tenant.chosen}
                     chatWith={() => {
                       console.log('tenant to chat: ', tenant);
 
@@ -102,12 +104,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
         <ViewProfile
           criteria={tenantToView.criteria}
           closeViewProfile={() => setTenantToView(null)}
-          likeTenant={() => {
-            likeTenant({
-              propertyId: tenantToView.property._id,
-              tenantId: tenantToView.criteria.tenantId
-            });
-          }}
+          dislikeTenant={() => dislikeTenant({ matchId: tenantToView?.matchId || '' })}
+          disableLikeTenant
         />
       )}
     </>

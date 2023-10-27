@@ -27,7 +27,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
   const suggestedTenant: SuggestedTenantType = suggestedTenants.tenants[activeSlide];
   const matchedProperty = suggestedTenant?.property;
 
-  const matchesCount = useMatchesCount({ matched: false });
+  const matchesCount = useMatchesCount({ chosen: false });
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedTenants.tenants?.length));

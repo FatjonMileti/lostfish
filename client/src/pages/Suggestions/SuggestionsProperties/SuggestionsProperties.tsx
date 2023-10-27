@@ -31,7 +31,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
 
   const matchedProperty = suggestedProperty?.property;
 
-  const matchesCount = useMatchesCount({ matched: false });
+  const matchesCount = useMatchesCount({ chosen: false });
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.properties?.length));

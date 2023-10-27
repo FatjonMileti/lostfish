@@ -3,9 +3,12 @@ import { IconButton, IconButtonProps } from './IconButton';
 import { Icon } from './Icon';
 import classNames from 'classnames';
 
-export const MatchButton = styled(({ className, ...props }: IconButtonProps) => {
+export const MatchButton = styled(({ className, disabled, ...props }: IconButtonProps) => {
   return (
-    <IconButton className={classNames('match-button', className)} {...props}>
+    <IconButton
+      className={classNames('match-button', className, { disabled })}
+      disabled={disabled}
+      {...props}>
       <Icon icon='like' />
     </IconButton>
   );
@@ -35,6 +38,13 @@ export const MatchButton = styled(({ className, ...props }: IconButtonProps) => 
         height: 24px !important;
         width: 24px !important;
       }
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      background-color: #a7a7a7;
+      color: white;
+      user-select: none;
     }
   }
 `;
