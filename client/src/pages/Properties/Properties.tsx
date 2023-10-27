@@ -152,7 +152,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             </div>
 
             <div className='properties-list'>
-              {list.rows.map((p, pIndex) => (
+              {list.rows.map((p, pIndex: number) => (
                 <Property
                   key={pIndex}
                   name={p.title}

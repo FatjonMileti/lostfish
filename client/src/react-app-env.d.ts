@@ -1,5 +1,6 @@
 /// <reference types="react-scripts" />
 
+
 interface IGridState {
   loading: boolean;
   rows: any[];
@@ -17,6 +18,9 @@ interface IGridState {
 }
 
 interface IProperty {
+  condition: string;
+  parking_details: string;
+  parking_spot: number;
   _id: string;
   property_images: { link: string }[];
   area_of_interest: string;
@@ -33,6 +37,8 @@ interface IProperty {
     min_budget: number;
     max_budget: number;
   };
+  flat_details: any;
+  house_details: any;
   title: string;
   description: string;
   location_details: string;

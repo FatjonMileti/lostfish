@@ -242,6 +242,10 @@ const updateAsset = async (req: Request, res: Response): Promise<any> => {
       asset.epc_rating = data.epc_rating;
     }
 
+    if (data.hasOwnProperty('condition')) {
+      asset.condition = data.condition;
+    }
+
     if (data.hasOwnProperty('status_string')) {
       asset.status_string = data.status_string;
     }

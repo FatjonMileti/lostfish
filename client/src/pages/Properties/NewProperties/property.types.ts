@@ -6,7 +6,7 @@ import {
   Furnished,
   OutsideSpace,
   Parking,
-  PropertyType
+  PropertyType, Condition,
 } from './property.constants';
 import {
   ContractDetailType,
@@ -20,6 +20,7 @@ import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 
 export type OutsideSpaceType = ObjectValues<typeof OutsideSpace>;
 export type AreaUnitType = ObjectValues<typeof AreaUnit>;
+export type ConditionType = ObjectValues<typeof Condition>;
 
 export type PropertyFormType = {
   title: string;
@@ -54,6 +55,7 @@ export type PropertyFormType = {
   parkingSpot: string;
   parkingType?: ParkingType;
   epcRating: string;
+  condition?: ConditionType;
   description: string;
   areaOfInterest: string;
   propertyImages: any[];
@@ -113,6 +115,7 @@ export interface ApiPropertyDocumentType {
   };
   parking_spot: number;
   epc_rating: string;
+  condition?: ConditionType;
   location_details: string;
   floor_size: number;
   floor_size_unit: AreaUnitType;

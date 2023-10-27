@@ -4,8 +4,9 @@ import classNames from 'classnames';
 
 export interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | 'large';
   variant?: 'primary' | 'secondary' | 'tertiary';
+  special?: boolean;
   inverted?: boolean;
   disabled?: boolean;
 }
@@ -17,6 +18,7 @@ export const Label = styled(
     size = 'medium',
     children,
     variant = 'primary',
+    special = false,
     inverted = false,
     disabled = false,
     ...otherProps
@@ -26,7 +28,8 @@ export const Label = styled(
         className={classNames(className, 'label', `size-${size}`, `variant-${variant}`, {
           active,
           inverted,
-          disabled
+          disabled,
+          special
         })}
         {...otherProps}>
         {children}
@@ -70,6 +73,25 @@ export const Label = styled(
         border: 1px solid #a7a7a7;
         background: #a7a7a7;
         color: white;
+        cursor: not-allowed;
+      }
+
+      &.special {
+        color: white;
+        background: #e5155a;
+        border: 1px solid #e5155a;
+        &:hover {
+          color: white;
+          border: 1px solid #b4263b;
+          background: #b4263b;
+        }
+
+        &.disabled {
+          border: 1px solid #a7a7a7;
+          background: #a7a7a7;
+          color: white;
+          cursor: not-allowed;
+        }
       }
 
       &.size-medium {
@@ -77,6 +99,14 @@ export const Label = styled(
         padding: 12px 20px;
         font-size: 16px;
         line-height: 24px;
+      }
+
+      &.size-large {
+        padding: 20px 32px;
+        height: 64px;
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: 600;
       }
     }
 

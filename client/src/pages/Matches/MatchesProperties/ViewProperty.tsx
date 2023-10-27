@@ -53,6 +53,8 @@ export const ViewProperty = styled(
       lat: property?.asset_address?.latitude,
       lng: property?.asset_address?.longitude
     };
+    parsedProperty.houseType = property?.house_details?.house_type;
+    parsedProperty.propertyType = property?.property_type;
     parsedProperty.isPropertyStarred = propertyToView.starred;
 
     return (
@@ -178,26 +180,35 @@ export const ViewProperty = styled(
               <div className='facilities'>
                 <ul>
                   <li>
-                    <Typography variant='body4'>Open plan reception/dining room</Typography>
-                  </li>
+                    <Typography variant='body4'>{parsedProperty.propertyType}</Typography>
+                  </li>{!!property.parking_spot && property.parking_spot > 0 ? (
                   <li>
-                    <Typography variant='body4'>Modern kitchen with Siemens appliances</Typography>
+                    <Typography variant='body4'>{property.parking_spot === 1
+                          ? 'Parking spot: ' + property.parking_spot
+                          : 'Parking spots: ' + property.parking_spot}
+                        {!!property.parking_details ? ', ' + property.parking_details : ''}</Typography>
                   </li>
-                  <li>
-                    <Typography variant='body4'> Two double bedrooms</Typography>
-                  </li>
+                  ) : (
+                    ''
+                  )}
+
+                  {!!property.condition ? (<li>
+                    <Typography variant='body4'> {'Condition: ' + property.condition}</Typography>
+                  </li>) : (
+                    ''
+                  )}
                 </ul>
 
                 <ul>
-                  <li>
-                    <Typography variant='body4'>Two bathrooms (en-suite) </Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'>Private patio garden</Typography>
-                  </li>
-                  <li>
-                    <Typography variant='body4'>Duplex apartment</Typography>
-                  </li>
+                  {/*<li>*/}
+                    {/*  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
+                  {/*</li>*/}
+                  {/*<li>*/}
+                    {/*  <Typography variant='body4'>Private patio garden</Typography>*/}
+                  {/*</li>*/}
+                  {/*<li>*/}
+                    {/*  <Typography variant='body4'>Duplex apartment</Typography>*/}
+                  {/*</li>*/}
                 </ul>
               </div>
             </div>

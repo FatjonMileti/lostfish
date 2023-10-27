@@ -127,6 +127,14 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Avatar image={avatars[1].image} style={{ width: '100px', height: '100px' }} />
         </div>
         <div>
+          <Label variant='primary' size='large' special>
+            Label
+          </Label>
+
+          <Label variant='primary' size='large' special disabled>
+            Label
+          </Label>
+
           <Label>Label</Label>
 
           <Label active>Label</Label>
