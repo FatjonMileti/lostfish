@@ -1,17 +1,22 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+
 import { useProfileStore } from '../../globalState/profile';
+import { useNotificationsStore } from '../../globalState/notifications';
 
 import { MenuButton } from '../../components/MenuButton';
-import { CircularProgress } from '../../components/CircularProgress';
 import { Typography } from '../../components/Typography';
-import { Avatar } from '../../components/Avatar';
+import { MatchesIcon } from '../../components/MatchesIcon';
+import { MessagesIcon } from '../../components/MessagesIcon';
+import { AccountIcon } from '../../components/AccountIcon';
+import { MatchScore } from '../../components/MatchScore';
+
 import { getAvatarFormIndex } from './avatars';
 
 import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
 import { Role } from '../../enums';
-import { useNotificationsStore } from '../../globalState/notifications';
+import { useMatchesCount } from '../Matches/useMatchesCount';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -19,6 +24,9 @@ export const Header = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
   const notificationsStore = useNotificationsStore();
+  const location = useLocation();
+
+  const matchesCount = useMatchesCount({ matched: false });
 
   return (
     <div className={`header ${className}`}>
@@ -27,12 +35,12 @@ export const Header = styled(({ className }: HeaderProps) => {
       <div className='middle-part'>
         {profileStore.hasCompletedInitialSetup && (
           <div className='menu'>
-            <NavLink to='/'>
-              {({ isActive }) => <MenuButton active={isActive}>My dashboard</MenuButton>}
-            </NavLink>
-
             <NavLink to='/matches'>
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}
+            </NavLink>
+
+            <NavLink to='/my-matches'>
+              {({ isActive }) => <MenuButton active={isActive}>My matches</MenuButton>}
             </NavLink>
 
             {profileStore.role === Role.Landlord && (
@@ -40,46 +48,37 @@ export const Header = styled(({ className }: HeaderProps) => {
                 {({ isActive }) => <MenuButton active={isActive}>Properties</MenuButton>}
               </NavLink>
             )}
-
-            <NavLink to='/messages'>
-              {({ isActive }) => (
-                <div>
-                  <MenuButton active={isActive}>
-                    <div className='messages-button-content'>
-                      Messages
-                      {notificationsStore.unreadMessages > 0 && (
-                        <span className='unread-messages-indicator' />
-                      )}
-                    </div>
-                  </MenuButton>
-                </div>
-              )}
-            </NavLink>
           </div>
         )}
       </div>
 
       <div className='right-part'>
-        <div className='trust-score'>
-          <Typography variant='body6' className='trust-score-title'>
-            Match score
-          </Typography>
-          <Typography variant='body5' className='trust-score-percentage'>
-            {profileStore.trust_score}%
-          </Typography>
-        </div>
+        <div className='matches-and-messages-buttons-wrapper'>
+          <MessagesIcon
+            counter={notificationsStore.unreadMessages || undefined}
+            onClick={() => navigate('/messages')}
+            actioned={location.pathname === '/messages'}
+          />
 
-        <NavLink to='/my-account'>
-          <div className='avatar-wrapper'>
-            <CircularProgress
-              className='circular-percentage'
-              variant='determinate'
-              value={profileStore.trust_score}
-              size='64px'
-            />
-            <Avatar image={getAvatarFormIndex(profileStore.avatar) || undefined} />
+          <MatchesIcon
+            onClick={() => navigate('/my-matches')}
+            counter={matchesCount.data?.number || undefined}
+          />
+        </div>
+        <div className='line' />
+        <div className='avatar-and-match-score-wrapper'>
+          <div className='trust-score'>
+            <Typography variant='body6' className='trust-score-title'>
+              Match score
+            </Typography>
+            <MatchScore>{profileStore.trust_score}%</MatchScore>
           </div>
-        </NavLink>
+
+          <AccountIcon
+            image={getAvatarFormIndex(profileStore.avatar) || undefined}
+            onClick={() => navigate('/my-account')}
+          />
+        </div>
       </div>
     </div>
   );
@@ -127,44 +126,39 @@ export const Header = styled(({ className }: HeaderProps) => {
     }
 
     .right-part {
-      display: flex;
+      display: grid;
+      grid-template-columns: max-content min-content max-content;
+      column-gap: 24px;
       align-items: center;
-      column-gap: 8px;
 
-      .avatar-wrapper {
-        position: relative;
-        z-index: 0;
-        height: 64px;
-        width: 64px;
-        display: grid;
-        align-items: center;
-        justify-content: center;
-
-        .avatar {
-          height: 56px;
-          width: 56px;
-        }
-
-        .circular-percentage {
-          position: absolute;
-          inset: 0;
-          color: #e5155a;
-          z-index: -1;
-        }
+      .matches-and-messages-buttons-wrapper {
+        display: flex;
+        column-gap: 16px;
       }
 
-      .trust-score {
-        .trust-score-title {
-          font-size: 10px;
-          line-height: 12px;
-          font-weight: 500;
-          color: #646464;
-        }
+      .line {
+        width: 1px;
+        height: calc(100% - 8px);
+        background: #d9d9d9;
 
-        .trust-score-percentage {
-          line-height: 14px;
-          font-weight: 700;
-          color: #e5155a;
+        box-sizing: content-box;
+      }
+
+      .avatar-and-match-score-wrapper {
+        display: flex;
+        align-items: center;
+        column-gap: 16px;
+
+        .trust-score {
+          display: grid;
+          row-gap: 4px;
+          justify-items: flex-end;
+          .trust-score-title {
+            font-size: 10px;
+            line-height: 12px;
+            font-weight: 500;
+            color: #646464;
+          }
         }
       }
     }

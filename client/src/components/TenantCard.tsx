@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Avatar } from './Avatar';
 import { Typography } from './Typography';
 import { Label } from './Label';
+import { Icon } from './Icon';
 
 export interface TenantCardProps extends HTMLMotionProps<'div'> {
   name: string;
@@ -12,7 +13,10 @@ export interface TenantCardProps extends HTMLMotionProps<'div'> {
   avatar: string;
   percentage?: string;
   onViewProfileClick?: () => void;
+  chatWith?: () => void;
   size?: 'medium' | 'large';
+  matched?: boolean;
+  awaitingMatch?: boolean;
 }
 
 export const TenantCard = styled(
@@ -23,13 +27,16 @@ export const TenantCard = styled(
     inView,
     avatar,
     percentage,
+    matched = false,
+    awaitingMatch = false,
     onViewProfileClick = () => {},
+    chatWith = () => {},
     ...rest
   }: TenantCardProps) => {
     const active = inView;
     return (
       <motion.div
-        className={classNames('tenant-card', className, `size-${size}`, { active, inView })}
+        className={classNames('tenant-card', className, `size-${size}`, { active, inView, matched })}
         {...rest}>
         <Avatar image={avatar} className={`${active ? 'active' : ''}`} />
 
@@ -39,17 +46,36 @@ export const TenantCard = styled(
               {name}
             </Typography>
 
-            <Typography variant='body4' className='tenant-match-percentage'>
-              {percentage ?? '34'}% Match rate
-            </Typography>
+            {awaitingMatch && null}
+            {matched && (
+              <div className='matched-indicator'>
+                <Icon icon='like' />
+                <Typography variant='body5'>Matched</Typography>
+              </div>
+            )}
+
+            {!matched && !awaitingMatch && (
+              <Typography variant='body4' className='tenant-match-percentage'>
+                {percentage ?? '34'}% Match rate
+              </Typography>
+            )}
           </div>
-          <Label
-            size='medium'
-            variant='secondary'
-            className='view-profile-button'
-            onClick={onViewProfileClick}>
-            View profile
-          </Label>
+          {!matched && (
+            <Label
+              size='medium'
+              variant='secondary'
+              className='view-profile-button'
+              onClick={onViewProfileClick}>
+              View profile
+            </Label>
+          )}
+
+          {matched && (
+            <Label size='medium' className='message-button' onClick={chatWith}>
+              <Icon icon='email' />
+              Message
+            </Label>
+          )}
         </div>
       </motion.div>
     );
@@ -67,6 +93,14 @@ export const TenantCard = styled(
     box-sizing: border-box;
     justify-items: center;
 
+    &.size-medium {
+      width: 324px;
+      .avatar {
+        width: 276px;
+        height: 276px;
+      }
+    }
+
     &.inView {
       z-index: 1;
       opacity: 1;
@@ -75,6 +109,13 @@ export const TenantCard = styled(
 
       /* Card Shadow */
       box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    &.matched {
+      border: 2px solid var(--accent-match-pink, #e5155a);
+
+      /* Match Shadow */
+      box-shadow: 0 16px 32px 0 rgba(229, 21, 90, 0.25);
     }
 
     .avatar {
@@ -112,11 +153,25 @@ export const TenantCard = styled(
 
         .tenant-name {
           font-weight: 700;
+          line-break: anywhere;
         }
 
         .tenant-match-percentage {
           color: #c4b1a3;
           font-weight: 700;
+        }
+
+        .matched-indicator {
+          display: flex;
+          column-gap: 4px;
+          align-items: center;
+          font-weight: 700;
+          color: #e5155a;
+
+          .icon {
+            width: 16px !important;
+            height: 16px !important;
+          }
         }
       }
 
@@ -124,6 +179,16 @@ export const TenantCard = styled(
         flex-shrink: 0;
         padding: 16px 20px;
         height: 56px;
+      }
+
+      .message-button {
+        flex-shrink: 0;
+        padding: 16px 20px;
+        height: 56px;
+        .icon {
+          width: 20px !important;
+          height: 20px !important;
+        }
       }
     }
   }

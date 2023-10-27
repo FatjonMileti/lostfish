@@ -1,53 +1,62 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { Typography } from '../../../components/Typography';
-import { useSuggestedTenants } from './useSuggestedTenants';
 import { motion } from 'framer-motion';
-import { TenantType } from './MatchesTenants';
-import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import { ViewProfile } from './ViewProfile';
+
+import { Typography } from '../../../components/Typography';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { MatchButton } from '../../../components/MatchButton';
 import { UnMatchButton } from '../../../components/UnMatchButton';
-import { TenantCard } from '../../../components/TenantCard';
-import axios from '../../../utils/axios';
-import { useUserStore } from '../../../globalState/user';
+import { Backdrop } from '../../../components/Backdrop';
 
-interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
-export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
-  const suggestedTenants = useSuggestedTenants();
+import { useSuggestedProperties } from './useSuggestedProperties';
+import { useMatchesCount } from '../../Matches/useMatchesCount';
+import { ViewProperty } from '../../Matches/MatchesProperties/ViewProperty';
+import { useUserStore } from '../../../globalState/user';
+import axios from '../../../utils/axios';
+
+import { SuggestedPropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
+import { PropertyCard } from '../../../components/PropertyCard';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
+export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
+  const suggestedProperties = useSuggestedProperties({ chosen: false });
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
-  const [tenantToView, setTenantToView] = React.useState<TenantType | null>(null);
+
+  const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
 
   const userStore = useUserStore();
 
-  const suggestedTenant: TenantType = suggestedTenants.tenants[activeSlide];
-  const matchedProperty = suggestedTenant?.property;
+  const suggestedProperty: SuggestedPropertyType = suggestedProperties.properties[activeSlide];
+
+  const matchedProperty = suggestedProperty?.property;
+
+  const matchesCount = useMatchesCount({ matched: false });
 
   const next = () =>
-    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedTenants.tenants?.length));
+    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.properties?.length));
   const previous = () => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
-  console.log('suggestedTenants: ', suggestedTenants);
-
-  const likeProperty = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+  const likeProperty = async ({ propertyId }: { propertyId: string }) => {
     try {
-      await axios(userStore.auth.access_token).post('/api/match/tenant', {
-        tenant: tenantId,
-        chosen: true,
+      await axios(userStore.auth.access_token).post('/api/match/properties', {
         property: propertyId
       });
-    } catch (err) {
-      throw err;
-    }
-  };
 
-  const dislikeProperty = async ({ matchId }: { matchId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
+      if (propertyToView) {
+        setPropertyToView(null);
+      }
+
+      if (
+        suggestedProperties.properties.length - 1 === activeSlide &&
+        suggestedProperties.properties.length > 1
+      ) {
+        previous();
+      }
+      await suggestedProperties.reFetch();
+      matchesCount.refetch();
     } catch (err) {
       throw err;
     }
@@ -55,45 +64,52 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
 
   return (
     <>
-      <div className={classNames('suggestions-tenants', className)}>
+      <Backdrop open={suggestedProperties.loading}></Backdrop>
+      <div className={classNames('suggestions-properties', className)}>
         <div className='section-header'>
           <Typography className='matching-with'>
             Matching with{' '}
             <span className='address'>renters in {matchedProperty?.area_of_interest ?? ''}</span>
           </Typography>
-          {suggestedTenants.tenants.length === 0 ? (
+          {suggestedProperties.properties.length === 0 ? (
             <Typography variant='body5' className='sub-title'>
               No matches. Enter more details to refine your search.
             </Typography>
           ) : (
             <Typography variant='body5' className='sub-title'>
-              Displaying {suggestedTenants.tenants.length} matches. Enter more details to refine your search.
+              Displaying {suggestedProperties.properties.length} matches. Enter more details to refine your
+              search.
             </Typography>
           )}
         </div>
 
         <motion.div className='slides-wrapper'>
-          {suggestedTenants.tenants.map((tenant, tenantIndex) => {
-            const { criteria: tenantCriteria } = tenant;
+          {suggestedProperties.properties.map((propertySuggestion, tenantIndex) => {
+            console.log('suggestedProperty: ', propertySuggestion);
+
+            const { property } = propertySuggestion;
 
             return (
-              <TenantCard
+              <PropertyCard
                 key={tenantIndex}
                 animate={{
                   x: `calc(${-100 * activeSlide}% - ${activeSlide * 24}px)`
                 }}
                 transition={{ duration: 0.4 }}
-                name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
-                avatar={getAvatarFormIndex(tenantCriteria.avatar)}
+                name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
+                avatar={getAvatarFormIndex(property.created_by?.avatar)}
                 inView={tenantIndex === activeSlide}
-                percentage={matchedProperty.percentage}
-                onViewProfileClick={() => setTenantToView(suggestedTenant)}
+                percentage={property.percentage}
+                onViewPropertyClick={() => setPropertyToView(suggestedProperty)}
+                image={`${property?.property_images?.[0]?.link || ''}`}
+                size='large'
+                property={property}
               />
             );
           })}
         </motion.div>
 
-        {suggestedTenants.tenants.length > 0 && (
+        {suggestedProperties.properties.length > 0 && (
           <div className='matches-slider-footer'>
             <ArrowButton
               direction='left'
@@ -102,66 +118,41 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               size='large'
             />
             <div className='match-actions'>
-              {/*<IconButton*/}
-              {/*  className='remove-button'*/}
-              {/*  size='large'*/}
-              {/*  disabled={!suggestedTenant?.matchId}*/}
-              {/*  onClick={() => {*/}
-              {/*    // if (suggestedTenant?.matchId) {*/}
-              {/*    //   removeTenantMatch(suggestedTenant?.matchId);*/}
-              {/*    // }*/}
-              {/*  }}>*/}
-              {/*  <Icon icon='close' size={28} />*/}
-              {/*</IconButton>*/}
               <UnMatchButton size='large' />
-              {/*<IconButton*/}
-              {/*  size='large'*/}
-              {/*  inverted*/}
-              {/*  className={`check-button ${suggestedTenant?.chosen ? 'active' : ''}`}*/}
-              {/*  onClick={() => {*/}
-              {/*    // checkTenant(*/}
-              {/*    //   criteria.tenantId,*/}
-              {/*    //   !suggestedTenant.chosen,*/}
-              {/*    //   suggestedTenant?.starred,*/}
-              {/*    //   matchedProperty?._id*/}
-              {/*    // );*/}
-              {/*  }}>*/}
-              {/*  <Icon icon='checked' size={28} />*/}
-              {/*</IconButton>*/}
-              {/*<IconButton*/}
-              {/*  className={`star-button ${suggestedTenant?.starred ? 'active' : ''}`}*/}
-              {/*  size='large'*/}
-              {/*  onClick={() => {*/}
-              {/*    // starTenant(*/}
-              {/*    //   criteria.tenantId,*/}
-              {/*    //   suggestedTenant?.chosen,*/}
-              {/*    //   !suggestedTenant.starred,*/}
-              {/*    //   matchedProperty?._id*/}
-              {/*    // );*/}
-              {/*  }}>*/}
-              {/*  <Icon icon='star-solid' size={28} />*/}
-              {/*</IconButton>*/}
-              <MatchButton size='large' />
+              <MatchButton
+                size='large'
+                onClick={() => {
+                  likeProperty({
+                    propertyId: suggestedProperty.property._id
+                  });
+                }}
+              />
             </div>
             <ArrowButton
               direction='right'
               onClick={next}
               size='large'
               style={{
-                visibility: activeSlide === suggestedTenants.tenants.length - 1 ? 'hidden' : 'initial'
+                visibility: activeSlide === suggestedProperties.properties.length - 1 ? 'hidden' : 'initial'
               }}
             />
           </div>
         )}
       </div>
 
-      {tenantToView && (
-        <ViewProfile criteria={tenantToView.criteria} closeViewProfile={() => setTenantToView(null)} />
+      {propertyToView && (
+        <ViewProperty
+          open={true}
+          starProperty={() => {}}
+          closeModal={() => setPropertyToView(null)}
+          onBackdropClick={() => setPropertyToView(null)}
+          propertyToView={propertyToView}
+        />
       )}
     </>
   );
 })`
-  &.suggestions-tenants {
+  &.suggestions-properties {
     min-height: calc(100vh - 112px);
     display: grid;
     grid-template-rows: min-content auto;
@@ -197,7 +188,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     .slides-wrapper {
       display: flex;
       column-gap: 24px;
-      width: 440px;
+      width: 672px;
       box-sizing: border-box;
 
       .no-matches {

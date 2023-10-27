@@ -32,7 +32,8 @@ export default class SuggestionService {
 
   public async getFilteredPropertiesByUser(
     pagingOptions: IPagingOptions,
-    userId: string
+    userId: string,
+    chosen: any
   ): Promise<{ response: any; success: boolean }> {
     pagingOptions.limit = 100;
     const criteria: CriteriaDocument | null = await this.criteriaModel.findOne({ created_by: userId }).lean();
@@ -61,16 +62,33 @@ export default class SuggestionService {
         ]
       });
 
+      const matches = await MatchSchema.find({ created_by: userId }).lean();
+
       response.docs = response.docs
         .filter((property: any) => {
           const percentage = this.calculateSimilarity(criteria, property);
           property.percentage = percentage.toFixed(0);
 
-          return percentage >= 20;
+          const matchProperty = matches.find(
+            (match: any) => match.property.toString() === property._id.toString()
+          );
+
+          if (property.percentage < 20) {
+            return false;
+          }
+
+          if (chosen === 'false' && matchProperty?.chosen) {
+            return false;
+          }
+
+          if (chosen === 'true' && matchProperty?.chosen) {
+            return false;
+          }
+
+          return true;
         })
         .sort((a: any, b: any) => b.percentage - a.percentage);
 
-      const matches = await MatchSchema.find({ created_by: userId }).lean();
       response.docs = generateLinksForImages(response.docs);
       response.docs = response.docs.map((item: any, index: number) => {
         const matchProperty = matches.find((match: any) => match.property.toString() === item._id.toString());
@@ -91,7 +109,7 @@ export default class SuggestionService {
     }
   }
 
-  public async getFilteredTenantsByUser(pagingOptions: IPagingOptions, userId: string, propertyId: string) {
+  public async getFilteredTenantsByUser(pagingOptions: IPagingOptions, userId: string, chosen: any) {
     try {
       const matchesUsers: any = await this.criteriaModel.paginate(
         {
@@ -130,7 +148,21 @@ export default class SuggestionService {
       }
 
       matchesUsers.docs = data
-        .filter((item: any) => item.property.percentage >= 20)
+        .filter((item: any) => {
+          if (item.property.percentage < 20) {
+            return false;
+          }
+
+          if (chosen === 'false' && item.chosen) {
+            return false;
+          }
+
+          if (chosen === 'true' && item.chosen) {
+            return false;
+          }
+
+          return true;
+        })
         .sort((a: any, b: any) => b.property.percentage - a.property.percentage);
       return { response: matchesUsers, success: true };
     } catch (error: any) {
@@ -181,13 +213,13 @@ export default class SuggestionService {
   }
 
   private makeSuggestionObject = (
-    item: CriteriaDocument,
+    item: CriteriaDocument | any,
     matches: MatchDocument[],
     property: PropertyDocument
   ) => {
     const matchTenant: MatchDocument | undefined = matches.find((match: MatchDocument) => {
       return (
-        match.tenant.toString() === item?.created_by?.toString() &&
+        match.tenant.toString() === item?.created_by?._id?.toString() &&
         match.property.toString() === property._id.toString()
       );
     });

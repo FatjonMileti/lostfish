@@ -12,6 +12,7 @@ export interface MatchDocument extends Document {
   landlord: ObjectIdField;
   chosen: boolean;
   starred: boolean;
+  matched: boolean;
   type: MatchingType;
   created_by?: ObjectIdField | string;
   edited_by?: ObjectIdField | string;

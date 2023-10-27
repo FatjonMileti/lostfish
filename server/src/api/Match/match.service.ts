@@ -1,4 +1,4 @@
-import { PaginateModel } from 'mongoose';
+import { PaginateModel, FilterQuery } from 'mongoose';
 import { MatchDocument } from './match.interface';
 import { IMatchQueryParams } from './match.schema';
 import { IPagingOptions } from '../../middleware/paging';
@@ -66,12 +66,16 @@ export default class MatchService {
   }
 
   // Get a single match by ID
-  public async getMatchByQuery(query: IMatchQueryParams): Promise<MatchDocument | null> {
+  public async getMatchByQuery(query: FilterQuery<MatchDocument> | undefined): Promise<MatchDocument | null> {
     return this.matchModel
       .findOne(query)
       .populate('tenant', ['_id', 'first_name', 'last_name', 'avatar', 'email'])
       .populate('property', SelectedPropertyFields)
       .lean();
+  }
+
+  public async countMatches(query: FilterQuery<MatchDocument> | undefined): Promise<number> {
+    return this.matchModel.count(query);
   }
 
   // Update a match by ID

@@ -9,15 +9,25 @@ export interface IMatchQueryParams {
   type?: MatchingType;
   created_by?: ObjectId | string;
   property?: string;
+  tenant?: string;
 }
 
 const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
   {
     tenant: { type: Schema.Types.ObjectId, ref: 'user' },
+
     landlord: { type: Schema.Types.ObjectId, ref: 'user' },
+
     chosen: { type: Boolean, default: false },
     starred: { type: Boolean, default: false },
+
+    matched: {
+      type: Boolean,
+      default: false
+    },
+
     type: { type: String, enum: MatchingType },
+
     property: { type: Schema.Types.ObjectId, ref: 'property' },
     edited_by: { type: Schema.Types.ObjectId, ref: 'user' },
     created_by: { type: Schema.Types.ObjectId, ref: 'user' },

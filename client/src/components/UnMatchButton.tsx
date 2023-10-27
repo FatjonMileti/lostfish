@@ -12,6 +12,8 @@ export const UnMatchButton = styled(({ className, ...props }: IconButtonProps) =
 })`
   &.match-button {
     border: 2px solid #e5155a;
+    box-sizing: border-box;
+
     transition: all 0.2s ease-in-out;
 
     :hover {
@@ -26,7 +28,7 @@ export const UnMatchButton = styled(({ className, ...props }: IconButtonProps) =
     }
 
     &.size-large {
-      padding: 20px;
+      padding: 18px;
       .icon {
         height: 48px !important;
         width: 48px !important;
@@ -34,7 +36,7 @@ export const UnMatchButton = styled(({ className, ...props }: IconButtonProps) =
     }
 
     &.size-medium {
-      padding: 16px;
+      padding: 14px;
       .icon {
         height: 24px !important;
         width: 24px !important;

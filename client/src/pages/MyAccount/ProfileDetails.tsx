@@ -26,6 +26,7 @@ const userSchema = yup.object().shape({
   email: yup.string().required('Email is required'),
   phone: yup.string(),
   description: yup.string().transform((value) => value || undefined),
+  avatar: yup.string(),
   age: yup
     .number()
     .min(18, 'You must be 18 years or older')
@@ -64,7 +65,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       email: '',
       phone: '',
       description: '',
-      avatar: profileStore.avatar ? profileStore.avatar : undefined,
+      avatar: profileStore.avatar || undefined,
       address: '',
       age: undefined,
       martial_status: undefined,

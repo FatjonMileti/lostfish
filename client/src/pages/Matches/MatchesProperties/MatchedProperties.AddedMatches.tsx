@@ -7,7 +7,7 @@ import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchedSlide, PropertyType } from './MatchesProperties';
+import { MatchedSlide, SuggestedPropertyType } from './MatchesProperties';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
@@ -31,7 +31,7 @@ interface AddedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   getCheckedProperties: () => Promise<void>;
   matchedView: boolean;
   setMatchedView: (matchedView: boolean) => void;
-  setPropertyToView: (propertyToView: PropertyType) => void;
+  setPropertyToView: (propertyToView: SuggestedPropertyType) => void;
 }
 export const AddedMatches = styled(
   ({

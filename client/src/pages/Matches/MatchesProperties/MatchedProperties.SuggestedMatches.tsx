@@ -7,7 +7,7 @@ import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { IconButton } from '../../../components/IconButton';
-import { MatchedSlide, PropertyType } from './MatchesProperties';
+import { MatchedSlide, SuggestedPropertyType } from './MatchesProperties';
 import { Switch } from '../../../components/Switch';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { motion } from 'framer-motion';
@@ -16,7 +16,7 @@ import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 
 interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
-  properties: PropertyType[];
+  properties: SuggestedPropertyType[];
   improveTrustScore: () => void;
   removePropertyMatch: (matchId: string, propertyId?: string) => void;
   starProperty: (propertyId: string, chosen: boolean, starred: boolean) => void;
@@ -25,7 +25,7 @@ interface SuggestedMatchesProps extends HTMLAttributes<HTMLDivElement> {
   showSwitchToMatchedViewSwitch: boolean;
   matchedView: boolean;
   setMatchedView: (matchedView: boolean) => void;
-  setPropertyToView: (propertyToView: PropertyType) => void;
+  setPropertyToView: (propertyToView: SuggestedPropertyType) => void;
 }
 export const SuggestedMatches = styled(
   ({

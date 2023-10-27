@@ -32,10 +32,12 @@ export class SuggestionController {
   public getPropertySuggestions = async (req: Request, res: Response) => {
     const userId = res.locals.user_id as string;
     const paginateOptions = res.locals.paging_options as IPagingOptions;
+    const { chosen } = req.query;
 
     const { response, success } = await this.suggestionService.getFilteredPropertiesByUser(
       paginateOptions,
-      userId
+      userId,
+      chosen
     );
 
     if (success) {
@@ -58,11 +60,11 @@ export class SuggestionController {
   public getTenantsSuggestions = async (req: Request, res: Response) => {
     const userId = res.locals.user_id as string;
     const paginateOptions = res.locals.paging_options as IPagingOptions;
-    const { propertyId } = req.query;
+    const { propertyId, chosen } = req.query;
     const { response, success } = await this.suggestionService.getFilteredTenantsByUser(
       paginateOptions,
       userId,
-      propertyId as string
+      chosen
     );
 
     if (success) {

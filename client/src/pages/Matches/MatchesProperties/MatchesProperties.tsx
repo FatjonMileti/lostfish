@@ -15,7 +15,7 @@ import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import SocketContext from '../../../context/SocketContext';
 
-export interface PropertyType {
+export interface SuggestedPropertyType {
   property: IProperty;
   matchId?: string;
   chosen: boolean;
@@ -24,13 +24,13 @@ export interface PropertyType {
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) => {
-  const [properties, setProperties] = React.useState<PropertyType[]>([]);
+  const [properties, setProperties] = React.useState<SuggestedPropertyType[]>([]);
 
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
   const [checkedProperties, setCheckedProperties] = React.useState<any[]>([]);
   const [matchedView, setMatchedView] = React.useState<boolean>(false);
 
-  const [propertyToView, setPropertyToView] = React.useState<PropertyType | null>(null);
+  const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
 
   const { auth, userDetails } = useUserStore();
 
@@ -217,7 +217,7 @@ export const MatchesProperties = styled(({ className }: MatchesPropertiesProps) 
 interface MatchedSlideProps extends Omit<HTMLAttributes<HTMLDivElement>, 'property'> {
   image: string;
   viewProperty: () => void;
-  property?: PropertyType['property'];
+  property?: SuggestedPropertyType['property'];
 }
 
 export const MatchedSlide = styled(

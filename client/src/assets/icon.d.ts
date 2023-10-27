@@ -1,4 +1,6 @@
 export type IconNames = 
+  | "email"
+  | "filter"
   | "arrow-right"
   | "arrow-left"
   | "like"
@@ -35,7 +37,6 @@ export type IconNames =
   | "credit-card"
   | "key"
   | "phone"
-  | "email"
   | "sign-out"
   | "chat"
   | "file"
@@ -49,7 +50,6 @@ export type IconNames =
   | "arrow-up"
   | "arrow-left-1"
   | "facebook"
-  | "arrow-left"
   | "plus"
   | "eye-invisible"
   | "eye"

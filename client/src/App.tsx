@@ -30,6 +30,7 @@ import { useProfileStore } from './globalState/profile';
 import { useNotificationsStore } from './globalState/notifications';
 
 import { CookieConsent } from './components/CookieConsent';
+import { MyMatches } from './pages/Matches/MyMatches';
 
 function App() {
   const userStore = useUserStore();
@@ -107,7 +108,7 @@ function App() {
                 <Route path='/agreement' element={<Agreement />} />
 
                 <Route path='/matches' element={<Matches />} />
-
+                <Route path='/my-matches' element={!!userStore.auth ? <MyMatches /> : <Home />} />
                 <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Home />} />
                 <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Home />} />
                 <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Home />} />

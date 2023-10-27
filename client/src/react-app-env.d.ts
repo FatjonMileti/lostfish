@@ -48,7 +48,7 @@ interface IProperty {
     last_name: string;
     avatar: string;
   };
-  percentage: number;
+  percentage: string;
 }
 
 declare global {

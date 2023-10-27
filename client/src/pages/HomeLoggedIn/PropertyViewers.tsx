@@ -7,7 +7,7 @@ import { Backdrop } from '../../components/Backdrop';
 import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
 import { motion } from 'framer-motion';
-import { MatchedSlide, TenantType } from '../Matches/MatchesTenants/MatchesTenants';
+import { MatchedSlide, SuggestedTenantType } from '../Matches/MatchesTenants/MatchesTenants';
 import { getAvatarFormIndex } from './avatars';
 import { ArrowButton } from '../../components/ArrowButton';
 import { mapCriteria } from '../Matches/MatchesTenants/serializers';
@@ -34,7 +34,7 @@ export const PropertyViewers = styled(
     const [loading, setLoading] = React.useState<boolean>(false);
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
     const [users, setUsers] = React.useState<UserType[]>([]);
-    const [criteriaToView, setCriteriaToView] = React.useState<TenantType | null>(null);
+    const [criteriaToView, setCriteriaToView] = React.useState<SuggestedTenantType | null>(null);
     const { auth } = useUserStore();
 
     const next = () => setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % users?.length));

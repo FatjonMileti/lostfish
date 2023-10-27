@@ -3,7 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import { ViewProperty } from '../../Matches/MatchesProperties/ViewProperty';
-import { PropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
+import { SuggestedPropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
 import { useQuery } from '@tanstack/react-query';
 import { PropertyMatch } from '../../PagesComponents/PropertyMatch';
 import { Typography } from '../../../components/Typography';
@@ -29,7 +29,7 @@ export const DashboardStarredProperties = styled(({ className }: HTMLAttributes<
     refetchOnWindowFocus: false
   });
 
-  const [propertyToView, setPropertyToView] = React.useState<PropertyType | null>(null);
+  const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
 
   return (
     <>

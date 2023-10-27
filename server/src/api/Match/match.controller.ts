@@ -17,6 +17,7 @@ import AssetSchema from '../Property/schemas/property.schema';
 import CriteriaSchema from '../Criteria/schemas/criteria.schema';
 import validateId from '../../middleware/object-id.validator';
 import propertyDetailService from '../Property/services/property-detail.service';
+import { FilterQuery } from 'mongoose';
 
 const router: Router = Router();
 
@@ -33,12 +34,100 @@ export class MatchController {
   private initializeRoutes() {
     router.get('/', authorize(), paging({ sort: { created_at: -1 } }), this.getAllMatches);
     router.get('/property', authorize(), paging({ sort: { created_at: -1 } }), this.getAllPropertyMatches);
+
+    router.get('/count', authorize(), this.countMatches);
+    router.post('/tenants', authorize(), this.likeTenant);
+    router.post('/properties', authorize(), this.likeProperty);
+
     router.get('/:id', authorize(), validateId, this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
     router.put('/:id', authorize(), validateId, this.updateMatch);
     router.delete('/:id', authorize(), validateId, this.deleteMatch);
   }
+
+  private countMatches = async (req: Request, res: Response) => {
+    const { matched } = req.query;
+
+    try {
+      const query: FilterQuery<MatchDocument> = {};
+
+      query.created_by = res.locals.user_id;
+
+      if (matched === 'false') {
+        query.matched = false;
+      }
+
+      if (matched === 'true') {
+        query.matched = true;
+      }
+
+      const count = await this.matchService.countMatches(query);
+      return res.status(200).json({ number: count });
+    } catch (err) {
+      return res.status(500).json({ error: 'Unable to count matches' });
+    }
+  };
+
+  private likeTenant = async (req: Request, res: Response) => {
+    try {
+      const matchData: Partial<MatchDocument> = req.body;
+      const tenantId = matchData.tenant;
+      const propertyId = matchData.property;
+
+      const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+
+      const match = await this.matchService.createMatch({
+        property: propertyId,
+        tenant: tenantId,
+        chosen: true,
+        type,
+        landlord: res.locals.user_id,
+        created_by: res.locals.user_id
+      });
+
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
+
+  private likeProperty = async (req: Request, res: Response) => {
+    try {
+      const matchData: Partial<MatchDocument> = req.body;
+      const propertyId = matchData.property;
+
+      const property = await assetService.findById(propertyId as string);
+
+      if (!property) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+      }
+
+      const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+
+      const match = await this.matchService.createMatch({
+        chosen: true,
+        landlord: property.created_by.toString(),
+        property: property.id,
+        type,
+        tenant: res.locals.user_id,
+        created_by: res.locals.user_id
+      });
+
+      await propertyDetailService.findAndIncrementById(
+        property._id,
+        matchData.chosen ? { matches: 1 } : { starred: 1 }
+      );
+
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
 
   /**
    * @api {post} /api/match/tenant Create a new match (as Landlord)

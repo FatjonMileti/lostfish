@@ -14,12 +14,12 @@ import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
 import { mapTenant } from './serializers';
-import { Label } from '../../../components/Label';
+import { ApiPropertyDocumentType } from '../../Properties/NewProperties/property.types';
 
-export interface TenantType {
+export interface SuggestedTenantType {
   id: string;
   criteria: any;
-  property: any;
+  property: ApiPropertyDocumentType | any;
   chosen: boolean;
   starred: boolean;
   unread_messages: number;
@@ -30,14 +30,14 @@ interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const MatchesTenants = styled(({ className }: MatchesTenantsProps) => {
   const [loadingTenants, setLoadingTenants] = React.useState(false);
-  const [tenants, setTenants] = React.useState<TenantType[]>([]);
+  const [tenants, setTenants] = React.useState<SuggestedTenantType[]>([]);
   const [improveTrustScoreModalVisibility, setImproveTrustScoreModalVisibility] = React.useState(false);
 
   const [matchedView, setMatchedView] = React.useState<boolean>(false);
 
   const { auth } = useUserStore();
 
-  const [criteriaToView, setCriteriaToView] = React.useState<TenantType | null>(null);
+  const [criteriaToView, setCriteriaToView] = React.useState<SuggestedTenantType | null>(null);
 
   const [checkedTenants, setCheckedTenants] = React.useState<any[]>([]);
 
@@ -244,50 +244,43 @@ export const MatchedSlide = styled(
             <Typography variant='body4' className='tenant-name'>
               {name}
             </Typography>
-
+            <Typography variant='body4' className='tenant-dot'>
+              •
+            </Typography>
             <Typography variant='body4' className='tenant-match-percentage'>
-              {percentage ?? '34'}% Match rate
+              {percentage ?? '34'}%
             </Typography>
           </div>
-          <Label
-            size='medium'
+          <Button
+            size='small'
             variant='secondary'
             className='view-profile-button'
             onClick={onViewProfileClick}>
             View profile
-          </Label>
+          </Button>
         </motion.div>
       </motion.div>
     );
   }
 )`
   &.match-property-slide {
-    padding: 24px;
     display: grid;
-    row-gap: 24px;
+    row-gap: 16px;
+    width: 372px;
     height: auto;
     flex-shrink: 0;
     align-content: space-between;
     opacity: 0.5;
-    width: 440px;
-    box-sizing: border-box;
-
-    justify-items: center;
 
     &.active {
       z-index: 1;
       opacity: 1;
-      background-color: white;
-      border-radius: 16px;
-
-      /* Card Shadow */
-      box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
     }
 
     .avatar {
       position: relative;
-      width: 324px;
-      height: 324px;
+      width: 372px;
+      height: 372px;
       overflow: hidden;
       flex-shrink: 0;
       cursor: pointer;
@@ -299,32 +292,24 @@ export const MatchedSlide = styled(
     }
 
     .action-buttons {
-      width: 100%;
       display: flex;
-      justify-content: space-between;
-      column-gap: 16px;
       align-items: center;
 
       .tenant-details {
-        display: grid;
-        row-gap: 4px;
-
+        display: flex;
+        column-gap: 8px;
+        padding: 20px 32px;
+        font-weight: 700;
         align-items: center;
 
-        .tenant-name {
-          font-weight: 700;
-        }
-
+        .tenant-dot,
         .tenant-match-percentage {
           color: #c4b1a3;
-          font-weight: 700;
         }
       }
 
       .view-profile-button {
         flex-shrink: 0;
-        padding: 16px 20px;
-        height: 56px;
       }
     }
   }

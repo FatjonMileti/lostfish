@@ -9,11 +9,11 @@ import { SectionThree } from './HomeLoggedIn.SectionThree';
 import { SectionFour } from './HomeLoggedIn.SectionFour';
 import { SectionFive } from './HomeLoggedIn.SectionFive';
 import Can from '../../components/Can';
-// import backgroundImg from '../About/sectionOne.About.png';
+
 import backgroundImg from '../Home/home-background.png';
 
 import { CASLAction } from '../../utils/ability.util';
-import { SuggestionsTenants } from '../Matches/MatchesTenants/SuggestionsTenants';
+import { Suggestions } from '../Suggestions/Suggestions';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -25,7 +25,8 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       <Backdrop open={loading}></Backdrop>
 
       <div className='container'>
-        <SuggestionsTenants />
+        <Suggestions />
+
         <SectionOne />
         <Can do={CASLAction.Update} on='Property'>
           <SectionTwo />

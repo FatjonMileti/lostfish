@@ -7,7 +7,7 @@ import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchedSlide, TenantType } from './MatchesTenants';
+import { MatchedSlide, SuggestedTenantType } from './MatchesTenants';
 import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
@@ -16,14 +16,14 @@ import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
-  tenants: TenantType[];
+  tenants: SuggestedTenantType[];
   getTenants: () => void;
   removeTenantMatch: (matchId: string, propertyId?: string) => Promise<void>;
   improveTrustScore: () => void;
   showSwitchToMatchedViewSwitch: boolean;
   matchedView: boolean;
   setMatchedView: (matchedView: boolean) => void;
-  setTenantToView: (propertyToView: TenantType) => void;
+  setTenantToView: (propertyToView: SuggestedTenantType) => void;
   starTenant: (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => void;
   checkTenant: (tenantId: string, chosen: boolean, starred: boolean, propertyId: string) => void;
 }
@@ -42,7 +42,7 @@ export const SuggestedTenants = styled(
     improveTrustScore
   }: AddedTenantsProps) => {
     const [activeSlide, setActiveSlide] = React.useState<number>(0);
-    const suggestedTenant: TenantType = tenants[activeSlide];
+    const suggestedTenant: SuggestedTenantType = tenants[activeSlide];
     const criteria = suggestedTenant?.criteria;
     const matchedProperty = suggestedTenant?.property;
     const profileStore = useProfileStore();
