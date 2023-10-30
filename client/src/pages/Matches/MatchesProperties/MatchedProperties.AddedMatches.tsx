@@ -20,6 +20,7 @@ interface AddedMatchedProperty {
   matchId?: string;
   chosen: boolean;
   starred: boolean;
+  matched: boolean;
 }
 
 interface AddedMatchesProps extends HTMLAttributes<HTMLDivElement> {

@@ -20,6 +20,7 @@ export interface SuggestedPropertyType {
   matchId?: string;
   chosen: boolean;
   starred: boolean;
+  matched: boolean;
 }
 
 interface MatchesPropertiesProps extends HTMLAttributes<HTMLDivElement> {}

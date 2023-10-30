@@ -87,13 +87,28 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
                     avatar={getAvatarFormIndex(property.created_by?.avatar)}
                     inView={true}
-                    // matched={}
+                    matched={suggestion.matched}
                     percentage={property.percentage}
                     onViewPropertyClick={() => setPropertyToView(suggestion)}
                     image={`${property?.property_images?.[0]?.link || ''}`}
                     size='large'
                     property={property}
-                    awaitingMatch={suggestion.chosen}
+                    awaitingMatch={suggestion.chosen && !suggestion.matched}
+                    chatWith={() => {
+                      console.log(
+                        'chat with: ',
+                        {
+                          userId: suggestion.property.created_by._id,
+                          propertyId: suggestion.property._id
+                        },
+                        'suggestion: ',
+                        suggestion
+                      );
+                      chatWith({
+                        userId: suggestion.property.created_by._id,
+                        propertyId: suggestion.property._id
+                      });
+                    }}
                   />
                 );
               })}

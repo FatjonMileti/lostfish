@@ -22,6 +22,7 @@ export interface SuggestedTenantType {
   property: ApiPropertyDocumentType | any;
   chosen: boolean;
   starred: boolean;
+  matched: boolean;
   unread_messages: number;
   matchId?: string;
 }

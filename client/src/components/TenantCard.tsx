@@ -119,7 +119,7 @@ export const TenantCard = styled(
     }
 
     &.matched {
-      border: 2px solid var(--accent-match-pink, #e5155a);
+      border: 2px solid #e5155a;
 
       /* Match Shadow */
       box-shadow: 0 16px 32px 0 rgba(229, 21, 90, 0.25);

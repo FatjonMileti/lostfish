@@ -80,8 +80,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     inView={true}
                     percentage={tenant?.property.percentage}
                     onViewProfileClick={() => setTenantToView(tenant)}
-                    // matched={tenant.chosen}
-                    awaitingMatch={tenant.chosen}
+                    matched={tenant.matched}
+                    awaitingMatch={tenant.chosen && !tenant.matched}
                     chatWith={() => {
                       console.log('tenant to chat: ', tenant);
 

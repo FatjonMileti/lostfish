@@ -1,6 +1,7 @@
 export const mapTenant = ({
   criteria,
   chosen,
+  matched,
   starred,
   percentage,
   matchId,
@@ -11,6 +12,7 @@ export const mapTenant = ({
   criteria: mapCriteria(criteria),
   property,
   chosen,
+  matched,
   starred,
   percentage,
   matchId,

@@ -94,6 +94,18 @@ export const Label = styled(
         }
       }
 
+      &.inverted {
+        border: 1px solid #fff;
+        background: #fff;
+        color: #0d2a38;
+
+        :hover {
+          border: 1px solid #184d6d;
+          background: #184d6d;
+          color: #ffffff;
+        }
+      }
+
       &.size-medium {
         height: 48px;
         padding: 12px 20px;

@@ -384,6 +384,43 @@ export class MatchController {
         );
         matches.docs[i].property.percentage = parseInt(percentage.toFixed(0), 10);
         matches.docs[i].matchId = currentMatch._id;
+
+        if (currentMatch.type === MatchingType.PROPERTY) {
+          console.log('match type: ', MatchingType.PROPERTY, {
+            type: MatchingType.USER,
+            tenant: currentMatch.tenant._id.toString(),
+            property: currentMatch.property._id.toString(),
+            chosen: true
+          });
+          const matched = await this.matchService.getMatchByQuery({
+            type: MatchingType.USER,
+            tenant: currentMatch.tenant._id.toString(),
+            property: currentMatch.property._id.toString(),
+            chosen: true
+          });
+
+          currentMatch.matched = !!matched;
+
+          console.log('matched: ', matched);
+        } else {
+          console.log('match type: ', MatchingType.USER, {
+            type: MatchingType.PROPERTY,
+            landlord: currentMatch.landlord._id.toString(),
+            property: currentMatch.property._id.toString(),
+            chosen: true
+          });
+
+          const matched = await this.matchService.getMatchByQuery({
+            type: MatchingType.PROPERTY,
+            landlord: currentMatch.landlord._id.toString(),
+            property: currentMatch.property._id.toString(),
+            chosen: true
+          });
+
+          currentMatch.matched = !!matched;
+
+          console.log('matched: ', matched);
+        }
       }
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
       return res.status(200).json(matches);

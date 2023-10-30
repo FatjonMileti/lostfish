@@ -132,13 +132,28 @@ export const PropertyCard = styled(
                   </div>
                 </div>
               </div>
-              <Label
-                className='view-property-button'
-                variant='secondary'
-                inverted
-                onClick={onViewPropertyClick}>
-                View property
-              </Label>
+
+              <div className='action-buttons'>
+                <Label
+                  className='view-property-button'
+                  variant='secondary'
+                  inverted
+                  onClick={onViewPropertyClick}>
+                  View property
+                </Label>
+
+                {matched && (
+                  <Label
+                    className='view-property-button'
+                    variant='primary'
+                    inverted
+                    size='medium'
+                    onClick={chatWith}>
+                    <Icon icon='email' />
+                    Message
+                  </Label>
+                )}
+              </div>
             </div>
           </>
         )}
@@ -264,7 +279,7 @@ export const PropertyCard = styled(
       align-items: center;
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
 
-      column-gap: 8px;
+      column-gap: 24px;
 
       .left-part {
         display: grid;
@@ -304,11 +319,16 @@ export const PropertyCard = styled(
         }
       }
 
-      .view-property-button {
-        flex-shrink: 0;
-        padding: 14px 18px;
-        height: 56px;
-        font-size: 14px;
+      .action-buttons {
+        display: flex;
+        column-gap: 16px;
+
+        .view-property-button {
+          flex-shrink: 0;
+          padding: 14px 18px;
+          height: 56px;
+          font-size: 14px;
+        }
       }
     }
   }
