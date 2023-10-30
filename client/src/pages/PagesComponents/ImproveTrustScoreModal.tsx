@@ -10,6 +10,7 @@ import { useProfileStore } from '../../globalState/profile';
 import { useNavigate } from 'react-router-dom';
 import { SetCriteriaDrawer } from '../SetCriteria/SetCriteriaDrawer';
 import { CloseButton } from '../../components/CloseButton';
+import { Button } from '../../components/Button';
 
 interface ImproveTrustScoreModalProps extends ModalProps {
   afterRefineSearch?: () => void;
@@ -57,14 +58,10 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.description ? (
-                <Label
-                  variant='tertiary'
-                  size='medium'
-                  className='improve-link'
+                  <Label size='medium' variant='secondary'
                   onClick={() => navigate('/my-account/account-settings')}>
                   Add a description
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
+                  </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -87,16 +84,12 @@ export const ImproveTrustScoreModal = styled(
                     ut labore et dolore.
                   </Typography>
 
-                  <Label
-                    variant='tertiary'
-                    size='medium'
-                    className='improve-link'
+                  <Label size='medium' variant='secondary'
                     onClick={() => {
                       closeModal();
                       setCriteriaModalVisibility(true);
                     }}>
                     Refine search
-                    <Icon icon='arrow-right-1' size={16} />
                   </Label>
                 </div>
               </>
@@ -113,14 +106,10 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.description ? (
-                <Label
-                  variant='tertiary'
-                  size='medium'
-                  className='improve-link'
-                  onClick={() => navigate('/my-account/solicitors')}>
-                  Solicitors
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
+                  <Label size='medium' variant='secondary'
+                      onClick={() => navigate('/my-account/solicitors')}>
+                    Solicitors
+                  </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -142,14 +131,10 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.avatar ? (
-                <Label
-                  variant='tertiary'
-                  size='medium'
-                  className='improve-link'
-                  onClick={() => navigate('/my-account/account-settings')}>
-                  Select avatar
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
+                  <Label size='medium' variant='secondary'
+                      onClick={() => navigate('/my-account/account-settings')}>
+                    Select avatar
+                  </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -170,14 +155,10 @@ export const ImproveTrustScoreModal = styled(
                 labore et dolore.
               </Typography>
               {!profileStore.documents.find((doc) => doc.type === 'Proof of ID') ? (
-                <Label
-                  variant='tertiary'
-                  size='medium'
-                  className='improve-link'
-                  onClick={() => navigate('/my-account/transaction-agreement')}>
-                  Verify
-                  <Icon icon='arrow-right-1' size={16} />
-                </Label>
+                  <Label size='medium' variant='secondary'
+                      onClick={() => navigate('/my-account/transaction-agreement')}>
+                    Verify
+                  </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -219,13 +200,17 @@ export const ImproveTrustScoreModal = styled(
       }
 
       .modal-body {
-        padding: 0 24px 32px 24px;
+        padding: 0 24px 36px 24px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-gap: 16px;
 
         .percentage {
           color: #e5155a;
+        }
+
+        .label {
+          padding: 12px 20px;
         }
         .card {
           display: grid;
@@ -250,7 +235,7 @@ export const ImproveTrustScoreModal = styled(
             .completed-indicator {
               height: 32px;
               width: 32px;
-              background-color: #184d6d;
+              background-color: #408140;
               color: white;
               border-radius: 50%;
               display: flex;
@@ -261,7 +246,7 @@ export const ImproveTrustScoreModal = styled(
 
             .typography {
               font-weight: 600;
-              color: #184d6d;
+              color: #408140;
             }
           }
         }
