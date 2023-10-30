@@ -49,7 +49,7 @@ import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { number } from 'yup';
 import { Label } from '../../../components/Label';
-import {CloseButton} from "../../../components/CloseButton";
+import { CloseButton } from '../../../components/CloseButton';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -467,12 +467,11 @@ export const NewProperty = styled(
                 variant='secondary'
                 className='delete-button'
                 startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}
-              >
+                onClick={onDeleteClick}>
                 Delete property
               </Button>
             )}
-                <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
+            <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
           </div>
         </div>
         <div className='container'>
@@ -507,22 +506,21 @@ export const NewProperty = styled(
               />
               <div className='property-wrapper'>
                 <div className='label'>
-                  <div className="price-per-month">
+                  <div className='price-per-month'>
                     <Icon icon='banknote' size={24} />
                     <Typography variant='body5'>
                       Price per month<span className='required-asterisk'> *</span>
                     </Typography>
                   </div>
 
-                  <div className="tooltip">
+                  <div className='tooltip'>
                     <span className='valpal-icon'>
-                      <img alt='valpal' src={valpal}/>
+                      <img alt='valpal' src={valpal} />
                     </span>
                     <div className='tooltiptext'>
                       <p>Min Valuation: £ 300</p>
                       <p>Avg Valuation: £ 400</p>
                       <p>Max Valuation: £ 500</p>
-
                     </div>
                   </div>
                 </div>
@@ -1192,7 +1190,7 @@ export const NewProperty = styled(
                 display: flex;
                 gap: 4px;
                 align-items: center;
-                
+
                 .typography {
                   font-weight: 600;
                   font-size: 12px;
@@ -1207,12 +1205,12 @@ export const NewProperty = styled(
                   }
                 }
               }
-              
+
               .tooltip {
                 position: relative;
                 display: flex;
                 align-items: center;
-                
+
                 .valpal-icon {
                   display: flex;
                   align-items: center;
@@ -1220,25 +1218,24 @@ export const NewProperty = styled(
                     height: 12px;
                   }
                 }
-              }
+                .tooltiptext {
+                  visibility: hidden;
+                  width: 200px;
+                  background-color: black;
+                  color: #fff;
+                  text-align: center;
+                  border-radius: 6px;
+                  padding: 5px 0;
+                  position: absolute;
+                  z-index: 1;
+                  bottom: 100%;
+                  left: 50%;
+                  margin-left: -60px;
+                }
 
-              .tooltip .tooltiptext {
-                visibility: hidden;
-                width: 200px;
-                background-color: black;
-                color: #fff;
-                text-align: center;
-                border-radius: 6px;
-                padding: 5px 0;
-                position: absolute;
-                z-index: 1;
-                bottom: 100%;
-                left: 50%;
-                margin-left: -60px;
-              }
-
-              .tooltip:hover .tooltiptext {
-                visibility: visible;
+                :hover .tooltiptext {
+                  visibility: visible;
+                }
               }
             }
             .min-max {
@@ -1404,7 +1401,7 @@ export const NewProperty = styled(
       padding: 24px 36px;
       justify-content: space-between;
       align-items: center;
-      
+
       .back-button {
         //.icon {
         //  width: 24px !important;
