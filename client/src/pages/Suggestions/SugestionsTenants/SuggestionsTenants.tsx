@@ -18,7 +18,8 @@ import { useMatchesCount } from '../../Matches/useMatchesCount';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
-  const suggestedTenants = useSuggestedTenants({ chosen: false });
+  const suggestedTenants = useSuggestedTenants({ chosen: false, disliked: false });
+
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
 
@@ -27,7 +28,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
   const suggestedTenant: SuggestedTenantType = suggestedTenants.tenants[activeSlide];
   const matchedProperty = suggestedTenant?.property;
 
-  const matchesCount = useMatchesCount({ chosen: false });
+  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedTenants.tenants?.length));
@@ -38,6 +39,27 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
   const likeTenant = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
     try {
       await axios(userStore.auth.access_token).post('/api/match/tenants', {
+        tenant: tenantId,
+        property: propertyId
+      });
+
+      if (tenantToView) {
+        setTenantToView(null);
+      }
+
+      if (suggestedTenants.tenants.length - 1 === activeSlide && suggestedTenants.tenants.length > 1) {
+        previous();
+      }
+      await suggestedTenants.reFetch();
+      matchesCount.refetch();
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const dislikeTenant = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+    try {
+      await axios(userStore.auth.access_token).post('/api/match/dislikes/tenants', {
         tenant: tenantId,
         property: propertyId
       });
@@ -107,7 +129,15 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               size='large'
             />
             <div className='match-actions'>
-              <UnMatchButton size='large' />
+              <UnMatchButton
+                size='large'
+                onClick={() => {
+                  dislikeTenant({
+                    propertyId: suggestedTenant.property._id,
+                    tenantId: suggestedTenant.criteria.tenantId
+                  });
+                }}
+              />
               <MatchButton
                 size='large'
                 onClick={() => {
@@ -136,6 +166,12 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
           closeViewProfile={() => setTenantToView(null)}
           likeTenant={() => {
             likeTenant({
+              propertyId: tenantToView.property._id,
+              tenantId: tenantToView.criteria.tenantId
+            });
+          }}
+          dislikeTenant={() => {
+            dislikeTenant({
               propertyId: tenantToView.property._id,
               tenantId: tenantToView.criteria.tenantId
             });

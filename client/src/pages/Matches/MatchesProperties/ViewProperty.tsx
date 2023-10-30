@@ -14,11 +14,15 @@ import { avatars } from '../../HomeLoggedIn/avatars';
 
 import { AreaUnit } from '../../Properties/NewProperties/property.constants';
 import { CloseButton } from '../../../components/CloseButton';
+import { UnMatchButton } from '../../../components/UnMatchButton';
+import { MatchButton } from '../../../components/MatchButton';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: SuggestedPropertyType;
   starProperty: () => void;
   likeProperty?: () => void;
+  dislikeProperty?: () => void;
+  disableLikeProperty?: boolean;
 }
 
 export const ViewProperty = styled(
@@ -28,6 +32,8 @@ export const ViewProperty = styled(
     propertyToView,
     starProperty,
     likeProperty = () => {},
+    dislikeProperty = () => {},
+    disableLikeProperty = false,
     ...rest
   }: ViewPropertyModalProps) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -61,14 +67,19 @@ export const ViewProperty = styled(
       <Modal className={classNames('view-property-modal', className)} {...rest}>
         <div className='modal-header'>
           <Typography variant='body2'>Property details</Typography>
+
+          {/*<div className='modal-header-right-content'>*/}
+          {/*  <div className='action-buttons'>*/}
+          {/*    <UnMatchButton onClick={dislikeTenant} />*/}
+          {/*    <MatchButton onClick={likeTenant} disabled={disableLikeTenant} />*/}
+          {/*  </div>*/}
+          {/*  <CloseButton onClick={closeViewProfile} />*/}
+          {/*</div>*/}
+
           <div className='buttons'>
             <div className='like-buttons'>
-              <IconButton size='large'>
-                <Icon icon='eye' size={12} />
-              </IconButton>
-              <IconButton size='large'>
-                <Icon icon='eye' size={12} />
-              </IconButton>
+              <UnMatchButton onClick={dislikeProperty} />
+              <MatchButton onClick={likeProperty} disabled={disableLikeProperty} />
             </div>
             <CloseButton onClick={closeModal} />
           </div>
@@ -82,12 +93,6 @@ export const ViewProperty = styled(
             <div className='description-header'>
               <div className='title'>
                 <Typography variant='body2'>{parsedProperty.title}</Typography>
-                {/*<IconButton*/}
-                {/*  size='large'*/}
-                {/*  className={classNames('stared-button', { active: parsedProperty.isPropertyStarred })}*/}
-                {/*  onClick={starProperty}>*/}
-                {/*  <Icon icon='star' size={20} />*/}
-                {/*</IconButton>*/}
               </div>
               <div className='property-details'>
                 <div className='detail'>
@@ -181,33 +186,38 @@ export const ViewProperty = styled(
                 <ul>
                   <li>
                     <Typography variant='body4'>{parsedProperty.propertyType}</Typography>
-                  </li>{!!property.parking_spot && property.parking_spot > 0 ? (
-                  <li>
-                    <Typography variant='body4'>{property.parking_spot === 1
+                  </li>
+                  {!!property.parking_spot && property.parking_spot > 0 ? (
+                    <li>
+                      <Typography variant='body4'>
+                        {property.parking_spot === 1
                           ? 'Parking spot: ' + property.parking_spot
                           : 'Parking spots: ' + property.parking_spot}
-                        {!!property.parking_details ? ', ' + property.parking_details : ''}</Typography>
-                  </li>
+                        {!!property.parking_details ? ', ' + property.parking_details : ''}
+                      </Typography>
+                    </li>
                   ) : (
                     ''
                   )}
 
-                  {!!property.condition ? (<li>
-                    <Typography variant='body4'> {'Condition: ' + property.condition}</Typography>
-                  </li>) : (
+                  {!!property.condition ? (
+                    <li>
+                      <Typography variant='body4'> {'Condition: ' + property.condition}</Typography>
+                    </li>
+                  ) : (
                     ''
                   )}
                 </ul>
 
                 <ul>
                   {/*<li>*/}
-                    {/*  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
+                  {/*  <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
                   {/*</li>*/}
                   {/*<li>*/}
-                    {/*  <Typography variant='body4'>Private patio garden</Typography>*/}
+                  {/*  <Typography variant='body4'>Private patio garden</Typography>*/}
                   {/*</li>*/}
                   {/*<li>*/}
-                    {/*  <Typography variant='body4'>Duplex apartment</Typography>*/}
+                  {/*  <Typography variant='body4'>Duplex apartment</Typography>*/}
                   {/*</li>*/}
                 </ul>
               </div>

@@ -11,7 +11,7 @@ import { SectionOne } from '../About/About.SectionOne';
 import { SectionTwo } from '../About/About.SectionTwo';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
-import { SectionFour } from '../About/About.SectionFour';
+import { FaqSection } from '../About/About.FaqSection';
 import { Footer } from './Footer';
 
 import backgroundImg from '../About/forest.jpeg';
@@ -65,7 +65,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
             <SectionTwo ref={section2Ref} />
             <SectionFive onCreateAccountClick={onCreateAccountClick} />
             <SectionThree />
-            <SectionFour />
+            <FaqSection />
           </div>
         </div>
         <Footer />

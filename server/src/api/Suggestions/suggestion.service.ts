@@ -33,7 +33,8 @@ export default class SuggestionService {
   public async getFilteredPropertiesByUser(
     pagingOptions: IPagingOptions,
     userId: string,
-    chosen: any
+    chosen: any,
+    disliked: any
   ): Promise<{ response: any; success: boolean }> {
     pagingOptions.limit = 100;
     const criteria: CriteriaDocument | null = await this.criteriaModel.findOne({ created_by: userId }).lean();
@@ -85,6 +86,14 @@ export default class SuggestionService {
             return false;
           }
 
+          if (disliked === 'false' && matchProperty?.disliked) {
+            return false;
+          }
+
+          if (disliked === 'true' && !matchProperty?.disliked) {
+            return false;
+          }
+
           return true;
         })
         .sort((a: any, b: any) => b.percentage - a.percentage);
@@ -109,7 +118,12 @@ export default class SuggestionService {
     }
   }
 
-  public async getFilteredTenantsByUser(pagingOptions: IPagingOptions, userId: string, chosen: any) {
+  public async getFilteredTenantsByUser(
+    pagingOptions: IPagingOptions,
+    userId: string,
+    chosen: any,
+    disliked: any
+  ) {
     try {
       const matchesUsers: any = await this.criteriaModel.paginate(
         {
@@ -157,7 +171,15 @@ export default class SuggestionService {
             return false;
           }
 
-          if (chosen === 'true' && item.chosen) {
+          if (chosen === 'true' && !item.chosen) {
+            return false;
+          }
+
+          if (disliked === 'false' && item.disliked) {
+            return false;
+          }
+
+          if (disliked === 'true' && !item.disliked) {
             return false;
           }
 
@@ -235,6 +257,7 @@ export default class SuggestionService {
       property: propertyWithPercentage,
       chosen: matchTenant?.chosen ?? false,
       starred: matchTenant?.starred ?? false,
+      disliked: matchTenant?.disliked ?? false,
       matchId: matchTenant?._id ?? undefined
     };
   };

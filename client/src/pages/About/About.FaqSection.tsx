@@ -4,7 +4,7 @@ import { Typography } from '../../components/Typography';
 import { CustomSection } from './CustomSection';
 import backgroundImg from '../Home/home-background.png';
 
-export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={className}>
       <Typography variant='body1'>Frequently asked questions</Typography>
@@ -55,8 +55,8 @@ export const SectionFour = styled(({ className }: HTMLAttributes<HTMLDivElement>
     box-sizing: border-box;
     justify-items: center;
     gap: 48px;
-    
-    background: linear-gradient(180deg, #F3F4F5 18.95%, #FFF 100%);
+
+    background: linear-gradient(180deg, #f3f4f5 18.95%, #fff 100%);
 
     &::before {
       content: '';

@@ -11,75 +11,92 @@ export const SectionFive = styled(
   ({
     className,
     onCreateAccountClick = () => {}
-  }: HTMLAttributes<HTMLDivElement> & { onCreateAccountClick?: () => void }) => {
+  }: HTMLAttributes<HTMLDivElement> & {
+    onCreateAccountClick?: () => void;
+  }) => {
     const userStore = useUserStore();
     return (
       <div className={className}>
-        <div className='images'>
-          <div className='image image-1'>
-            <div className='content'>
-              <Typography variant='body3' className='title'>
-                What really is AI?
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
+        <div className='section-content-wrapper'>
+          <div className='images'>
+            <div className='image image-1'>
+              <div className='content'>
+                <Typography variant='body3' className='title'>
+                  What really is AI?
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+              </div>
+            </div>
+            <div className='image image-2'>
+              <div className='content'>
+                <Typography variant='body3' className='title'>
+                  Why AI?
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+              </div>
+            </div>
+            <div className='image image-3'>
+              <div className='content'>
+                <Typography variant='body3' className='title'>
+                  How to get started
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+                <Typography variant='body4' className='description'>
+                  Our goal is to increase transparency and trust in the process to achieve the best results
+                  for customers in a quick, calm, and informed manner.
+                </Typography>
+              </div>
             </div>
           </div>
-          <div className='image image-2'>
-            <div className='content'>
-              <Typography variant='body3' className='title'>
-                Why AI?
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
-            </div>
-          </div>
-          <div className='image image-3'>
-            <div className='content'>
-              <Typography variant='body3' className='title'>
-                How to get started
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
-              <Typography variant='body4' className='description'>
-                Our goal is to increase transparency and trust in the process to achieve the best results for
-                customers in a quick, calm, and informed manner.
-              </Typography>
-            </div>
-          </div>
+          {!userStore.auth ? (
+            <Button variant='primary' size='large' className='create-account' onClick={onCreateAccountClick}>
+              Create account
+            </Button>
+          ) : (
+            <Button
+              variant='primary'
+              size='large'
+              className='create-account'
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              Review matches
+            </Button>
+          )}
         </div>
-        {!userStore.auth ? (
-          <Button variant='primary' size='large' className='create-account' onClick={onCreateAccountClick}>
-            Create account
-          </Button>
-        ) : null}
       </div>
     );
   }
 )`
   & {
     display: grid;
-    padding: 64px 36px;
-    box-sizing: border-box;
-
-    gap: 48px;
 
     background: #f7f1e7;
     box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.1) inset;
+    justify-content: center;
+
+    .section-content-wrapper {
+      box-sizing: border-box;
+      padding: 64px 36px;
+      display: grid;
+      max-width: 1440px;
+      gap: 48px;
+    }
 
     .images {
       display: grid;

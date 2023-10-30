@@ -16,6 +16,7 @@ const getMatchesCount = async ({
 
 interface MatchCountParams {
   chosen?: boolean;
+  disliked?: boolean;
 }
 
 export const useMatchesCount = (params?: MatchCountParams) => {

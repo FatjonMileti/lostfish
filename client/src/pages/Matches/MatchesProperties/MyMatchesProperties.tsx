@@ -20,6 +20,7 @@ import { ViewProperty } from './ViewProperty';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { useMatchedProperties } from './useMatchedProperties';
+import { useMatchesCount } from '../useMatchesCount';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
@@ -28,7 +29,9 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
   const navigate = useNavigate();
   const userStore = useUserStore();
 
-  const suggestedProperties = useMatchedProperties({ chosen: true });
+  const matchedProperties = useMatchedProperties({ chosen: true });
+
+  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
 
   const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
     try {
@@ -36,17 +39,16 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     } catch (err) {}
   };
 
-  const likeProperty = async ({ propertyId }: { propertyId: string }) => {
+  const dislikeProperty = async ({ matchId }: { matchId: string }) => {
     try {
-      await axios(userStore.auth.access_token).post('/api/match/properties', {
-        property: propertyId
-      });
+      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
 
       if (propertyToView) {
         setPropertyToView(null);
       }
 
-      await suggestedProperties.reFetch();
+      matchedProperties.reFetch();
+      matchesCount.refetch();
     } catch (err) {
       throw err;
     }
@@ -54,7 +56,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
 
   return (
     <>
-      <Backdrop open={suggestedProperties.loading}></Backdrop>
+      <Backdrop open={matchedProperties.loading}></Backdrop>
       <div className={classNames('my-matches-properties', className)}>
         <div className='header-and-content-wrapper'>
           <Header />
@@ -74,7 +76,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             </div>
 
             <div className='content'>
-              {suggestedProperties.properties.map((suggestion, suggestionIndex) => {
+              {matchedProperties.properties.map((suggestion, suggestionIndex) => {
                 const { property } = suggestion;
 
                 console.log('suggestion: ', suggestion);
@@ -108,11 +110,8 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
-          likeProperty={() => {
-            likeProperty({
-              propertyId: propertyToView.property._id
-            });
-          }}
+          disableLikeProperty
+          dislikeProperty={() => dislikeProperty({ matchId: propertyToView?.matchId || '' })}
         />
       )}
     </>
@@ -158,7 +157,6 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
         }
 
         .content {
-          min-height: calc(100vh - 112px);
           display: grid;
           grid-template-columns: 1fr 1fr;
           box-sizing: border-box;

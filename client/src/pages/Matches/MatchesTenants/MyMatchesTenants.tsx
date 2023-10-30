@@ -36,11 +36,9 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
   const dislikeTenant = async ({ matchId }: { matchId: string }) => {
     try {
       await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
-
       if (tenantToView) {
         setTenantToView(null);
       }
-
       matchedTenants.reFetch();
       matchesCount.refetch();
     } catch (err) {
@@ -116,6 +114,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     display: grid;
     grid-template-rows: auto min-content;
     width: 100%;
+
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
 
     .header-and-content-wrapper {
       min-height: 100vh;

@@ -4,7 +4,7 @@ import { Header } from '../Home/Header';
 import { SectionOne } from './About.SectionOne';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
-import { SectionFour } from './About.SectionFour';
+import { FaqSection } from './About.FaqSection';
 import { Footer } from '../Home/Footer';
 import backgroundImg from './forest.jpeg';
 import { SectionTwo } from './About.SectionTwo';
@@ -17,7 +17,7 @@ export const About = styled(({ className }: React.HTMLAttributes<HTMLDivElement>
       <SectionTwo />
       <SectionFive />
       <SectionThree />
-      <SectionFour />
+      <FaqSection />
       <Footer />
     </div>
   );

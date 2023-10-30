@@ -36,8 +36,13 @@ export class MatchController {
     router.get('/property', authorize(), paging({ sort: { created_at: -1 } }), this.getAllPropertyMatches);
 
     router.get('/count', authorize(), this.countMatches);
+
     router.post('/tenants', authorize(), this.likeTenant);
+    router.post('/dislikes/tenants', authorize(), this.dislikeTenant);
+
     router.post('/properties', authorize(), this.likeProperty);
+    router.post('/dislikes/properties', authorize(), this.dislikeProperty);
+
     router.get('/:id', authorize(), validateId, this.getMatchById);
     router.post('/tenant', authorize(), this.createMatchProperty);
     router.post('/property', authorize(), this.createMatchTenant);
@@ -46,7 +51,7 @@ export class MatchController {
   }
 
   private countMatches = async (req: Request, res: Response) => {
-    const { matched } = req.query;
+    const { matched, disliked } = req.query;
 
     try {
       const query: FilterQuery<MatchDocument> = {};
@@ -59,6 +64,14 @@ export class MatchController {
 
       if (matched === 'true') {
         query.matched = true;
+      }
+
+      if (disliked === 'true') {
+        query.disliked = true;
+      }
+
+      if (disliked === 'false') {
+        query.disliked = false;
       }
 
       const count = await this.matchService.countMatches(query);
@@ -128,10 +141,64 @@ export class MatchController {
     }
   };
 
+  private dislikeProperty = async (req: Request, res: Response) => {
+    try {
+      const matchData: Partial<MatchDocument> = req.body;
+      const propertyId = matchData.property;
+
+      const property = await assetService.findById(propertyId as string);
+
+      if (!property) {
+        throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+      }
+
+      const type = MatchingType.PROPERTY;
+
+      const match = await this.matchService.createMatch({
+        disliked: true,
+        landlord: property.created_by.toString(),
+        property: property.id,
+        type,
+        tenant: res.locals.user_id,
+        created_by: res.locals.user_id
+      });
+
+      await propertyDetailService.findAndIncrementById(
+        property._id,
+        matchData.chosen ? { matches: 1 } : { starred: 1 }
+      );
+
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
+    }
+  };
+
   private dislikeTenant = async (req: Request, res: Response) => {
     try {
-    } catch (err) {
-      throw err;
+      const matchData: Partial<MatchDocument> = req.body;
+
+      const tenantId = matchData.tenant;
+      const propertyId = matchData.property;
+
+      const type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
+
+      const match = await this.matchService.createMatch({
+        property: propertyId,
+        tenant: tenantId,
+        disliked: true,
+        type,
+        landlord: res.locals.user_id,
+        created_by: res.locals.user_id
+      });
+
+      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
+
+      return res.status(201).json(match);
+    } catch (error) {
+      return res.status(500).json({ error: 'Unable to create a match.' });
     }
   };
 

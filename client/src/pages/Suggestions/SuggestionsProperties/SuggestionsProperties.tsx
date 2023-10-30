@@ -20,7 +20,7 @@ import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
-  const suggestedProperties = useSuggestedProperties({ chosen: false });
+  const suggestedProperties = useSuggestedProperties({ disliked: false, chosen: false });
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
@@ -31,7 +31,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
 
   const matchedProperty = suggestedProperty?.property;
 
-  const matchesCount = useMatchesCount({ chosen: false });
+  const matchesCount = useMatchesCount({ chosen: false, disliked: false });
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.properties?.length));
@@ -42,6 +42,29 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const likeProperty = async ({ propertyId }: { propertyId: string }) => {
     try {
       await axios(userStore.auth.access_token).post('/api/match/properties', {
+        property: propertyId
+      });
+
+      if (propertyToView) {
+        setPropertyToView(null);
+      }
+
+      if (
+        suggestedProperties.properties.length - 1 === activeSlide &&
+        suggestedProperties.properties.length > 1
+      ) {
+        previous();
+      }
+      await suggestedProperties.reFetch();
+      matchesCount.refetch();
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const dislikeProperty = async ({ propertyId }: { propertyId: string }) => {
+    try {
+      await axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
         property: propertyId
       });
 
@@ -118,7 +141,14 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
               size='large'
             />
             <div className='match-actions'>
-              <UnMatchButton size='large' />
+              <UnMatchButton
+                size='large'
+                onClick={() => {
+                  dislikeProperty({
+                    propertyId: suggestedProperty.property._id
+                  });
+                }}
+              />
               <MatchButton
                 size='large'
                 onClick={() => {

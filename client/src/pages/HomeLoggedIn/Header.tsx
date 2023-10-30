@@ -26,7 +26,7 @@ export const Header = styled(({ className }: HeaderProps) => {
   const notificationsStore = useNotificationsStore();
   const location = useLocation();
 
-  const matchesCount = useMatchesCount({ chosen: false });
+  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
 
   return (
     <div className={`header ${className}`}>
@@ -50,15 +50,16 @@ export const Header = styled(({ className }: HeaderProps) => {
 
       <div className='right-part'>
         <div className='matches-and-messages-buttons-wrapper'>
+          <MatchesIcon
+            onClick={() => navigate('/my-matches')}
+            counter={matchesCount.data?.number || undefined}
+            actioned={location.pathname === '/my-matches'}
+          />
+
           <MessagesIcon
             counter={notificationsStore.unreadMessages || undefined}
             onClick={() => navigate('/messages')}
             actioned={location.pathname === '/messages'}
-          />
-
-          <MatchesIcon
-            onClick={() => navigate('/my-matches')}
-            counter={matchesCount.data?.number || undefined}
           />
         </div>
         <div className='line' />
