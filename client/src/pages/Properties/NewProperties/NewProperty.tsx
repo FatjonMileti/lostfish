@@ -13,6 +13,7 @@ import { Backdrop } from '../../../components/Backdrop';
 import { Textarea } from '../../../components/Textarea';
 import { Select } from '../../../components/Select/Select';
 import { TextField } from '../../../components/TextField';
+import valpal from './valpal.png';
 
 import { Map } from '../../../components/Map';
 import { NearestThings } from '../../Matches/MatchesProperties/ViewProperty.NearestThings';
@@ -48,7 +49,7 @@ import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { number } from 'yup';
 import { Label } from '../../../components/Label';
-import {CloseButton} from "../../../components/CloseButton";
+import { CloseButton } from '../../../components/CloseButton';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -466,12 +467,11 @@ export const NewProperty = styled(
                 variant='secondary'
                 className='delete-button'
                 startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}
-              >
+                onClick={onDeleteClick}>
                 Delete property
               </Button>
             )}
-                <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
+            <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
           </div>
         </div>
         <div className='container'>
@@ -506,10 +506,23 @@ export const NewProperty = styled(
               />
               <div className='property-wrapper'>
                 <div className='label'>
-                  <Icon icon='banknote' size={24} />
-                  <Typography variant='body5'>
-                    Price per month<span className='required-asterisk'> *</span>
-                  </Typography>
+                  <div className='price-per-month'>
+                    <Icon icon='banknote' size={24} />
+                    <Typography variant='body5'>
+                      Price per month<span className='required-asterisk'> *</span>
+                    </Typography>
+                  </div>
+
+                  <div className='tooltip'>
+                    <span className='valpal-icon'>
+                      <img alt='valpal' src={valpal} />
+                    </span>
+                    <div className='tooltiptext'>
+                      <p>Min Valuation: £ 300</p>
+                      <p>Avg Valuation: £ 400</p>
+                      <p>Max Valuation: £ 500</p>
+                    </div>
+                  </div>
                 </div>
                 <div className='min-max'>
                   <TextField
@@ -1057,6 +1070,7 @@ export const NewProperty = styled(
     .header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 24px 36px;
       border-bottom: 2px solid #f3f4f5;
       box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
@@ -1170,20 +1184,57 @@ export const NewProperty = styled(
             row-gap: 4px;
 
             .label {
-              display: flex;
-              gap: 4px;
-              align-items: center;
-              .typography {
-                font-weight: 600;
-                font-size: 12px;
-                line-height: 16px;
-                color: #0d2a38;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              .price-per-month {
+                display: flex;
+                gap: 4px;
+                align-items: center;
 
-                .required-asterisk {
-                  color: #b4263b;
+                .typography {
                   font-weight: 600;
                   font-size: 12px;
                   line-height: 16px;
+                  color: #0d2a38;
+
+                  .required-asterisk {
+                    color: #b4263b;
+                    font-weight: 600;
+                    font-size: 12px;
+                    line-height: 16px;
+                  }
+                }
+              }
+
+              .tooltip {
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                .valpal-icon {
+                  display: flex;
+                  align-items: center;
+                  img {
+                    height: 12px;
+                  }
+                }
+                .tooltiptext {
+                  visibility: hidden;
+                  width: 200px;
+                  background-color: black;
+                  color: #fff;
+                  text-align: center;
+                  border-radius: 6px;
+                  padding: 5px 0;
+                  position: absolute;
+                  z-index: 1;
+                  bottom: 100%;
+                  left: 50%;
+                  margin-left: -60px;
+                }
+
+                :hover .tooltiptext {
+                  visibility: visible;
                 }
               }
             }
@@ -1350,7 +1401,7 @@ export const NewProperty = styled(
       padding: 24px 36px;
       justify-content: space-between;
       align-items: center;
-      
+
       .back-button {
         //.icon {
         //  width: 24px !important;
