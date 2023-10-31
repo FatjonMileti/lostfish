@@ -7,6 +7,7 @@ import { Label } from '../../components/Label';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { Avatar } from '../../components/Avatar';
 import HomeImg from './89.png';
+import TenantImg from './tenant_img.png'
 import classNames from 'classnames';
 
 import backgroundImg from './forest.jpeg';
@@ -32,7 +33,7 @@ export const SectionOne = styled(
 
           <div className='refine-search'>
             <div className='match-intersection'>
-              <Avatar image={avatars[1].image} className='left-side thumbnail' />
+              <Avatar image={TenantImg} className='left-side thumbnail' />
               <div className='right-side thumbnail'></div>
             </div>
             <Button variant='primary' size='large' className='start-matching'>

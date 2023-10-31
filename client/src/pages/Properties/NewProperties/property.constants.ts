@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import {ObjectSchema} from 'yup';
-import {PropertyFormType} from './property.types';
-import {OtherSpecificPropertyFeature} from '../../SetCriteria/criteria.types';
+import { ObjectSchema } from 'yup';
+import { PropertyFormType } from './property.types';
+import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 
 export const PropertyType = {
   // Detached: 'Detached',
@@ -68,12 +68,12 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .number()
     .min(0, 'Must be greater then or equal to 0')
     .transform((value) => (isNaN(value) ? undefined : value))
-    .required('Minimum budget is a required'),
+    .required('Minimum price is required'),
   maxBudget: yup
     .number()
     .min(0, 'Must be greater then or equal to 0')
     .transform((value) => (isNaN(value) ? undefined : value))
-    .required('Maximum budget is a required'),
+    .required('Maximum price is required'),
   bedrooms: yup
     .number()
     .min(0, 'Must be greater then or equal to 0')
@@ -138,7 +138,10 @@ export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().s
     .transform((value) => value || undefined)
     .oneOf(Object.values(Parking)),
   epcRating: yup.string().required('EPC Rating is required'),
-  condition: yup.string().oneOf(Object.values(Condition)).transform((value) => value || undefined),
+  condition: yup
+    .string()
+    .oneOf(Object.values(Condition))
+    .transform((value) => value || undefined),
   description: yup.string().required('Description is required'),
   areaOfInterest: yup.string().required('Location is required'),
   propertyImages: yup.array().required()
