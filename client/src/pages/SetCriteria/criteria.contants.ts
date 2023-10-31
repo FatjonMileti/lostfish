@@ -1,6 +1,6 @@
 import * as yup from 'yup';
-import {ObjectSchema} from 'yup';
-import {CriteriaFormType, OtherSpecificPropertyFeature} from './criteria.types';
+import { ObjectSchema } from 'yup';
+import { CriteriaFormType, OtherSpecificPropertyFeature } from './criteria.types';
 import {
   AreaUnit,
   BuildPurpose,
@@ -10,7 +10,7 @@ import {
   OutsideSpace,
   Parking,
   PropertyType
-} from '../Properties/NewProperties/property.constants';
+} from '../Properties/NewProperty/property.constants';
 
 export const PropertyFeature = {
   ParksNearby: 'Parks nearby',

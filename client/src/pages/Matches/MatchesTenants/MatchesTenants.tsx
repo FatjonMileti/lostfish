@@ -14,7 +14,7 @@ import { AddedTenants } from './MatchedTenants.AddedMatches';
 import { SuggestedTenants } from './MatchedTenats.SuggestedMatches';
 import classNames from 'classnames';
 import { mapTenant } from './serializers';
-import { ApiPropertyDocumentType } from '../../Properties/NewProperties/property.types';
+import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.types';
 
 export interface SuggestedTenantType {
   id: string;

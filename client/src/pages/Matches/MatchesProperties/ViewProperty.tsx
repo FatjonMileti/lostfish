@@ -12,7 +12,7 @@ import { NearestThings } from './ViewProperty.NearestThings';
 import { SuggestedPropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
-import { AreaUnit } from '../../Properties/NewProperties/property.constants';
+import { AreaUnit } from '../../Properties/NewProperty/property.constants';
 import { CloseButton } from '../../../components/CloseButton';
 import { UnMatchButton } from '../../../components/UnMatchButton';
 import { MatchButton } from '../../../components/MatchButton';

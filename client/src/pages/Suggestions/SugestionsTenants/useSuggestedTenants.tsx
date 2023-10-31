@@ -19,7 +19,7 @@ export const useSuggestedTenants = ({
       const { data } = await axios(userStore.auth.access_token).get('/api/suggestion/tenant', {
         params
       });
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return data.docs.map(mapTenant);
     } catch (err) {
       throw err;

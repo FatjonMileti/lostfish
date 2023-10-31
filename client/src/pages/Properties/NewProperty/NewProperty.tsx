@@ -42,12 +42,14 @@ import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { Label } from '../../../components/Label';
 import { CloseButton } from '../../../components/CloseButton';
+import { useNavigate } from 'react-router-dom';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
   setEditPropertyId: (propertyId: string) => void;
-  fetchAssets: () => void;
+  afterSave?: () => void;
+  afterDelete?: () => void;
 }
 
 export interface NewPropertyStateType {
@@ -59,12 +61,20 @@ export interface NewPropertyStateType {
 }
 
 export const NewProperty = styled(
-  ({ className, showStore, propertyId, setEditPropertyId, fetchAssets }: NewPropertyProps) => {
+  ({
+    className,
+    showStore,
+    propertyId,
+    setEditPropertyId,
+    afterSave = () => {},
+    afterDelete = () => {}
+  }: NewPropertyProps) => {
     const [modalVisibility, setModalVisibility] = showStore;
 
     const { auth } = useUserStore();
 
     const profileStore = useProfileStore();
+    const navigate = useNavigate();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       newImages: [],
@@ -358,13 +368,13 @@ export const NewProperty = styled(
 
         const payload = generatePayload();
 
-        const { data } = await (propertyId
+        await (propertyId
           ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
           : axios(auth.access_token).post('/api/asset/draft', payload));
 
-        if (!propertyId) {
-          setEditPropertyId(data._id);
-        }
+        setModalVisibility(false);
+
+        afterSave();
       } catch (err) {
         throw err;
       } finally {
@@ -382,13 +392,13 @@ export const NewProperty = styled(
           status_string: 'Live'
         };
 
-        const { data } = await (propertyId
+        await (propertyId
           ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
           : axios(auth.access_token).post('/api/asset', payload));
 
-        if (!propertyId) {
-          setEditPropertyId(data._id);
-        }
+        setModalVisibility(false);
+
+        navigate('/');
 
         await profileStore.fetchProfile(auth.access_token);
       } catch (err) {
@@ -413,7 +423,7 @@ export const NewProperty = styled(
       } finally {
         setState((state) => ({ ...state, savingProperty: false }));
         setModalVisibility(false);
-        fetchAssets();
+        afterDelete();
       }
     };
 
@@ -1013,7 +1023,6 @@ export const NewProperty = styled(
             disabled={Object.values(formState.errors).length > 0}
             onClick={async () => {
               await saveAsDraft();
-              fetchAssets();
             }}>
             Save as draft
           </Button>
@@ -1063,7 +1072,7 @@ export const NewProperty = styled(
       align-items: center;
       padding: 24px 36px;
       border-bottom: 2px solid #f3f4f5;
-      box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
 
       .right-side {
         display: flex;

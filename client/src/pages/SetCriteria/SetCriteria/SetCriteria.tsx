@@ -30,10 +30,10 @@ import {
   SpecificPropertyFeature,
   Transaction
 } from '../criteria.contants';
-import { AreaUnit, Parking, PropertyType } from '../../Properties/NewProperties/property.constants';
+import { AreaUnit, Parking, PropertyType } from '../../Properties/NewProperty/property.constants';
 import { useProfileStore } from '../../../globalState/profile';
 
-import { OutsideSpaceType } from '../../Properties/NewProperties/property.types';
+import { OutsideSpaceType } from '../../Properties/NewProperty/property.types';
 import { CloseButton } from '../../../components/CloseButton';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details'];

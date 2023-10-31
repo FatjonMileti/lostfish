@@ -2,16 +2,22 @@ import { styled } from '@mui/system';
 import { LoadingMatch } from './LoadingMatch';
 import { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 export interface BackdropProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
 }
 export const Backdrop = styled(({ className, open }: BackdropProps) => {
-  return open ? (
-    <motion.div className={className}>
-      <LoadingMatch />
-    </motion.div>
-  ) : null;
+  return createPortal(
+    <>
+      {open && (
+        <motion.div className={className}>
+          <LoadingMatch />
+        </motion.div>
+      )}
+    </>,
+    document.body
+  );
 })`
   & {
     position: fixed;

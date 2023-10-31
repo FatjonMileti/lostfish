@@ -11,14 +11,15 @@ import { Select } from '../../../components/Select/Select';
 import { HomeStyle, House, PropertyPreference, Transaction } from '../criteria.contants';
 import {
   AreaUnit,
-  BuildPurpose, Condition,
+  BuildPurpose,
+  Condition,
   Floor,
   OutsideSpace,
   Parking,
   PropertyType
-} from '../../Properties/NewProperties/property.constants';
+} from '../../Properties/NewProperty/property.constants';
 import { Slider } from '../../../components/Slider';
-import { AreaUnitType } from '../../Properties/NewProperties/property.types';
+import { AreaUnitType } from '../../Properties/NewProperty/property.types';
 
 interface SetCriteriaHouseTypeProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;

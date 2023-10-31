@@ -12,7 +12,7 @@ import { Slider } from './Slider';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 
-import { AreaUnitType } from '../NewProperties/property.types';
+import { AreaUnitType } from '../NewProperty/property.types';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   name: string;

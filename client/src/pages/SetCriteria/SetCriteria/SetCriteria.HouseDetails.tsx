@@ -9,7 +9,7 @@ import { Select } from '../../../components/Select/Select';
 import { Switch } from '../../../components/Switch';
 import { Typography } from '../../../components/Typography';
 import { OtherSpecificPropertyFeature } from '../criteria.types';
-import { Furnished } from '../../Properties/NewProperties/property.constants';
+import { Furnished } from '../../Properties/NewProperty/property.constants';
 
 interface SetCriteriaHouseDetailsProps extends HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<CriteriaFormType>;

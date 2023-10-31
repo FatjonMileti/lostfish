@@ -12,7 +12,7 @@ import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
 import { Property } from './Property/Property';
 
-import { NewProperty } from './NewProperties/NewProperty';
+import { NewProperty } from './NewProperty/NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from '../Home/home-background.png';
@@ -112,7 +112,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={editPropertyId}
           setEditPropertyId={setEditPropertyId}
-          fetchAssets={() => getAssets()}
+          afterSave={() => getAssets()}
+          afterDelete={() => getAssets()}
         />
       )}
 

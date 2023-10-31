@@ -32,13 +32,17 @@ export const createAssetSchemaValidation = joi.object({
   }),
   flat_details: {
     property_purpose: joi.string(),
-    floor: joi.number(),
+    floor: joi.string(),
     lift: joi.boolean(),
-    security: joi.boolean()
+    security: joi.boolean(),
+    gym_spa: joi.boolean(),
+    outside_space: joi.array().items(joi.string())
   },
-  outside_space: joi.array().items(joi.string()),
+  house_details: {
+    house_type: joi.string().allow('')
+  },
   parking_spot: joi.number().min(0),
-  parking_details: joi.array().items(joi.string()),
+  parking_details: joi.string(),
   epc_rating: joi.string().required(),
   condition: joi.string().allow(''),
   property_features: joi.array().items(joi.string()),

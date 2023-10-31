@@ -19,8 +19,8 @@ import {
   OutsideSpaceType,
   ParkingType,
   PropertyTypeType
-} from '../Properties/NewProperties/property.types';
-import {Condition} from "../Properties/NewProperties/property.constants";
+} from '../Properties/NewProperty/property.types';
+import { Condition } from '../Properties/NewProperty/property.constants';
 
 declare type ObjectValues<T> = T[keyof T];
 

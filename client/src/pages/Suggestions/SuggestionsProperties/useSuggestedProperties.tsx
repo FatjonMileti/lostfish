@@ -18,7 +18,7 @@ export const useSuggestedProperties = ({
         params
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       return data.docs;
     } catch (err) {
       throw err;
