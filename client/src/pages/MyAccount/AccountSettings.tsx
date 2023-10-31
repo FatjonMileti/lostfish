@@ -98,8 +98,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     min-height: 100%;
     max-width: 325px;
     row-gap: 32px;
-    justify-self: flex-end;
-    
+    align-content: flex-start;
 
     .section {
       display: grid;
