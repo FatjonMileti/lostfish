@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "checked"
   | "watch"
   | "email"
   | "filter"
@@ -56,7 +57,6 @@ export type IconNames =
   | "eye"
   | "attach"
   | "send-message"
-  | "checked"
   | "warning"
   | "label-vertical"
   | "share"
