@@ -1,32 +1,43 @@
 import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
 const getMatchesCount = async ({
   access_token,
   params
 }: {
   access_token: string;
-  params?: MatchCountParams;
+  params?: MatchCountParams['params'];
 }) => {
-  const { data } = await axios(access_token).get('/api/match/count', { params });
+  const { data } = await axios(access_token).get<{ number: number }>('/api/match/count', { params });
 
   return data;
 };
 
 interface MatchCountParams {
-  chosen?: boolean;
-  disliked?: boolean;
+  params?: {
+    chosen?: boolean;
+    disliked?: boolean;
+  };
+  options?: UseQueryOptions;
 }
 
-export const useMatchesCount = (params?: MatchCountParams) => {
+interface MatchCount {
+  number: number;
+}
+
+export const useMatchesCount = ({ params = {}, options = {} }: MatchCountParams) => {
   const userStore = useUserStore();
 
-  const query = useQuery({
+  const query = useQuery<MatchCount>({
     queryKey: ['number'],
-    queryFn: () => getMatchesCount({ params, access_token: userStore.auth.access_token }),
+    queryFn: () =>
+      getMatchesCount({
+        params,
+        access_token: userStore.auth.access_token
+      }),
     refetchIntervalInBackground: false,
-    refetchOnMount: false,
+    refetchOnMount: !!options?.refetchOnMount,
     refetchOnWindowFocus: false
   });
 

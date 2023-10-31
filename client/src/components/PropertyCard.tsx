@@ -99,6 +99,14 @@ export const PropertyCard = styled(
                   </Typography>
                 </div>
               )}
+              {matched && (
+                <div className='matched-indicator'>
+                  <Icon icon='like' />
+                  <Typography className='matched-indicator-text' variant='body6'>
+                    Matched
+                  </Typography>
+                </div>
+              )}
             </div>
             {image === '' && (
               <div className='no-images'>
@@ -255,6 +263,25 @@ export const PropertyCard = styled(
         .awaiting-match-text {
           font-weight: 700;
           margin-left: 4px;
+        }
+      }
+
+      .matched-indicator {
+        display: flex;
+        column-gap: 4px;
+        background-color: #e5155a;
+        color: white;
+        border-radius: 25px;
+        align-items: center;
+        padding: 12px;
+
+        .icon {
+          width: 20px !important;
+          height: 20px !important;
+        }
+
+        .matched-indicator-text {
+          font-weight: 700;
         }
       }
     }

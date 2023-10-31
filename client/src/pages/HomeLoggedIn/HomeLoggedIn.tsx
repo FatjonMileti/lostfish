@@ -12,13 +12,25 @@ import { Suggestions } from '../Suggestions/Suggestions';
 import { FaqSection } from '../About/About.FaqSection';
 
 import forestBackgroundImage from '../About/forest.jpeg';
+import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
+import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
+import { Role } from '../../enums';
+import { useProfileStore } from '../../globalState/profile';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const profileStore = useProfileStore();
 
   return (
     <div className={`home-logged-in-page ${className}`}>
-      <Header />
+      <Header
+        middleContent={
+          <>
+            {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
+            {profileStore.role === Role.Client && <PropertiesMatchingHeader />}
+          </>
+        }
+      />
 
       <Backdrop open={loading}></Backdrop>
 

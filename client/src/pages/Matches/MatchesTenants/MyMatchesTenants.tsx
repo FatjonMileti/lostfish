@@ -16,6 +16,8 @@ import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useMatchesCount } from '../useMatchesCount';
 import { useMatchedTenants } from './useMatchedTenants';
+import { TenantsReviewHeader } from './TenantsReviewHeader';
+import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 
@@ -25,7 +27,13 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
   const navigate = useNavigate();
   const userStore = useUserStore();
 
-  const matchesCount = useMatchesCount({ chosen: true });
+  const matchesCount = useMatchesCount({
+    params: { chosen: true, disliked: false }
+  });
+
+  const suggestedTenants = useSuggestedTenants({
+    params: { chosen: false, disliked: false }
+  });
 
   const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
     try {
@@ -41,6 +49,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
       }
       matchedTenants.reFetch();
       matchesCount.refetch();
+      suggestedTenants.refetch();
     } catch (err) {
       throw err;
     }
@@ -51,7 +60,13 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
       <Backdrop open={matchedTenants.loading}></Backdrop>
       <div className={classNames('my-matches-tenants', className)}>
         <div className='header-and-content-wrapper'>
-          <Header />
+          <Header
+            middleContent={
+              <>
+                <TenantsReviewHeader />
+              </>
+            }
+          />
           <div className='content-wrapper'>
             <div className='content-header'>
               <div className='header-left-content'>

@@ -20,21 +20,28 @@ import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
-  const suggestedProperties = useSuggestedProperties({ disliked: false, chosen: false });
+  const suggestedProperties = useSuggestedProperties({
+    params: { disliked: false, chosen: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
 
   const userStore = useUserStore();
 
-  const suggestedProperty: SuggestedPropertyType = suggestedProperties.properties[activeSlide];
+  const suggestedProperty: SuggestedPropertyType = suggestedProperties.data[activeSlide];
 
   const matchedProperty = suggestedProperty?.property;
 
-  const matchesCount = useMatchesCount({ chosen: false, disliked: false });
+  const matchesCount = useMatchesCount({
+    params: { chosen: false, disliked: false }
+  });
 
   const next = () =>
-    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.properties?.length));
+    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.data?.length));
   const previous = () => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
@@ -49,13 +56,10 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
         setPropertyToView(null);
       }
 
-      if (
-        suggestedProperties.properties.length - 1 === activeSlide &&
-        suggestedProperties.properties.length > 1
-      ) {
+      if (suggestedProperties.data.length - 1 === activeSlide && suggestedProperties.data.length > 1) {
         previous();
       }
-      await suggestedProperties.reFetch();
+      await suggestedProperties.refetch();
       matchesCount.refetch();
     } catch (err) {
       throw err;
@@ -72,13 +76,10 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
         setPropertyToView(null);
       }
 
-      if (
-        suggestedProperties.properties.length - 1 === activeSlide &&
-        suggestedProperties.properties.length > 1
-      ) {
+      if (suggestedProperties.data.length - 1 === activeSlide && suggestedProperties.data.length > 1) {
         previous();
       }
-      await suggestedProperties.reFetch();
+      await suggestedProperties.refetch();
       matchesCount.refetch();
     } catch (err) {
       throw err;
@@ -87,29 +88,26 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
 
   return (
     <>
-      <Backdrop open={suggestedProperties.loading}></Backdrop>
+      <Backdrop open={suggestedProperties.isFetching}></Backdrop>
       <div className={classNames('suggestions-properties', className)}>
         <div className='section-header'>
           <Typography className='matching-with'>
             Matching with{' '}
             <span className='address'>renters in {matchedProperty?.area_of_interest ?? ''}</span>
           </Typography>
-          {suggestedProperties.properties.length === 0 ? (
+          {suggestedProperties.data.length === 0 ? (
             <Typography variant='body5' className='sub-title'>
               No matches. Enter more details to refine your search.
             </Typography>
           ) : (
             <Typography variant='body5' className='sub-title'>
-              Displaying {suggestedProperties.properties.length} matches. Enter more details to refine your
-              search.
+              Displaying {suggestedProperties.data.length} matches. Enter more details to refine your search.
             </Typography>
           )}
         </div>
 
         <motion.div className='slides-wrapper'>
-          {suggestedProperties.properties.map((propertySuggestion, tenantIndex) => {
-            console.log('suggestedProperty: ', propertySuggestion);
-
+          {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
             const { property } = propertySuggestion;
 
             return (
@@ -132,7 +130,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
           })}
         </motion.div>
 
-        {suggestedProperties.properties.length > 0 && (
+        {suggestedProperties.data.length > 0 && (
           <div className='matches-slider-footer'>
             <ArrowButton
               direction='left'
@@ -163,7 +161,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
               onClick={next}
               size='large'
               style={{
-                visibility: activeSlide === suggestedProperties.properties.length - 1 ? 'hidden' : 'initial'
+                visibility: activeSlide === suggestedProperties.data.length - 1 ? 'hidden' : 'initial'
               }}
             />
           </div>
@@ -177,6 +175,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
+          likeProperty={() => likeProperty({ propertyId: propertyToView?.property._id })}
         />
       )}
     </>

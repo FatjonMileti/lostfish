@@ -66,4 +66,5 @@ export type IconNames =
   | "linkedin-in"
   | "apple"
   | "google"
+  | "eye-line"
 

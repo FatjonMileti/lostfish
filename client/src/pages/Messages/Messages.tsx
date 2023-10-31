@@ -23,10 +23,15 @@ import { IMessageItem, IRoom } from './messages.interface';
 
 import noMessages from './noMessages.png';
 import messagesBackground from '../Home/home-background.png';
+import { Role } from '../../enums';
+import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
+import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
+import { useProfileStore } from '../../globalState/profile';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const notificationsStore = useNotificationsStore();
+  const profileStore = useProfileStore();
 
   const location: Location = useLocation();
 
@@ -168,9 +173,15 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
         className={`messages-page ${
           !chatRooms.isLoading && chatRooms.data?.length === 0 ? 'no-messages' : ''
         } ${className}`}>
-        <Header />
+        <Header
+          middleContent={
+            <>
+              {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
+              {profileStore.role === Role.Client && <PropertiesReviewHeader />}
+            </>
+          }
+        />
         <Backdrop open={chatRooms.isLoading || chatRooms.isFetching}></Backdrop>
-
         {!chatRooms.isLoading && chatRooms.data?.length === 0 && (
           <div className='no-messages-view'>
             <img src={noMessages} alt='no messages' />
@@ -182,9 +193,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             </Typography>
           </div>
         )}
-
         {chatRooms.isLoading && <div />}
-
         {!chatRooms.isLoading && chatRooms.data?.length !== 0 && (
           <div className='container'>
             <div className='chats'>
@@ -268,8 +277,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     grid-template-rows: min-content auto;
     position: relative;
 
-    background: linear-gradient(180deg, rgba(255, 251, 243, 0.99) 18.95%, rgba(255, 255, 255, 0.95) 100%),
-      rgba(255, 255, 255, 0.2);
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
 
     .no-messages-view {
       display: grid;

@@ -27,6 +27,11 @@ import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Solicitors } from './Solicitors';
+import { Role } from '../../enums';
+import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
+import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
+import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
+import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
@@ -78,7 +83,14 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       />
       <div className={`my-account-page ${className}`}>
         <div className='header-and-content-wrapper'>
-          <Header />
+          <Header
+            middleContent={
+              <>
+                {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
+                {profileStore.role === Role.Client && <PropertiesReviewHeader />}
+              </>
+            }
+          />
           <div className='container-account'>
             <div className='left-menu'>
               <div className='menu-header'>

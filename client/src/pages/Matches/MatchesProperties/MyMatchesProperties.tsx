@@ -17,10 +17,11 @@ import { useUserStore } from '../../../globalState/user';
 
 import { SuggestedPropertyType } from './MatchesProperties';
 import { ViewProperty } from './ViewProperty';
-import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { useMatchedProperties } from './useMatchedProperties';
 import { useMatchesCount } from '../useMatchesCount';
+import { PropertiesReviewHeader } from './PropertiesReviewHeader';
+import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
@@ -30,8 +31,11 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
   const userStore = useUserStore();
 
   const matchedProperties = useMatchedProperties({ chosen: true });
+  const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
 
-  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
+  const matchesCount = useMatchesCount({
+    params: { chosen: true, disliked: false }
+  });
 
   const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
     try {
@@ -49,6 +53,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
 
       matchedProperties.reFetch();
       matchesCount.refetch();
+      suggestedProperties.refetch();
     } catch (err) {
       throw err;
     }
@@ -59,7 +64,13 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
       <Backdrop open={matchedProperties.loading}></Backdrop>
       <div className={classNames('my-matches-properties', className)}>
         <div className='header-and-content-wrapper'>
-          <Header />
+          <Header
+            middleContent={
+              <>
+                <PropertiesReviewHeader />
+              </>
+            }
+          />
           <div className='content-wrapper'>
             <div className='content-header'>
               <div className='header-left-content'>
@@ -137,6 +148,8 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     display: grid;
     grid-template-rows: auto min-content;
     width: 100%;
+
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%);
 
     .header-and-content-wrapper {
       min-height: 100vh;

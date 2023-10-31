@@ -386,40 +386,21 @@ export class MatchController {
         matches.docs[i].matchId = currentMatch._id;
 
         if (currentMatch.type === MatchingType.PROPERTY) {
-          console.log('match type: ', MatchingType.PROPERTY, {
-            type: MatchingType.USER,
-            tenant: currentMatch.tenant._id.toString(),
-            property: currentMatch.property._id.toString(),
-            chosen: true
-          });
           const matched = await this.matchService.getMatchByQuery({
             type: MatchingType.USER,
             tenant: currentMatch.tenant._id.toString(),
             property: currentMatch.property._id.toString(),
             chosen: true
           });
-
           currentMatch.matched = !!matched;
-
-          console.log('matched: ', matched);
         } else {
-          console.log('match type: ', MatchingType.USER, {
-            type: MatchingType.PROPERTY,
-            landlord: currentMatch.landlord._id.toString(),
-            property: currentMatch.property._id.toString(),
-            chosen: true
-          });
-
           const matched = await this.matchService.getMatchByQuery({
             type: MatchingType.PROPERTY,
             landlord: currentMatch.landlord._id.toString(),
             property: currentMatch.property._id.toString(),
             chosen: true
           });
-
           currentMatch.matched = !!matched;
-
-          console.log('matched: ', matched);
         }
       }
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
@@ -570,7 +551,6 @@ export class MatchController {
   private updateMatch = async (req: Request, res: Response) => {
     const matchId: string = req.params.id;
     const matchData: Partial<MatchDocument> = req.body;
-    console.log({ matchData });
     const newData = { ...matchData, edited_at: new Date(), edited_by: res.locals.user_id };
     try {
       const existingMatch = await this.matchService.findMatchById(matchId);

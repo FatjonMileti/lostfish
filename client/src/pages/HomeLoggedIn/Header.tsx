@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
@@ -18,22 +18,30 @@ import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.s
 import { Role } from '../../enums';
 import { useMatchesCount } from '../Matches/useMatchesCount';
 
-export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  middleContent?: ReactElement;
+}
 
-export const Header = styled(({ className }: HeaderProps) => {
+export const Header = styled(({ className, middleContent }: HeaderProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
   const notificationsStore = useNotificationsStore();
   const location = useLocation();
 
-  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
+  const matchesCount = useMatchesCount({
+    params: { chosen: true, disliked: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
 
   return (
     <div className={`header ${className}`}>
       <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
       <div className='middle-part'>
-        {profileStore.hasCompletedInitialSetup && (
+        {middleContent || null}
+        {!middleContent && profileStore.hasCompletedInitialSetup && (
           <div className='menu'>
             <NavLink to='/matches'>
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}

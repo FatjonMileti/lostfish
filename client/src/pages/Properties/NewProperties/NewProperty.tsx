@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Modal } from '../../../components/Modal';
@@ -13,6 +12,7 @@ import { Backdrop } from '../../../components/Backdrop';
 import { Textarea } from '../../../components/Textarea';
 import { Select } from '../../../components/Select/Select';
 import { TextField } from '../../../components/TextField';
+import { Switch } from '../../../components/Switch';
 
 import { Map } from '../../../components/Map';
 import { NearestThings } from '../../Matches/MatchesProperties/ViewProperty.NearestThings';
@@ -23,14 +23,7 @@ import axios from '../../../utils/axios';
 
 import { ImageUpload } from './NewProperty.ImageUpload';
 
-import { Switch } from '../../../components/Switch';
-import {
-  ApiPropertyDocumentType,
-  BuildPurposeType,
-  FloorType,
-  OutsideSpaceType,
-  PropertyFormType
-} from './property.types';
+import { ApiPropertyDocumentType, PropertyFormType } from './property.types';
 import { useProfileStore } from '../../../globalState/profile';
 import {
   AreaUnit,
@@ -41,11 +34,11 @@ import {
   OutsideSpace,
   Parking,
   propertyFormSchema,
-  PropertyType, Condition
+  PropertyType,
+  Condition
 } from './property.constants';
-import {Transaction} from '../../SetCriteria/criteria.contants';
+import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
-import {number} from "yup";
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -68,7 +61,6 @@ export const NewProperty = styled(
 
     const { auth } = useUserStore();
 
-    const navigate = useNavigate();
     const profileStore = useProfileStore();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
@@ -396,7 +388,6 @@ export const NewProperty = styled(
         }
 
         await profileStore.fetchProfile(auth.access_token);
-        navigate('/matches');
       } catch (err) {
         throw err;
       } finally {
@@ -675,9 +666,9 @@ export const NewProperty = styled(
               <Select label='Condition' {...form.register('condition')}>
                 <option></option>
                 {Object.values(Condition).map((style, styleIndex) => (
-                    <option value={style} key={styleIndex}>
-                      {style}
-                    </option>
+                  <option value={style} key={styleIndex}>
+                    {style}
+                  </option>
                 ))}
               </Select>
 
@@ -827,69 +818,69 @@ export const NewProperty = styled(
                 </Typography>
               </div>
               <ImageUpload
-                  className='upload'
-                  onNewImages={(files) => {
-                    setNewImages([...state.newImages, ...files]);
-                  }}
-                  onGenerateImages={(files) => {
-                    setGeneratedImages([...state.generatedImages, ...files]);
-                  }}
+                className='upload'
+                onNewImages={(files) => {
+                  setNewImages([...state.newImages, ...files]);
+                }}
+                onGenerateImages={(files) => {
+                  setGeneratedImages([...state.generatedImages, ...files]);
+                }}
               />
               <Controller
-                  render={({ field: { value = [], onChange } }) => (
-                      <>
-                        <div className='images-list'>
-                          {value.map((image: any, imageIndex: number) => (
-                              <div key={imageIndex} className='image-wrapper'>
-                                <IconButton
-                                    size='large'
-                                    className='remove-button'
-                                    onClick={async () => {
-                                      onChange({
-                                        target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
-                                      });
-                                    }}>
-                                  <Icon icon='minus' size={11} />
-                                </IconButton>
-                                <img alt='property image' src={`${image?.link}`} />
-                              </div>
-                          ))}
-
-                          {state.newImages.length > 0 &&
-                              state.newImages.map((image: any, imageIndex: number) => (
-                                  <div key={imageIndex} className='image-wrapper'>
-                                    <IconButton
-                                        size='large'
-                                        className='remove-button'
-                                        onClick={() => {
-                                          setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
-                                        }}>
-                                      <Icon icon='minus' size={11} />
-                                    </IconButton>
-                                    <img alt='property image' src={URL.createObjectURL(image)} />
-                                  </div>
-                              ))}
-                          {state.generatedImages.length > 0 &&
-                              state.generatedImages.map((image: any, imageIndex: number) => (
-                                  <div key={imageIndex} className='image-wrapper'>
-                                    <IconButton
-                                        size='large'
-                                        className='remove-button'
-                                        onClick={() => {
-                                          setGeneratedImages(
-                                              state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
-                                          );
-                                        }}>
-                                      <Icon icon='minus' size={11} />
-                                    </IconButton>
-                                    <img alt='property image' src={image.link} />
-                                  </div>
-                              ))}
+                render={({ field: { value = [], onChange } }) => (
+                  <>
+                    <div className='images-list'>
+                      {value.map((image: any, imageIndex: number) => (
+                        <div key={imageIndex} className='image-wrapper'>
+                          <IconButton
+                            size='large'
+                            className='remove-button'
+                            onClick={async () => {
+                              onChange({
+                                target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
+                              });
+                            }}>
+                            <Icon icon='minus' size={11} />
+                          </IconButton>
+                          <img alt='property image' src={`${image?.link}`} />
                         </div>
-                      </>
-                  )}
-                  control={form.control}
-                  name='propertyImages'
+                      ))}
+
+                      {state.newImages.length > 0 &&
+                        state.newImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={URL.createObjectURL(image)} />
+                          </div>
+                        ))}
+                      {state.generatedImages.length > 0 &&
+                        state.generatedImages.map((image: any, imageIndex: number) => (
+                          <div key={imageIndex} className='image-wrapper'>
+                            <IconButton
+                              size='large'
+                              className='remove-button'
+                              onClick={() => {
+                                setGeneratedImages(
+                                  state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
+                                );
+                              }}>
+                              <Icon icon='minus' size={11} />
+                            </IconButton>
+                            <img alt='property image' src={image.link} />
+                          </div>
+                        ))}
+                    </div>
+                  </>
+                )}
+                control={form.control}
+                name='propertyImages'
               />
             </div>
             <Map
@@ -910,28 +901,32 @@ export const NewProperty = styled(
               </Typography>
               <div className='facilities'>
                 <ul>
-                  {!!form.getValues('propertyType')? <li>
-                    <Typography variant='body4'>{form.getValues('propertyType')}</Typography>
-                  </li> : ''}
-
-                  {!!form.getValues('parkingSpot') && Number(form.getValues('parkingSpot') ) > 0 ? (
-                      <li>
-                        <Typography variant='body4'>
-                          {Number(form.getValues('parkingSpot') ) === 1
-                              ? 'Parking spot: ' + form.getValues('parkingSpot')
-                              : 'Parking spots: ' + form.getValues('parkingSpot')}
-                          {!!form.getValues('parkingType') ? ', ' + form.getValues('parkingType'): ''}
-                        </Typography>
-                      </li>
+                  {!!form.getValues('propertyType') ? (
+                    <li>
+                      <Typography variant='body4'>{form.getValues('propertyType')}</Typography>
+                    </li>
                   ) : (
-                      ''
+                    ''
+                  )}
+
+                  {!!form.getValues('parkingSpot') && Number(form.getValues('parkingSpot')) > 0 ? (
+                    <li>
+                      <Typography variant='body4'>
+                        {Number(form.getValues('parkingSpot')) === 1
+                          ? 'Parking spot: ' + form.getValues('parkingSpot')
+                          : 'Parking spots: ' + form.getValues('parkingSpot')}
+                        {!!form.getValues('parkingType') ? ', ' + form.getValues('parkingType') : ''}
+                      </Typography>
+                    </li>
+                  ) : (
+                    ''
                   )}
                   {!!form.getValues('condition') ? (
-                      <li>
-                        <Typography variant='body4'> {'Condition: ' + form.getValues('condition')} </Typography>
-                      </li>
+                    <li>
+                      <Typography variant='body4'> {'Condition: ' + form.getValues('condition')} </Typography>
+                    </li>
                   ) : (
-                      ''
+                    ''
                   )}
                 </ul>
 

@@ -3,42 +3,37 @@ import axios from '../../../utils/axios';
 import { mapTenant } from '../../Matches/MatchesTenants/serializers';
 import { useUserStore } from '../../../globalState/user';
 import { SuggestedTenantType } from '../../Matches/MatchesTenants/MatchesTenants';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-export const useSuggestedTenants = (
-  params = {}
-): {
-  tenants: SuggestedTenantType[];
-  loading: boolean;
-  reFetch: () => Promise<void>;
-} => {
-  const [loading, setLoading] = React.useState(false);
-  const [tenants, setTenants] = React.useState<SuggestedTenantType[]>([]);
+export const useSuggestedTenants = ({
+  params = {},
+  options = {}
+}: {
+  params?: { disliked?: false; chosen?: false };
+  options?: UseQueryOptions;
+}) => {
   const userStore = useUserStore();
-
-  React.useEffect(() => {
-    getSuggestedTenants();
-  }, []);
 
   const getSuggestedTenants = async () => {
     try {
-      setLoading(true);
       const { data } = await axios(userStore.auth.access_token).get('/api/suggestion/tenant', {
         params
       });
-      setTenants(data.docs.map(mapTenant));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      return data.docs.map(mapTenant);
     } catch (err) {
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
-  const reFetch = async () => {
-    return getSuggestedTenants();
-  };
 
-  return {
-    tenants,
-    loading,
-    reFetch
-  };
+  const query = useQuery<SuggestedTenantType[]>({
+    queryKey: ['suggested-tenants'],
+    queryFn: () => getSuggestedTenants(),
+    initialData: [],
+    refetchIntervalInBackground: false,
+    refetchOnMount: !!options.refetchOnMount,
+    refetchOnWindowFocus: false
+  });
+
+  return query;
 };

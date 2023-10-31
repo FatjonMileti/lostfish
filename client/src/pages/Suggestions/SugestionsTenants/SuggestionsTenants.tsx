@@ -15,23 +15,32 @@ import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { Backdrop } from '../../../components/Backdrop';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
+import { NewProperty } from '../../Properties/NewProperties/NewProperty';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
-  const suggestedTenants = useSuggestedTenants({ chosen: false, disliked: false });
+  const suggestedTenants = useSuggestedTenants({
+    params: { chosen: false, disliked: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
 
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
+  const [propertyToEdit, setPropertyToEdit] = React.useState<string | undefined>();
 
   const userStore = useUserStore();
 
-  const suggestedTenant: SuggestedTenantType = suggestedTenants.tenants[activeSlide];
+  const suggestedTenant: SuggestedTenantType = suggestedTenants.data[activeSlide];
   const matchedProperty = suggestedTenant?.property;
 
-  const matchesCount = useMatchesCount({ chosen: true, disliked: false });
+  const matchesCount = useMatchesCount({
+    params: { chosen: true, disliked: false }
+  });
 
   const next = () =>
-    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedTenants.tenants?.length));
+    setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedTenants.data?.length));
   const previous = () => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
@@ -47,10 +56,10 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
         setTenantToView(null);
       }
 
-      if (suggestedTenants.tenants.length - 1 === activeSlide && suggestedTenants.tenants.length > 1) {
+      if (suggestedTenants.data.length - 1 === activeSlide && suggestedTenants.data.length > 1) {
         previous();
       }
-      await suggestedTenants.reFetch();
+      await suggestedTenants.refetch();
       matchesCount.refetch();
     } catch (err) {
       throw err;
@@ -68,10 +77,10 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
         setTenantToView(null);
       }
 
-      if (suggestedTenants.tenants.length - 1 === activeSlide && suggestedTenants.tenants.length > 1) {
+      if (suggestedTenants.data.length - 1 === activeSlide && suggestedTenants.data.length > 1) {
         previous();
       }
-      await suggestedTenants.reFetch();
+      await suggestedTenants.refetch();
       matchesCount.refetch();
     } catch (err) {
       throw err;
@@ -80,26 +89,36 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
 
   return (
     <>
-      <Backdrop open={suggestedTenants.loading}></Backdrop>
+      <Backdrop open={suggestedTenants.isFetching}></Backdrop>
       <div className={classNames('suggestions-tenants', className)}>
         <div className='section-header'>
           <Typography className='matching-with'>
             Matching with{' '}
-            <span className='address'>renters in {matchedProperty?.area_of_interest ?? ''}</span>
+            <span className='address'>
+              renters in{' '}
+              <span
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  console.log('matchedProperty: ', matchedProperty);
+                  setPropertyToEdit(matchedProperty._id);
+                }}>
+                {matchedProperty?.area_of_interest ?? ''}
+              </span>
+            </span>
           </Typography>
-          {suggestedTenants.tenants.length === 0 ? (
+          {suggestedTenants.data.length === 0 ? (
             <Typography variant='body5' className='sub-title'>
               No matches. Enter more details to refine your search.
             </Typography>
           ) : (
             <Typography variant='body5' className='sub-title'>
-              Displaying {suggestedTenants.tenants.length} matches. Enter more details to refine your search.
+              Displaying {suggestedTenants.data.length} matches. Enter more details to refine your search.
             </Typography>
           )}
         </div>
 
         <motion.div className='slides-wrapper'>
-          {suggestedTenants.tenants.map((tenant, tenantIndex) => {
+          {suggestedTenants.data.map((tenant, tenantIndex) => {
             const { criteria: tenantCriteria } = tenant;
 
             return (
@@ -120,7 +139,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
           })}
         </motion.div>
 
-        {suggestedTenants.tenants.length > 0 && (
+        {suggestedTenants.data.length > 0 && (
           <div className='matches-slider-footer'>
             <ArrowButton
               direction='left'
@@ -153,7 +172,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               onClick={next}
               size='large'
               style={{
-                visibility: activeSlide === suggestedTenants.tenants.length - 1 ? 'hidden' : 'initial'
+                visibility: activeSlide === suggestedTenants.data.length - 1 ? 'hidden' : 'initial'
               }}
             />
           </div>
@@ -176,6 +195,15 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               tenantId: tenantToView.criteria.tenantId
             });
           }}
+        />
+      )}
+
+      {propertyToEdit && (
+        <NewProperty
+          propertyId={propertyToEdit}
+          showStore={[!!propertyToEdit, () => setPropertyToEdit(undefined)]}
+          setEditPropertyId={setPropertyToEdit}
+          fetchAssets={() => suggestedTenants.refetch()}
         />
       )}
     </>
