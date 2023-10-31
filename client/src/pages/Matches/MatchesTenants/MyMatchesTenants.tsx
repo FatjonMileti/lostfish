@@ -22,7 +22,12 @@ import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSugg
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 
 export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
-  const matchedTenants = useMatchedTenants({ chosen: true });
+  const matchedTenants = useMatchedTenants({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
   const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
   const navigate = useNavigate();
   const userStore = useUserStore();
@@ -47,7 +52,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
       if (tenantToView) {
         setTenantToView(null);
       }
-      matchedTenants.reFetch();
+      matchedTenants.refetch();
       matchesCount.refetch();
       suggestedTenants.refetch();
     } catch (err) {
@@ -57,7 +62,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
 
   return (
     <>
-      <Backdrop open={matchedTenants.loading}></Backdrop>
+      <Backdrop open={matchedTenants.isFetching}></Backdrop>
       <div className={classNames('my-matches-tenants', className)}>
         <div className='header-and-content-wrapper'>
           <Header
@@ -83,7 +88,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
             </div>
 
             <div className='content'>
-              {matchedTenants.tenants.map((tenant, tenantIndex) => {
+              {matchedTenants.data.map((tenant, tenantIndex) => {
                 const { criteria: tenantCriteria } = tenant;
 
                 return (
@@ -98,8 +103,6 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     matched={tenant.matched}
                     awaitingMatch={tenant.chosen && !tenant.matched}
                     chatWith={() => {
-                      console.log('tenant to chat: ', tenant);
-
                       chatWith({
                         userId: tenant.criteria.tenantId,
                         propertyId: tenant.property._id

@@ -11,7 +11,7 @@ interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   setOpen: (open: boolean) => void;
 }
 export const Drawer = styled(
-  ({ className, children, open = false, disableScrollLock = false, setOpen, onClick }: DrawerProps) => {
+  ({ className, children, open = false, disableScrollLock = false, setOpen }: DrawerProps) => {
     const variants = {
       open: { x: 0 },
       closed: { x: '100%' }
@@ -37,7 +37,8 @@ export const Drawer = styled(
                 }
               }}
               className={classNames(className, 'drawer drawer-backdrop')}
-              onClick={() => setOpen(false)}>
+              // onClick={() => setOpen(false)}
+              onMouseDown={() => setOpen(false)}>
               <motion.div
                 animate='open'
                 exit='closed'
@@ -45,9 +46,8 @@ export const Drawer = styled(
                 variants={variants}
                 transition={{ duration: 0.3 }}
                 className='drawer-body'
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.stopPropagation();
-                  onClick && onClick(e);
                 }}>
                 {open && children}
               </motion.div>

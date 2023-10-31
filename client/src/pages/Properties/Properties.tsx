@@ -17,6 +17,10 @@ import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from '../Home/home-background.png';
 import { Tab, Tabs } from '../../components/Tab';
+import { Role } from '../../enums';
+import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
+import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
+import { useProfileStore } from '../../globalState/profile';
 
 const state: IGridState = {
   loading: true,
@@ -45,6 +49,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const { auth } = useUserStore();
 
   const queryParams = new URLSearchParams(useLocation().search);
+
+  const profileStore = useProfileStore();
 
   React.useEffect(() => {
     setList((list) => ({
@@ -92,7 +98,14 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
   return (
     <div className={`properties-page ${className}`}>
-      <Header />
+      <Header
+        middleContent={
+          <>
+            {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
+            {profileStore.role === Role.Client && <PropertiesMatchingHeader />}
+          </>
+        }
+      />
       <Backdrop open={list.loading}></Backdrop>
       {showNewPropertyModal && (
         <NewProperty

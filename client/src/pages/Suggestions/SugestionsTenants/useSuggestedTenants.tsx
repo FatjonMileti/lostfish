@@ -9,7 +9,7 @@ export const useSuggestedTenants = ({
   params = {},
   options = {}
 }: {
-  params?: { disliked?: false; chosen?: false };
+  params?: { disliked?: boolean; chosen?: boolean };
   options?: UseQueryOptions;
 }) => {
   const userStore = useUserStore();

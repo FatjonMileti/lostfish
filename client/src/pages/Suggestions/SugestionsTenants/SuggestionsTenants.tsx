@@ -99,7 +99,6 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               <span
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  console.log('matchedProperty: ', matchedProperty);
                   setPropertyToEdit(matchedProperty._id);
                 }}>
                 {matchedProperty?.area_of_interest ?? ''}
@@ -261,6 +260,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       justify-content: center;
       align-items: center;
       column-gap: 84px;
+      user-select: none;
 
       .match-actions {
         display: flex;

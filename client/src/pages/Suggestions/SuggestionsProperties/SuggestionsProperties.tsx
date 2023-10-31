@@ -233,6 +233,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
       justify-content: center;
       align-items: center;
       column-gap: 84px;
+      user-select: none;
 
       .match-actions {
         display: flex;

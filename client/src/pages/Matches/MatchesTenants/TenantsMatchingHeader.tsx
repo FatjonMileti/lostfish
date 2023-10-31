@@ -5,14 +5,13 @@ import classNames from 'classnames';
 import { Label } from '../../../components/Label';
 import { Typography } from '../../../components/Typography';
 
-import { useCriteriaStore } from '../../../globalState/criteria';
 import { Icon } from '../../../components/Icon';
+import { useNavigate } from 'react-router-dom';
 
 interface TenantsMatchingHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const TenantsMatchingHeader = styled(({ className }: TenantsMatchingHeaderProps) => {
-  const criteriaStore = useCriteriaStore();
-
+  const navigate = useNavigate();
   return (
     <div className={classNames(className, 'tenants-matching-header')}>
       <div className='criteria-wrapper'>
@@ -45,7 +44,7 @@ export const TenantsMatchingHeader = styled(({ className }: TenantsMatchingHeade
         </div>
         <div className='divider-line' />
       </div>
-      <Label variant='tertiary'>
+      <Label variant='tertiary' onClick={() => navigate('/properties')}>
         <Icon icon='filter' />
         Preferences
       </Label>

@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
 import { Label } from '../../../components/Label';
@@ -7,49 +7,61 @@ import { Typography } from '../../../components/Typography';
 
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { Icon } from '../../../components/Icon';
+import { SetCriteriaDrawer } from '../../SetCriteria/SetCriteriaDrawer';
+import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 
 interface PropertiesMatchingHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchingHeaderProps) => {
   const criteriaStore = useCriteriaStore();
+  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
+  const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
 
   return (
-    <div className={classNames(className, 'properties-matching-header')}>
-      <div className='criteria-wrapper'>
-        <div className='criteria'>
-          <Typography variant='body6' className='criteria-key'>
-            Looking for
-          </Typography>
-          <Typography variant='body5' className='criteria-value'>
-            Properties
-          </Typography>
-        </div>
-        <div className='divider-line' />
-        <div className='criteria'>
-          <Typography variant='body6' className='criteria-key'>
-            Location
-          </Typography>
-          <Typography variant='body5' className='criteria-value'>
-            {criteriaStore.areaOfInterest}
-          </Typography>
-        </div>
+    <>
+      <div className={classNames(className, 'properties-matching-header')}>
+        <div className='criteria-wrapper'>
+          <div className='criteria'>
+            <Typography variant='body6' className='criteria-key'>
+              Looking for
+            </Typography>
+            <Typography variant='body5' className='criteria-value'>
+              Properties
+            </Typography>
+          </div>
+          <div className='divider-line' />
+          <div className='criteria'>
+            <Typography variant='body6' className='criteria-key'>
+              Location
+            </Typography>
+            <Typography variant='body5' className='criteria-value'>
+              {criteriaStore.areaOfInterest}
+            </Typography>
+          </div>
 
-        <div className='divider-line' />
-        <div className='criteria'>
-          <Typography variant='body6' className='criteria-key'>
-            Budget
-          </Typography>
-          <Typography variant='body5' className='criteria-value'>
-            {criteriaStore.budget.map((v) => `${v}£`).join(' - ')}
-          </Typography>
+          <div className='divider-line' />
+          <div className='criteria'>
+            <Typography variant='body6' className='criteria-key'>
+              Budget
+            </Typography>
+            <Typography variant='body5' className='criteria-value'>
+              {criteriaStore.budget.map((v) => `${v}£`).join(' - ')}
+            </Typography>
+          </div>
+          <div className='divider-line' />
         </div>
-        <div className='divider-line' />
+        <Label variant='tertiary' onClick={() => setCriteriaModalVisibility(true)}>
+          <Icon icon='filter' />
+          Preferences
+        </Label>
       </div>
-      <Label variant='tertiary'>
-        <Icon icon='filter' />
-        Preferences
-      </Label>
-    </div>
+
+      <SetCriteriaDrawer
+        open={criteriaModalVisibility}
+        setOpen={setCriteriaModalVisibility}
+        afterRefineSearch={() => suggestedProperties.refetch()}
+      />
+    </>
   );
 })`
   &.properties-matching-header {

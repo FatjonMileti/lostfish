@@ -30,7 +30,12 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
   const navigate = useNavigate();
   const userStore = useUserStore();
 
-  const matchedProperties = useMatchedProperties({ chosen: true });
+  const matchedProperties = useMatchedProperties({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
   const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
 
   const matchesCount = useMatchesCount({
@@ -51,7 +56,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
         setPropertyToView(null);
       }
 
-      matchedProperties.reFetch();
+      matchedProperties.refetch();
       matchesCount.refetch();
       suggestedProperties.refetch();
     } catch (err) {
@@ -61,7 +66,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
 
   return (
     <>
-      <Backdrop open={matchedProperties.loading}></Backdrop>
+      <Backdrop open={matchedProperties.isFetching}></Backdrop>
       <div className={classNames('my-matches-properties', className)}>
         <div className='header-and-content-wrapper'>
           <Header
@@ -87,10 +92,8 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             </div>
 
             <div className='content'>
-              {matchedProperties.properties.map((suggestion, suggestionIndex) => {
+              {matchedProperties.data.map((suggestion, suggestionIndex) => {
                 const { property } = suggestion;
-
-                console.log('suggestion: ', suggestion);
 
                 return (
                   <PropertyCard
@@ -106,15 +109,6 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     property={property}
                     awaitingMatch={suggestion.chosen && !suggestion.matched}
                     chatWith={() => {
-                      console.log(
-                        'chat with: ',
-                        {
-                          userId: suggestion.property.created_by._id,
-                          propertyId: suggestion.property._id
-                        },
-                        'suggestion: ',
-                        suggestion
-                      );
                       chatWith({
                         userId: suggestion.property.created_by._id,
                         propertyId: suggestion.property._id

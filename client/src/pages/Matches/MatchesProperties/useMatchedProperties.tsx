@@ -2,42 +2,36 @@ import React from 'react';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { SuggestedPropertyType } from './MatchesProperties';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-export const useMatchedProperties = (
-  params = {}
-): {
-  properties: SuggestedPropertyType[];
-  loading: boolean;
-  reFetch: () => Promise<void>;
-} => {
-  const [loading, setLoading] = React.useState(false);
-  const [properties, setProperties] = React.useState<SuggestedPropertyType[]>([]);
+export const useMatchedProperties = ({
+  params = {},
+  options = {}
+}: {
+  params?: { disliked?: boolean; chosen?: boolean };
+  options?: UseQueryOptions;
+}) => {
   const userStore = useUserStore();
-
-  React.useEffect(() => {
-    getMatchedProperties();
-  }, []);
 
   const getMatchedProperties = async () => {
     try {
-      setLoading(true);
       const { data } = await axios(userStore.auth.access_token).get('/api/match', {
         params
       });
-      setProperties(data.docs);
+      return data.docs;
     } catch (err) {
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
-  const reFetch = async () => {
-    return getMatchedProperties();
-  };
 
-  return {
-    properties,
-    loading,
-    reFetch
-  };
+  const query = useQuery<SuggestedPropertyType[]>({
+    queryKey: ['matched-properties'],
+    queryFn: () => getMatchedProperties(),
+    initialData: [],
+    refetchIntervalInBackground: false,
+    refetchOnMount: !!options.refetchOnMount,
+    refetchOnWindowFocus: false
+  });
+
+  return query;
 };
