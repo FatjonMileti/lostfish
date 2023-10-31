@@ -220,6 +220,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     padding: 36px;
     box-sizing: border-box;
     justify-items: center;
+    overflow-x: clip;
 
     &::before {
       content: '';

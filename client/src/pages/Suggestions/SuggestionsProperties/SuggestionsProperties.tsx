@@ -18,6 +18,8 @@ import axios from '../../../utils/axios';
 import { SuggestedPropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+
+import forestBackgroundImage from '../../About/forest.jpeg';
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
   const suggestedProperties = useSuggestedProperties({
@@ -182,6 +184,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   );
 })`
   &.suggestions-properties {
+    position: relative;
     min-height: calc(100vh - 112px);
     display: grid;
     grid-template-rows: min-content auto;
@@ -190,7 +193,21 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     padding: 36px;
     box-sizing: border-box;
     justify-items: center;
-    overflow-x: hidden;
+    overflow-x: clip;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url(${forestBackgroundImage});
+
+      background-repeat: no-repeat;
+      opacity: 0.05;
+      background-position-y: top;
+      background-size: cover;
+      z-index: -1;
+      top: -112px;
+    }
 
     .section-header {
       display: grid;
