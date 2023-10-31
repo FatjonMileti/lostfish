@@ -50,40 +50,11 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
-
     box-sizing: border-box;
+    z-index: 0;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: url(${forestBackgroundImage});
-      background-repeat: no-repeat;
-      opacity: 0.05;
-
-      background-size: cover;
-      //background-position-x: center;
-      //background-position-y: center;
-      z-index: -1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-
-      //background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), #fff;
-      //background-position-y: top;
-      background: linear-gradient(180deg, rgba(255, 251, 243, 0.99) 18.95%, rgba(255, 255, 255, 0.95) 100%),
-        rgba(255, 255, 255, 0.2);
-      background-size: cover;
-      z-index: -2;
+    .header {
+      z-index: 1;
     }
 
     .container {
