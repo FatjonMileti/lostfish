@@ -518,9 +518,9 @@ export const NewProperty = styled(
                       <img alt='valpal' src={valpal} />
                     </span>
                     <div className='tooltiptext'>
-                      <p>Min Valuation: £ 300</p>
-                      <p>Avg Valuation: £ 400</p>
-                      <p>Max Valuation: £ 500</p>
+                      <p>Min Valuation: £ 2,034</p>
+                      <p>Avg Valuation: £ 2,260</p>
+                      <p>Max Valuation: £ 2,486</p>
                     </div>
                   </div>
                 </div>
