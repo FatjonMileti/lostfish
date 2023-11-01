@@ -51,11 +51,6 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
     box-sizing: border-box;
-    z-index: 0;
-
-    .header {
-      z-index: 1;
-    }
 
     .container {
       display: grid;

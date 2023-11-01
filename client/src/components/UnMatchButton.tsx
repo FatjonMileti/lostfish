@@ -32,6 +32,7 @@ export const UnMatchButton = styled(({ className, ...props }: IconButtonProps) =
       .icon {
         height: 48px !important;
         width: 48px !important;
+        flex-shrink: 0;
       }
     }
 
@@ -40,6 +41,7 @@ export const UnMatchButton = styled(({ className, ...props }: IconButtonProps) =
       .icon {
         height: 24px !important;
         width: 24px !important;
+        flex-shrink: 0;
       }
     }
   }

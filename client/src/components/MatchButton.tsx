@@ -29,6 +29,7 @@ export const MatchButton = styled(({ className, disabled, ...props }: IconButton
       .icon {
         height: 48px !important;
         width: 48px !important;
+        flex-shrink: 0;
       }
     }
 
@@ -37,6 +38,7 @@ export const MatchButton = styled(({ className, disabled, ...props }: IconButton
       .icon {
         height: 24px !important;
         width: 24px !important;
+        flex-shrink: 0;
       }
     }
 

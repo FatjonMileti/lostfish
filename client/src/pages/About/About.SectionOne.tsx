@@ -4,10 +4,9 @@ import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
-import { avatars } from '../HomeLoggedIn/avatars';
 import { Avatar } from '../../components/Avatar';
 import HomeImg from './89.png';
-import TenantImg from './tenant_img.png'
+import TenantImg from './tenant_img.png';
 import classNames from 'classnames';
 
 import backgroundImg from './forest.jpeg';
@@ -60,25 +59,34 @@ export const SectionOne = styled(
   }
 )`
   &.section-one {
+    position: relative;
     min-height: calc(100vh - 112px);
     display: grid;
     padding: 176px 36px 64px 36px;
     justify-content: center;
     align-content: space-between;
     box-sizing: border-box;
-    position: relative;
     row-gap: 32px;
 
     &::before {
       content: '';
       position: absolute;
       inset: 0;
+      background: linear-gradient(to bottom, rgba(255, 251, 243, 0.9) 20%, rgba(255, 255, 255, 0.9) 100%)
+        no-repeat;
+      z-index: -1;
+      top: -112px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
       background-image: url(${backgroundImg});
       background-repeat: no-repeat;
-      opacity: 0.05;
-      background-position-y: top;
       background-size: cover;
-      z-index: -1;
+      opacity: 0.4;
+      z-index: -2;
       top: -112px;
     }
 

@@ -226,13 +226,21 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       content: '';
       position: absolute;
       inset: 0;
-      background-image: url(${forestBackgroundImage});
-
-      background-repeat: no-repeat;
-      opacity: 0.05;
-      background-position-y: top;
-      background-size: cover;
+      background: linear-gradient(to bottom, rgba(255, 251, 243, 0.9) 20%, rgba(255, 255, 255, 0.9) 100%)
+        no-repeat;
       z-index: -1;
+      top: -112px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url(${forestBackgroundImage});
+      background-repeat: no-repeat;
+      background-size: cover;
+      opacity: 0.4;
+      z-index: -2;
       top: -112px;
     }
 

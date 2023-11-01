@@ -83,13 +83,6 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       min-height: 100vh;
       display: grid;
       grid-template-rows: min-content auto;
-      //background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%);
-
-      z-index: 0;
-
-      .header {
-        z-index: 1;
-      }
 
       .container-home {
         display: grid;
