@@ -23,7 +23,6 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
-import backgroundImg from '../Home/home-background.png';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Solicitors } from './Solicitors';
@@ -37,7 +36,6 @@ const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-  { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
   { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
@@ -49,7 +47,6 @@ const tenantSubmenu: any[] = [
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
-  { icon: 'megaphone', text: 'Notification settings', link: '/notification-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
   { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
@@ -152,7 +149,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                   <Route path='/refine-your-search' element={<SetCriteria />} />
                 )}
                 <Route path='/starred-matches' element={<StarredMatches />} />
-                <Route path='/notification-settings' element={<NotificationSettings />} />
                 <Route path='/transaction-agreement' element={<TransactionAgreement />} />
                 <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
                 <Route path='/help-and-support' element={<HelpAndSupport />} />
@@ -305,36 +301,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           padding-left: 69px;
           z-index: 0;
           position: relative;
-
-          &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url(${backgroundImg});
-            opacity: 0.05;
-
-            background-size: cover;
-            background-position-x: right;
-            background-position-y: bottom;
-            background-repeat: no-repeat;
-            z-index: -1;
-          }
-
-          &::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-
-            background-position-y: top;
-            background-size: cover;
-            z-index: -2;
-          }
         }
       }
     }

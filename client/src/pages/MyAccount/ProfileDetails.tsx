@@ -19,6 +19,8 @@ import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { AccountSettings } from './AccountSettings';
 import { Select } from '../../components/Select/Select';
+import { Label } from '../../components/Label';
+import { NotificationSettings } from './NotificationSettings';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -52,6 +54,7 @@ interface ProfileDetails {
 
 export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState(false);
+  const [activeComponent, setActiveComponent] = React.useState('Account details');
 
   const profileStore = useProfileStore();
 
@@ -107,7 +110,6 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     setLoading(true);
 
     data.have_pets = data.have_pets === 'Yes';
-    console.log({ data });
     try {
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
       await loadProfile();
@@ -123,126 +125,155 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
         <Backdrop open={loading} />
         <div className='account-settings'>
-          <Typography variant='body3' className='account-settings-title'>
-            {' '}
-            Account settings{' '}
-          </Typography>
-          <div className='section'>
-            <Typography className='section-title' variant='body4'>
-              Setup avatar
+          <div className='account-settings-header'>
+            <Typography variant='body3' className='account-settings-title'>
+              {' '}
+              Account settings{' '}
             </Typography>
-            <Controller
-              name='avatar'
-              control={profileDetailsForm.control}
-              render={({ field }) => (
-                <div className='setup-avatar'>
-                  {avatars.map(({ image }, avatarIndex) => {
-                    const active = avatarIndex === parseInt(field.value || '');
-                    return (
-                      <Avatar
-                        image={image}
-                        onClick={() => field.onChange({ target: { value: avatarIndex } })}
-                        key={avatarIndex}
-                        className={`${active ? 'active' : ''}`}>
-                        <Icon icon='checked' color='black' size={10} />
-                      </Avatar>
-                    );
-                  })}
-                </div>
-              )}
-            />
+            <div className='account-settings-nav'>
+              <Label
+                variant='tertiary'
+                size='large'
+                active={activeComponent === 'Account details'}
+                onClick={() => setActiveComponent('Account details')}>
+                {' '}
+                Account details
+              </Label>
+              <Label
+                variant='tertiary'
+                size='large'
+                active={activeComponent === 'Security'}
+                onClick={() => setActiveComponent('Security')}>
+                Security
+              </Label>
+              <Label
+                variant='tertiary'
+                size='large'
+                active={activeComponent === 'Notifications'}
+                onClick={() => setActiveComponent('Notifications')}>
+                Notifications
+              </Label>
+            </div>
           </div>
-          <div className='sections-wrapper'>
-            <div className='left-part'>
+          {activeComponent === 'Account details' && (
+            <>
               <div className='section'>
                 <Typography className='section-title' variant='body4'>
-                  Contact information
+                  Your avatar
                 </Typography>
-                <div className='contact-information'>
-                  <TextField
-                    label='First Name'
-                    {...profileDetailsForm.register('first_name')}
-                    error={!!profileDetailsForm.formState.errors?.first_name}
-                    helperText={profileDetailsForm.formState.errors?.first_name?.message}
-                    required
-                  />
-                  <TextField
-                    label='Last Name'
-                    {...profileDetailsForm.register('last_name')}
-                    error={!!profileDetailsForm.formState.errors?.last_name}
-                    helperText={profileDetailsForm.formState.errors?.last_name?.message}
-                    required
-                  />
-                  <TextField
-                    label='Email'
-                    {...profileDetailsForm.register('email')}
-                    error={!!profileDetailsForm.formState.errors?.email}
-                    helperText={profileDetailsForm.formState.errors?.email?.message}
-                    required
-                  />
-                  <TextField label='Phone' {...profileDetailsForm.register('phone')} />
-                </div>
+                <Controller
+                  name='avatar'
+                  control={profileDetailsForm.control}
+                  render={({ field }) => (
+                    <div className='setup-avatar'>
+                      {avatars.map(({ image }, avatarIndex) => {
+                        const active = avatarIndex === Number(field.value || '');
+                        return (
+                          <Avatar
+                            image={image}
+                            onClick={() => field.onChange({ target: { value: avatarIndex.toString() } })}
+                            key={avatarIndex}
+                            className={`${active ? 'active' : ''}`}>
+                            <Icon icon='checked' color='white' size={16} />
+                          </Avatar>
+                        );
+                      })}
+                    </div>
+                  )}
+                />
               </div>
-              <div className='section'>
-                <Typography className='section-title' variant='body4'>
-                  Personal details
-                </Typography>
-                <div className='contact-information' style={{ marginBottom: '1rem' }}>
-                  <TextField
-                    type='number'
-                    label='Age'
-                    {...profileDetailsForm.register('age')}
-                    error={!!profileDetailsForm.formState.errors?.age}
-                    helperText={profileDetailsForm.formState.errors?.age?.message}
-                  />
-
-                  <Select
-                    label={<>Martial status</>}
-                    {...profileDetailsForm.register('martial_status')}
-                    error={!!profileDetailsForm.formState.errors['martial_status']}
-                    helperText={profileDetailsForm.formState.errors['martial_status']?.message?.toString()}>
-                    <option></option>
-                    <option value='Single'>Single</option>
-                    <option value='Married'>Married</option>
-                  </Select>
-                  <Select
-                    label='Pets?'
-                    {...profileDetailsForm.register('have_pets')}
-                    error={!!profileDetailsForm.formState.errors['have_pets']}
-                    helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
-                    <option></option>
-                    <option value='Yes'>Yes</option>
-                    <option value='No'>No</option>
-                  </Select>
-                  <div className='user-type'>
-                    <Typography className='label'>User type</Typography>
-                    <Typography variant='body4' className='user-type-content'>
-                      {profileStore.role}
-                    </Typography>
+              <div className='left-part'>
+                <div className='section'>
+                  <Typography className='section-title' variant='body4'>
+                    Contact information
+                  </Typography>
+                  <div className='contact-information'>
+                    <TextField
+                      label='First Name'
+                      {...profileDetailsForm.register('first_name')}
+                      error={!!profileDetailsForm.formState.errors?.first_name}
+                      helperText={profileDetailsForm.formState.errors?.first_name?.message}
+                      required
+                    />
+                    <TextField
+                      label='Last Name'
+                      {...profileDetailsForm.register('last_name')}
+                      error={!!profileDetailsForm.formState.errors?.last_name}
+                      helperText={profileDetailsForm.formState.errors?.last_name?.message}
+                      required
+                    />
+                    <TextField
+                      label='Email'
+                      {...profileDetailsForm.register('email')}
+                      error={!!profileDetailsForm.formState.errors?.email}
+                      helperText={profileDetailsForm.formState.errors?.email?.message}
+                      required
+                    />
+                    <TextField label='Phone' {...profileDetailsForm.register('phone')} />
                   </div>
                 </div>
-                <Textarea
-                  rows={6}
-                  label='Describe yourself (your matches will see this)'
-                  {...profileDetailsForm.register('description')}
-                  defaultValue=''></Textarea>
-              </div>
+                <div className='section'>
+                  <Typography className='section-title' variant='body4'>
+                    Personal details
+                  </Typography>
+                  <div className='contact-information' style={{ marginBottom: '1rem' }}>
+                    <TextField
+                      type='number'
+                      label='Age'
+                      {...profileDetailsForm.register('age')}
+                      error={!!profileDetailsForm.formState.errors?.age}
+                      helperText={profileDetailsForm.formState.errors?.age?.message}
+                    />
 
-              <div className='section'>
-                <Textarea
-                  rows={2}
-                  label='Address'
-                  {...profileDetailsForm.register('address')}
-                  defaultValue=''></Textarea>
+                    <Select
+                      label={<>Martial status</>}
+                      {...profileDetailsForm.register('martial_status')}
+                      error={!!profileDetailsForm.formState.errors['martial_status']}
+                      helperText={profileDetailsForm.formState.errors['martial_status']?.message?.toString()}>
+                      <option></option>
+                      <option value='Single'>Single</option>
+                      <option value='Married'>Married</option>
+                    </Select>
+                    <Select
+                      label='Pets?'
+                      {...profileDetailsForm.register('have_pets')}
+                      error={!!profileDetailsForm.formState.errors['have_pets']}
+                      helperText={profileDetailsForm.formState.errors['have_pets']?.message?.toString()}>
+                      <option></option>
+                      <option value='Yes'>Yes</option>
+                      <option value='No'>No</option>
+                    </Select>
+                    <div className='user-type'>
+                      <Typography className='label'>User type</Typography>
+                      <Typography variant='body4' className='user-type-content'>
+                        {profileStore.role}
+                      </Typography>
+                    </div>
+                  </div>
+                  <Textarea
+                    rows={6}
+                    label='Describe yourself (your matches will see this)'
+                    {...profileDetailsForm.register('description')}
+                    defaultValue=''></Textarea>
+                </div>
+
+                <div className='section'>
+                  <Textarea
+                    rows={2}
+                    label='Address'
+                    {...profileDetailsForm.register('address')}
+                    defaultValue=''></Textarea>
+                </div>
               </div>
-            </div>
-            <AccountSettings />
-          </div>
-          <Can do={CASLAction.Update} on='User'>
-            <Button type='submit' size='large' disabled={!profileDetailsForm.formState.isValid}>
-              Save changes
-            </Button>
-          </Can>
+              <Can do={CASLAction.Update} on='User'>
+                <Button type='submit' size='large' disabled={!profileDetailsForm.formState.isValid}>
+                  Save changes
+                </Button>
+              </Can>
+            </>
+          )}
+          {activeComponent === 'Security' && <AccountSettings />}
+          {activeComponent === 'Notifications' && <NotificationSettings />}
         </div>
       </form>
     </>
@@ -257,22 +288,28 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       row-gap: 32px;
       align-content: flex-start;
 
-      .account-settings-title {
-        font-family: At Gambit, sans-serif;
+      .account-settings-header {
+        display: grid;
+        row-gap: 16px;
+
+        .account-settings-title {
+          font-family: At Gambit, sans-serif;
+        }
+        .account-settings-nav {
+          display: flex;
+          align-items: flex-start;
+          gap: 32px;
+
+          .label {
+            padding: 16px 0px;
+          }
+        }
       }
 
-      .sections-wrapper {
+      .left-part {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        justify-content: space-between;
-        align-items: flex-start;
-        column-gap: 24px;
-
-        .left-part {
-          display: grid;
-          gap: 32px;
-          max-width: 441px;
-        }
+        gap: 32px;
+        max-width: 441px;
       }
     }
 
@@ -337,7 +374,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         }
 
         &.active {
-          outline: 2px solid #eee0d3;
+          outline: 2px solid #e5155a;
 
           :before {
             content: '';
@@ -347,7 +384,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            border: 2px solid var(--primary-brand-sand, #eee0d3);
+            border: 2px solid var(--primary-brand-sand, #e5155a);
             position: absolute;
           }
 
@@ -356,11 +393,11 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             position: absolute;
             z-index: 4;
             bottom: -8px;
-            background: #eee0d3;
+            background: #e5155a;
             left: 50%;
             transform: translateX(-50%);
             border-radius: 50%;
-            padding: 4px;
+            //padding: 4px;
           }
         }
       }
