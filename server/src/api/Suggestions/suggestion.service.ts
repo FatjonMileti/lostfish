@@ -273,14 +273,22 @@ export default class SuggestionService {
 
     let matchingCriteria = 0;
 
+    let matchLog: any = {};
+
     // Area of interest
-    if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 5;
+    if (clientCriteria.area_of_interest === property.area_of_interest) {
+      matchingCriteria += 5;
+      matchLog['area_of_interest'] = true;
+    }
 
     // Radius
     // if (clientCriteria.radius >= property.radius) matchingCriteria++;
 
     // property type
-    if (clientCriteria.property_type.includes(property.property_type)) matchingCriteria++;
+    if (clientCriteria.property_type.includes(property.property_type)) {
+      matchingCriteria++;
+      matchLog['property_type'] = true;
+    }
 
     // Budget
     const [minBudget, maxBudget] = clientCriteria?.budget?.split(' - ')?.map(Number) || [];
@@ -301,6 +309,8 @@ export default class SuggestionService {
         property.budget.max_budget <= maxBudget
       ) {
         matchingCriteria++;
+
+        matchLog['budget'] = true;
       }
     }
 
@@ -315,6 +325,7 @@ export default class SuggestionService {
         property.room_details.number_of_bedrooms <= clientCriteria.house_details.number_of_bedrooms.max
       ) {
         matchingCriteria++;
+        matchLog['house_details.number_of_bedrooms'] = true;
       }
 
       // Number of bathrooms
@@ -324,6 +335,7 @@ export default class SuggestionService {
         property.room_details.number_of_bathrooms <= clientCriteria.house_details.number_of_bathrooms.max
       ) {
         matchingCriteria++;
+        matchLog['house_details.number_of_bathrooms'] = true;
       }
 
       // Parking
@@ -331,6 +343,7 @@ export default class SuggestionService {
         matchingCriteria++;
         if (property.parking_details && clientCriteria.house_details.parking === property.parking_details) {
           matchingCriteria++;
+          matchLog['house_details.parking'] = true;
         }
       }
 
@@ -351,6 +364,7 @@ export default class SuggestionService {
             : toSquareMeters(property.floor_size))
       ) {
         matchingCriteria++;
+        matchLog['house_details.preferred_size'] = true;
       }
     }
 
@@ -364,6 +378,8 @@ export default class SuggestionService {
         property.room_details.number_of_bedrooms <= clientCriteria.flat_details.number_of_bedrooms?.max
       ) {
         matchingCriteria++;
+
+        matchLog['room_details.number_of_bedrooms'] = true;
       }
 
       // Number of bathrooms
@@ -372,6 +388,7 @@ export default class SuggestionService {
         property.room_details?.number_of_bathrooms <= clientCriteria.flat_details.number_of_bathrooms.min
       ) {
         matchingCriteria++;
+        matchLog['room_details?.number_of_bathrooms'] = true;
       }
 
       // Preferred size
@@ -391,12 +408,14 @@ export default class SuggestionService {
             : toSquareMeters(property.floor_size))
       ) {
         matchingCriteria++;
+        matchLog['flat_details.preferred_size'] = true;
       }
 
       // Preferred floor
       if (clientCriteria.flat_details?.preferred_floor && property.flat_details?.floor) {
         if (clientCriteria.flat_details.preferred_floor === property.flat_details.floor) {
           matchingCriteria++;
+          matchLog['flat_details?.preferred_floor'] = true;
         }
       }
 
@@ -404,6 +423,7 @@ export default class SuggestionService {
       if (clientCriteria.flat_details?.property_purpose && property.flat_details?.property_purpose) {
         if (clientCriteria.flat_details.property_purpose === property.flat_details?.property_purpose) {
           matchingCriteria++;
+          matchLog['flat_details?.property_purpose'] = true;
         }
       }
 
@@ -412,6 +432,7 @@ export default class SuggestionService {
         if (typeof clientCriteria.flat_details?.lift === 'boolean') {
           if (clientCriteria.flat_details.lift === property.flat_details?.lift) {
             matchingCriteria++;
+            matchLog['flat_details?.lift'] = true;
           }
         }
 
@@ -419,17 +440,20 @@ export default class SuggestionService {
         if (typeof clientCriteria.flat_details?.security === 'boolean') {
           if (clientCriteria.flat_details.security === property.flat_details?.security) {
             matchingCriteria++;
+            matchLog['flat_details?.security'] = true;
           }
         }
 
         // Parking
         if (clientCriteria.flat_details.parking_space && property.parking_spot > 0) {
           matchingCriteria++;
+          matchLog['flat_details.parking_space'] = true;
         }
 
         // Gym/spa
         if (clientCriteria.flat_details.gym_spa && property.flat_details) {
           matchingCriteria++;
+          matchLog['flat_details.gym_spa'] = true;
         }
       }
     }
@@ -444,6 +468,8 @@ export default class SuggestionService {
         property.specific_property_features.includes(Furniture.FULLY_FURNISHED))
     ) {
       matchingCriteria++;
+
+      matchLog['furniture'] = true;
     }
 
     // Distance from underground
@@ -454,10 +480,12 @@ export default class SuggestionService {
           clientCriteria.distance_from_underground.value * 1.6
         ) {
           matchingCriteria++;
+          matchLog['distance_from_underground'] = true;
         }
       } else {
         if (property.distance_from_underground.value <= clientCriteria.distance_from_underground.value) {
           matchingCriteria++;
+          matchLog['distance_from_underground'] = true;
         }
       }
     }
@@ -467,10 +495,12 @@ export default class SuggestionService {
       if (clientCriteria.distance_from_schools?.unit === DistanceUnit.mi) {
         if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value * 1.6) {
           matchingCriteria++;
+          matchLog['distance_from_schools'] = true;
         }
       } else {
         if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value) {
           matchingCriteria++;
+          matchLog['distance_from_schools'] = true;
         }
       }
     }
@@ -480,10 +510,12 @@ export default class SuggestionService {
       if (clientCriteria.distance_from_gym?.unit === DistanceUnit.mi) {
         if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value * 1.6) {
           matchingCriteria++;
+          matchLog['distance_from_gym'] = true;
         }
       } else {
         if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value) {
           matchingCriteria++;
+          matchLog['distance_from_gym'] = true;
         }
       }
     }
@@ -496,15 +528,29 @@ export default class SuggestionService {
           clientCriteria.distance_from_high_street.value * 1.6
         ) {
           matchingCriteria++;
+          matchLog['distance_from_high_street'] = true;
         }
       } else {
         if (property.distance_from_high_street.value <= clientCriteria.distance_from_high_street.value) {
           matchingCriteria++;
+          matchLog['distance_from_high_street'] = true;
         }
       }
     }
 
-    console.log('property: ', property.title, 'matched: ', (matchingCriteria / nrOfComparisons) * 100, '%');
+    console.log(
+      'property: ',
+      property.title,
+      'matched: ',
+      (matchingCriteria / nrOfComparisons) * 100,
+      '%',
+      ' ',
+      matchingCriteria,
+      ' of ',
+      nrOfComparisons,
+      'comparisons',
+      matchLog
+    );
 
     return (matchingCriteria / nrOfComparisons) * 100;
   }
