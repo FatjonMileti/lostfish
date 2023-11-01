@@ -148,7 +148,7 @@ export const Property = styled(
               </div>
             </div>
             <div className='action-buttons'>
-              <Button size='large' onClick={() => navigate('/matches')}>
+              <Button size='large' onClick={() => navigate('/')}>
                 View matches
               </Button>
               <Button size='large' variant='secondary' className='details-button' onClick={viewDetails}>
