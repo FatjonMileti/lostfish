@@ -348,23 +348,36 @@ export default class SuggestionService {
       }
 
       // Preferred size
-      if (
-        clientCriteria.house_details.preferred_size &&
-        (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
-          ? clientCriteria.house_details.preferred_size.size.min
-          : toSquareMeters(clientCriteria.house_details.preferred_size.size.min)) >=
-          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
-            ? property.floor_size
-            : toSquareMeters(property.floor_size)) &&
-        (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
-          ? clientCriteria.house_details.preferred_size.size.max
-          : toSquareMeters(clientCriteria.house_details.preferred_size.size.max)) <=
-          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
-            ? property.floor_size
-            : toSquareMeters(property.floor_size))
-      ) {
-        matchingCriteria++;
-        matchLog['house_details.preferred_size'] = true;
+      {
+        let houseSizeInSquareMeters;
+        let criteriaHouseMinSizeInSquareMeters;
+        let criteriaHouseMaxSizeInSquareMeters;
+
+        if (property.floor_size_unit === FloorSizeUnit.SQR_MTRS) {
+          houseSizeInSquareMeters = property.floor_size;
+        } else {
+          houseSizeInSquareMeters = toSquareMeters(clientCriteria.house_details.preferred_size.size.min);
+        }
+
+        if (clientCriteria.house_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS) {
+          criteriaHouseMinSizeInSquareMeters = clientCriteria.house_details.preferred_size.size.min;
+          criteriaHouseMaxSizeInSquareMeters = clientCriteria.house_details.preferred_size.size.max;
+        } else {
+          criteriaHouseMinSizeInSquareMeters = toSquareMeters(
+            clientCriteria.house_details.preferred_size.size.min
+          );
+          criteriaHouseMaxSizeInSquareMeters = toSquareMeters(
+            clientCriteria.house_details.preferred_size.size.max
+          );
+        }
+
+        if (
+          houseSizeInSquareMeters >= criteriaHouseMinSizeInSquareMeters &&
+          houseSizeInSquareMeters <= criteriaHouseMaxSizeInSquareMeters
+        ) {
+          matchingCriteria++;
+          matchLog['house_details.preferred_size'] = true;
+        }
       }
     }
 
@@ -392,23 +405,32 @@ export default class SuggestionService {
       }
 
       // Preferred size
-      if (
-        clientCriteria.flat_details.preferred_size &&
-        (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
-          ? clientCriteria.flat_details.preferred_size.size.min
-          : toSquareMeters(clientCriteria.flat_details.preferred_size.size.min)) >=
-          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
-            ? property.floor_size
-            : toSquareMeters(property.floor_size)) &&
-        (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS
-          ? clientCriteria.flat_details.preferred_size.size.max
-          : toSquareMeters(clientCriteria.flat_details.preferred_size.size.max)) <=
-          (property.floor_size_unit === FloorSizeUnit.SQR_MTRS
-            ? property.floor_size
-            : toSquareMeters(property.floor_size))
-      ) {
-        matchingCriteria++;
-        matchLog['flat_details.preferred_size'] = true;
+      {
+        let propertySizeInSquareMeters;
+        let criteriaMinSizeInSquareMeters;
+        let criteriaMaxSizeInSquareMeters;
+
+        if (property.floor_size_unit === FloorSizeUnit.SQR_MTRS) {
+          propertySizeInSquareMeters = property.floor_size;
+        } else {
+          propertySizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.min);
+        }
+
+        if (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS) {
+          criteriaMinSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.min;
+          criteriaMaxSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.max;
+        } else {
+          criteriaMinSizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.min);
+          criteriaMaxSizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.max);
+        }
+
+        if (
+          propertySizeInSquareMeters >= criteriaMinSizeInSquareMeters &&
+          propertySizeInSquareMeters <= criteriaMaxSizeInSquareMeters
+        ) {
+          matchingCriteria++;
+          matchLog['flat_details.preferred_size'] = true;
+        }
       }
 
       // Preferred floor
