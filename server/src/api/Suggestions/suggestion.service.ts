@@ -504,6 +504,8 @@ export default class SuggestionService {
       }
     }
 
+    console.log('property: ', property.title, 'matched: ', (matchingCriteria / nrOfComparisons) * 100, '%');
+
     return (matchingCriteria / nrOfComparisons) * 100;
   }
 }
