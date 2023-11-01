@@ -95,7 +95,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
         <div className='section-header'>
           <Typography className='matching-with'>
             Matching with{' '}
-            <span className='address'>renters in {matchedProperty?.area_of_interest ?? ''}</span>
+            <span className='address'>properties in {matchedProperty?.area_of_interest ?? ''}</span>
           </Typography>
           {suggestedProperties.data.length === 0 ? (
             <Typography variant='body5' className='sub-title'>

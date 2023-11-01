@@ -9,11 +9,13 @@ import { useCriteriaStore } from '../../../globalState/criteria';
 import { Icon } from '../../../components/Icon';
 import { SetCriteriaDrawer } from '../../SetCriteria/SetCriteriaDrawer';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
+import { useUserStore } from '../../../globalState/user';
 
 interface PropertiesMatchingHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchingHeaderProps) => {
   const criteriaStore = useCriteriaStore();
+  const userStore = useUserStore();
   const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
   const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
 
@@ -59,7 +61,10 @@ export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchin
       <SetCriteriaDrawer
         open={criteriaModalVisibility}
         setOpen={setCriteriaModalVisibility}
-        afterRefineSearch={() => suggestedProperties.refetch()}
+        afterRefineSearch={() => {
+          suggestedProperties.refetch();
+          criteriaStore.fetchCriteria(userStore.auth.access_token);
+        }}
       />
     </>
   );

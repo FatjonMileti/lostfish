@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import axios from '../utils/axios';
-import {TransactionType} from "../pages/SetCriteria/criteria.types";
+import { TransactionType } from '../pages/SetCriteria/criteria.types';
 
 export interface CriteriaStoreType {
   lookingFor?: string;
@@ -48,7 +48,7 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
               transactionType: data.transaction_type_string,
               whenDoYouWantToMove: data.moving_time,
               areaOfInterest: data.area_of_interest,
-              budgetFor: data.budget_for,
+              budgetFor: data.budget
             }));
           } catch (err: any) {
             if (err.response.status === 404) {
