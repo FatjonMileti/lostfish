@@ -269,15 +269,15 @@ export default class SuggestionService {
   }
 
   public calculateSimilarity(clientCriteria: CriteriaDocument, property: PropertyDocument): number {
-    let nrOfComparisons = 12;
+    let nrOfComparisons = 11;
 
     let matchingCriteria = 0;
 
     // Area of interest
-    if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 4;
+    if (clientCriteria.area_of_interest === property.area_of_interest) matchingCriteria += 5;
 
     // Radius
-    if (clientCriteria.radius >= property.radius) matchingCriteria++;
+    // if (clientCriteria.radius >= property.radius) matchingCriteria++;
 
     // property type
     if (clientCriteria.property_type.includes(property.property_type)) matchingCriteria++;
