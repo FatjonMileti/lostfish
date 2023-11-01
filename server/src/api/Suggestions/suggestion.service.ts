@@ -396,6 +396,14 @@ export default class SuggestionService {
       }
 
       // Number of bathrooms
+      console.log(
+        'property.room_details?.number_of_bathrooms:  ',
+        property.room_details?.number_of_bathrooms
+      );
+      console.log(
+        'clientCriteria.flat_details.number_of_bathrooms: ',
+        clientCriteria.flat_details.number_of_bathrooms
+      );
       if (
         property.room_details?.number_of_bathrooms >= clientCriteria.flat_details.number_of_bathrooms?.min &&
         property.room_details?.number_of_bathrooms <= clientCriteria.flat_details.number_of_bathrooms.min
