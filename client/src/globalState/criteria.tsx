@@ -48,7 +48,7 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
               transactionType: data.transaction_type_string,
               whenDoYouWantToMove: data.moving_time,
               areaOfInterest: data.area_of_interest,
-              budgetFor: data.budget
+              budget: data.budget.split('-')
             }));
           } catch (err: any) {
             if (err.response.status === 404) {
