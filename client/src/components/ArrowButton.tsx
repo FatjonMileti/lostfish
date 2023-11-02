@@ -46,7 +46,7 @@ export const ArrowButton = styled(
     }
 
     .icon {
-      color: #184d6d;
+      color: #000000;
       width: 30px !important;
       height: 30px !important;
     }

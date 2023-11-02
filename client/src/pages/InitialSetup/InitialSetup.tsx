@@ -19,8 +19,8 @@ import { refreshToken } from '../Login/SessionMaintainer';
 import backgroundImg from '../Home/home-background.png';
 import classNames from 'classnames';
 import { Role } from '../../enums';
-import {SelectTransaction} from "./Mrd.SelectTransaction";
-import {TransactionType} from "../SetCriteria/criteria.types";
+import { SelectTransaction } from './Mrd.SelectTransaction';
+import { TransactionType } from '../SetCriteria/criteria.types';
 
 export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -44,18 +44,17 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
     }
   };
 
-  const onSelectTransaction =  (transactionType: TransactionType) => {
-      criteriaStore.set({ transactionType });
-  }
+  const onSelectTransaction = (transactionType: TransactionType) => {
+    criteriaStore.set({ transactionType });
+  };
 
   const onLookingForChange = async (lookingFor: string) => {
     try {
       setLoading(true);
 
-
       await axios(userStore.auth.access_token).post('/api/criteria', {
         looking_for: lookingFor,
-        transaction_type_string: criteriaStore.transactionType,
+        transaction_type_string: criteriaStore.transactionType
       });
 
       criteriaStore.set({ lookingFor });
@@ -74,24 +73,32 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
 
   return (
     <div className={classNames(className, 'initial-setup-page')}>
-      <Header />
-
       <Backdrop open={loading}></Backdrop>
 
-      {!criteriaStore.transactionType && (
-          <motion.div
-              key='SelectTransaction'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                duration: 1
-              }}>
-            <SelectTransaction
-                avatar={profileStore.avatar || ''}
-                selectTransaction={criteriaStore.transactionType}
-                onSelectTransaction={onSelectTransaction}
-            />
-          </motion.div>
+      <motion.div
+        key='SelectAvatar'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: 1
+        }}>
+        <SelectAvatar onSelectAvatar={onSelectAvatar} />
+      </motion.div>
+
+      {!isNaN(parseInt(profileStore.avatar || '')) && !criteriaStore.transactionType && (
+        <motion.div
+          key='SelectTransaction'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1
+          }}>
+          <SelectTransaction
+            avatar={profileStore.avatar || ''}
+            selectTransaction={criteriaStore.transactionType}
+            onSelectTransaction={onSelectTransaction}
+          />
+        </motion.div>
       )}
 
       {!criteriaStore.lookingFor && criteriaStore.transactionType && (
@@ -142,38 +149,9 @@ export const InitialSetup = styled(({ className }: React.HTMLAttributes<HTMLDivE
     display: grid;
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
-
     box-sizing: border-box;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url(${backgroundImg}), lightgray 50% / cover no-repeat;
-      opacity: 0.05;
-
-      background-size: cover;
-      background-position-y: center;
-      z-index: -1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-
-      background: linear-gradient(148deg, #fffbf3 18.95%, #fff 100%), #fff;
-
-      background-position-y: top;
-      background-size: cover;
-      z-index: -2;
-    }
+    background-color: #fff;
 
     .container {
       display: grid;

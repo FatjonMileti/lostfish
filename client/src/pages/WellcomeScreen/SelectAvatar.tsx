@@ -7,6 +7,7 @@ import { Typography } from '../../components/Typography';
 import { Avatar } from '../../components/Avatar';
 
 import { avatars } from '../HomeLoggedIn/avatars';
+import classNames from 'classnames';
 
 export interface SelectAvatarProps extends HTMLAttributes<HTMLDivElement> {
   onSelectAvatar: (avatarIndex: number) => void;
@@ -23,44 +24,49 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
   };
 
   return (
-    <div className={className}>
+    <div className={classNames('select-avatar', className)}>
       <div className='select-avatar-content'>
         <Typography variant='h3' className='title'>
           Welcome to Lostfish
         </Typography>
         <Typography variant='body4' className='description'>
-          Maximise your chances of finding your perfect match by improving your match score. You can start
-          improving your match score by selecting an avatar.
+          Select an avatar to start building your trust score. The higher your trust score is, the more
+          accurate matches will be shown to you.
         </Typography>
+
         <div className='avatars-list'>
           {avatars.map(({ image, backgroundColor }, avatarIndex) => {
+            const active = avatarIndex === avatar;
             return (
               <Avatar
                 image={avatars[avatarIndex].image}
                 animate={{
-                  x: `calc(${-100 * avatar}% + ${32 * avatar}px)`,
+                  x: `calc(${-100 * avatar}% - ${avatar * 24}px)`,
                   opacity: avatarIndex === avatar ? 1 : 0.5
                 }}
-                transition={{ ease: 'easeOut', duration: 0.5 }}
+                transition={{ duration: 0.4 }}
                 onClick={() => setSelectedAvatar(avatarIndex)}
                 key={avatarIndex}
-                className={`${avatarIndex === avatar ? 'active' : ''}`}
+                className={classNames({ active })}
               />
             );
           })}
         </div>
-        <div className='action-buttons'>
-          <ArrowButton size='large' direction='left' onClick={handlePrevClick} />
-          <Button size='large' onClick={() => onSelectAvatar(avatar)}>
-            Select avatar
-          </Button>
-          <ArrowButton size='large' direction='right' onClick={handleNextClick} />
-        </div>
       </div>
+
+      <div className='action-buttons'>
+        <ArrowButton size='large' direction='left' onClick={handlePrevClick} />
+
+        <ArrowButton size='large' direction='right' onClick={handleNextClick} />
+      </div>
+
+      <Button size='large' onClick={() => onSelectAvatar(avatar)}>
+        Select avatar
+      </Button>
     </div>
   );
 })`
-  & {
+  &.select-avatar {
     box-sizing: border-box;
     display: grid;
     justify-content: center;
@@ -86,6 +92,8 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
         margin-top: 48px;
         display: flex;
         width: 400px;
+        column-gap: 24px;
+        padding: 48px;
 
         .avatar {
           position: relative;
@@ -94,30 +102,29 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
           overflow: hidden;
           flex-shrink: 0;
           opacity: 0.5;
-          margin-left: -32px;
           cursor: pointer;
           box-sizing: border-box;
-          &:first-of-type {
-            margin-left: 0;
-          }
 
           &.active {
             opacity: 1;
             position: relative;
             z-index: 1;
-            border: 4px solid var(--primary-brand-sand, #eee0d3);
+
+            border: 4px solid #e5155a;
+            /* Large card shadow */
+            box-shadow: 0 4px 48px 0 rgba(0, 0, 0, 0.04);
           }
         }
       }
+    }
 
-      .action-buttons {
-        margin-top: 52px;
-        display: grid;
-        grid-template-columns: min-content min-content min-content;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
+    .action-buttons {
+      margin-top: 52px;
+      display: flex;
+      column-gap: 24px;
+
+      align-items: center;
+      width: 100%;
     }
   }
 `;

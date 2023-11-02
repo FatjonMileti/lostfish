@@ -7,7 +7,7 @@ import classNames from 'classnames';
 export interface CloseButtonProps extends IconButtonProps {
   inverted?: boolean;
   background?: boolean;
-  size?: 'large' | 'small';
+  size?: 'large' | 'medium' | 'small';
 }
 
 export const CloseButton = styled(
@@ -18,6 +18,7 @@ export const CloseButton = styled(
           inverted,
           background
         })}
+        size={size}
         {...props}>
         <Icon icon='close' color='white' />
       </IconButton>
@@ -64,6 +65,13 @@ export const CloseButton = styled(
     }
 
     &.size-large {
+      padding: 14px;
+      width: 56px;
+      height: 56px;
+      border-width: 2px;
+    }
+
+    &.size-medium {
       padding: 12px;
       width: 48px;
       height: 48px;

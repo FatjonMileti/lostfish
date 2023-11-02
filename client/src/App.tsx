@@ -26,6 +26,7 @@ import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
 import { InitialSetup } from './pages/InitialSetup/InitialSetup';
+import { InitialSetupModal } from './pages/InitialSetup/InitialSetupModal/InitialSetupModal';
 import { useProfileStore } from './globalState/profile';
 import { useNotificationsStore } from './globalState/notifications';
 
@@ -94,7 +95,7 @@ function App() {
                   path=''
                   element={
                     !!userStore.auth ? (
-                      <>{profileStore.hasCompletedInitialSetup ? <HomeLoggedIn /> : <InitialSetup />}</>
+                      <>{profileStore.hasCompletedInitialSetup ? <HomeLoggedIn /> : <InitialSetupModal />}</>
                     ) : (
                       <Home />
                     )
