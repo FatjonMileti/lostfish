@@ -298,7 +298,9 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         .account-settings-nav {
           display: flex;
           align-items: flex-start;
+          border-bottom: 2px solid #F3F4F5;
           gap: 32px;
+          
 
           .label {
             padding: 16px 0px;
@@ -384,7 +386,6 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            border: 2px solid var(--primary-brand-sand, #e5155a);
             position: absolute;
           }
 
