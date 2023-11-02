@@ -176,7 +176,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       .container-account {
         display: grid;
         //column-gap: 69px;
-        padding: 36px;
+        padding: 24px 36px 36px 36px;
         min-height: calc(100vh - 112px);
         box-sizing: border-box;
 

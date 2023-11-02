@@ -1,91 +1,140 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
+import { FrequentlyAskedQuestion } from './components/HelpAndSuport.FrequentlyAskedQuestion';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import {Checkbox} from "../../components/Checkbox";
 
 export const HelpAndSupport = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`help-and-support ${className}`}>
-      <Typography variant='body5'>For any inquiries use the contact details below</Typography>
-      <div className='body-content'>
-        <div className='section'>
-          <Typography className='title' variant='body4'>
-            This is a chapter heading.
+      <div className='left-part'>
+        <Typography variant='body2'>FAQ</Typography>
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+        <FrequentlyAskedQuestion
+          title='This is a FAQ heading.'
+          description='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+           nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+           esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+           in culpa qui officia deserunt mollit anim id est laborum.'
+        />
+      </div>
+      <div className='right-part'>
+        <div className='top-section'>
+          <Typography variant='body4' className='title'>
+            Reach out
           </Typography>
-          <div className='customer-support'>
-            <Button variant='secondary' startIcon={<Icon icon='email' size={20} />}>
-              Send email
-            </Button>
-            <Button startIcon={<Icon icon='phone' size={20} />}>Call support</Button>
-          </div>
-        </div>
-
-        <div className='section'>
-          <Typography className='title' variant='body4'>
-            Working hours
+          <Typography variant='body6'>
+            In case you need assistance you can reach out to a Lostfish representative over phone using the
+            buttons below
           </Typography>
-          <div className='working-hours'>
-            <Typography variant='body4'>Monday-Tuesday: 09:00 - 18:00</Typography>
-            <Typography variant='body4'>Saturday: 09:00 - 14:00</Typography>
-            <Typography variant='body4'>
-              Sunday: <b>Closed</b>
-            </Typography>
-          </div>
         </div>
-
-        <div className='section'>
-          <Typography className='title' variant='body4'>
-            Address
+        <div className='bottom-section'>
+          <a href='tel:123-456-7890'>
+            <Button startIcon={<Icon icon='phone' size={20} />}>Call a representative</Button>
+          </a>
+          <Typography variant='body6'>
+            You might find valuable information in the FAQ section in your account.
           </Typography>
-          <div className='working-hours'>
-            <Typography variant='body4'>
-              Street: 34 Oxford Rd
-              <br />
-              City: Wormley
-              <br />
-              Phone number: 078 1161 6319
-              <br />
-              Zip code: EN10 4WL
-              <br />
-              Country: United Kingdom
-            </Typography>
-          </div>
+          <Button variant='secondary'>FAQs</Button>
         </div>
-        <div className="assistance">
-          <Checkbox /> <Typography variant='body4'>Organise assistance with viewing the property ?</Typography>
-        </div>
-
       </div>
     </div>
   );
 })`
   &.help-and-support {
     display: grid;
-    row-gap: 24px;
-    .body-content {
+    grid-template-columns: auto max-content;
+    column-gap: 24px;
+
+    .left-part {
       display: grid;
-      row-gap: 32px;
-      .section {
+      gap: 24px;
+    }
+    .right-part {
+      display: grid;
+      align-content: flex-start;
+      padding: 24px;
+      box-sizing: border-box;
+      max-width: 324px;
+      height: min-content;
+      gap: 24px;
+
+      border-radius: 12px;
+      background-color: #f3f4f5;
+
+      .top-section {
         display: grid;
-        row-gap: 16px;
+        gap: 8px;
+
         .title {
           font-weight: 700;
         }
-        .customer-support {
-          display: flex;
-          column-gap: 16px;
-        }
-
-        .working-hours {
-          display: grid;
-          row-gap: 16px;
-        }
       }
-      .assistance {
-        display: flex;
-        gap: 8px;
+      .bottom-section {
+        display: grid;
+        gap: 16px;
+
+        button {
+          width: 100%;
+          gap: 8px;
+        }
       }
     }
   }
