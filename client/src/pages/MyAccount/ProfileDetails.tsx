@@ -304,6 +304,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
           .label {
             padding: 16px 0px;
+            margin-bottom: -2px;
           }
         }
       }
