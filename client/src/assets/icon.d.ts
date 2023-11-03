@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "plus"
   | "chevron-right"
   | "chevron-left"
   | "chevron-down"
@@ -54,7 +55,6 @@ export type IconNames =
   | "arrow-up"
   | "arrow-left-1"
   | "facebook"
-  | "plus"
   | "eye-invisible"
   | "eye"
   | "attach"

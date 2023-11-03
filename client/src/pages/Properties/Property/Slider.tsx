@@ -89,7 +89,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       width: 100%;
       height: 100%;
       //aspect-ratio: 1.36/1;
-      border-radius: 0 16px 16px 0;
+      border-radius: 12px;
 
       .image-holder {
         height: 100%;
@@ -109,7 +109,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       column-gap: 16px;
       align-items: center;
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
-      border-radius: 0 0 16px 0;
+      border-radius: 0 0 12px 12px;
 
       .arrow {
         color: white;
