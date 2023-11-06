@@ -32,7 +32,8 @@ export const useSuggestedTenants = ({
     initialData: [],
     refetchIntervalInBackground: false,
     refetchOnMount: !!options.refetchOnMount,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: false
   });
 
   return query;
