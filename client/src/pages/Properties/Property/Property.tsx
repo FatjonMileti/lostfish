@@ -89,47 +89,84 @@ export const Property = styled(
               )}
               <div className='property-details'>
                 {location && (
-                  <div className='detail'>
-                    <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
-                  </div>
+                  <>
+                    <div className='detail'>
+                      <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
                 )}
+
                 {budget && (
-                  <div className='detail'>
-                    <Icon icon='banknote' />{' '}
-                    <Typography variant='body5'>
-                      £ {budget.min_budget} / {budget.max_budget} PCM
+                  <>
+                    <div className='detail'>
+                      <Icon icon='banknote' />{' '}
+                      <Typography variant='body5'>
+                        £ {budget.min_budget} / {budget.max_budget} PCM
+                      </Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
                     </Typography>
-                  </div>
+                  </>
                 )}
+
                 {area && (
-                  <div className='detail'>
-                    <Icon icon='ruler' />{' '}
-                    <Typography variant='body5'>
-                      {area} {areaUnit}{' '}
+                  <>
+                    <div className='detail'>
+                      <Icon icon='ruler' />{' '}
+                      <Typography variant='body5'>
+                        {area} {areaUnit}{' '}
+                      </Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
                     </Typography>
-                  </div>
+                  </>
                 )}
                 {roomsDetails?.number_of_bedrooms && (
-                  <div className='detail'>
-                    <Icon icon='double-bed' />
-                    <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
-                  </div>
+                  <>
+                    <div className='detail'>
+                      <Icon icon='double-bed' />
+                      <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
                 )}
                 {roomsDetails?.number_of_bathrooms && (
-                  <div className='detail'>
-                    <Icon icon='bathtub' />{' '}
-                    <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
-                  </div>
+                  <>
+                    <div className='detail'>
+                      <Icon icon='bathtub' />{' '}
+                      <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
                 )}
                 {propertyType && (
-                  <div className='detail'>
-                    <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
-                  </div>
+                  <>
+                    <div className='detail'>
+                      <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
                 )}
                 {parkingSpot && (
-                  <div className='detail'>
-                    <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
-                  </div>
+                  <>
+                    <div className='detail'>
+                      <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
                 )}
                 {epcRating && (
                   <div className='detail'>
@@ -238,6 +275,12 @@ export const Property = styled(
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+
+            .dot {
+              color: #a7a7a7;
+              font-weight: 700;
+              opacity: 0.4;
+            }
 
             .detail {
               display: flex;
