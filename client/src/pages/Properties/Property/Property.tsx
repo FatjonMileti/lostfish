@@ -1,16 +1,14 @@
 import { styled } from '@mui/system';
 import React, { HTMLProps, MouseEventHandler } from 'react';
+import classNames from 'classnames';
 
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
-import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { Avatar } from '../../../components/Avatar';
 
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
-import { useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
 
 import { AreaUnitType } from '../NewProperty/property.types';
 
@@ -37,9 +35,9 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
 }
 
 const propertyStatusMap: any = {
-  Draft: 'draft',
-  Live: 'published',
-  Completed: 'rented'
+  Draft: 'Draft',
+  Live: 'Published',
+  Completed: 'Rented'
 };
 
 export const Property = styled(
@@ -59,81 +57,14 @@ export const Property = styled(
     parkingSpot,
     epcRating
   }: PropertyProps) => {
-    const navigate = useNavigate();
     return (
       <div className={classNames('property', className)}>
+        <Slider images={images} />
         <div className='details'>
-          <div>
-            <Label className={classNames('status', propertyStatusMap[status] || 'draft')}>{status}</Label>
-
-            {name && (
-              <Typography className='property-title' variant='body3'>
-                {name}
-              </Typography>
-            )}
-
-            <div className='property-details'>
-              {location && (
-                <div className='detail'>
-                  <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
-                </div>
-              )}
-              {budget && (
-                <div className='detail'>
-                  <Icon icon='banknote' />{' '}
-                  <Typography variant='body5'>
-                    £ {budget.min_budget} / {budget.max_budget} PCM
-                  </Typography>
-                </div>
-              )}
-              {area && (
-                <div className='detail'>
-                  <Icon icon='ruler' />{' '}
-                  <Typography variant='body5'>
-                    {area} {areaUnit}{' '}
-                  </Typography>
-                </div>
-              )}
-              {roomsDetails?.number_of_bedrooms && (
-                <div className='detail'>
-                  <Icon icon='double-bed' />
-                  <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
-                </div>
-              )}
-              {roomsDetails?.number_of_bathrooms && (
-                <div className='detail'>
-                  <Icon icon='bathtub' />{' '}
-                  <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
-                </div>
-              )}
-              {propertyType && (
-                <div className='detail'>
-                  <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
-                </div>
-              )}
-              {parkingSpot && (
-                <div className='detail'>
-                  <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
-                </div>
-              )}
-              {epcRating && (
-                <div className='detail'>
-                  <Icon icon='temperature' />{' '}
-                  <Typography variant='body5'>EPC Rating: {epcRating}*</Typography>
-                </div>
-              )}
-            </div>
-
-            {description && (
-              <Typography variant='body4' className='description'>
-                {description}
-              </Typography>
-            )}
-          </div>
-
-          <div className='line' />
-
-          <div className='actions-and-potential-matches'>
+          <div className='description-header'>
+            <Typography variant='body6' className='status'>
+              {propertyStatusMap[status]}
+            </Typography>
             <div className='potential-matches'>
               <Typography className='title' variant='body5'>
                 Potential matches
@@ -143,108 +74,153 @@ export const Property = styled(
                 <Avatar image={avatars[1].image} />
                 <Avatar image={avatars[2].image} />
                 <div className='others-number'>
-                  <Typography variant='body4'>+49</Typography>
+                  <Typography variant='body6'>+49</Typography>
                 </div>
               </div>
             </div>
-            <div className='action-buttons'>
-              <Button size='large' onClick={() => navigate('/')}>
-                View matches
-              </Button>
-              <Button size='large' variant='secondary' className='details-button' onClick={viewDetails}>
-                Edit property
-              </Button>
-            </div>
           </div>
-        </div>
 
-        <Slider images={images} />
+          <div className='content'>
+            <div className='title-property-details'>
+              {name && (
+                <Typography className='property-title' variant='body4'>
+                  {name}
+                </Typography>
+              )}
+              <div className='property-details'>
+                {location && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+
+                {budget && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='banknote' />{' '}
+                      <Typography variant='body5'>
+                        £ {budget.min_budget} / {budget.max_budget} PCM
+                      </Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+
+                {area && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='ruler' />{' '}
+                      <Typography variant='body5'>
+                        {area} {areaUnit}{' '}
+                      </Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+                {roomsDetails?.number_of_bedrooms && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='double-bed' />
+                      <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+                {roomsDetails?.number_of_bathrooms && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='bathtub' />{' '}
+                      <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+                {propertyType && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+                {parkingSpot && (
+                  <>
+                    <div className='detail'>
+                      <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
+                    </div>
+                    <Typography variant='body4' className='dot'>
+                      •
+                    </Typography>
+                  </>
+                )}
+                {epcRating && (
+                  <div className='detail'>
+                    <Icon icon='temperature' />{' '}
+                    <Typography variant='body5'>EPC Rating: {epcRating}*</Typography>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {description && <Typography variant='body4'>{description}</Typography>}
+          </div>
+
+          <Button size='large' variant='secondary' onClick={viewDetails}>
+            Edit property
+          </Button>
+        </div>
       </div>
     );
   }
 )`
   &.property {
-    border-radius: 16px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: min-content auto;
     column-gap: 24px;
-    min-height: 292px;
     position: relative;
 
-    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.15);
-
-    background: #fff;
-
-    .property-title {
-      margin-top: 24px;
-      font-weight: 700;
+    .slider {
+      min-width: 440px;
     }
 
     .details {
-      padding: 24px;
-      box-sizing: border-box;
       display: grid;
-      align-content: space-between;
-      row-gap: 8px;
-      border-radius: 16px 0 0 16px;
+      grid-template-rows: min-content auto min-content;
+      align-items: flex-start;
+      row-gap: 24px;
 
-      .status {
-        &.label {
-          padding: 12px 20px !important;
-
-          &.draft {
-            background: rgba(64, 129, 64, 0.1);
-            color: #408140;
-          }
-
-          &.published {
-            background: rgba(192, 218, 255, 0.2);
-            color: #184d6d;
-          }
-
-          &.rented {
-            background: rgba(64, 129, 64, 0.1);
-            color: #408140;
-          }
-        }
-      }
-
-      .property-details {
-        margin-top: 16px;
-        display: flex;
-        gap: 24px;
-        flex-wrap: wrap;
-
-        .detail {
-          display: flex;
-          column-gap: 4px;
-          align-items: center;
-          color: #646464;
-          .typography {
-            font-weight: 700;
-          }
-        }
-      }
-
-      .description {
-        margin-top: 24px;
-      }
-
-      .line {
-        background: var(--neutral-light-grey, #f3f4f5);
-        height: 1px;
-        align-self: stretch;
-      }
-
-      .actions-and-potential-matches {
+      .description-header {
         display: flex;
         justify-content: space-between;
-        column-gap: 24px;
-        align-items: flex-end;
+        align-content: center;
 
+        .status {
+          padding: 12px;
+          background-color: #408140;
+          border-radius: 20px;
+          color: white;
+          font-weight: 700;
+        }
         .potential-matches {
-          display: grid;
-          row-gap: 16px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
           .title {
             color: #646464;
             line-height: 16px;
@@ -254,8 +230,8 @@ export const Property = styled(
           .potential-matches-list {
             display: flex;
             .avatar {
-              height: 64px;
-              width: 64px;
+              height: 40px;
+              width: 40px;
               margin-left: -8px;
               z-index: 1;
               &:first-of-type {
@@ -264,8 +240,8 @@ export const Property = styled(
             }
 
             .others-number {
-              height: 64px;
-              width: 64px;
+              height: 40px;
+              width: 40px;
               border-radius: 50%;
               background-color: #f7f1e7;
 
@@ -279,10 +255,43 @@ export const Property = styled(
             }
           }
         }
+      }
 
-        .action-buttons {
-          display: flex;
-          column-gap: 16px;
+      .content {
+        display: grid;
+        row-gap: 16px;
+
+        .title-property-details {
+          display: grid;
+          row-gap: 8px;
+
+          .property-title {
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: 700;
+          }
+
+          .property-details {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            .dot {
+              color: #a7a7a7;
+              font-weight: 700;
+              opacity: 0.4;
+            }
+
+            .detail {
+              display: flex;
+              column-gap: 4px;
+              align-items: center;
+              color: #646464;
+              .typography {
+                font-weight: 700;
+              }
+            }
+          }
         }
       }
     }
