@@ -1,20 +1,19 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { Backdrop } from '../../components/Backdrop';
+import { Label } from '../../components/Label';
 
 import axios from '../../utils/axios';
-import { Property } from './Property/Property';
-
-import { NewProperty } from './NewProperty/NewProperty';
 import { useUserStore } from '../../globalState/user';
-import { useLocation } from 'react-router-dom';
-import { useProfileStore } from '../../globalState/profile';
-import { Label } from '../../components/Label';
+
+import { Property } from './Property/Property';
+import { NewProperty } from './NewProperty/NewProperty';
 
 const state: IGridState = {
   loading: true,
@@ -43,8 +42,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const { auth } = useUserStore();
 
   const queryParams = new URLSearchParams(useLocation().search);
-
-  const profileStore = useProfileStore();
 
   React.useEffect(() => {
     setList((list) => ({
@@ -216,8 +213,18 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         gap: 32px;
 
         .label {
-          padding: 16px 0px;
+          padding: 16px 0;
           margin-bottom: -2px;
+          color: #646464;
+
+          :hover {
+            color: #0d2a38;
+            border-color: #0d2a38;
+          }
+          &.active {
+            color: #0d2a38;
+            border-color: #0d2a38;
+          }
         }
       }
     }

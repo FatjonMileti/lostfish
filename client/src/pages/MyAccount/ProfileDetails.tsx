@@ -298,13 +298,23 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         .account-settings-nav {
           display: flex;
           align-items: flex-start;
-          border-bottom: 2px solid #F3F4F5;
+          border-bottom: 2px solid #f3f4f5;
           gap: 32px;
-          
 
           .label {
-            padding: 16px 0px;
+            padding: 16px 0;
             margin-bottom: -2px;
+
+            color: #646464;
+
+            :hover {
+              color: #0d2a38;
+              border-color: #0d2a38;
+            }
+            &.active {
+              color: #0d2a38;
+              border-color: #0d2a38;
+            }
           }
         }
       }

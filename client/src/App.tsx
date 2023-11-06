@@ -8,7 +8,7 @@ import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
 import { Messages } from './pages/Messages/Messages';
-import { Properties } from './pages/Properties/Properties';
+import { Properties } from './pages/Properties/PropertiesOld';
 import { Matches } from './pages/Matches/Matches';
 import config from './config';
 import SocketContext from './context/SocketContext';

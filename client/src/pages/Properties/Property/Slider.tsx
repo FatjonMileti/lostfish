@@ -37,7 +37,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       {images?.length > 1 && (
         <div className='slider-footer'>
           <div className='arrow' onClick={previous}>
-            <Icon icon='arrow-left-1' size={24} />
+            <Icon icon='arrow-left' size={32} />
           </div>
 
           <div className='dots'>
@@ -55,7 +55,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
           </div>
 
           <div className='arrow' onClick={next}>
-            <Icon icon='arrow-right-1' size={24} />
+            <Icon icon='arrow-right' size={32} />
           </div>
         </div>
       )}
@@ -102,13 +102,14 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       position: absolute;
       bottom: 0;
       width: 100%;
-      padding: 16px 24px;
       box-sizing: border-box;
       display: flex;
       justify-content: space-between;
       column-gap: 16px;
       align-items: center;
+
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
+
       border-radius: 0 0 12px 12px;
 
       .arrow {
@@ -116,6 +117,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
         cursor: pointer;
         padding: 16px;
         user-select: none;
+        display: flex;
       }
 
       .dots {

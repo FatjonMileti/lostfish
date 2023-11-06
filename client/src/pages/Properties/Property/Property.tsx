@@ -1,16 +1,14 @@
 import { styled } from '@mui/system';
 import React, { HTMLProps, MouseEventHandler } from 'react';
+import classNames from 'classnames';
 
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
-import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { Avatar } from '../../../components/Avatar';
 
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
-import { useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
 
 import { AreaUnitType } from '../NewProperty/property.types';
 
@@ -59,7 +57,6 @@ export const Property = styled(
     parkingSpot,
     epcRating
   }: PropertyProps) => {
-    const navigate = useNavigate();
     return (
       <div className={classNames('property', className)}>
         <Slider images={images} />
@@ -77,7 +74,7 @@ export const Property = styled(
                 <Avatar image={avatars[1].image} />
                 <Avatar image={avatars[2].image} />
                 <div className='others-number'>
-                  <Typography variant='body4'>+49</Typography>
+                  <Typography variant='body6'>+49</Typography>
                 </div>
               </div>
             </div>
@@ -159,7 +156,7 @@ export const Property = styled(
     grid-template-columns: min-content auto;
     column-gap: 24px;
     position: relative;
-    
+
     .slider {
       min-width: 440px;
     }
@@ -178,8 +175,9 @@ export const Property = styled(
         .status {
           padding: 12px;
           background-color: #408140;
-          border-radius: 25000px;
+          border-radius: 20px;
           color: white;
+          font-weight: 700;
         }
         .potential-matches {
           display: flex;
