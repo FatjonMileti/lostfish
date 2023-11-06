@@ -34,7 +34,7 @@ export const SelectAvatar = styled(
       <motion.div className={classNames('select-avatar', className)} {...rest}>
         <div className='select-avatar-content'>
           <div className='select-avatar-header'>
-            <Typography variant='h3' className='title'>
+            <Typography variant='body2' className='title'>
               Welcome to Lostfish
             </Typography>
             <Typography variant='body4' className='description'>

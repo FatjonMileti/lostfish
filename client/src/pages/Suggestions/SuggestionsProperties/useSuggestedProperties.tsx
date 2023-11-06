@@ -31,7 +31,8 @@ export const useSuggestedProperties = ({
     initialData: [],
     refetchIntervalInBackground: false,
     refetchOnMount: !!options.refetchOnMount,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: false
   });
 
   return query;

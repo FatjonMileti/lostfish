@@ -15,11 +15,10 @@ import { AnimatePresence } from 'framer-motion';
 
 import { AddProperty } from './InitialSetup.AddProperty';
 import { Backdrop } from '../../../components/Backdrop';
-import { TransactionType } from '../Mrd.TransactionType';
-import { Transaction } from '../../SetCriteria/criteria.contants';
+
+import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
 import { SetCriteria } from './InitialSetup.SetCriteria';
-import { Role } from '../../../enums';
 
 interface InitialSetupModalProps extends ModalProps {
   onSelectAvatar?: (avatarIndex: number) => void;
@@ -49,14 +48,6 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
   });
 
   const onLookingForNext = async () => {
-    try {
-      setStep((step) => step + 1);
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const onAvatarNext = async () => {
     setLoading(true);
     try {
       await axios(userStore.auth.access_token).patch('/api/user/' + userStore.userDetails.user_id, {
@@ -66,6 +57,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
         looking_for: state.lookingFor,
         transaction_type_string: Transaction.Rent
       });
+
       profileStore.set((profile) => ({ ...profile, avatar: state.avatar }));
       setStep((step) => step + 1);
     } catch (err) {
@@ -73,6 +65,10 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     } finally {
       setLoading(false);
     }
+  };
+
+  const onAvatarNext = () => {
+    setStep((step) => step + 1);
   };
 
   return (
@@ -94,13 +90,6 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
         <AnimatePresence>
           {
             [
-              <WhatAreYouLookingFor
-                key='whatAreYouLookingFor'
-                {...animationProps}
-                lookingFor={state.lookingFor}
-                onLookingForChange={(lookingFor) => setState((state) => ({ ...state, lookingFor }))}
-                onNext={onLookingForNext}
-              />,
               <SelectAvatar
                 key='SelectAvatar'
                 {...animationProps}
@@ -108,17 +97,27 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                 setAvatar={(avatar) => setState((state) => ({ ...state, avatar }))}
                 onNext={onAvatarNext}
               />,
+              <WhatAreYouLookingFor
+                key='whatAreYouLookingFor'
+                {...animationProps}
+                lookingFor={state.lookingFor}
+                onLookingForChange={(lookingFor) => setState((state) => ({ ...state, lookingFor }))}
+                onNext={onLookingForNext}
+              />,
               <>
-                {profileStore.role === Role.Landlord && (
+                {state.lookingFor === LookingFor.OwnAPlace && (
                   <AddProperty
                     key='AddProperty'
                     {...animationProps}
-                    onNext={() => setStep((step) => step + 1)}
+                    onNext={async () => {
+                      await refreshToken(true);
+                      setOpen(false);
+                    }}
                     onBack={() => setStep((step) => step - 1)}
                   />
                 )}
 
-                {profileStore.role === Role.Client && (
+                {state.lookingFor === LookingFor.LookingForAPlace && (
                   <SetCriteria
                     key='SetCriteria'
                     {...animationProps}

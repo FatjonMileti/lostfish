@@ -48,7 +48,8 @@ export const AddProperty = styled(({ className, onNext, onBack, ...rest }: Selec
       <AddPropertyModal
         showStore={[showModal, setShowModal]}
         onBack={() => setShowModal(false)}
-        afterSave={() => {
+        afterSave={async () => {
+          onNext();
           setShowModal(false);
         }}
       />
