@@ -8,11 +8,11 @@ import apartament from './image353.png';
 import { Avatar } from '../../components/Avatar';
 import { avatars } from './avatars';
 import { Button } from '../../components/Button';
-import { NewProperty } from '../Properties/NewProperty/NewProperty';
 import { useNavigate } from 'react-router-dom';
 import { usePropertyDetailsHook } from './hooks/usePropertyDetails.hook';
 import { PotentialMatches } from './PotentialMatches';
 import { PropertyViewers } from './PropertyViewers';
+import { EditPropertyModal } from '../Properties/NewProperty/EditPropertyModal';
 
 type MatchType = 'match' | 'starred';
 
@@ -31,10 +31,12 @@ export const SectionTwo = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   return (
     <div className={className}>
       {property && showNewPropertyModal && (
-        <NewProperty
+        <EditPropertyModal
           showStore={[showNewPropertyModal, setShowNewPropertyModal]}
           propertyId={property._id}
-          setEditPropertyId={() => {}}
+          onBack={() => setShowNewPropertyModal(false)}
+          afterSave={() => setShowNewPropertyModal(false)}
+          afterDelete={() => setShowNewPropertyModal(false)}
         />
       )}
 

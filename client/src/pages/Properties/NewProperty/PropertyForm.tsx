@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, UseFormReturn } from 'react-hook-form';
 
 import { Modal } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
@@ -34,7 +33,6 @@ import {
   Furnished,
   OutsideSpace,
   Parking,
-  propertyFormSchema,
   PropertyType,
   Condition
 } from './property.constants';
@@ -43,34 +41,25 @@ import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { Label } from '../../../components/Label';
 import { CloseButton } from '../../../components/CloseButton';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
-export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
-  showStore: [boolean, (show: boolean) => void];
-  propertyId?: string;
-  setEditPropertyId: (propertyId: string) => void;
-  afterSave?: () => void;
-  afterDelete?: () => void;
+export interface PropertyFormProps extends HTMLAttributes<HTMLDivElement> {
+  afterSave: () => void;
+  onBack: () => void;
+  form: UseFormReturn<PropertyFormType>;
+  saveAsDraft: (payload: Partial<ApiPropertyDocumentType>) => Promise<any>;
+  startMatching: (payload: Partial<ApiPropertyDocumentType>) => Promise<any>;
 }
 
 export interface NewPropertyStateType {
   newImages: File[];
   generatedImages: any[];
-  loadingProperty: boolean;
   savingProperty: boolean;
   deletePropertyConfirmationModal: boolean;
 }
 
-export const NewProperty = styled(
-  ({
-    className,
-    showStore,
-    propertyId,
-    setEditPropertyId,
-    afterSave = () => {},
-    afterDelete = () => {}
-  }: NewPropertyProps) => {
-    const [modalVisibility, setModalVisibility] = showStore;
-
+export const PropertyForm = styled(
+  ({ form, className, afterSave, onBack, saveAsDraft, startMatching }: PropertyFormProps) => {
     const { auth } = useUserStore();
 
     const profileStore = useProfileStore();
@@ -79,7 +68,6 @@ export const NewProperty = styled(
     const [state, setState] = React.useState<NewPropertyStateType>({
       newImages: [],
       generatedImages: [],
-      loadingProperty: false,
       savingProperty: false,
       deletePropertyConfirmationModal: false
     });
@@ -92,53 +80,6 @@ export const NewProperty = styled(
 
     const setGeneratedImages = (generatedImages: any[]) =>
       setState((state) => ({ ...state, generatedImages }));
-
-    React.useEffect(() => {
-      if (propertyId) {
-        setState((state) => ({ ...state, loadingProperty: true }));
-        loadProperty().finally(() => {
-          setState((state) => ({ ...state, loadingProperty: false }));
-        });
-      }
-    }, [propertyId]);
-
-    const form = useForm<PropertyFormType>({
-      defaultValues: {
-        title: '',
-        location: {
-          latitude: undefined,
-          longitude: undefined
-        },
-        minBudget: undefined,
-        maxBudget: undefined,
-        bedrooms: undefined,
-        bathrooms: undefined,
-        propertyType: undefined,
-        flatDetails: {
-          propertyPurpose: undefined,
-          floor: undefined,
-          lift: false,
-          security: false,
-          gymSpa: false,
-          outsideSpace: {}
-        },
-        houseDetails: {
-          houseType: undefined
-        },
-        specificPropertyFeatures: {},
-        area: undefined,
-        areaUnit: AreaUnit.SquareMeter,
-        parkingSpot: undefined,
-        parkingType: undefined,
-        epcRating: '',
-        condition: undefined,
-        description: '',
-        areaOfInterest: '',
-        propertyImages: []
-      },
-      resolver: yupResolver(propertyFormSchema),
-      mode: 'all'
-    });
 
     const { register, formState } = form;
     const uploadImages = async (images: File[]): Promise<any> => {
@@ -156,111 +97,6 @@ export const NewProperty = styled(
         });
 
         return response.data;
-      } catch (err) {
-        throw err;
-      }
-    };
-
-    const loadProperty = async () => {
-      try {
-        const { data } = await axios(auth.access_token).get<ApiPropertyDocumentType>(
-          `/api/asset/${propertyId}`
-        );
-
-        form.setValue('areaOfInterest', data.area_of_interest);
-
-        form.setValue('location', {
-          latitude: data?.asset_address?.latitude,
-          longitude: data?.asset_address?.longitude
-        });
-
-        form.setValue('title', data.title);
-
-        form.setValue('propertyType', data.property_type);
-
-        if (data.property_type === PropertyType.House && data.house_details?.house_type) {
-          form.setValue('houseDetails.houseType', data.house_details.house_type);
-        }
-
-        if (data.property_type === PropertyType.Flats) {
-          if (data?.flat_details?.property_purpose) {
-            form.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
-          }
-
-          form.setValue('flatDetails.lift', data?.flat_details?.lift);
-          form.setValue('flatDetails.security', data?.flat_details?.security);
-
-          form.setValue('flatDetails.gymSpa', data?.flat_details?.gym_spa);
-
-          if (data?.flat_details?.floor) {
-            form.setValue('flatDetails.floor', data.flat_details.floor);
-          }
-
-          if (data.flat_details?.outside_space?.includes(OutsideSpace.Garden)) {
-            form.setValue('flatDetails.outsideSpace.Garden', true);
-          }
-
-          if (data.flat_details?.outside_space?.includes(OutsideSpace.Terrace)) {
-            form.setValue('flatDetails.outsideSpace.Roof terrace', true);
-          }
-
-          if (data.flat_details.outside_space.includes(OutsideSpace.Balcony)) {
-            form.setValue('flatDetails.outsideSpace.Balcony', true);
-          }
-        }
-
-        if (data.floor_size) {
-          form.setValue('area', data.floor_size);
-        }
-
-        if (data?.floor_size_unit) {
-          form.setValue('areaUnit', data.floor_size_unit);
-        }
-
-        if (data?.room_details?.number_of_bathrooms) {
-          form.setValue('bathrooms', data.room_details.number_of_bathrooms);
-        }
-
-        if (data?.room_details?.number_of_bedrooms) {
-          form.setValue('bedrooms', data.room_details.number_of_bedrooms);
-        }
-
-        if (data?.specific_property_features?.includes(Furnished.Unfurnished)) {
-          form.setValue('furniture', Furnished.Unfurnished);
-        } else if (data?.specific_property_features?.includes(Furnished.PartiallyFurnished)) {
-          form.setValue('furniture', Furnished.PartiallyFurnished);
-        } else if (data?.specific_property_features?.includes(Furnished.FullyFurnished)) {
-          form.setValue('furniture', Furnished.FullyFurnished);
-        }
-
-        form.setValue('propertyImages', data.property_images);
-
-        if (data?.budget?.min_budget) {
-          form.setValue('minBudget', data.budget.min_budget);
-        }
-
-        if (data?.budget?.max_budget) {
-          form.setValue('maxBudget', data.budget.max_budget);
-        }
-
-        if (!isNaN(data?.parking_spot)) {
-          form.setValue('parkingSpot', data?.parking_spot?.toString());
-        }
-        if (data?.parking_details) {
-          form.setValue('parkingType', data.parking_details);
-        }
-
-        form.setValue(
-          'specificPropertyFeatures',
-          Object.values(OtherSpecificPropertyFeature).reduce((acc: any, ospf) => {
-            acc[ospf] = data.specific_property_features.includes(ospf);
-            return acc;
-          }, {})
-        );
-
-        form.setValue('epcRating', data.epc_rating);
-        form.setValue('condition', data.condition);
-        form.setValue('description', data.description);
       } catch (err) {
         throw err;
       }
@@ -360,20 +196,12 @@ export const NewProperty = styled(
       }
     };
 
-    const saveAsDraft = async () => {
+    const onSaveAsDraftClick = async () => {
       setState((state) => ({ ...state, savingProperty: true }));
-
       try {
         await processNewImages();
-
         const payload = generatePayload();
-
-        await (propertyId
-          ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
-          : axios(auth.access_token).post('/api/asset/draft', payload));
-
-        setModalVisibility(false);
-
+        await saveAsDraft(payload);
         afterSave();
       } catch (err) {
         throw err;
@@ -382,7 +210,7 @@ export const NewProperty = styled(
       }
     };
 
-    const startMatching = async () => {
+    const onStartMatchingClick = async () => {
       setState((state) => ({ ...state, savingProperty: true }));
       try {
         await processNewImages();
@@ -392,11 +220,7 @@ export const NewProperty = styled(
           status_string: 'Live'
         };
 
-        await (propertyId
-          ? axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload)
-          : axios(auth.access_token).post('/api/asset', payload));
-
-        setModalVisibility(false);
+        await startMatching(payload);
 
         navigate('/');
 
@@ -406,32 +230,6 @@ export const NewProperty = styled(
       } finally {
         setState((state) => ({ ...state, savingProperty: false }));
       }
-    };
-
-    const deleteProperty = async () => {
-      try {
-        await axios(auth.access_token).delete(`/api/asset/${propertyId}`);
-      } catch (err) {
-        throw err;
-      }
-    };
-    const onDeleteConfirm = async () => {
-      try {
-        setState((state) => ({ ...state, deletePropertyConfirmationModal: false }));
-        setState((state) => ({ ...state, savingProperty: true }));
-        await deleteProperty();
-      } finally {
-        setState((state) => ({ ...state, savingProperty: false }));
-        setModalVisibility(false);
-        afterDelete();
-      }
-    };
-
-    const onDeleteClick = () => {
-      setState((state) => ({ ...state, deletePropertyConfirmationModal: true }));
-    };
-    const onCancelDelete = () => {
-      setState((state) => ({ ...state, deletePropertyConfirmationModal: false }));
     };
 
     const propertyScore = (
@@ -453,27 +251,8 @@ export const NewProperty = styled(
     ).toFixed(0);
 
     return (
-      <Modal
-        className={`new-property-modal ${className}`}
-        open={modalVisibility}
-        onBackdropClick={() => setModalVisibility(false)}
-        onClose={() => setModalVisibility(false)}>
+      <div className={classNames('property-form', className)}>
         <Backdrop open={state.savingProperty}></Backdrop>
-        <div className='header'>
-          <Typography variant='body2'>Add property</Typography>
-          <div className='right-side'>
-            {propertyId && (
-              <Button
-                variant='secondary'
-                className='delete-button'
-                startIcon={<Icon icon='trash' size={20} />}
-                onClick={onDeleteClick}>
-                Delete property
-              </Button>
-            )}
-            <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
-          </div>
-        </div>
         <div className='container'>
           <div className='left'>
             <TextField
@@ -938,18 +717,6 @@ export const NewProperty = styled(
                     ''
                   )}
                 </ul>
-
-                {/*<ul>*/}
-                {/*  <li>*/}
-                {/*    <Typography variant='body4'>Two bathrooms (en-suite) </Typography>*/}
-                {/*  </li>*/}
-                {/*  <li>*/}
-                {/*    <Typography variant='body4'>Private patio garden</Typography>*/}
-                {/*  </li>*/}
-                {/*  <li>*/}
-                {/*    <Typography variant='body4'>Duplex apartment</Typography>*/}
-                {/*  </li>*/}
-                {/*</ul>*/}
               </div>
             </div>
           </div>
@@ -1004,7 +771,7 @@ export const NewProperty = styled(
             className='back-button'
             variant='secondary'
             size='large'
-            onClick={() => setModalVisibility(false)}>
+            onClick={onBack}>
             Back
           </Button>
           <Label
@@ -1014,7 +781,7 @@ export const NewProperty = styled(
             special
             className='start-matching-button'
             onClick={async () => {
-              await startMatching();
+              await onStartMatchingClick();
             }}>
             Start matching
           </Label>
@@ -1022,75 +789,16 @@ export const NewProperty = styled(
             size='large'
             disabled={Object.values(formState.errors).length > 0}
             onClick={async () => {
-              await saveAsDraft();
+              await onSaveAsDraftClick();
             }}>
             Save as draft
           </Button>
         </div>
-        <Modal
-          disableScrollLock
-          open={state.deletePropertyConfirmationModal}
-          className='delete-confirm-modal'
-          onBackdropClick={onCancelDelete}>
-          <div className='modal-header'>
-            <CloseButton onClick={onCancelDelete} />
-          </div>
-          <Typography variant='body2' className='title'>
-            Are you sure you want to delete the property?
-          </Typography>
-          <Typography variant='body4' className='description'>
-            The action can be reverted anymore. Do you want to delete this property?
-          </Typography>
-          <div className='actions'>
-            <Button size='large' variant='secondary' onClick={onCancelDelete}>
-              Cancel
-            </Button>
-            <Button size='large' onClick={onDeleteConfirm}>
-              Delete
-            </Button>
-          </div>
-        </Modal>
-      </Modal>
+      </div>
     );
   }
 )`
-  &.new-property-modal {
-    overflow-y: auto;
-    max-height: 100vh;
-    height: auto;
-    width: 100vw;
-
-    border-radius: 0px;
-
-    .modal-container {
-      padding: 0;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 24px 36px;
-      border-bottom: 2px solid #f3f4f5;
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
-
-      .right-side {
-        display: flex;
-        column-gap: 16px;
-        align-items: center;
-
-        .delete-button {
-          color: #e5155a;
-          border-color: #e5155a;
-        }
-
-        .exit-button {
-          padding: 16px;
-          width: 56px;
-          height: 56px;
-        }
-      }
-    }
+  &.property-form {
     .container {
       padding: 32px 36px;
       display: grid;
@@ -1402,41 +1110,9 @@ export const NewProperty = styled(
       align-items: center;
 
       .back-button {
-        //.icon {
-        //  width: 24px !important;
-        //  height: 24px !important;
-        //}
       }
 
       .start-matching-button {
-      }
-    }
-    .delete-confirm-modal {
-      .modal-container {
-        padding: 0;
-      }
-      padding: 24px;
-      max-width: 440px;
-      .modal-header {
-        display: flex;
-        justify-content: flex-end;
-      }
-      .title {
-        margin-top: 24px;
-        text-align: center;
-      }
-
-      .description {
-        margin-top: 16px;
-        text-align: center;
-      }
-      .actions {
-        margin-top: 48px;
-        display: flex;
-        column-gap: 16px;
-        .button {
-          flex-grow: 1;
-        }
       }
     }
   }

@@ -15,9 +15,9 @@ import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { Backdrop } from '../../../components/Backdrop';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
-import { NewProperty } from '../../Properties/NewProperty/NewProperty';
 
 import forestBackgroundImage from '../../About/forest.jpeg';
+import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
@@ -200,11 +200,12 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       )}
 
       {propertyToEdit && (
-        <NewProperty
+        <EditPropertyModal
           propertyId={propertyToEdit}
           showStore={[!!propertyToEdit, () => setPropertyToEdit(undefined)]}
-          setEditPropertyId={setPropertyToEdit}
           afterSave={() => suggestedTenants.refetch()}
+          onBack={() => setPropertyToEdit(undefined)}
+          afterDelete={() => suggestedTenants.refetch()}
         />
       )}
     </>

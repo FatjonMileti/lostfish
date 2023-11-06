@@ -1,14 +1,13 @@
 import { styled } from '@mui/system';
 import { Typography } from '../../../components/Typography';
 import { YourProperty } from '../../PagesComponents/YourProperty';
-import propertyImage from '../images/property.png';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import axios from '../../../utils/axios';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../../globalState/user';
 
-import { NewProperty } from '../../Properties/NewProperty/NewProperty';
+import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 
 export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -56,12 +55,12 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
         )}
       </div>
       {showEditProperty && (
-        <NewProperty
+        <EditPropertyModal
           propertyId={property._id}
           showStore={[showEditProperty, setShowEditProperty]}
-          setEditPropertyId={() => {}}
           afterSave={() => propertiesQuery.refetch()}
           afterDelete={() => propertiesQuery.refetch()}
+          onBack={() => setShowEditProperty(false)}
         />
       )}
     </>

@@ -11,16 +11,14 @@ import { Header } from '../HomeLoggedIn/Header';
 import { Footer } from '../Home/Footer';
 import axios from '../../utils/axios';
 import { Property } from './Property/Property';
-
-import { NewProperty } from './NewProperty/NewProperty';
 import { useUserStore } from '../../globalState/user';
 import { useLocation } from 'react-router-dom';
 import propertiesBackground from '../Home/home-background.png';
 import { Tab, Tabs } from '../../components/Tab';
-import { Role } from '../../enums';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
-import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
-import { useProfileStore } from '../../globalState/profile';
+
+import { AddPropertyModal } from './NewProperty/AddPropertyModal';
+import { EditPropertyModal } from './NewProperty/EditPropertyModal';
 
 const state: IGridState = {
   loading: true,
@@ -42,6 +40,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   });
 
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
+
   const [editPropertyId, setEditPropertyId] = React.useState<string | undefined>(undefined);
 
   const [statusTab, setStatusTab] = React.useState(0);
@@ -49,8 +48,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const { auth } = useUserStore();
 
   const queryParams = new URLSearchParams(useLocation().search);
-
-  const profileStore = useProfileStore();
 
   React.useEffect(() => {
     setList((list) => ({
@@ -98,24 +95,24 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
   return (
     <div className={`properties-page ${className}`}>
-      <Header
-        middleContent={
-          <>
-            {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
-            {profileStore.role === Role.Client && <PropertiesMatchingHeader />}
-          </>
-        }
-      />
+      <Header middleContent={<TenantsMatchingHeader />} />
       <Backdrop open={list.loading}></Backdrop>
-      {showNewPropertyModal && (
-        <NewProperty
-          showStore={[showNewPropertyModal, setShowNewPropertyModal]}
+
+      {editPropertyId && (
+        <EditPropertyModal
+          showStore={[!!editPropertyId, () => setEditPropertyId(undefined)]}
           propertyId={editPropertyId}
-          setEditPropertyId={setEditPropertyId}
           afterSave={() => getAssets()}
           afterDelete={() => getAssets()}
+          onBack={() => setEditPropertyId(undefined)}
         />
       )}
+
+      <AddPropertyModal
+        showStore={[showNewPropertyModal, setShowNewPropertyModal]}
+        afterSave={() => getAssets()}
+        onBack={() => setEditPropertyId(undefined)}
+      />
 
       <div className='container'>
         {!list.loading && list.rows.length === 0 && list.totalDocsUnfiltered === 0 && (
@@ -124,9 +121,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             <Button
               size='large'
               className='add-property-button'
-              startIcon={<Icon icon='plus' size={16} />}
+              startIcon={<Icon icon='plus' size={24} />}
               onClick={() => {
-                setEditPropertyId(undefined);
                 setShowNewPropertyModal(true);
               }}>
               Add Property
@@ -148,9 +144,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                 variant='secondary'
                 size='large'
                 className='add-property-button'
-                startIcon={<Icon icon='plus' size={16} />}
+                startIcon={<Icon icon='plus' size={24} />}
                 onClick={() => {
-                  setEditPropertyId(undefined);
                   setShowNewPropertyModal(true);
                 }}>
                 Add Property
@@ -182,7 +177,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                   epcRating={p.epc_rating}
                   viewDetails={() => {
                     setEditPropertyId(p._id);
-                    setShowNewPropertyModal(true);
                   }}
                   images={p.property_images.length > 0 ? p.property_images : []}
                 />

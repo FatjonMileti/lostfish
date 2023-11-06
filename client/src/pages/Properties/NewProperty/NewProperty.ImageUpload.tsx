@@ -120,7 +120,7 @@ export const ImageUpload = styled(
           accept='image/*'
           onFiles={(files) => onNewImages(files)}
           button={
-            <Button variant='secondary' size='large' startIcon={<Icon icon='plus' size={14} />}>
+            <Button variant='secondary' size='large' startIcon={<Icon icon='plus' size={24} />}>
               Upload media
             </Button>
           }></Upload>

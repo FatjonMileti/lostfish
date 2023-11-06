@@ -5,34 +5,135 @@ import { CloseButton } from '../../../components/CloseButton';
 import React from 'react';
 import { Typography } from '../../../components/Typography';
 
-import { Label } from '../../../components/Label';
-import { Icon } from '../../../components/Icon';
 import { SelectAvatar } from './InitialSetup.SelectAvatar';
+import { WhatAreYouLookingFor } from './InitialSetup.WhatAreYouLokingFor';
+import { useProfileStore } from '../../../globalState/profile';
+import { useCriteriaStore } from '../../../globalState/criteria';
+import axios from '../../../utils/axios';
+import { useUserStore } from '../../../globalState/user';
+import { AnimatePresence } from 'framer-motion';
+
+import { AddProperty } from './InitialSetup.AddProperty';
+import { Backdrop } from '../../../components/Backdrop';
+import { TransactionType } from '../Mrd.TransactionType';
+import { Transaction } from '../../SetCriteria/criteria.contants';
+import { refreshToken } from '../../Login/SessionMaintainer';
+import { SetCriteria } from './InitialSetup.SetCriteria';
+import { Role } from '../../../enums';
 
 interface InitialSetupModalProps extends ModalProps {
   onSelectAvatar?: (avatarIndex: number) => void;
 }
-export const InitialSetupModal = styled(
-  ({ className, onSelectAvatar = () => {} }: InitialSetupModalProps) => {
-    const [open, setOpen] = React.useState(true);
-    const [avatar, setSelectedAvatar] = React.useState(0);
 
-    return (
-      <Modal className={classNames('initial-setup-modal', className)} open={open}>
-        <div className='modal-header'>
-          <Typography variant='body2'>Match preferences</Typography>
-          <CloseButton size='large' onClick={() => setOpen(false)} />
-        </div>
-        <div className='modal-body'>{[<SelectAvatar onSelectAvatar={() => {}} />][0]}</div>
-        <div className='modal-footer'>
-          <Label size='large'>
-            Next <Icon icon='chevron-right' />
-          </Label>
-        </div>
-      </Modal>
-    );
+const animationProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: {
+    duration: 1
   }
-)`
+};
+export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) => {
+  const [loading, setLoading] = React.useState<boolean>(false);
+
+  const [open, setOpen] = React.useState(true);
+
+  const [step, setStep] = React.useState(0);
+
+  const profileStore = useProfileStore();
+  const criteriaStore = useCriteriaStore();
+  const userStore = useUserStore();
+
+  const [state, setState] = React.useState({
+    avatar: '0',
+    lookingFor: ''
+  });
+
+  const onLookingForNext = async () => {
+    try {
+      setStep((step) => step + 1);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const onAvatarNext = async () => {
+    setLoading(true);
+    try {
+      await axios(userStore.auth.access_token).patch('/api/user/' + userStore.userDetails.user_id, {
+        avatar: state.avatar
+      });
+      await axios(userStore.auth.access_token).post('/api/criteria', {
+        looking_for: state.lookingFor,
+        transaction_type_string: Transaction.Rent
+      });
+      profileStore.set((profile) => ({ ...profile, avatar: state.avatar }));
+      setStep((step) => step + 1);
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal className={classNames('initial-setup-modal', className)} open={open}>
+      <Backdrop open={loading}></Backdrop>
+      <div className='modal-header'>
+        <Typography variant='body2'>Match preferences</Typography>
+        {step >= 2 && (
+          <CloseButton
+            size='large'
+            onClick={async () => {
+              await refreshToken(true);
+              setOpen(false);
+            }}
+          />
+        )}
+      </div>
+      <div className='modal-body'>
+        <AnimatePresence>
+          {
+            [
+              <WhatAreYouLookingFor
+                key='whatAreYouLookingFor'
+                {...animationProps}
+                lookingFor={state.lookingFor}
+                onLookingForChange={(lookingFor) => setState((state) => ({ ...state, lookingFor }))}
+                onNext={onLookingForNext}
+              />,
+              <SelectAvatar
+                key='SelectAvatar'
+                {...animationProps}
+                avatar={state.avatar}
+                setAvatar={(avatar) => setState((state) => ({ ...state, avatar }))}
+                onNext={onAvatarNext}
+              />,
+              <>
+                {profileStore.role === Role.Landlord && (
+                  <AddProperty
+                    key='AddProperty'
+                    {...animationProps}
+                    onNext={() => setStep((step) => step + 1)}
+                    onBack={() => setStep((step) => step - 1)}
+                  />
+                )}
+
+                {profileStore.role === Role.Client && (
+                  <SetCriteria
+                    key='SetCriteria'
+                    {...animationProps}
+                    onNext={() => setStep((step) => step + 1)}
+                    onBack={() => setStep((step) => step - 1)}
+                  />
+                )}
+              </>
+            ][step]
+          }
+        </AnimatePresence>
+      </div>
+    </Modal>
+  );
+})`
   &.initial-setup-modal {
     width: 100vw;
     height: 100vh;
@@ -48,28 +149,20 @@ export const InitialSetupModal = styled(
     .modal-container {
       padding: 0 !important;
       display: grid;
-      grid-template-rows: max-content auto max-content;
+      grid-template-rows: max-content auto;
       background: #fff;
 
       .modal-header {
-        padding: 24px 36px;
+        padding: 23px 36px;
         display: flex;
         justify-content: space-between;
         align-items: center;
 
         border-bottom: 2px solid #f3f4f5;
-        /* Nav Shadow */
-        box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
       }
 
       .modal-body {
-        padding: 48px 36px;
-      }
-
-      .modal-footer {
-        padding: 24px 36px;
-        display: flex;
-        justify-content: flex-end;
+        overflow-y: auto;
       }
     }
   }

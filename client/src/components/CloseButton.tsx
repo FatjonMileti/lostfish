@@ -16,7 +16,8 @@ export const CloseButton = styled(
       <IconButton
         className={classNames('close-button', className, `size-${size}`, {
           inverted,
-          background
+          background,
+          disabled: props.disabled
         })}
         size={size}
         {...props}>

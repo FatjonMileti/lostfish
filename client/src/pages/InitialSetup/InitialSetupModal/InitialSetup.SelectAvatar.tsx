@@ -1,86 +1,110 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import React from 'react';
 
-import { Button } from '../../../components/Button';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { Typography } from '../../../components/Typography';
 import { Avatar } from '../../../components/Avatar';
 
 import { avatars } from '../../HomeLoggedIn/avatars';
 import classNames from 'classnames';
+import { Label } from '../../../components/Label';
+import { Icon } from '../../../components/Icon';
+import { HTMLMotionProps, motion } from 'framer-motion';
 
-export interface SelectAvatarProps extends HTMLAttributes<HTMLDivElement> {
-  onSelectAvatar: (avatarIndex: number) => void;
+export interface SelectAvatarProps extends HTMLMotionProps<'div'> {
+  onNext: () => void;
+  avatar: string;
+  setAvatar: (avatar: string) => void;
 }
 
-export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarProps) => {
-  const [avatar, setSelectedAvatar] = React.useState(0);
-  const handleNextClick = () => {
-    setSelectedAvatar(avatar === avatars.length - 1 ? 0 : avatar + 1);
-  };
+export const SelectAvatar = styled(
+  ({ className, avatar: avatarString, setAvatar: setAvatarString, onNext, ...rest }: SelectAvatarProps) => {
+    const avatar = parseInt(avatarString);
+    const setAvatar = (avatar: number) => setAvatarString(avatar.toString());
 
-  const handlePrevClick = () => {
-    setSelectedAvatar(avatar === 0 ? avatars.length - 1 : avatar - 1);
-  };
+    const handleNextClick = () => {
+      setAvatar(avatar === avatars.length - 1 ? 0 : avatar + 1);
+    };
 
-  return (
-    <div className={classNames('select-avatar', className)}>
-      <div className='select-avatar-content'>
-        <Typography variant='h3' className='title'>
-          Welcome to Lostfish
-        </Typography>
-        <Typography variant='body4' className='description'>
-          Select an avatar to start building your trust score. The higher your trust score is, the more
-          accurate matches will be shown to you.
-        </Typography>
+    const handlePrevClick = () => {
+      setAvatar(avatar === 0 ? avatars.length - 1 : avatar - 1);
+    };
 
-        <div className='avatars-list'>
-          {avatars.map(({ image, backgroundColor }, avatarIndex) => {
-            const active = avatarIndex === avatar;
-            return (
-              <Avatar
-                image={avatars[avatarIndex].image}
-                animate={{
-                  x: `calc(${-100 * avatar}% - ${avatar * 24}px)`,
-                  opacity: avatarIndex === avatar ? 1 : 0.5
-                }}
-                transition={{ duration: 0.4 }}
-                onClick={() => setSelectedAvatar(avatarIndex)}
-                key={avatarIndex}
-                className={classNames({ active })}
-              />
-            );
-          })}
+    return (
+      <motion.div className={classNames('select-avatar', className)} {...rest}>
+        <div className='select-avatar-content'>
+          <div className='select-avatar-header'>
+            <Typography variant='h3' className='title'>
+              Welcome to Lostfish
+            </Typography>
+            <Typography variant='body4' className='description'>
+              Select an avatar to start building your trust score. The higher your trust score is, the more
+              accurate matches will be shown to you.
+            </Typography>
+          </div>
+
+          <div className='avatars-list'>
+            {avatars.map(({ image, backgroundColor }, avatarIndex) => {
+              const active = avatarIndex === avatar;
+              return (
+                <Avatar
+                  image={image}
+                  animate={{
+                    x: `calc(${-100 * avatar}% - ${avatar * 24}px)`,
+                    opacity: avatarIndex === avatar ? 1 : 0.5
+                  }}
+                  transition={{ duration: 0.4 }}
+                  onClick={() => setAvatar(avatarIndex)}
+                  key={avatarIndex}
+                  className={classNames({ active })}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      <div className='action-buttons'>
-        <ArrowButton size='large' direction='left' onClick={handlePrevClick} />
+        <div className='section-footer'>
+          <div />
+          <div className='action-buttons'>
+            <ArrowButton size='large' direction='left' onClick={handlePrevClick} />
 
-        <ArrowButton size='large' direction='right' onClick={handleNextClick} />
-      </div>
-    </div>
-  );
-})`
+            <ArrowButton size='large' direction='right' onClick={handleNextClick} />
+          </div>
+
+          <Label size='large' className='next-button' onClick={onNext}>
+            Next <Icon icon='arrow-right' />
+          </Label>
+        </div>
+      </motion.div>
+    );
+  }
+)`
   &.select-avatar {
     box-sizing: border-box;
     display: grid;
-    justify-content: center;
     overflow-x: hidden;
+    justify-items: center;
+    grid-template-rows: auto min-content;
+    height: 100%;
 
     .select-avatar-content {
       display: grid;
       justify-items: center;
-      width: 672px;
+      width: 100%;
+      padding: 14px 36px;
+      align-content: center;
 
-      .title,
-      .description {
-        text-align: center;
-      }
+      .select-avatar-header {
+        max-width: 670px;
+        .title,
+        .description {
+          text-align: center;
+        }
 
-      .description {
-        text-align: center;
-        margin-top: 16px;
+        .description {
+          text-align: center;
+          margin-top: 16px;
+        }
       }
 
       .avatars-list {
@@ -113,14 +137,25 @@ export const SelectAvatar = styled(({ className, onSelectAvatar }: SelectAvatarP
       }
     }
 
-    .action-buttons {
-      margin-top: 52px;
-      display: flex;
-      column-gap: 24px;
-      justify-content: center;
-
-      align-items: center;
+    .section-footer {
       width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 36px;
+      box-sizing: border-box;
+
+      .action-buttons {
+        display: flex;
+        column-gap: 24px;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .next-button {
+        justify-self: flex-end;
+      }
     }
   }
 `;

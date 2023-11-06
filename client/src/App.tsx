@@ -32,6 +32,7 @@ import { useNotificationsStore } from './globalState/notifications';
 
 import { CookieConsent } from './components/CookieConsent';
 import { MyMatches } from './pages/Matches/MyMatches';
+import { GlobalLoading } from './components/Backdrop';
 
 function App() {
   const userStore = useUserStore();
@@ -77,6 +78,7 @@ function App() {
 
   return (
     <>
+      <GlobalLoading />
       <SessionMaintainer debug>
         <SocketContext.Provider value={value}>
           <UserProvider>
