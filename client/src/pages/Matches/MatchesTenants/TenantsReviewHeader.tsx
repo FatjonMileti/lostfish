@@ -85,7 +85,7 @@ export const TenantsReviewHeader = styled(({ className }: TenantsReviewHeaderPro
           height: 36px;
           background-size: cover;
           border-radius: 50%;
-          background-position-y: center;
+          background-position: center;
 
           :not(:first-child) {
             margin-left: -8px;

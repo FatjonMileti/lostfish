@@ -25,6 +25,7 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
+import {Properties} from '../Properties/Properties';
 import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
@@ -34,6 +35,7 @@ import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesR
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Summary', link: '' },
+  { icon: 'building', text: 'My Properties', link: '/properties' },
   { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -153,6 +155,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
                 <Route path='/help-and-support' element={<HelpAndSupport />} />
                 <Route path='/solicitors' element={<Solicitors />} />
+                <Route path='/properties' element={<Properties />}/>
               </Routes>
             </div>
           </div>
@@ -176,7 +179,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       .container-account {
         display: grid;
         //column-gap: 69px;
-        padding: 36px;
+        padding: 24px 36px 36px 36px;
         min-height: calc(100vh - 112px);
         box-sizing: border-box;
 
