@@ -44,7 +44,7 @@ export const TenantsMatchingHeader = styled(({ className }: TenantsMatchingHeade
         </div>
         <div className='divider-line' />
       </div>
-      <Label variant='tertiary' onClick={() => navigate('/properties')}>
+      <Label variant='tertiary' onClick={() => navigate('/my-account/properties')}>
         <Icon icon='filter' />
         Preferences
       </Label>
