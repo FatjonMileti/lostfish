@@ -76,7 +76,7 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       align-items: center;
       justify-content: center;
       background-color: #8080800a;
-      border-radius: 0 16px 16px 0;
+      border-radius: 12px;
 
       .icon {
         color: #a7a7a7;

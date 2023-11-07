@@ -203,6 +203,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     align-content: flex-start;
     position: relative;
     grid-template-rows: min-content auto;
+    height: 100%;
 
     .properties-header {
       display: grid;
@@ -244,7 +245,6 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     .properties-list {
       display: grid;
       gap: 24px;
-      justify-content: center;
 
       //overflow-y: auto;
       //max-height: calc(100vh - 122px);

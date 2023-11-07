@@ -208,6 +208,7 @@ export const Property = styled(
         display: flex;
         justify-content: space-between;
         align-content: center;
+        gap: 24px;
 
         .status {
           padding: 12px;
