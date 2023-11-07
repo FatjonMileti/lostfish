@@ -14,11 +14,11 @@ import { HTMLMotionProps, motion } from 'framer-motion';
 import { AddPropertyModal } from '../../Properties/NewProperty/AddPropertyModal';
 
 export interface SelectAvatarProps extends HTMLMotionProps<'div'> {
-  onNext: () => void;
+  afterAddProperty: () => void | any;
   onBack: () => void;
 }
 
-export const AddProperty = styled(({ className, onNext, onBack, ...rest }: SelectAvatarProps) => {
+export const AddProperty = styled(({ className, afterAddProperty, onBack, ...rest }: SelectAvatarProps) => {
   const [showModal, setShowModal] = React.useState(false);
   return (
     <>
@@ -49,7 +49,7 @@ export const AddProperty = styled(({ className, onNext, onBack, ...rest }: Selec
         showStore={[showModal, setShowModal]}
         onBack={() => setShowModal(false)}
         afterSave={async () => {
-          onNext();
+          await afterAddProperty();
           setShowModal(false);
         }}
       />

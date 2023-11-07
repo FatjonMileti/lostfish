@@ -14,8 +14,6 @@ import { useUserStore } from '../../globalState/user';
 
 import { Property } from './Property/Property';
 
-import { Header } from '../HomeLoggedIn/Header';
-import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { EditPropertyModal } from './NewProperty/EditPropertyModal';
 import { AddPropertyModal } from './NewProperty/AddPropertyModal';
 
@@ -99,7 +97,10 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         <EditPropertyModal
           showStore={[!!editPropertyId, () => setEditPropertyId(undefined)]}
           propertyId={editPropertyId}
-          afterSave={() => getAssets()}
+          afterSave={() => {
+            setEditPropertyId(undefined);
+            getAssets();
+          }}
           afterDelete={() => getAssets()}
           onBack={() => setEditPropertyId(undefined)}
         />
@@ -107,7 +108,10 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
       <AddPropertyModal
         showStore={[showNewPropertyModal, setShowNewPropertyModal]}
-        afterSave={() => getAssets()}
+        afterSave={() => {
+          setShowNewPropertyModal(false);
+          getAssets();
+        }}
         onBack={() => setEditPropertyId(undefined)}
       />
 

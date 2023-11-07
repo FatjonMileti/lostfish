@@ -118,7 +118,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                   <AddProperty
                     key='AddProperty'
                     {...animationProps}
-                    onNext={async () => {
+                    afterAddProperty={async () => {
                       await refreshToken(true);
                       setOpen(false);
                     }}

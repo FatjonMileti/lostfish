@@ -152,12 +152,16 @@ export const seedCriteria = async (numAssets: number): Promise<void> => {
   try {
     await CriteriaSchema.deleteMany({});
     await MatchLog.deleteMany({});
-    const criterias = await Promise.all(Array.from({ length: numAssets }, generateCriteria));
+    // const criterias = await Promise.all(Array.from({ length: numAssets }, generateCriteria));
 
     const defaultLandlordCriteria = await generateCriteriaLandlord();
     const defaultTenantUser = await generateCriteriaTenant();
 
-    await CriteriaSchema.insertMany([defaultLandlordCriteria, defaultTenantUser, ...criterias]);
+    await CriteriaSchema.insertMany([
+      defaultLandlordCriteria,
+      defaultTenantUser
+      // ...criterias
+    ]);
     console.log(`${numAssets} criteria seeded successfully.`);
   } catch (error) {
     console.error('Error seeding criteria:', error);

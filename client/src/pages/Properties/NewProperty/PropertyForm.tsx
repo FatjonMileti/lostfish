@@ -2,7 +2,6 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-import { Modal } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { IconButton } from '../../../components/IconButton';
@@ -24,7 +23,6 @@ import axios from '../../../utils/axios';
 import { ImageUpload } from './NewProperty.ImageUpload';
 
 import { ApiPropertyDocumentType, PropertyFormType } from './property.types';
-import { useProfileStore } from '../../../globalState/profile';
 import {
   AreaUnit,
   House,
@@ -39,8 +37,6 @@ import {
 import { Transaction } from '../../SetCriteria/criteria.contants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { Label } from '../../../components/Label';
-import { CloseButton } from '../../../components/CloseButton';
-import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 
 export interface PropertyFormProps extends HTMLAttributes<HTMLDivElement> {
@@ -61,9 +57,6 @@ export interface NewPropertyStateType {
 export const PropertyForm = styled(
   ({ form, className, afterSave, onBack, saveAsDraft, startMatching }: PropertyFormProps) => {
     const { auth } = useUserStore();
-
-    const profileStore = useProfileStore();
-    const navigate = useNavigate();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
       newImages: [],
@@ -221,10 +214,7 @@ export const PropertyForm = styled(
         };
 
         await startMatching(payload);
-
-        navigate('/');
-
-        await profileStore.fetchProfile(auth.access_token);
+        afterSave();
       } catch (err) {
         throw err;
       } finally {

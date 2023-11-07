@@ -6,6 +6,7 @@ import { UserLog } from '../data/logs';
 import RoomSchema from '../api/Chat/schemas/room.schema';
 import MessageSchema from '../api/Chat/schemas/message.schema';
 import DocumentSchema from '../api/Document/document.schema';
+import MatchSchema from '../api/Match/match.schema';
 const password = 'Lostfish1234';
 
 const remainingRoles = Object.values(Role);
@@ -57,13 +58,17 @@ export const seedUsers = async (numUsers: number): Promise<void> => {
       UserLog.deleteMany({}),
       RoomSchema.deleteMany({}),
       MessageSchema.deleteMany({}),
-      DocumentSchema.deleteMany({})
+      DocumentSchema.deleteMany({}),
+      MatchSchema.deleteMany({})
     ]);
 
-    const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));
+    // const users = await Promise.all(Array.from({ length: numUsers }, generateRandomUser));
     const defaultUsers = await generateDefaultUsers();
 
-    await UserSchema.insertMany([...defaultUsers, ...users]);
+    await UserSchema.insertMany([
+      ...defaultUsers
+      // ...users
+    ]);
 
     console.log(`${numUsers} users seeded successfully.`);
   } catch (error) {
