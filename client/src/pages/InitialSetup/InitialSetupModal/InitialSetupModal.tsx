@@ -21,9 +21,7 @@ import { Typography } from '../../../components/Typography';
 import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
 
-interface InitialSetupModalProps extends ModalProps {
-  onSelectAvatar?: (avatarIndex: number) => void;
-}
+interface InitialSetupModalProps extends ModalProps {}
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -34,13 +32,10 @@ const animationProps = {
 };
 export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-
   const [open, setOpen] = React.useState(true);
-
   const [step, setStep] = React.useState(0);
 
   const profileStore = useProfileStore();
-  const criteriaStore = useCriteriaStore();
   const userStore = useUserStore();
 
   const [state, setState] = React.useState({

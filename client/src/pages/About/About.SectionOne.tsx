@@ -13,8 +13,12 @@ import backgroundImg from './forest.jpeg';
 export const SectionOne = styled(
   ({
     className,
-    section2Ref
-  }: HTMLAttributes<HTMLDivElement> & { section2Ref?: React.RefObject<HTMLDivElement> }) => {
+    section2Ref,
+    onStartMatchingClick
+  }: HTMLAttributes<HTMLDivElement> & {
+    section2Ref?: React.RefObject<HTMLDivElement>;
+    onStartMatchingClick: () => any;
+  }) => {
     return (
       <div className={classNames('section-one', className)}>
         <div className='section-content'>
@@ -35,7 +39,7 @@ export const SectionOne = styled(
               <Avatar image={TenantImg} className='left-side thumbnail' />
               <div className='right-side thumbnail'></div>
             </div>
-            <Button variant='primary' size='large' className='start-matching'>
+            <Button variant='primary' size='large' className='start-matching' onClick={onStartMatchingClick}>
               Start matching
             </Button>
           </div>

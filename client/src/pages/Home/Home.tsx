@@ -13,10 +13,11 @@ import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { FaqSection } from '../About/About.FaqSection';
 import { Footer } from './Footer';
-
-import backgroundImg from '../About/forest.jpeg';
+import { SuggestionsWithoutAccount } from '../Suggestions/SuggestionsWithoutAccount/SuggestionsWithoutAccount';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
+  const [showStartMatchingModal, setShowStartMatchingModal] = React.useState(false);
+
   const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = React.useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = React.useState(false);
@@ -40,6 +41,11 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   };
   return (
     <>
+      <SuggestionsWithoutAccount
+        visibilityStore={[showStartMatchingModal, setShowStartMatchingModal]}
+        onSigInClick={onSigInClick}
+        onCreateAccountClick={onCreateAccountClick}
+      />
       <LoginModal
         open={showLoginModal}
         onBackdropClick={() => setShowLoginModal(false)}
@@ -61,7 +67,10 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         <div className='header-and-content-wrapper'>
           <Header onSigInClick={onSigInClick} />
           <div className='container-home'>
-            <SectionOne section2Ref={section2Ref} />
+            <SectionOne
+              section2Ref={section2Ref}
+              onStartMatchingClick={() => setShowStartMatchingModal(true)}
+            />
             <SectionTwo ref={section2Ref} />
             <SectionFive onCreateAccountClick={onCreateAccountClick} />
             <SectionThree />

@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "intersect"
   | "plus"
   | "chevron-right"
   | "chevron-left"
