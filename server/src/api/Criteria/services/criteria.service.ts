@@ -33,6 +33,7 @@ const createCriteria = async (req: Request, res: Response): Promise<any> => {
     }
     if (data.looking_for === LookingForEnum.LOOKING_FOR_PLACE) {
       user.role = Role.Client;
+      user.has_completed_initial_setup = true;
     }
     if (data.looking_for === LookingForEnum.OWN_A_PLACE) {
       user.role = Role.Landlord;
@@ -167,10 +168,10 @@ const updateCriteria = async (req: Request, res: Response): Promise<any> => {
     criteria.moving_time = data.moving_time;
     // }
 
-    if (!!data.area_of_interest && !!data.budget && !!data.room_details?.number_of_bedrooms) {
-      //
-      user.has_completed_initial_setup = true;
-    }
+    // if (!!data.area_of_interest && !!data.budget && !!data.room_details?.number_of_bedrooms) {
+    //   //
+    //   user.has_completed_initial_setup = true;
+    // }
 
     await criteria.save();
     await user.setTrustScore();

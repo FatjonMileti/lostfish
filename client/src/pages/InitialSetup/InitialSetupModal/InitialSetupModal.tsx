@@ -1,24 +1,25 @@
 import { styled } from '@mui/system';
-import { Modal, ModalProps } from '../../../components/Modal';
 import classNames from 'classnames';
-import { CloseButton } from '../../../components/CloseButton';
 import React from 'react';
-import { Typography } from '../../../components/Typography';
+import axios from '../../../utils/axios';
 
-import { SelectAvatar } from './InitialSetup.SelectAvatar';
-import { WhatAreYouLookingFor } from './InitialSetup.WhatAreYouLokingFor';
 import { useProfileStore } from '../../../globalState/profile';
 import { useCriteriaStore } from '../../../globalState/criteria';
-import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { AnimatePresence } from 'framer-motion';
 
+import { SelectAvatar } from './InitialSetup.SelectAvatar';
+import { WhatAreYouLookingFor } from './InitialSetup.WhatAreYouLokingFor';
 import { AddProperty } from './InitialSetup.AddProperty';
+import { SetCriteria } from './InitialSetup.SetCriteria';
+
 import { Backdrop } from '../../../components/Backdrop';
+import { Modal, ModalProps } from '../../../components/Modal';
+import { CloseButton } from '../../../components/CloseButton';
+import { Typography } from '../../../components/Typography';
 
 import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
-import { SetCriteria } from './InitialSetup.SetCriteria';
 
 interface InitialSetupModalProps extends ModalProps {
   onSelectAvatar?: (avatarIndex: number) => void;
@@ -71,6 +72,14 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     setStep((step) => step + 1);
   };
 
+  const setAvatar = (avatar: string) => {
+    setState((state) => ({ ...state, avatar }));
+  };
+
+  const onLookingForChange = (lookingFor: string) => {
+    setState((state) => ({ ...state, lookingFor }));
+  };
+
   return (
     <Modal className={classNames('initial-setup-modal', className)} open={open}>
       <Backdrop open={loading}></Backdrop>
@@ -94,14 +103,14 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                 key='SelectAvatar'
                 {...animationProps}
                 avatar={state.avatar}
-                setAvatar={(avatar) => setState((state) => ({ ...state, avatar }))}
+                setAvatar={setAvatar}
                 onNext={onAvatarNext}
               />,
               <WhatAreYouLookingFor
                 key='whatAreYouLookingFor'
                 {...animationProps}
                 lookingFor={state.lookingFor}
-                onLookingForChange={(lookingFor) => setState((state) => ({ ...state, lookingFor }))}
+                onLookingForChange={onLookingForChange}
                 onNext={onLookingForNext}
               />,
               <>
@@ -121,7 +130,10 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                   <SetCriteria
                     key='SetCriteria'
                     {...animationProps}
-                    onNext={() => setStep((step) => step + 1)}
+                    onNext={async () => {
+                      await refreshToken(true);
+                      setOpen(false);
+                    }}
                     onBack={() => setStep((step) => step - 1)}
                   />
                 )}

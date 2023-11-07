@@ -1,32 +1,32 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-
-import { CriteriaFormType, DistanceUnitType } from '../criteria.types';
+import classNames from 'classnames';
 
 import { Label } from '../../../components/Label';
 import { Typography } from '../../../components/Typography';
-import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
 import { Icon } from '../../../components/Icon';
 import { Select } from '../../../components/Select/Select';
-import { UseMyLocation } from './UseMyLocation';
 import { TextField } from '../../../components/TextField';
-import { DistanceUnit, WhenDoYouWantToMove } from '../criteria.contants';
-import classNames from 'classnames';
 
-interface SetCriteriaLocationProps extends HTMLAttributes<HTMLDivElement> {
+import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
+import { UseMyLocation } from './UseMyLocation';
+import { DistanceUnit, WhenDoYouWantToMove } from '../criteria.contants';
+import { CriteriaFormType, DistanceUnitType } from '../criteria.types';
+import { HTMLMotionProps, motion } from 'framer-motion';
+
+interface SetCriteriaLocationProps extends HTMLMotionProps<'div'> {
   form: UseFormReturn<CriteriaFormType>;
 }
 
-export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocationProps) => {
+export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCriteriaLocationProps) => {
   React.useEffect(() => {
     form.watch();
   }, []);
 
   return (
-    <div className={classNames('set-criteria-location-details', className)}>
+    <motion.div className={classNames('set-criteria-location-details', className)} {...rest}>
       <Typography variant='body2'>Location details</Typography>
-
       <div className='sections'>
         <div className='section property-location-section'>
           <Typography className='section-title' variant='body4'>
@@ -179,14 +179,14 @@ export const SetCriteriaLocation = styled(({ className, form }: SetCriteriaLocat
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 })`
   &.set-criteria-location-details {
     display: grid;
     row-gap: 48px;
     justify-items: center;
-    max-width: 672px;
+    align-content: center;
 
     .sections {
       display: grid;

@@ -1,17 +1,8 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import React from 'react';
 
-import { Button } from '../../../components/Button';
-import { ArrowButton } from '../../../components/ArrowButton';
-import { Typography } from '../../../components/Typography';
-import { Avatar } from '../../../components/Avatar';
+import { HTMLMotionProps } from 'framer-motion';
 
-import { avatars } from '../../HomeLoggedIn/avatars';
-import classNames from 'classnames';
-import { Label } from '../../../components/Label';
-import { Icon } from '../../../components/Icon';
-import { HTMLMotionProps, motion } from 'framer-motion';
-import { AddPropertyModal } from '../../Properties/NewProperty/AddPropertyModal';
 import { SetCriteriaModal } from '../../SetCriteria/SetCriteriaModal';
 
 export interface SelectAvatarProps extends HTMLMotionProps<'div'> {
@@ -22,5 +13,7 @@ export interface SelectAvatarProps extends HTMLMotionProps<'div'> {
 export const SetCriteria = styled(({ className, onNext, onBack, ...rest }: SelectAvatarProps) => {
   const [showModal, setShowModal] = React.useState(true);
 
-  return <SetCriteriaModal open={showModal} />;
+  return (
+    <SetCriteriaModal open={showModal} onBack={onBack} afterRefineSearch={onNext} onBackdropClick={onBack} />
+  );
 })``;
