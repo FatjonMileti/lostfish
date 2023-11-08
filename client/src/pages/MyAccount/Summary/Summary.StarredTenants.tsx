@@ -12,7 +12,7 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
 import { mapTenant } from '../../Matches/MatchesTenants/serializers';
 
-export const DashboardStarredTenants = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const SummaryStarredTenants = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const [tenantMatchProfileToView, setTenantMatchProfileToView] = React.useState<null | any>(null);
 
@@ -40,7 +40,7 @@ export const DashboardStarredTenants = styled(({ className }: HTMLAttributes<HTM
 
   return (
     <>
-      <div className={classNames('dashboard-starred-tenants', className)}>
+      <div className={classNames('summary-starred-tenants', className)}>
         <Typography className='title' variant='body4'>
           Recently starred tenants
         </Typography>
@@ -69,7 +69,7 @@ export const DashboardStarredTenants = styled(({ className }: HTMLAttributes<HTM
     </>
   );
 })`
-  &.dashboard-starred-tenants {
+  &.summary-starred-tenants {
     display: grid;
     row-gap: 16px;
     grid-template-rows: min-content auto;

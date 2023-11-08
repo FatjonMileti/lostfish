@@ -6,10 +6,9 @@ import { motion } from 'framer-motion';
 import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 
-import { Dashboard } from './Dashboard/Dashboard';
+import { Summary } from './Summary/Summary';
 import { ProfileDetails } from './ProfileDetails';
 import { StarredMatches } from './StarredMatches/StarredMatches';
-import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
@@ -25,11 +24,9 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
-import {Properties} from '../Properties/Properties';
+import { Properties } from '../Properties/Properties';
 import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
-import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
-import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 
@@ -145,7 +142,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='line'></div>
             <div className='right-content'>
               <Routes>
-                <Route path='/' element={<Dashboard />} />
+                <Route path='/' element={<Summary />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
@@ -155,7 +152,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
                 <Route path='/help-and-support' element={<HelpAndSupport />} />
                 <Route path='/solicitors' element={<Solicitors />} />
-                <Route path='/properties' element={<Properties />}/>
+                <Route path='/properties' element={<Properties />} />
               </Routes>
             </div>
           </div>

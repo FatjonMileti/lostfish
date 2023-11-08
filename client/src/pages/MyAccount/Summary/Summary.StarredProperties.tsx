@@ -9,7 +9,7 @@ import { PropertyMatch } from '../../PagesComponents/PropertyMatch';
 import { Typography } from '../../../components/Typography';
 import classNames from 'classnames';
 
-export const DashboardStarredProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const SummaryStarredProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const getAssets = async () => {
     try {

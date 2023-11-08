@@ -9,56 +9,93 @@ interface YourPropertyProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   editProperty?: () => void;
   image: string;
-  address: string;
+  bedrooms: number;
+  bathrooms: number;
   price: string;
+  status: string;
 }
 
 export const YourProperty = styled(
-  ({ className, title, image, address, price, editProperty }: YourPropertyProps) => {
+  ({ className, title, image, bedrooms, bathrooms, price, status, editProperty }: YourPropertyProps) => {
     return (
       <div className={classNames(className, 'your-property')}>
+        <div className='property-header'>
+          <Typography variant='body6' className='status'>
+            {status !== 'Live' ? status : 'Published'}
+          </Typography>
+        </div>
         {!image && (
-            <div className='no-images'>
-              <Icon icon='image' size={128} />
-            </div>
+          <div className='no-images'>
+            <Icon icon='image' size={128} />
+          </div>
         )}
         <div className='property-footer'>
-          <Typography className='property-title' variant='body4'>
-            {title}
-          </Typography>
-          <div className='details'>
-            <div className='match-percentage'>
+          <div className='property-title-and-details'>
+            <Typography className='property-title' variant='body4'>
+              {title}
+            </Typography>
+            <div className='details'>
               <div className='detail'>
-                <Icon icon='location' />
-                <Typography variant='body5'>{address}</Typography>
-              </div>
-              <div className='detail'>
-                <Icon icon='banknote' />
                 <Typography variant='body5'>£{price} PCM</Typography>
               </div>
+              <Typography variant='body4' className='dot'>
+                •
+              </Typography>
+              <div className='detail'>
+                <Icon icon='double-bed' size={20} />
+                <Typography variant='body5'>{bedrooms}</Typography>
+              </div>
+              <Typography variant='body4' className='dot'>
+                •
+              </Typography>
+              <div className='detail'>
+                <Icon icon='bathtub' size={20} />
+                <Typography variant='body5'>{bathrooms}</Typography>
+              </div>
             </div>
-            <Button
-              size='small'
-              variant='secondary'
-              inverted
-              className='details-button'
-              onClick={editProperty}>
-              Edit property
-            </Button>
           </div>
+          <Button size='small' variant='secondary' inverted className='details-button' onClick={editProperty}>
+            Edit property
+          </Button>
         </div>
       </div>
     );
   }
 )`
   &.your-property {
+    width: 440px;
+    height: 312px;
+
+    flex-shrink: 0;
+
     background-image: url('${(props) => props.image}');
+    background-position-y: center;
     border-radius: 12px;
-    display: flex;
-    aspect-ratio: 1.34 / 1;
+
+    display: grid;
+    align-content: space-between;
+
     background-repeat: no-repeat;
     background-size: cover;
+    box-shadow: 0px 7.72px 23.16px 0px rgba(0, 0, 0, 0.25);
     position: relative;
+
+    .property-header {
+      display: flex;
+      padding: 16px;
+      align-items: flex-start;
+      gap: 8px;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(180deg, rgba(38, 38, 38, 0.8) 0%, rgba(38, 38, 38, 0) 100%);
+
+      .status {
+        padding: 12px;
+        background-color: #408140;
+        border-radius: 20px;
+        color: white;
+        font-weight: 700;
+      }
+    }
 
     .no-images {
       display: grid;
@@ -76,44 +113,49 @@ export const YourProperty = styled(
 
     .property-footer {
       background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.8) 43.75%);
-      align-self: flex-end;
       width: 100%;
       border-radius: 0 0 12px 12px;
       padding: 16px;
       box-sizing: border-box;
-      row-gap: 8px;
+      gap: 24px;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
 
-      .property-title {
-        color: white;
-        font-weight: 700;
-      }
+      .property-title-and-details {
+        display: grid;
+        gap: 4px;
 
-      .details {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        .property-title {
+          color: #fff;
+          font-weight: 700;
+        }
 
-        .match-percentage {
+        .details {
           color: white;
           font-weight: 700;
           display: flex;
-          column-gap: 24px;
+          gap: 8px;
           align-items: center;
+          flex-wrap: wrap;
 
           .detail {
             display: flex;
             column-gap: 4px;
             align-items: center;
           }
+
+          .dot {
+            color: #a7a7a7;
+            font-weight: 700;
+            opacity: 0.4;
+          }
         }
-        .details-button {
-          padding: 12px 20px;
-          font-size: 14px;
-          line-height: 20px;
-          flex-shrink: 0;
-        }
+      }
+      .details-button {
+        padding: 16px 20px;
+        font-size: 14px;
+        line-height: 20px;
+        flex-shrink: 0;
       }
     }
   }
