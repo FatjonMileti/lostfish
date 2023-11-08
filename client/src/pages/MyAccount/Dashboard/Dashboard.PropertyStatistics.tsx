@@ -6,11 +6,11 @@ import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
 
-export const SummaryPropertyStatistics = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const DashboardPropertyStatistics = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { property, propertyDetails } = usePropertyDetailsHook();
 
   return (
-    <div className={classNames('summary-property-statistics', className)}>
+    <div className={classNames('dashboard-property-statistics', className)}>
       <div className='statistics-card'>
         <div className='card-label'>
           <Icon icon='eye-line' size={24} />
@@ -84,7 +84,7 @@ export const SummaryPropertyStatistics = styled(({ className }: HTMLAttributes<H
     </div>
   );
 })`
-  &.summary-property-statistics {
+  &.dashboard-property-statistics {
     display: grid;
     gap: 24px;
     grid-template-columns: 1fr 1fr;

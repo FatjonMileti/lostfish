@@ -156,6 +156,7 @@ export const YourProperty = styled(
         font-size: 14px;
         line-height: 20px;
         flex-shrink: 0;
+        height: 52px;
       }
     }
   }

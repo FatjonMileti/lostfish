@@ -7,17 +7,16 @@ import { Backdrop } from '../../../components/Backdrop';
 import { useAgreement } from '../useAgreement';
 import hand from '../images/hand.png';
 import propertyImage from '../images/property.png';
-import { SummaryYourProperties } from './Summary.YourProperties';
+import { DashboardYourProperties } from './Dashboard.YourProperties';
 import { useProfileStore } from '../../../globalState/profile';
-import { SummaryStarredProperties } from './Summary.StarredProperties';
-import { SummaryPropertyStatistics } from './Summary.PropertyStatistics';
+import { DashboardPropertyStatistics } from './Dashboard.PropertyStatistics';
 
-export const Summary = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { loading, getTransactionAgreementStatus, buttonLabel, handleTransactionAgreement } = useAgreement();
   const profileStore = useProfileStore();
 
   return (
-    <div className={`summary ${className}`}>
+    <div className={`dashboard ${className}`}>
       <Backdrop open={loading}></Backdrop>
 
       <div className='transaction-agreement'>
@@ -43,21 +42,20 @@ export const Summary = styled(({ className }: HTMLAttributes<HTMLDivElement>) =>
 
       {profileStore.role === 'Landlord' && (
         <>
-          <SummaryYourProperties />
-          <SummaryPropertyStatistics />
-          {/* <SummaryStarredTenants /> */}
+          <DashboardYourProperties />
+          <DashboardPropertyStatistics />
         </>
       )}
       {profileStore.role === 'Tenant' && (
         <>
           <div />
-          <SummaryStarredProperties />
+          {/*<SummaryStarredProperties />*/}
         </>
       )}
     </div>
   );
 })`
-  &.summary {
+  &.dashboard {
     display: grid;
     grid-template-areas:
       'a a'

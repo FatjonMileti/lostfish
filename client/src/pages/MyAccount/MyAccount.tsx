@@ -6,9 +6,8 @@ import { motion } from 'framer-motion';
 import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 
-import { Summary } from './Summary/Summary';
+import { Dashboard } from './Dashboard/Dashboard';
 import { ProfileDetails } from './ProfileDetails';
-import { StarredMatches } from './StarredMatches/StarredMatches';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
@@ -31,9 +30,8 @@ import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHead
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 
 const submenus: any[] = [
-  { icon: 'layer', text: 'Summary', link: '' },
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
-  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -42,8 +40,7 @@ const submenus: any[] = [
 ];
 
 const tenantSubmenu: any[] = [
-  { icon: 'layer', text: 'Summary', link: '' },
-  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -142,12 +139,11 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='line'></div>
             <div className='right-content'>
               <Routes>
-                <Route path='/' element={<Summary />} />
+                <Route path='/' element={<Dashboard />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
                 )}
-                <Route path='/starred-matches' element={<StarredMatches />} />
                 <Route path='/transaction-agreement' element={<TransactionAgreement />} />
                 <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
                 <Route path='/help-and-support' element={<HelpAndSupport />} />

@@ -9,7 +9,7 @@ import { useUserStore } from '../../../globalState/user';
 
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 
-export const SummaryYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const [showEditProperty, setShowEditProperty] = React.useState(false);
 
@@ -36,8 +36,6 @@ export const SummaryYourProperties = styled(({ className }: HTMLAttributes<HTMLD
   const editProperty = () => {
     setShowEditProperty(property._id);
   };
-
-  console.log('property: ', property);
 
   return (
     <>
