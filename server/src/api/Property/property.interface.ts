@@ -170,8 +170,8 @@ export enum DistanceUnit {
 export enum PropertyCondition {
   NewlyRefurbished = 'Newly refurbished',
   Good = 'Good',
-  WouldDoSomeWork = 'would do some work',
-  wouldDoAProject = 'would do a project'
+  WouldDoSomeWork = 'Would do some work',
+  wouldDoAProject = 'Would do a project'
 }
 
 export interface PropertyDocument extends Document {

@@ -5,12 +5,12 @@ import { HTMLMotionProps } from 'framer-motion';
 
 import { SetCriteriaModal } from '../../SetCriteria/SetCriteriaModal';
 
-export interface SelectAvatarProps extends HTMLMotionProps<'div'> {
+export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
   onNext: () => void;
-  onBack: () => void;
+  onBack: () => void | any;
 }
 
-export const SetCriteria = styled(({ className, onNext, onBack, ...rest }: SelectAvatarProps) => {
+export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaProps) => {
   const [showModal, setShowModal] = React.useState(true);
 
   return (

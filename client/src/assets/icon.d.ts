@@ -1,4 +1,6 @@
 export type IconNames = 
+  | "eye-line"
+  | "pound-coin"
   | "intersect"
   | "plus"
   | "chevron-right"
@@ -69,5 +71,4 @@ export type IconNames =
   | "linkedin-in"
   | "apple"
   | "google"
-  | "eye-line"
 
