@@ -14,6 +14,7 @@ import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { FaqSection } from '../About/About.FaqSection';
 import { Footer } from './Footer';
 import { SuggestionsWithoutAccount } from '../Suggestions/SuggestionsWithoutAccount/SuggestionsWithoutAccount';
+import { MatchesWithoutAccountSection } from '../Suggestions/SuggestionsWithoutAccount/MatchesWithoutAccountSection';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showStartMatchingModal, setShowStartMatchingModal] = React.useState(false);
@@ -67,6 +68,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         <div className='header-and-content-wrapper'>
           <Header onSigInClick={onSigInClick} />
           <div className='container-home'>
+            <MatchesWithoutAccountSection />
             <SectionOne
               section2Ref={section2Ref}
               onStartMatchingClick={() => setShowStartMatchingModal(true)}
