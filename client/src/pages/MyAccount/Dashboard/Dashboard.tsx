@@ -9,8 +9,7 @@ import hand from '../images/hand.png';
 import propertyImage from '../images/property.png';
 import { DashboardYourProperties } from './Dashboard.YourProperties';
 import { useProfileStore } from '../../../globalState/profile';
-import { DashboardStarredTenants } from './Dashboard.StarredTenants';
-import { DashboardStarredProperties } from './Dashboard.StarredProperties';
+import { DashboardPropertyStatistics } from './Dashboard.PropertyStatistics';
 
 export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const { loading, getTransactionAgreementStatus, buttonLabel, handleTransactionAgreement } = useAgreement();
@@ -44,13 +43,13 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       {profileStore.role === 'Landlord' && (
         <>
           <DashboardYourProperties />
-          <DashboardStarredTenants />
+          <DashboardPropertyStatistics />
         </>
       )}
       {profileStore.role === 'Tenant' && (
         <>
           <div />
-          <DashboardStarredProperties />
+          {/*<SummaryStarredProperties />*/}
         </>
       )}
     </div>

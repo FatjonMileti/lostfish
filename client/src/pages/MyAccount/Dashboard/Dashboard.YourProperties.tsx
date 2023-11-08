@@ -47,8 +47,10 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
         {!!property && (
           <YourProperty
             title={property?.title}
-            price={`${property?.budget?.min_budget} - ${property?.budget?.max_budget}`}
-            address={property?.area_of_interest}
+            price={property?.asset_rent?.rental_amount?.toLocaleString()}
+            bathrooms={property?.room_details?.number_of_bathrooms}
+            bedrooms={property?.room_details?.number_of_bedrooms}
+            status={property?.status_string}
             image={property?.property_images?.[0]?.link}
             editProperty={editProperty}
           />

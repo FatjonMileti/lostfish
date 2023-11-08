@@ -8,8 +8,6 @@ import { Typography } from '../../components/Typography';
 
 import { Dashboard } from './Dashboard/Dashboard';
 import { ProfileDetails } from './ProfileDetails';
-import { StarredMatches } from './StarredMatches/StarredMatches';
-import { NotificationSettings } from './NotificationSettings';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
@@ -25,18 +23,15 @@ import { Avatar } from '../../components/Avatar';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
-import {Properties} from '../Properties/Properties';
+import { Properties } from '../Properties/Properties';
 import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
-import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
-import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 
 const submenus: any[] = [
-  { icon: 'layer', text: 'Summary', link: '' },
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
-  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -45,8 +40,7 @@ const submenus: any[] = [
 ];
 
 const tenantSubmenu: any[] = [
-  { icon: 'layer', text: 'Summary', link: '' },
-  { icon: 'star', text: 'Starred matches', link: '/starred-matches' },
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -150,12 +144,11 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
                 )}
-                <Route path='/starred-matches' element={<StarredMatches />} />
                 <Route path='/transaction-agreement' element={<TransactionAgreement />} />
                 <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
                 <Route path='/help-and-support' element={<HelpAndSupport />} />
                 <Route path='/solicitors' element={<Solicitors />} />
-                <Route path='/properties' element={<Properties />}/>
+                <Route path='/properties' element={<Properties />} />
               </Routes>
             </div>
           </div>
