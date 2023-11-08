@@ -116,7 +116,10 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
         <EditPropertyModal
           propertyId={showEditProperty}
           showStore={[!!showEditProperty, () => setShowEditProperty(undefined)]}
-          afterSave={() => propertiesQuery.refetch()}
+          afterSave={() => {
+            setShowEditProperty(undefined);
+            propertiesQuery.refetch();
+          }}
           afterDelete={() => propertiesQuery.refetch()}
           onBack={() => setShowEditProperty(undefined)}
         />
