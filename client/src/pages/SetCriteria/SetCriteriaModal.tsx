@@ -34,7 +34,7 @@ const animationProps = {
 
 interface SetCriteriaModalProps extends ModalProps {
   onBack: () => void;
-  afterRefineSearch: () => void;
+  afterRefineSearch: () => void | any;
 }
 export const SetCriteriaModal = styled(
   ({ className, onBack, afterRefineSearch, ...rest }: SetCriteriaModalProps) => {
@@ -306,7 +306,7 @@ export const SetCriteriaModal = styled(
 
         // await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        afterRefineSearch();
+        await afterRefineSearch();
         profileStore.fetchProfile(auth.access_token);
       } catch (err) {
         throw err;
