@@ -9,7 +9,6 @@ import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
 import { Messages } from './pages/Messages/Messages';
 import { Properties } from './pages/Properties/PropertiesOld';
-import { Matches } from './pages/Matches/Matches';
 import config from './config';
 import SocketContext from './context/SocketContext';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
@@ -110,7 +109,6 @@ function App() {
 
                 <Route path='/agreement' element={<Agreement />} />
 
-                <Route path='/matches' element={<Matches />} />
                 <Route path='/my-matches' element={!!userStore.auth ? <MyMatches /> : <Home />} />
                 <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Home />} />
                 <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Home />} />

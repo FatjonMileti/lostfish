@@ -63,7 +63,8 @@ export const PropertyCard = styled(
 
       parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
 
-      parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
+      parsedProperty.rentingPrice = `£${property.budget.min_budget} - £${property.budget.max_budget}`;
+
       parsedProperty.percentage = property?.percentage;
     }
 
@@ -124,9 +125,7 @@ export const PropertyCard = styled(
                   <span className='dot'>•</span>
                   <div className='detail'>
                     <Icon icon='banknote' />
-                    <Typography variant='body5'>
-                      £{parsedProperty.rentingPrice?.toLocaleString()} PCM
-                    </Typography>
+                    <Typography variant='body5'>{parsedProperty.rentingPrice} PCM</Typography>
                   </div>
                   <span className='dot'>•</span>
                   <div className='detail'>

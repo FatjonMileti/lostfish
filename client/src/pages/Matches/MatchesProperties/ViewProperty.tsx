@@ -49,12 +49,13 @@ export const ViewProperty = styled(
     parsedProperty.numberOfBedrooms = property?.room_details?.number_of_bedrooms;
     parsedProperty.numberOfBathrooms = property?.room_details?.number_of_bathrooms;
     parsedProperty.propertyOwnerName = `${property.created_by.first_name} ${property.created_by.last_name}`;
-    parsedProperty.rentingPrice = property.asset_rent?.rental_amount;
+    parsedProperty.rentingPrice = `£${property.budget.min_budget} - £${property.budget.max_budget}`;
     parsedProperty.propertyType = property?.property_type || '';
     parsedProperty.propertyArea = property?.floor_size;
     parsedProperty.propertyAreaUnit = property?.floor_size_unit;
-    parsedProperty.parkingSpot = (property?.specific_property_features || []).includes('Parking spot');
-    parsedProperty.energyCertificate = (property?.contract_details || []).includes('energyCertificate');
+
+    parsedProperty.parkingSpot = property.parking_spot;
+    parsedProperty.energyCertificate = property.epc_rating;
     parsedProperty.address = {
       lat: property?.asset_address?.latitude,
       lng: property?.asset_address?.longitude
@@ -67,14 +68,6 @@ export const ViewProperty = styled(
       <Modal className={classNames('view-property-modal', className)} {...rest}>
         <div className='modal-header'>
           <Typography variant='body2'>Property details</Typography>
-
-          {/*<div className='modal-header-right-content'>*/}
-          {/*  <div className='action-buttons'>*/}
-          {/*    <UnMatchButton onClick={dislikeTenant} />*/}
-          {/*    <MatchButton onClick={likeTenant} disabled={disableLikeTenant} />*/}
-          {/*  </div>*/}
-          {/*  <CloseButton onClick={closeViewProfile} />*/}
-          {/*</div>*/}
 
           <div className='buttons'>
             <div className='like-buttons'>
@@ -104,9 +97,7 @@ export const ViewProperty = styled(
                 </Typography>
                 <div className='detail'>
                   <Icon icon='banknote' />
-                  <Typography variant='body5'>
-                    £{parsedProperty.rentingPrice?.toLocaleString()} PCM
-                  </Typography>
+                  <Typography variant='body5'>£{parsedProperty.rentingPrice} PCM</Typography>
                 </div>
                 <Typography variant='body4' className='dot'>
                   •
@@ -163,7 +154,7 @@ export const ViewProperty = styled(
                 {parsedProperty.energyCertificate && (
                   <div className='detail'>
                     <Icon icon='temperature' />
-                    <Typography variant='body5'>EPC Rating: C*</Typography>
+                    <Typography variant='body5'>EPC Rating: {parsedProperty.energyCertificate}</Typography>
                   </div>
                 )}
               </div>

@@ -12,11 +12,16 @@ import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { Switch } from '../../../components/Switch';
 import ellipse from '../../../assets/svg/Ellipse.svg';
+import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.types';
+import { ApiUserDocumentType } from '../../MyAccount/user.interface';
 
 interface AddedMatchedProperty {
   _id: string;
   unread_messages: number;
-  property: IProperty;
+  property: Omit<ApiPropertyDocumentType, 'created_by'> & {
+    created_by: ApiUserDocumentType;
+    percentage: string;
+  };
   matchId?: string;
   chosen: boolean;
   starred: boolean;

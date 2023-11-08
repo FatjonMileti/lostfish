@@ -14,9 +14,14 @@ import { AddedMatches } from './MatchedProperties.AddedMatches';
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { ViewProperty } from './ViewProperty';
 import SocketContext from '../../../context/SocketContext';
+import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.types';
+import { ApiUserDocumentType } from '../../MyAccount/user.interface';
 
 export interface SuggestedPropertyType {
-  property: IProperty;
+  property: Omit<ApiPropertyDocumentType, 'created_by'> & {
+    created_by: ApiUserDocumentType;
+    percentage: string;
+  };
   matchId?: string;
   chosen: boolean;
   starred: boolean;
