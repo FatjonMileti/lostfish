@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useGlobalState } from '../globalState/globalState';
 import axios from '../utils/axios';
 import NotFoundPage from '../pages/404';
-import { UserDocument } from '../pages/MyAccount/user.interface';
+import { ApiUserDocumentType } from '../pages/MyAccount/user.interface';
 import { buildAbilityFor } from '../utils/ability.util';
 import { AbilityContext } from './AbilityContext';
 import { AppAbilityType, AppAbility } from '../utils/ability.util';
@@ -24,14 +24,14 @@ type PropertyActionTypes = {
     ability: AppAbilityType;
   };
   [SET_ACCOUNT]: {
-    user: UserDocument;
+    user: ApiUserDocumentType;
     ability: AppAbilityType;
   };
 };
 
 export type PropertyState = {
   isInitialized: boolean;
-  user: UserDocument | null;
+  user: ApiUserDocumentType | null;
   ability: AppAbilityType;
 };
 
@@ -67,7 +67,7 @@ const JWTReducer = (
 
 export interface UserContextType {
   isInitialized: boolean;
-  user: UserDocument | null;
+  user: ApiUserDocumentType | null;
   getOne: () => void;
 }
 

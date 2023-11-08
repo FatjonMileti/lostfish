@@ -36,7 +36,7 @@ export const YourProperty = styled(
             </Typography>
             <div className='details'>
               <div className='detail'>
-                <Typography variant='body5'>£{price} PCM</Typography>
+                <Typography variant='body5'>{price} PCM</Typography>
               </div>
               <Typography variant='body4' className='dot'>
                 •

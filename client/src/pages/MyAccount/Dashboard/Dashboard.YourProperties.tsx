@@ -3,66 +3,122 @@ import { Typography } from '../../../components/Typography';
 import { YourProperty } from '../../PagesComponents/YourProperty';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import axios from '../../../utils/axios';
-import { useQuery } from '@tanstack/react-query';
-import { useUserStore } from '../../../globalState/user';
 
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
+import { Icon } from '../../../components/Icon';
+import { usePropertyDetailsHook } from '../../HomeLoggedIn/hooks/usePropertyDetails.hook';
+import { Backdrop } from '../../../components/Backdrop';
 
 export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const userStore = useUserStore();
-  const [showEditProperty, setShowEditProperty] = React.useState(false);
+  const [showEditProperty, setShowEditProperty] = React.useState<string | undefined>(undefined);
 
-  const getAssets = async () => {
-    try {
-      const { data } = await axios(userStore.auth.access_token).get('/api/asset', {
-        params: {
-          pageSize: 1,
-          page: 1
-        }
-      });
-      return data.docs;
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const propertiesQuery = useQuery(['your-properties'], getAssets, {
-    refetchOnWindowFocus: false
-  });
-
-  const property = !propertiesQuery.isLoading && propertiesQuery.data[0];
-
-  const editProperty = () => {
-    setShowEditProperty(property._id);
-  };
+  const propertiesQuery = usePropertyDetailsHook();
 
   return (
     <>
       <div className={classNames('your-properties', className)}>
+        <Backdrop open={propertiesQuery.isFetching} />
         <Typography className='title' variant='body4'>
           Your properties
         </Typography>
 
-        {!!property && (
-          <YourProperty
-            title={property?.title}
-            price={property?.asset_rent?.rental_amount?.toLocaleString()}
-            bathrooms={property?.room_details?.number_of_bathrooms}
-            bedrooms={property?.room_details?.number_of_bedrooms}
-            status={property?.status_string}
-            image={property?.property_images?.[0]?.link}
-            editProperty={editProperty}
-          />
+        {!propertiesQuery.isFetching && propertiesQuery.data?.property && propertiesQuery.data?.details && (
+          <div className='property-and-statistics-wrapper'>
+            <YourProperty
+              title={propertiesQuery?.data?.property?.title}
+              price={`£${propertiesQuery?.data?.property.budget.min_budget} - £${propertiesQuery?.data?.property.budget.max_budget}`}
+              bathrooms={propertiesQuery?.data?.property?.room_details?.number_of_bathrooms}
+              bedrooms={propertiesQuery?.data?.property?.room_details?.number_of_bedrooms}
+              status={propertiesQuery?.data?.property?.status_string}
+              image={propertiesQuery?.data?.property?.property_images?.[0]?.link}
+              editProperty={() => setShowEditProperty(propertiesQuery?.data?.property._id)}
+            />
+
+            <div className={classNames('dashboard-property-statistics')}>
+              <div className='statistics-card'>
+                <div className='card-label'>
+                  <Icon icon='eye-line' size={24} />
+                  <Typography variant='body6' className='title'>
+                    Property views
+                  </Typography>
+                </div>
+                <div className='content'>
+                  <Typography variant='body2' className='number'>
+                    {propertiesQuery.data?.details?.views}
+                  </Typography>
+                  <Typography variant='body5' className='progress'>
+                    +3.5% since last week
+                  </Typography>
+                </div>
+              </div>
+              <div className='statistics-card'>
+                <div className='card-label'>
+                  <Icon icon='intersect' size={24} />
+                  <Typography variant='body6' className='title'>
+                    Potential matches
+                  </Typography>
+                </div>
+                <div className='content'>
+                  <Typography variant='body2' className='number'>
+                    53
+                  </Typography>
+                  <Typography variant='body5' className='progress'>
+                    +12.8% since last week
+                  </Typography>
+                </div>
+              </div>
+              <div className='statistics-card'>
+                <div className='card-label'>
+                  <Icon icon='dashboard' size={24} />
+                  <Typography variant='body6' className='title'>
+                    Property score
+                  </Typography>
+                </div>
+                <div className='content'>
+                  <Typography variant='body2' className='number'>
+                    {!propertiesQuery.data?.details?.property_score
+                      ? 0
+                      : propertiesQuery.data?.details.property_score}
+                    /100
+                  </Typography>
+                  <Typography variant='body5' className='points-available'>
+                    +5 points available
+                  </Typography>
+                </div>
+              </div>
+
+              <div className='statistics-card'>
+                <div className='card-label'>
+                  <Icon icon='pound-coin' size={24} />
+                  <Typography variant='body6' className='title'>
+                    Price
+                  </Typography>
+                </div>
+                <div className='content'>
+                  <div className='price'>
+                    <Typography variant='body2' className='number'>
+                      {`£${propertiesQuery?.data?.property.budget.min_budget} - £${propertiesQuery?.data?.property.budget.max_budget}`}
+                    </Typography>
+
+                    <Typography variant='body6'>/month</Typography>
+                  </div>
+                  <Typography variant='body5' className='market-average'>
+                    Market average
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
+
       {showEditProperty && (
         <EditPropertyModal
-          propertyId={property._id}
-          showStore={[showEditProperty, setShowEditProperty]}
+          propertyId={showEditProperty}
+          showStore={[!!showEditProperty, () => setShowEditProperty(undefined)]}
           afterSave={() => propertiesQuery.refetch()}
           afterDelete={() => propertiesQuery.refetch()}
-          onBack={() => setShowEditProperty(false)}
+          onBack={() => setShowEditProperty(undefined)}
         />
       )}
     </>
@@ -72,11 +128,72 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
     display: grid;
     row-gap: 16px;
     grid-template-rows: min-content auto;
-    grid-area: b;
 
     .title {
       font-size: 18px;
       font-weight: 700;
+    }
+
+    .property-and-statistics-wrapper {
+      display: grid;
+      grid-template-columns: max-content auto;
+      column-gap: 24px;
+
+      .dashboard-property-statistics {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 1fr 1fr;
+
+        .statistics-card {
+          display: grid;
+          padding: 16px;
+          border-radius: 12px;
+          background: #f3f4f5;
+          gap: 24px;
+          min-height: 144px;
+          box-sizing: border-box;
+
+          .card-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #a7a7a7;
+
+            .title {
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+          .content {
+            display: grid;
+            gap: 4px;
+            font-weight: 700;
+            align-content: flex-start;
+
+            .number {
+              font-family: Roobert, serif;
+              font-weight: 700;
+            }
+            .progress {
+              color: #408140;
+            }
+            .price {
+              display: flex;
+              align-items: flex-end;
+              gap: 4px;
+              flex-wrap: wrap;
+            }
+
+            .points-available {
+              color: #c4b1a3;
+            }
+
+            .market-average {
+              color: #646464;
+            }
+          }
+        }
+      }
     }
   }
 `;

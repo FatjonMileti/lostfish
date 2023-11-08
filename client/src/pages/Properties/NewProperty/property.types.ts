@@ -6,7 +6,8 @@ import {
   Furnished,
   OutsideSpace,
   Parking,
-  PropertyType, Condition,
+  PropertyType,
+  Condition
 } from './property.constants';
 import {
   ContractDetailType,
@@ -130,7 +131,7 @@ export interface ApiPropertyDocumentType {
   };
   statistics: any;
   specific_property_features: (OtherSpecificPropertyFeature | Furnished)[];
-  property_images: object[];
+  property_images: any[];
   credit_score_requirements: CreditScoreType;
   contract_details: ContractDetailType[];
   settings: any;

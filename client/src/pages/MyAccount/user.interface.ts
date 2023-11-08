@@ -5,14 +5,6 @@ export enum ContactType {
   Unknown = 'Unknown'
 }
 
-interface ContactUser extends Document {
-  contact_id: string;
-  legal_name: string;
-  company: string;
-  contact_type: ContactType;
-  address: string;
-}
-
 export type DocumentType = 'Employer reference' | 'Landlord reference' | 'Proof of ID';
 
 export interface IUser_Documents {
@@ -51,7 +43,8 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
   }
 ];
 
-export interface UserDocument extends ContactUser {
+export interface ApiUserDocumentType {
+  _id: string;
   user_id: number;
   hash: string;
   role: {
