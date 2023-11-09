@@ -1,6 +1,8 @@
 import { styled } from '@mui/system';
 import React from 'react';
 import classNames from 'classnames';
+import { AnimatePresence } from 'framer-motion';
+import { UseFormReturn } from 'react-hook-form';
 
 import { Modal, ModalProps } from '../../components/Modal';
 import { Typography } from '../../components/Typography';
@@ -13,16 +15,7 @@ import { SetCriteriaHouseType } from './SetCriteria/SetCriteria.HouseType';
 import { SetCriteriaBudget } from './SetCriteria/SetCriteria.Budged';
 import { SetCriteriaHouseDetails } from './SetCriteria/SetCriteria.HouseDetails';
 
-import { useUserStore } from '../../globalState/user';
-import { useProfileStore } from '../../globalState/profile';
-import axios from '../../utils/axios';
-
-import { ApiCriteriaDocumentType, CriteriaFormType, HouseType, PropertyFeatureType } from './criteria.types';
-import { Parking } from '../Properties/NewProperty/property.constants';
-import { OutsideSpaceType } from '../Properties/NewProperty/property.types';
-
-import { useCriteriaForm } from './useCriteriaForm';
-import { AnimatePresence } from 'framer-motion';
+import { CriteriaFormType } from './criteria.types';
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -35,287 +28,12 @@ const animationProps = {
 interface SetCriteriaModalProps extends ModalProps {
   onBack: () => void;
   afterRefineSearch: () => void | any;
+  form: UseFormReturn<CriteriaFormType>;
+  onStartMatchingClick: () => any;
 }
 export const SetCriteriaModal = styled(
-  ({ className, onBack, afterRefineSearch, ...rest }: SetCriteriaModalProps) => {
+  ({ className, onBack, afterRefineSearch, form, onStartMatchingClick, ...rest }: SetCriteriaModalProps) => {
     const [step, setStep] = React.useState(0);
-
-    const [loading, setLoading] = React.useState<boolean>(false);
-
-    const { auth } = useUserStore();
-
-    const profileStore = useProfileStore();
-
-    React.useEffect(() => {
-      loadCriteria().catch((err) => {
-        throw err;
-      });
-    }, []);
-
-    const loadCriteria = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios(auth.access_token).get<ApiCriteriaDocumentType>('/api/criteria');
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        mainForm.setValue('transactionType', data.transaction_type_string);
-
-        mainForm.setValue('areaOfInterest', data.area_of_interest);
-
-        if (data?.asset_address?.latitude && data?.asset_address?.longitude) {
-          mainForm.setValue('location', {
-            latitude: data.asset_address.latitude,
-            longitude: data.asset_address.longitude
-          });
-        }
-
-        mainForm.setValue('radius', data.radius);
-
-        mainForm.setValue('whenDoYouWantToMove', data.moving_time || undefined);
-
-        data.property_type.map((type: keyof CriteriaFormType['propertyType']) => {
-          mainForm.setValue(`propertyType.${type}`, true);
-        });
-
-        mainForm.setValue(
-          'houseDetails.houseType',
-          Object.fromEntries(
-            (data?.house_details?.house_type || []).map((key: HouseType) => [key, true])
-          ) as {
-            [key in HouseType]: boolean;
-          }
-        );
-        mainForm.setValue('houseDetails.homeStyle', data.house_details.home_style);
-
-        mainForm.setValue('houseDetails.condition', data.house_details?.condition);
-
-        mainForm.setValue('houseDetails.parking', data.house_details?.parking);
-
-        mainForm.setValue('houseDetails.preferredSize', data.house_details.preferred_size);
-        mainForm.setValue('houseDetails.garden', data.house_details.garden);
-        if (data.house_details?.storeys) {
-          mainForm.setValue('houseDetails.storeys', data.house_details.storeys);
-        }
-        mainForm.setValue('houseDetails.nrOfBedrooms', data.house_details.number_of_bedrooms);
-        mainForm.setValue('houseDetails.nrOfBathrooms', data.house_details.number_of_bathrooms);
-
-        mainForm.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
-        mainForm.setValue('flatDetails.preferredFloor', data.flat_details.preferred_floor);
-        mainForm.setValue('flatDetails.condition', data.flat_details.condition);
-
-        (data.flat_details.outside_space || []).forEach((os) => {
-          mainForm.setValue(`flatDetails.outsideSpace.${os}`, true);
-        });
-
-        if (data.flat_details.preferred_size?.size && data.flat_details.preferred_size?.unit) {
-          mainForm.setValue('flatDetails.preferredSize', data.flat_details.preferred_size);
-        }
-
-        if (data.flat_details?.number_of_bedrooms?.max) {
-          mainForm.setValue('flatDetails.nrOfBedrooms', data.flat_details.number_of_bedrooms);
-        }
-
-        if (data.flat_details?.number_of_bathrooms?.max) {
-          mainForm.setValue('flatDetails.nrOfBathrooms', data.flat_details.number_of_bathrooms);
-        }
-
-        mainForm.setValue('flatDetails.lift', data?.flat_details?.lift);
-        mainForm.setValue('flatDetails.security', data?.flat_details?.security);
-        mainForm.setValue('flatDetails.parkingSpace', data?.flat_details?.parking_space);
-        mainForm.setValue('flatDetails.gymSpa', data?.flat_details?.gym_spa);
-
-        (
-          Object.keys(mainForm.getValues('propertyClass')) as [keyof CriteriaFormType['propertyClass']]
-        ).forEach((key) => {
-          mainForm.setValue(`propertyClass.${key}`, data.property_preferences.includes(key));
-        });
-
-        (
-          Object.keys(mainForm.getValues('propertyFeatures')) as [keyof CriteriaFormType['propertyFeatures']]
-        ).forEach((key) => {
-          mainForm.setValue(`propertyFeatures.${key}`, data.property_features.includes(key));
-        });
-
-        if (data.floor_size?.includes('-')) {
-          mainForm.setValue('area', [
-            parseInt(data.floor_size.split('-')[0]),
-            parseInt(data.floor_size.split('-')[1])
-          ]);
-        }
-
-        if (data?.floor_size_unit) {
-          mainForm.setValue('areaUnit', data?.floor_size_unit);
-        }
-
-        if (data.room_details?.number_of_bedrooms) {
-          mainForm.setValue('nrOfBedrooms', [
-            parseInt(data.room_details?.number_of_bedrooms?.split('-')[0] || '0'),
-            parseInt(data.room_details?.number_of_bedrooms?.split('-')[1] || '0')
-          ]);
-        }
-
-        if (data.room_details?.number_of_bathrooms) {
-          mainForm.setValue('nrOfBathrooms', [
-            parseInt(data.room_details?.number_of_bathrooms?.split('-')[0] || '0'),
-            parseInt(data.room_details?.number_of_bathrooms?.split('-')[1] || '0')
-          ]);
-        }
-
-        mainForm.setValue(
-          'specificPropertyFeatures',
-          data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
-            acc[spf] = true;
-            return acc;
-          }, {}) as CriteriaFormType['specificPropertyFeatures']
-        );
-
-        mainForm.setValue('parkingType.On street', data.parking_details?.includes(Parking.OnStreet));
-        mainForm.setValue('parkingType.Off street', data.parking_details?.includes(Parking.OffStreet));
-        mainForm.setValue('parkingType.Garage', data.parking_details?.includes(Parking.Garage));
-
-        mainForm.setValue('idealBudget', [
-          parseInt(data.budget.split('-')[0]),
-          parseInt(data.budget.split('-')[1])
-        ]);
-
-        if (data.budget_for) {
-          mainForm.setValue('budgetFor', data.budget_for);
-        }
-
-        mainForm.setValue('depositAmount', data.deposit_amount);
-
-        mainForm.setValue('creditScore', data.credit_score_requirements);
-        mainForm.setValue(
-          'contractDetails',
-          data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
-            acc[cd] = true;
-            return acc;
-          }, {}) as CriteriaFormType['contractDetails']
-        );
-
-        if (data?.distance_from_underground) {
-          mainForm.setValue('distanceFromUnderground', data.distance_from_underground);
-        }
-
-        if (data?.distance_from_schools) {
-          mainForm.setValue('distanceFromSchools', data.distance_from_schools);
-        }
-
-        if (data?.distance_from_high_street) {
-          mainForm.setValue('distanceFromHighStreet', data.distance_from_high_street);
-        }
-
-        if (data?.distance_from_gym) {
-          mainForm.setValue('distanceFromGym', data.distance_from_gym);
-        }
-      } catch (err) {
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const handleSubmit = async () => {
-      try {
-        setLoading(true);
-        const payload: Partial<ApiCriteriaDocumentType> = {
-          transaction_type_string: mainForm.getValues('transactionType'),
-          area_of_interest: mainForm.getValues('areaOfInterest'),
-          asset_address: mainForm.getValues('location'),
-          radius: mainForm.getValues('radius'),
-          moving_time: mainForm.getValues('whenDoYouWantToMove') || undefined,
-
-          property_type: Object.entries(mainForm.getValues('propertyType'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key) as ApiCriteriaDocumentType['property_type'],
-          house_details: {
-            house_type: Object.entries(mainForm.getValues('houseDetails.houseType') || {})
-              .filter(([key, value]) => !!value)
-              .map(([key]) => key) as HouseType[],
-            home_style: mainForm.getValues('houseDetails.homeStyle') || undefined,
-            preferred_size: mainForm.getValues('houseDetails.preferredSize'),
-            condition: mainForm.getValues('houseDetails.condition') || undefined,
-            parking: mainForm.getValues('houseDetails.parking') || undefined,
-            garden: mainForm.getValues('houseDetails.garden'),
-            storeys: mainForm.getValues('houseDetails.storeys'),
-            number_of_bedrooms: mainForm.getValues('houseDetails.nrOfBedrooms'),
-            number_of_bathrooms: mainForm.getValues('houseDetails.nrOfBathrooms')
-          },
-          flat_details: {
-            property_purpose: mainForm.getValues('flatDetails.propertyPurpose') || undefined,
-            preferred_floor: mainForm.getValues('flatDetails.preferredFloor') || undefined,
-            condition: mainForm.getValues('flatDetails.condition') || undefined,
-
-            outside_space: Object.entries(mainForm.getValues('flatDetails.outsideSpace'))
-              .filter(([key, value]) => value)
-              .map(([key, value]) => key) as OutsideSpaceType[],
-            preferred_size: mainForm.getValues('flatDetails.preferredSize'),
-            number_of_bedrooms: mainForm.getValues('flatDetails.nrOfBedrooms'),
-            number_of_bathrooms: mainForm.getValues('flatDetails.nrOfBathrooms'),
-
-            lift: mainForm.getValues('flatDetails.lift'),
-            security: mainForm.getValues('flatDetails.security'),
-            gym_spa: mainForm.getValues('flatDetails.gymSpa'),
-            parking_space: mainForm.getValues('flatDetails.parkingSpace')
-          },
-          property_preferences: [
-            mainForm.getValues('propertyClass.New home') ? ['New home'] : [],
-            mainForm.getValues('propertyClass.Retirement home') ? ['Retirement home'] : [],
-            mainForm.getValues('propertyClass.Shared ownership') ? ['Shared ownership'] : [],
-            mainForm.getValues('propertyClass.Shared ownership') ? ['Auction'] : []
-          ].flat(),
-
-          property_features: [
-            mainForm.getValues('propertyFeatures.Parks nearby') ? ['Parks nearby'] : [],
-            mainForm.getValues('propertyFeatures.Public transport nearby') ? ['Public transport nearby'] : [],
-            mainForm.getValues('propertyFeatures.Shopping centers nearby') ? ['Shopping centers nearby'] : []
-          ].flat() as PropertyFeatureType[],
-
-          floor_size: `${mainForm.getValues('area')[0]}-${mainForm.getValues('area')[1]}`,
-          floor_size_unit: mainForm.getValues('areaUnit'),
-          room_details: {
-            number_of_bedrooms: `${mainForm.getValues('nrOfBedrooms')[0]}-${
-              mainForm.getValues('nrOfBedrooms')[1]
-            }`,
-            number_of_bathrooms: mainForm.getValues('nrOfBathrooms').join('-')
-          },
-          specific_property_features: Object.entries(mainForm.getValues('specificPropertyFeatures'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key),
-
-          // parking_details: [
-          //   mainForm.getValues('parkingType')[Parking.Garage] ? [Parking.Garage] : [],
-          //   mainForm.getValues('parkingType')[Parking.OffStreet] ? [Parking.OffStreet] : [],
-          //   mainForm.getValues('parkingType')[Parking.OnStreet] ? [Parking.OnStreet] : []
-          // ].flat(),
-
-          distance_from_underground: mainForm.getValues('distanceFromUnderground'),
-          distance_from_schools: mainForm.getValues('distanceFromSchools'),
-          distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
-          distance_from_gym: mainForm.getValues('distanceFromGym'),
-          budget: `${mainForm.getValues('idealBudget')[0]} - ${mainForm.getValues('idealBudget')[1]}`,
-          budget_for: mainForm.getValues('budgetFor'),
-          deposit_amount: mainForm.getValues('depositAmount'),
-          credit_score_requirements: mainForm.getValues('creditScore'),
-          contract_details: Object.entries(mainForm.getValues('contractDetails'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key)
-        };
-
-        await axios(auth.access_token).patch(`/api/criteria`, payload);
-
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        await afterRefineSearch();
-        profileStore.fetchProfile(auth.access_token);
-      } catch (err) {
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const mainForm = useCriteriaForm();
 
     return (
       <Modal className={classNames('set-criteria-modal', className)} {...rest}>
@@ -335,14 +53,10 @@ export const SetCriteriaModal = styled(
             <AnimatePresence>
               {
                 [
-                  <SetCriteriaLocation key='SetCriteriaLocation' form={mainForm} {...animationProps} />,
-                  <SetCriteriaHouseType key='SetCriteriaHouseType' form={mainForm} {...animationProps} />,
-                  <SetCriteriaBudget key='SetCriteriaBudget' form={mainForm} {...animationProps} />,
-                  <SetCriteriaHouseDetails
-                    key='SetCriteriaHouseDetails'
-                    form={mainForm}
-                    {...animationProps}
-                  />
+                  <SetCriteriaLocation key='SetCriteriaLocation' form={form} {...animationProps} />,
+                  <SetCriteriaHouseType key='SetCriteriaHouseType' form={form} {...animationProps} />,
+                  <SetCriteriaBudget key='SetCriteriaBudget' form={form} {...animationProps} />,
+                  <SetCriteriaHouseDetails key='SetCriteriaHouseDetails' form={form} {...animationProps} />
                 ][step]
               }
             </AnimatePresence>
@@ -366,9 +80,7 @@ export const SetCriteriaModal = styled(
               special
               size='large'
               className={classNames('start-matching-button', { hide: step !== 3 })}
-              onClick={async () => {
-                await handleSubmit();
-              }}>
+              onClick={onStartMatchingClick}>
               Start matching
             </Label>
 

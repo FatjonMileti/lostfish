@@ -1,14 +1,16 @@
 import { styled } from '@mui/system';
 import { Modal, ModalProps } from '../../../components/Modal';
 import React from 'react';
-import { Backdrop } from '../../../components/Backdrop';
 import classNames from 'classnames';
+
+import { Backdrop } from '../../../components/Backdrop';
 import { Typography } from '../../../components/Typography';
 import { CloseButton } from '../../../components/CloseButton';
+
 import { WhatAreYouLookingFor } from '../../InitialSetup/InitialSetupModal/InitialSetup.WhatAreYouLokingFor';
-import { LookingFor } from '../../SetCriteria/criteria.contants';
-import { SetCriteria } from '../../InitialSetup/InitialSetupModal/InitialSetup.SetCriteria';
 import { CreteAccountOrSignIn } from './CreteAccountOrSignIn';
+import { LookingFor } from '../../SetCriteria/criteria.contants';
+import { SetCriteria } from './StartMatchingWithoutAccount.SetCriteria';
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -18,13 +20,18 @@ const animationProps = {
   }
 };
 
-interface SuggestionsWithoutAccountProps extends ModalProps {
+interface StartMatchingWithoutAccountModalProps extends ModalProps {
   visibilityStore: any[];
   onSigInClick: () => void;
   onCreateAccountClick: () => void;
 }
-export const SuggestionsWithoutAccount = styled(
-  ({ visibilityStore, className, onSigInClick, onCreateAccountClick }: SuggestionsWithoutAccountProps) => {
+export const StartMatchingWithoutAccountModal = styled(
+  ({
+    visibilityStore,
+    className,
+    onSigInClick,
+    onCreateAccountClick
+  }: StartMatchingWithoutAccountModalProps) => {
     const [visibility, setVisibility] = visibilityStore;
     const [loading, setLoading] = React.useState<boolean>(false);
     const [step, setStep] = React.useState(0);
@@ -38,7 +45,7 @@ export const SuggestionsWithoutAccount = styled(
 
     return (
       <Modal
-        className={classNames('suggestions-without-account', className)}
+        className={classNames('start-matching-without-account-modal', className)}
         open={visibility}
         onBackdropClick={() => setVisibility(false)}>
         <Backdrop open={loading}></Backdrop>
@@ -80,13 +87,10 @@ export const SuggestionsWithoutAccount = styled(
 
                 {state.lookingFor === LookingFor.LookingForAPlace && (
                   <SetCriteria
-                    key='SetCriteria'
-                    {...animationProps}
-                    onNext={async () => {
-                      // await refreshToken(true);
-                      // setOpen(false);
+                    onNext={() => {}}
+                    onBack={() => {
+                      setStep((step) => step - 1);
                     }}
-                    onBack={() => setStep((step) => step - 1)}
                   />
                 )}
               </>
@@ -97,7 +101,7 @@ export const SuggestionsWithoutAccount = styled(
     );
   }
 )`
-  &.suggestions-without-account {
+  &.start-matching-without-account-modal {
     width: 100vw;
     height: 100vh;
 

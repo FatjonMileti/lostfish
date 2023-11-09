@@ -13,6 +13,8 @@ import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWi
 import { motion } from 'framer-motion';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { Label } from '../../../components/Label';
+import { Icon } from '../../../components/Icon';
 
 interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -21,22 +23,43 @@ export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithou
 
   return (
     <div className={classNames('matches-without-account-section', className)}>
+      <div className='section-header'>
+        <Typography className='matching-with'>
+          Matching with <span className='address'>properties in </span>
+        </Typography>
+        {suggestedProperties.data.length === 0 ? (
+          <Typography variant='body5' className='sub-title'>
+            No matches. Enter more details to refine your search.
+          </Typography>
+        ) : (
+          <Typography variant='body5' className='sub-title'>
+            Displaying {suggestedProperties.data.length} matches. Enter more details to refine your search.
+          </Typography>
+        )}
+      </div>
       <motion.div className='slides-wrapper'>
+        <div className='results-card'>
+          <Icon icon='intersect' size={64} color='#E5155A' />
+          <Typography variant='body2' className='title'>
+            Login or create an account to review the <span className='highlighted'>x potential matches</span>{' '}
+            we’ve found
+          </Typography>
+          <Typography variant='body4' className='description'>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliqua.
+          </Typography>
+        </div>
         {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
           const { property } = propertySuggestion;
 
           return (
             <PropertyCard
               key={tenantIndex}
-              animate={{
-                x: `calc(${-100 * activeSlide}% - ${activeSlide * 24}px)`
-              }}
-              transition={{ duration: 0.4 }}
               name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
               avatar={getAvatarFormIndex(property.created_by?.avatar)}
-              inView={tenantIndex === activeSlide}
+              inView={false}
               percentage={property.percentage}
-              onViewPropertyClick={() => setPropertyToView(suggestedProperty)}
+              onViewPropertyClick={() => {}}
               image={`${property?.property_images?.[0]?.link || ''}`}
               size='large'
               property={property}
@@ -44,6 +67,7 @@ export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithou
           );
         })}
       </motion.div>
+      <Label size='large'>Create Account</Label>
     </div>
   );
 })`
@@ -51,8 +75,9 @@ export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithou
     position: relative;
     min-height: calc(100vh - 112px);
     display: grid;
-    padding: 176px 36px 64px 36px;
+    padding: 36px;
     justify-content: center;
+    justify-items: center;
     align-content: space-between;
     box-sizing: border-box;
     row-gap: 32px;
@@ -79,83 +104,67 @@ export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithou
       top: -112px;
     }
 
-    .section-content {
+    .section-header {
       display: grid;
+      row-gap: 8px;
       align-items: center;
-      justify-content: center;
-      gap: 48px;
+      justify-self: center;
+      justify-items: center;
 
-      .welcome {
-        width: 904px;
-        display: grid;
-        align-items: center;
-        gap: 24px;
-
-        .perfect-match {
-          text-align: center;
-          font-size: 56px;
-          font-weight: 400;
-          line-height: 64px;
-
-          .perfect-match-red {
-            color: #e5155a;
-          }
-        }
-
-        .texts {
-          text-align: center;
-          font-weight: 400;
+      .matching-with {
+        font-family: Roobert, serif;
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: 700;
+        .address {
+          color: #184d6d;
         }
       }
 
-      .refine-search {
-        width: max-content;
-        display: flex;
-        padding: 12px;
+      .sub-title {
+        margin-top: 8px;
+      }
+    }
+
+    .slides-wrapper {
+      display: flex;
+      column-gap: 24px;
+      width: 672px;
+      box-sizing: border-box;
+
+      .results-card {
+        padding: 64px;
+        width: 672px;
+        height: 452px;
         box-sizing: border-box;
+        border-radius: 12px;
+        flex-shrink: 0;
+        display: grid;
+        row-gap: 24px;
+        justify-items: center;
+
+        border: 2px solid var(--primary-brand-sand, #eee0d3);
+        background: var(--primary-brand-light-sand, #f7f1e7);
+        /* Nav Shadow */
+        box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+
+        .title,
+        .description {
+          text-align: center;
+        }
+
+        .title {
+          .highlighted {
+            color: #e5155a;
+          }
+        }
+      }
+
+      .no-matches {
+        display: grid;
         align-items: center;
-        margin: 0 auto;
-        gap: 24px;
-        background-color: #fff;
-        border-radius: 25000px;
-        box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
-
-        .match-intersection {
-          display: flex;
-
-          .thumbnail {
-            border-radius: 50%;
-            height: 64px;
-            width: 64px;
-          }
-
-          .left-side {
-            position: relative;
-            margin-right: -16px;
-            overflow: hidden;
-            :after {
-              background-color: #ffffff;
-              clip-path: circle(50%);
-              width: 100%;
-              height: 100%;
-              content: '';
-              position: absolute;
-              left: calc(100% - 16px);
-            }
-          }
-
-          .right-side {
-            background-image: url(${HomeImg});
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-          }
-        }
-
-        .start-matching {
-          background-color: #e5155a;
-          border: 1px solid #b4263b;
-        }
+        justify-items: center;
+        width: 100%;
       }
     }
   }

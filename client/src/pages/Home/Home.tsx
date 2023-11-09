@@ -13,8 +13,8 @@ import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { FaqSection } from '../About/About.FaqSection';
 import { Footer } from './Footer';
-import { SuggestionsWithoutAccount } from '../Suggestions/SuggestionsWithoutAccount/SuggestionsWithoutAccount';
-import { MatchesWithoutAccountSection } from '../Suggestions/SuggestionsWithoutAccount/MatchesWithoutAccountSection';
+import { StartMatchingWithoutAccountModal } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccountModal';
+import { MatchesWithoutAccountSection } from '../Suggestions/StartMatchingWithoutAccount/MatchesWithoutAccountSection';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showStartMatchingModal, setShowStartMatchingModal] = React.useState(false);
@@ -42,11 +42,12 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   };
   return (
     <>
-      <SuggestionsWithoutAccount
+      <StartMatchingWithoutAccountModal
         visibilityStore={[showStartMatchingModal, setShowStartMatchingModal]}
         onSigInClick={onSigInClick}
         onCreateAccountClick={onCreateAccountClick}
       />
+
       <LoginModal
         open={showLoginModal}
         onBackdropClick={() => setShowLoginModal(false)}
