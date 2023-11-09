@@ -20,13 +20,22 @@ import { GlobalStyles } from '@mui/material';
 export interface EditPropertyModalProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
   propertyId?: string;
-  afterSave: () => void;
   afterDelete: () => void;
   onBack: () => void;
+  afterStartMatching: () => any;
+  afterSaveAsDraft: () => any;
 }
 
 export const EditPropertyModal = styled(
-  ({ className, showStore, propertyId, afterSave, afterDelete, onBack }: EditPropertyModalProps) => {
+  ({
+    className,
+    showStore,
+    propertyId,
+    afterDelete,
+    onBack,
+    afterStartMatching,
+    afterSaveAsDraft
+  }: EditPropertyModalProps) => {
     const [loadingProperty, setLoadingProperty] = React.useState(false);
     const [deletePropertyConfirmationModal, setDeletePropertyConfirmationModal] = React.useState(false);
 
@@ -217,7 +226,8 @@ export const EditPropertyModal = styled(
           startMatching={startMatching}
           form={form}
           onBack={onBack}
-          afterSave={afterSave}
+          afterSaveAsDraft={afterSaveAsDraft}
+          afterStartMatching={afterStartMatching}
         />
         <DeletePropertyConfirmationModal
           disableScrollLock

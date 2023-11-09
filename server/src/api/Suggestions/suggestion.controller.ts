@@ -92,14 +92,15 @@ export class SuggestionController {
    */
   public getTenantsSuggestions = async (req: Request, res: Response) => {
     const userId = res.locals.user_id as string;
-    const paginateOptions = res.locals.paging_options as IPagingOptions;
+    const pagingOptions = res.locals.paging_options as IPagingOptions;
     const { propertyId, chosen, disliked } = req.query;
-    const { response, success } = await this.suggestionService.getFilteredTenantsByUser(
-      paginateOptions,
+    const { response, success } = await this.suggestionService.getFilteredTenantsByUser({
+      pagingOptions,
       userId,
       chosen,
-      disliked
-    );
+      disliked,
+      propertyId
+    });
 
     if (success) {
       return res.send(response);

@@ -7,7 +7,7 @@ import { LoginModal } from '../Login/LoginModal';
 import { CreateAccountModal } from '../CreateAccount/CreateAccountmodal';
 import { ForgotPasswordModal } from '../ForgotPassword/ForgotPasswordModal';
 import { ResetPasswordModal } from '../ResetPassword/ResetPasswordModal';
-import { SectionOne } from '../About/About.SectionOne';
+import { SectionOne } from './Home.SectionOne';
 import { SectionTwo } from '../About/About.SectionTwo';
 import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';

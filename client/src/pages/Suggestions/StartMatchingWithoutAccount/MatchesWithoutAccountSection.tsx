@@ -3,11 +3,6 @@ import classNames from 'classnames';
 import React, { HTMLAttributes } from 'react';
 
 import { Typography } from '../../../components/Typography';
-import { Avatar } from '../../../components/Avatar';
-import { Button } from '../../../components/Button';
-import TenantImg from '../../About/tenant_img.png';
-import HomeImg from '../../About/89.png';
-
 import backgroundImg from '../../About/forest.jpeg';
 import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
 import { motion } from 'framer-motion';

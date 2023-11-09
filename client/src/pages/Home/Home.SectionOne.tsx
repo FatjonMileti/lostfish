@@ -5,11 +5,11 @@ import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
 import { Avatar } from '../../components/Avatar';
-import HomeImg from './89.png';
-import TenantImg from './tenant_img.png';
+import HomeImg from './property.jpg';
+import TenantImg from './tenant.jpg';
 import classNames from 'classnames';
 
-import backgroundImg from './forest.jpeg';
+import backgroundImg from '../About/forest.jpeg';
 export const SectionOne = styled(
   ({
     className,

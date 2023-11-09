@@ -8,7 +8,6 @@ import { Home } from './pages/Home/Home';
 import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
 import { Messages } from './pages/Messages/Messages';
-import { Properties } from './pages/Properties/PropertiesOld';
 import config from './config';
 import SocketContext from './context/SocketContext';
 import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
@@ -101,10 +100,6 @@ function App() {
                     )
                   }
                 />
-
-                {userStore?.userDetails?.role === 'Landlord' && (
-                  <Route path='/properties' element={!!userStore.auth ? <Properties /> : <Home />} />
-                )}
 
                 <Route path='/agreement' element={<Agreement />} />
 

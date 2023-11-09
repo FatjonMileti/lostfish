@@ -190,12 +190,19 @@ export default class SuggestionService {
     }
   }
 
-  public async getFilteredTenantsByUser(
-    pagingOptions: IPagingOptions,
-    userId: string,
-    chosen: any,
-    disliked: any
-  ) {
+  public async getFilteredTenantsByUser({
+    pagingOptions,
+    userId,
+    chosen,
+    disliked,
+    propertyId
+  }: {
+    pagingOptions: IPagingOptions;
+    userId: string;
+    chosen: any;
+    disliked: any;
+    propertyId?: any;
+  }) {
     try {
       const matchesUsers: any = await this.criteriaModel.paginate(
         {
@@ -217,9 +224,10 @@ export default class SuggestionService {
         (item: any) => item.created_by && item.created_by.role === Role.Client
       );
 
-      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample(
-        userId
-      );
+      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample({
+        userId,
+        propertyId
+      });
 
       const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
 
@@ -281,9 +289,9 @@ export default class SuggestionService {
         (item: any) => item.created_by && item.created_by.role === Role.Client
       );
 
-      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample(
+      const myProperties: PropertyDocument[] | null = await assetService.findPublishedPropertiesExample({
         userId
-      );
+      });
 
       const matches: MatchDocument[] = await MatchSchema.find({ created_by: userId }).lean();
 

@@ -203,9 +203,12 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
         <EditPropertyModal
           propertyId={propertyToEdit}
           showStore={[!!propertyToEdit, () => setPropertyToEdit(undefined)]}
-          afterSave={() => suggestedTenants.refetch()}
+          afterSaveAsDraft={() => suggestedTenants.refetch()}
           onBack={() => setPropertyToEdit(undefined)}
           afterDelete={() => suggestedTenants.refetch()}
+          afterStartMatching={async () => {
+            await suggestedTenants.refetch();
+          }}
         />
       )}
     </>

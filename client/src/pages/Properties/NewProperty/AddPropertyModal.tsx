@@ -57,7 +57,8 @@ export const AddPropertyModal = styled(
           saveAsDraft={saveAsDraft}
           form={form}
           onBack={onBack}
-          afterSave={afterSave}
+          afterStartMatching={afterSave}
+          afterSaveAsDraft={afterSave}
         />
       </Modal>
     );

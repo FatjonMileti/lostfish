@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from '../../../utils/axios';
 import { mapTenant } from '../../Matches/MatchesTenants/serializers';
 import { useUserStore } from '../../../globalState/user';
@@ -9,7 +8,7 @@ export const useSuggestedTenants = ({
   params = {},
   options = {}
 }: {
-  params?: { disliked?: boolean; chosen?: boolean };
+  params?: { disliked?: boolean; chosen?: boolean; propertyId?: string };
   options?: UseQueryOptions;
 }) => {
   const userStore = useUserStore();
@@ -19,7 +18,7 @@ export const useSuggestedTenants = ({
       const { data } = await axios(userStore.auth.access_token).get('/api/suggestion/tenant', {
         params
       });
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // await new Promise((resolve) => setTimeout(resolve, 500));
       return data.docs.map(mapTenant);
     } catch (err) {
       throw err;
@@ -27,7 +26,7 @@ export const useSuggestedTenants = ({
   };
 
   const query = useQuery<SuggestedTenantType[]>({
-    queryKey: ['suggested-tenants'],
+    queryKey: ['suggested-tenants', Object.values(params)],
     queryFn: () => getSuggestedTenants(),
     initialData: [],
     refetchIntervalInBackground: false,

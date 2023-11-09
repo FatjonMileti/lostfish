@@ -7,12 +7,15 @@ import { Button } from '../../../components/Button';
 import { Icon } from '../../../components/Icon';
 import { Avatar } from '../../../components/Avatar';
 
-import { avatars } from '../../HomeLoggedIn/avatars';
+import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 
 import { AreaUnitType } from '../NewProperty/property.types';
+import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
+import { Skeleton } from '@mui/material';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
+  propertyId: string;
   name: string;
   status: string;
   viewDetails: MouseEventHandler;
@@ -55,8 +58,20 @@ export const Property = styled(
     roomsDetails,
     propertyType,
     parkingSpot,
-    epcRating
+    epcRating,
+    propertyId
   }: PropertyProps) => {
+    const potentialMatches = useSuggestedTenants({
+      params: {
+        disliked: false,
+        chosen: false,
+        propertyId
+      },
+      options: {
+        refetchOnMount: true
+      }
+    });
+
     return (
       <div className={classNames('property', className)}>
         <Slider images={images} />
@@ -65,17 +80,37 @@ export const Property = styled(
             <Typography variant='body6' className='status'>
               {propertyStatusMap[status]}
             </Typography>
+
             <div className='potential-matches'>
-              <Typography className='title' variant='body5'>
-                Potential matches
-              </Typography>
+              {!(!potentialMatches.isFetching && potentialMatches?.data?.length === 0) && (
+                <Typography className='title' variant='body5'>
+                  Potential matches
+                </Typography>
+              )}
+
               <div className='potential-matches-list'>
-                <Avatar image={avatars[0].image} />
-                <Avatar image={avatars[1].image} />
-                <Avatar image={avatars[2].image} />
-                <div className='others-number'>
-                  <Typography variant='body6'>+49</Typography>
-                </div>
+                {potentialMatches.isFetching && (
+                  <>
+                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
+                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
+                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
+                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
+                  </>
+                )}
+                {!potentialMatches.isFetching &&
+                  potentialMatches?.data.slice(0, 3).map((st, stIndex) => {
+                    return (
+                      <div
+                        key={stIndex}
+                        className='tenant-image '
+                        style={{ backgroundImage: `url(${getAvatarFormIndex(st.criteria.avatar)})` }}></div>
+                    );
+                  })}
+                {!potentialMatches.isFetching && potentialMatches?.data?.length > 3 && (
+                  <div className='tenant-image last'>
+                    <Typography variant='body6'>+{potentialMatches?.data?.length - 3}</Typography>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -217,6 +252,33 @@ export const Property = styled(
           color: white;
           font-weight: 700;
         }
+        .potential-matches-list {
+          display: flex;
+
+          .tenant-image {
+            width: 40px;
+            height: 40px;
+            background-size: cover;
+            border-radius: 50%;
+            background-position: center;
+            z-index: 1;
+
+            :not(:first-child) {
+              margin-left: -8px;
+            }
+
+            &.last {
+              color: #0d2a38;
+              display: grid;
+              align-items: center;
+              justify-content: center;
+              font-weight: 700;
+              background-color: #f7f1e7;
+              z-index: 0;
+            }
+          }
+        }
+
         .potential-matches {
           display: flex;
           align-items: center;
@@ -226,34 +288,6 @@ export const Property = styled(
             color: #646464;
             line-height: 16px;
             font-weight: 500;
-          }
-
-          .potential-matches-list {
-            display: flex;
-            .avatar {
-              height: 40px;
-              width: 40px;
-              margin-left: -8px;
-              z-index: 1;
-              &:first-of-type {
-                margin-left: 0;
-              }
-            }
-
-            .others-number {
-              height: 40px;
-              width: 40px;
-              border-radius: 50%;
-              background-color: #f7f1e7;
-
-              color: #0d2a38;
-              font-weight: 700;
-              display: flex;
-              flex-shrink: 0;
-              align-items: center;
-              justify-content: center;
-              margin-left: -8px;
-            }
           }
         }
       }

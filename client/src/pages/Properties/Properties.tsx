@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
@@ -44,6 +44,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const { auth } = useUserStore();
 
   const queryParams = new URLSearchParams(useLocation().search);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setList((list) => ({
@@ -97,12 +98,16 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         <EditPropertyModal
           showStore={[!!editPropertyId, () => setEditPropertyId(undefined)]}
           propertyId={editPropertyId}
-          afterSave={() => {
+          afterSaveAsDraft={() => {
             setEditPropertyId(undefined);
             getAssets();
           }}
           afterDelete={() => getAssets()}
           onBack={() => setEditPropertyId(undefined)}
+          afterStartMatching={() => {
+            setEditPropertyId(undefined);
+            navigate('/');
+          }}
         />
       )}
 
@@ -173,6 +178,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           <div className='properties-list'>
             {list.rows.map((p, pIndex: number) => (
               <Property
+                propertyId={p._id}
                 key={pIndex}
                 name={p.title}
                 status={p.status_string}

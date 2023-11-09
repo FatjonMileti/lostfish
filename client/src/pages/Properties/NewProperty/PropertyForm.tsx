@@ -41,11 +41,12 @@ import { Label } from '../../../components/Label';
 import classNames from 'classnames';
 
 export interface PropertyFormProps extends HTMLAttributes<HTMLDivElement> {
-  afterSave: () => void;
+  afterStartMatching: () => void;
   onBack: () => void;
   form: UseFormReturn<PropertyFormType>;
   saveAsDraft: (payload: Partial<ApiPropertyDocumentType>) => Promise<any>;
   startMatching: (payload: Partial<ApiPropertyDocumentType>) => Promise<any>;
+  afterSaveAsDraft: () => any;
 }
 
 export interface NewPropertyStateType {
@@ -56,7 +57,15 @@ export interface NewPropertyStateType {
 }
 
 export const PropertyForm = styled(
-  ({ form, className, afterSave, onBack, saveAsDraft, startMatching }: PropertyFormProps) => {
+  ({
+    form,
+    className,
+    afterStartMatching,
+    onBack,
+    saveAsDraft,
+    startMatching,
+    afterSaveAsDraft
+  }: PropertyFormProps) => {
     const { auth } = useUserStore();
 
     const [state, setState] = React.useState<NewPropertyStateType>({
@@ -196,7 +205,7 @@ export const PropertyForm = styled(
         await processNewImages();
         const payload = generatePayload();
         await saveAsDraft(payload);
-        afterSave();
+        afterSaveAsDraft();
       } catch (err) {
         throw err;
       } finally {
@@ -215,7 +224,7 @@ export const PropertyForm = styled(
         };
 
         await startMatching(payload);
-        afterSave();
+        afterStartMatching();
       } catch (err) {
         throw err;
       } finally {

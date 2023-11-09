@@ -449,13 +449,23 @@ const findPublishedProperties = async (req: Request, res: Response) => {
   }
 };
 
-const findPublishedPropertiesExample = async (userId?: string): Promise<PropertyDocument[]> => {
+const findPublishedPropertiesExample = async ({
+  userId,
+  propertyId
+}: {
+  userId?: string;
+  propertyId?: string;
+}): Promise<PropertyDocument[]> => {
   const query: any = {
     status_string: { $in: ['Let', 'Live', 'For Let', 'For Sale'] }
   };
 
   if (userId) {
     query.created_by = { $eq: userId };
+  }
+
+  if (propertyId) {
+    query._id = { $eq: propertyId };
   }
 
   try {
