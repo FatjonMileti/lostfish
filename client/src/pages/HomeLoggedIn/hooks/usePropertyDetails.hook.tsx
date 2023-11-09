@@ -37,7 +37,7 @@ export const usePropertyDetailsHook = () => {
   };
 
   const query = useQuery<PropertyWithDetails | undefined>({
-    queryKey: ['suggested-properties'],
+    queryKey: ['property-details'],
     queryFn: () => getLatestPropertyWithDetails(),
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,

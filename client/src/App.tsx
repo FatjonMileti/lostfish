@@ -24,7 +24,6 @@ import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
-import { InitialSetup } from './pages/InitialSetup/InitialSetup';
 import { InitialSetupModal } from './pages/InitialSetup/InitialSetupModal/InitialSetupModal';
 import { useProfileStore } from './globalState/profile';
 import { useNotificationsStore } from './globalState/notifications';

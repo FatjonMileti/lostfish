@@ -363,7 +363,9 @@ export default class SuggestionService {
     }
 
     // Budget
-    const [minBudget, maxBudget] = clientCriteria?.budget?.split(' - ')?.map(Number) || [];
+    const minBudget = clientCriteria?.budget?.min;
+    const maxBudget = clientCriteria?.budget?.max;
+
     if (clientCriteria.budget_for === 'Week') {
       const weeksInMonth = 4.34524;
       const [clientMinBudget, clientMaxBudget] = [minBudget * weeksInMonth, maxBudget * weeksInMonth];

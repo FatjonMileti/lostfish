@@ -47,7 +47,7 @@ export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchin
               Budget
             </Typography>
             <Typography variant='body5' className='criteria-value'>
-              {criteriaStore.budget.map((v) => `${v}£`).join(' - ')}
+              {`${criteriaStore.budget?.min}£ - ${criteriaStore.budget?.max}£`}
             </Typography>
           </div>
           <div className='divider-line' />

@@ -29,10 +29,7 @@ export const mapCriteria = (criteria: any) => {
     areaOfInterest: criteria?.area_of_interest || '',
     radius: criteria?.radius ? `${criteria?.radius} mi` : '',
     moveIn: criteria?.moving_time || '',
-    budget: (criteria?.budget || '')
-      .split(' - ')
-      .map((v: string) => (!isNaN(parseInt(v)) ? `£${parseInt(v).toLocaleString()}` : ''))
-      .join(' - '),
+    budget: criteria?.budget,
     nrOfBedrooms: criteria?.room_details?.number_of_bedrooms || '',
     nrOfBathrooms: criteria?.room_details?.number_of_bathrooms || '',
     specificPropertyFeatures: criteria?.specific_property_features || [],

@@ -1,14 +1,13 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import axios from '../utils/axios';
-import { TransactionType } from '../pages/SetCriteria/criteria.types';
+import { ApiCriteriaDocumentType, TransactionType } from '../pages/SetCriteria/criteria.types';
 
-export interface CriteriaStoreType {
+export interface CriteriaStoreType extends Partial<ApiCriteriaDocumentType> {
   lookingFor?: string;
   transactionType?: TransactionType;
   whenDoYouWantToMove?: string;
   areaOfInterest?: string;
-  budget: number[];
   budgetFor: string;
   nrOfBedrooms: number[];
   set: (
@@ -27,7 +26,6 @@ const criteriaInitialState = {
   transactionType: undefined,
   whenDoYouWantToMove: undefined,
   areaOfInterest: undefined,
-  budget: [1000, 5200],
   budgetFor: '',
   nrOfBedrooms: [1, 4]
 };
@@ -41,14 +39,14 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
         reset: () => set((profile) => ({ ...criteriaInitialState })),
         fetchCriteria: async (access_token: string) => {
           try {
-            const { data } = await axios(access_token).get('/api/criteria');
+            const { data } = await axios(access_token).get<ApiCriteriaDocumentType>('/api/criteria');
 
             set((profile) => ({
               lookingFor: data.looking_for,
               transactionType: data.transaction_type_string,
               whenDoYouWantToMove: data.moving_time,
               areaOfInterest: data.area_of_interest,
-              budget: data.budget.split('-')
+              ...data
             }));
           } catch (err: any) {
             if (err.response.status === 404) {

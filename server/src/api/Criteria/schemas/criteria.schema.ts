@@ -140,7 +140,10 @@ const schema = new Schema<CriteriaDocument>({
   parking_details: [String],
   floor_size_unit: String,
   specific_property_features: [String],
-  budget: String,
+  budget: {
+    min: Number,
+    max: Number
+  },
   deposit_amount: String,
   contract_details: [String],
   credit_score_requirements: String,

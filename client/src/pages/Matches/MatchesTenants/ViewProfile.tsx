@@ -103,7 +103,7 @@ export const ViewProfile = styled(
                         budget
                       </Typography>
                       <Typography variant='body5' className='detail-value'>
-                        {budget}
+                        {`£${budget?.min?.toLocaleString()} - £${budget?.max?.toLocaleString()}`}
                       </Typography>
                     </div>
 

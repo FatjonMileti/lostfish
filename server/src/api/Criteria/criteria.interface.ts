@@ -99,7 +99,7 @@ export interface CriteriaDocument extends Document {
     unit: string;
   };
   outside_space: OutsideSpace[];
-  budget: string;
+  budget: Range;
   deposit_amount: string;
   contract_details: string[];
   credit_score_requirements: string;

@@ -42,11 +42,11 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
   };
   return (
     <>
-      <StartMatchingWithoutAccountModal
-        visibilityStore={[showStartMatchingModal, setShowStartMatchingModal]}
-        onSigInClick={onSigInClick}
-        onCreateAccountClick={onCreateAccountClick}
-      />
+      {/*<StartMatchingWithoutAccountModal*/}
+      {/*  visibilityStore={[showStartMatchingModal, setShowStartMatchingModal]}*/}
+      {/*  onSigInClick={onSigInClick}*/}
+      {/*  onCreateAccountClick={onCreateAccountClick}*/}
+      {/*/>*/}
 
       <LoginModal
         open={showLoginModal}
@@ -69,7 +69,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
         <div className='header-and-content-wrapper'>
           <Header onSigInClick={onSigInClick} />
           <div className='container-home'>
-            <MatchesWithoutAccountSection />
+            {/*<MatchesWithoutAccountSection />*/}
             <SectionOne
               section2Ref={section2Ref}
               onStartMatchingClick={() => setShowStartMatchingModal(true)}

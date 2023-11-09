@@ -78,7 +78,10 @@ export class CriteriaController {
  *   {
  *     "area_of_interest": "London, Uk",
  *     "budget_for": "Week",
- *     "budget": "100 - 1000",
+ *     "budget": {
+ *        min: 100,
+ *        max: 1000
+ *     },
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
  *     "asset_address": {
@@ -133,7 +136,10 @@ export class CriteriaController {
  *    {
  *     "area_of_interest": "London, Uk",
  *     "budget_for": "Week",
- *     "budget": "100 - 1000",
+ *     "budget": {
+ *       min: 100,
+ *       max: 1000
+ *     },
  *     "radius": "0",
  *     "transaction_type_string": "Rent",
  *     "asset_address": {
@@ -221,7 +227,9 @@ export class CriteriaController {
  * @apiBody {String} distance_from_gym.unit
  * @apiBody {String[]} specific_property_features An array of property Specific property features.
  * @apiBody {String} credit_score_requirements
- * @apiBody {String} budget
+ * @apiBody {Object} budget
+ * @apiBody {Number} budget.min
+ * @apiBody {Number} budget.max
  * @apiBody {String} transaction_type_string
  * @apiBody {String[]} property_features An array of property features.
  * @apiBody {String} looking_for

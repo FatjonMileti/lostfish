@@ -98,7 +98,10 @@ export const useSuggestedPropertiesWithoutAccount = () => {
           parking_details: [],
           floor_size_unit: 'sq.m',
           specific_property_features: ['Close to public transport', 'Allows smoking'],
-          budget: '500 - 1500',
+          budget: {
+            min: 500,
+            max: 5000
+          },
           deposit_amount: '394',
           contract_details: ['Guarantor', 'Energy Certificate', 'Reviewed Property'],
           credit_score_requirements: 'Good',

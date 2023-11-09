@@ -37,7 +37,10 @@ const createFakeDataMinDetails = (user: any) => {
 const createFakeDataMaxDetails = (user: any): Partial<CriteriaDocument> => {
   return {
     area_of_interest: faker.location.streetAddress(),
-    budget: faker.helpers.arrayElement(['1000 - 5000', '500 - 1500', '2000 - 10000']),
+    budget: {
+      min: faker.helpers.arrayElement([100, 200, 300, 400, 500]),
+      max: faker.helpers.arrayElement([1000, 2000, 3000, 4000, 5000])
+    },
     radius: faker.helpers.arrayElement(['1', '5', '10', '50']),
     asset_address: {
       administrative_area_level_1: faker.location.country(),

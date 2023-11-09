@@ -42,6 +42,8 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     params: { chosen: false, disliked: false }
   });
 
+  console.log('suggestedProperties: ', suggestedProperties);
+
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.data?.length));
   const previous = () => {

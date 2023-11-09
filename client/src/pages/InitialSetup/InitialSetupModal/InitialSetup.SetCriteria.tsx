@@ -101,7 +101,10 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
         distance_from_schools: criteriaForm.getValues('distanceFromSchools'),
         distance_from_high_street: criteriaForm.getValues('distanceFromHighStreet'),
         distance_from_gym: criteriaForm.getValues('distanceFromGym'),
-        budget: `${criteriaForm.getValues('idealBudget')[0]} - ${criteriaForm.getValues('idealBudget')[1]}`,
+        budget: {
+          min: criteriaForm.getValues('idealBudget')[0],
+          max: criteriaForm.getValues('idealBudget')[1]
+        },
         budget_for: criteriaForm.getValues('budgetFor'),
         deposit_amount: criteriaForm.getValues('depositAmount'),
         credit_score_requirements: criteriaForm.getValues('creditScore'),

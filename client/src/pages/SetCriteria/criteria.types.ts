@@ -214,7 +214,7 @@ export type ApiCriteriaDocumentType = {
   distance_from_high_street: DistanceType;
   distance_from_gym: DistanceType;
   outside_space: OutsideSpaceType[];
-  budget: string;
+  budget: Range;
   deposit_amount?: number;
   contract_details: string[];
   credit_score_requirements: CreditScoreType;

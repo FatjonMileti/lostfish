@@ -186,10 +186,7 @@ export const SetCriteria = styled(
         mainForm.setValue('parkingType.Off street', data.parking_details?.includes(Parking.OffStreet));
         mainForm.setValue('parkingType.Garage', data.parking_details?.includes(Parking.Garage));
 
-        mainForm.setValue('idealBudget', [
-          parseInt(data.budget.split('-')[0]),
-          parseInt(data.budget.split('-')[1])
-        ]);
+        mainForm.setValue('idealBudget', [data.budget?.min, data.budget?.max]);
 
         if (data.budget_for) {
           mainForm.setValue('budgetFor', data.budget_for);
@@ -306,7 +303,10 @@ export const SetCriteria = styled(
           distance_from_schools: mainForm.getValues('distanceFromSchools'),
           distance_from_high_street: mainForm.getValues('distanceFromHighStreet'),
           distance_from_gym: mainForm.getValues('distanceFromGym'),
-          budget: `${mainForm.getValues('idealBudget')[0]} - ${mainForm.getValues('idealBudget')[1]}`,
+          budget: {
+            min: mainForm.getValues('idealBudget')[0],
+            max: mainForm.getValues('idealBudget')[1]
+          },
           budget_for: mainForm.getValues('budgetFor'),
           deposit_amount: mainForm.getValues('depositAmount'),
           credit_score_requirements: mainForm.getValues('creditScore'),
