@@ -3,6 +3,7 @@ import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import classNames from 'classnames';
 import { HTMLMotionProps, motion } from 'framer-motion';
+import { v4 as uuid } from 'uuid';
 
 import { Switch } from '../../../components/Switch';
 import { Tab, Tabs } from '../../../components/Tab';
@@ -287,7 +288,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                     />
                     <label htmlFor={id}>{houseType}</label>
                   </div>
-                ))(Date.now().toString())
+                ))(uuid())
               )}
 
               <div className='slider-wrapper'>
@@ -390,7 +391,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                     />
                     <label htmlFor={id}>{space}</label>
                   </div>
-                ))(Date.now().toString())
+                ))(uuid())
               )}
 
               <div className='slider-wrapper'>
@@ -509,7 +510,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       />
                       <label htmlFor={id}>Lift</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
                   {((id: string) => (
                     <div className='switch-wrapper'>
                       <Switch
@@ -520,7 +521,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       />
                       <label htmlFor={id}>Security</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
                   {((id: string) => (
                     <div className='switch-wrapper'>
                       <Switch
@@ -531,7 +532,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       />
                       <label htmlFor={id}>Parking space</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
                   {((id: string) => (
                     <div className='switch-wrapper'>
                       <Switch
@@ -542,7 +543,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       />
                       <label htmlFor={id}>gym/spa</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
                 </>
               )}
             </div>

@@ -1,6 +1,7 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
 
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
@@ -500,7 +501,7 @@ export const PropertyForm = styled(
                       />
                       <label htmlFor={id}>{ospf}</label>
                     </div>
-                  ))(Date.now().toString())
+                  ))(uuid())
                 )}
               </div>
             </div>
@@ -538,7 +539,7 @@ export const PropertyForm = styled(
                       />
                       <label htmlFor={id}>lift</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
 
                   {((id: string) => (
                     <div className='switch-wrapper'>
@@ -550,7 +551,7 @@ export const PropertyForm = styled(
                       />
                       <label htmlFor={id}>security</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
 
                   {((id: string) => (
                     <div className='switch-wrapper'>
@@ -562,7 +563,7 @@ export const PropertyForm = styled(
                       />
                       <label htmlFor={id}>Gym/Spa</label>
                     </div>
-                  ))(Date.now().toString())}
+                  ))(uuid())}
 
                   {Object.values(OutsideSpace).map((space, spaceIndex: number) =>
                     ((id: string) => (
@@ -575,7 +576,7 @@ export const PropertyForm = styled(
                         />
                         <label htmlFor={id}>{space}</label>
                       </div>
-                    ))(Date.now().toString())
+                    ))(uuid())
                   )}
                 </div>
               </div>
