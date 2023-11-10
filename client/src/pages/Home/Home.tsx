@@ -13,11 +13,11 @@ import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
 import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
 import { FaqSection } from '../About/About.FaqSection';
 import { Footer } from './Footer';
-import { StartMatchingWithoutAccountModal } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccountModal';
-import { MatchesWithoutAccountSection } from '../Suggestions/StartMatchingWithoutAccount/MatchesWithoutAccountSection';
+
+import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccount';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const [showStartMatchingModal, setShowStartMatchingModal] = React.useState(false);
+  const [showStartMatching, setShowStartMatching] = React.useState(false);
 
   const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [showCreateAccountModal, setShowCreateAccountModal] = React.useState(false);
@@ -40,14 +40,9 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
     setShowLoginModal(false);
     setShowForgotPasswordModal(true);
   };
+
   return (
     <>
-      {/*<StartMatchingWithoutAccountModal*/}
-      {/*  visibilityStore={[showStartMatchingModal, setShowStartMatchingModal]}*/}
-      {/*  onSigInClick={onSigInClick}*/}
-      {/*  onCreateAccountClick={onCreateAccountClick}*/}
-      {/*/>*/}
-
       <LoginModal
         open={showLoginModal}
         onBackdropClick={() => setShowLoginModal(false)}
@@ -68,16 +63,28 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       <div className={classNames('home-page', className)}>
         <div className='header-and-content-wrapper'>
           <Header onSigInClick={onSigInClick} />
+
           <div className='container-home'>
-            {/*<MatchesWithoutAccountSection />*/}
-            <SectionOne
-              section2Ref={section2Ref}
-              onStartMatchingClick={() => setShowStartMatchingModal(true)}
-            />
-            <SectionTwo ref={section2Ref} />
-            <SectionFive onCreateAccountClick={onCreateAccountClick} />
-            <SectionThree />
-            <FaqSection />
+            {showStartMatching && (
+              <StartMatchingWithoutAccount
+                closeStartMatching={() => setShowStartMatching(false)}
+                onSigInClick={onSigInClick}
+                onCreateAccountClick={onCreateAccountClick}
+              />
+            )}
+
+            {!showStartMatching && (
+              <>
+                <SectionOne
+                  section2Ref={section2Ref}
+                  onStartMatchingClick={() => setShowStartMatching(true)}
+                />
+                <SectionTwo ref={section2Ref} />
+                <SectionFive onCreateAccountClick={onCreateAccountClick} />
+                <SectionThree />
+                <FaqSection />
+              </>
+            )}
           </div>
         </div>
         <Footer />

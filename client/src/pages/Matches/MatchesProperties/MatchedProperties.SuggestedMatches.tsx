@@ -64,7 +64,7 @@ export const SuggestedMatches = styled(
           <div>
             <Typography>
               Matching with{' '}
-              <span className='matching-with'>properties in {criteriaStore.areaOfInterest} +</span>
+              <span className='matching-with'>properties in {criteriaStore.criteria.area_of_interest} +</span>
             </Typography>
             {properties.length === 0 ? (
               <Typography variant='body5' className='sub-title'>

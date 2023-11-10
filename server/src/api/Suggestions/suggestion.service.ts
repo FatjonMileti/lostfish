@@ -44,7 +44,6 @@ export default class SuggestionService {
     disliked: any;
   }): Promise<{ response: any; success: boolean }> {
     pagingOptions.limit = 100;
-    // const criteria: CriteriaDocument | null = await this.criteriaModel.findOne({}).lean();
 
     if (!criteria) {
       throw createError(httpStatus.NOT_FOUND, { message: 'criteria_not_found' });

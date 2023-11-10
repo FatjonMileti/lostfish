@@ -4,7 +4,6 @@ import React from 'react';
 import axios from '../../../utils/axios';
 
 import { useProfileStore } from '../../../globalState/profile';
-import { useCriteriaStore } from '../../../globalState/criteria';
 import { useUserStore } from '../../../globalState/user';
 import { AnimatePresence } from 'framer-motion';
 
@@ -20,6 +19,7 @@ import { Typography } from '../../../components/Typography';
 
 import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
+import { LookingForType } from '../../SetCriteria/criteria.types';
 
 interface InitialSetupModalProps extends ModalProps {}
 
@@ -38,9 +38,12 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
   const profileStore = useProfileStore();
   const userStore = useUserStore();
 
-  const [state, setState] = React.useState({
+  const [state, setState] = React.useState<{
+    avatar: string;
+    lookingFor?: LookingForType;
+  }>({
     avatar: '0',
-    lookingFor: ''
+    lookingFor: undefined
   });
 
   const onLookingForNext = async () => {
@@ -71,7 +74,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     setState((state) => ({ ...state, avatar }));
   };
 
-  const onLookingForChange = (lookingFor: string) => {
+  const onLookingForChange = (lookingFor: LookingForType) => {
     setState((state) => ({ ...state, lookingFor }));
   };
 

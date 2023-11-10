@@ -12,10 +12,11 @@ import classNames from 'classnames';
 import { LookingFor } from '../../SetCriteria/criteria.contants';
 import { Label } from '../../../components/Label';
 import { HTMLMotionProps, motion } from 'framer-motion';
+import { LookingForType } from '../../SetCriteria/criteria.types';
 
 export interface WhatAreYouLookingForProps extends HTMLMotionProps<'div'> {
-  lookingFor?: string;
-  onLookingForChange: (lookingFor: string) => void;
+  lookingFor?: LookingForType;
+  onLookingForChange: (lookingFor: LookingForType) => void;
   onNext: () => void;
 }
 
@@ -98,9 +99,10 @@ export const WhatAreYouLookingFor = styled(
       }
 
       .title {
-        font-size: 24px;
-        line-height: 32px;
-        font-weight: 400;
+        ${(props) => props.theme.breakpoints.down('laptop')} {
+          font-size: 24px;
+          line-height: 32px;
+        }
       }
 
       .circles {

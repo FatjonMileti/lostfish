@@ -37,7 +37,7 @@ export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchin
               Location
             </Typography>
             <Typography variant='body5' className='criteria-value'>
-              {criteriaStore.areaOfInterest}
+              {criteriaStore.criteria.area_of_interest}
             </Typography>
           </div>
 
@@ -47,7 +47,7 @@ export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchin
               Budget
             </Typography>
             <Typography variant='body5' className='criteria-value'>
-              {`${criteriaStore.budget?.min}£ - ${criteriaStore.budget?.max}£`}
+              {`${criteriaStore.criteria.budget?.min}£ - ${criteriaStore.criteria.budget?.max}£`}
             </Typography>
           </div>
           <div className='divider-line' />

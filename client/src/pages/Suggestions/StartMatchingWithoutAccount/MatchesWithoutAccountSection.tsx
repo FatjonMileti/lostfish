@@ -1,71 +1,88 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import React, { HTMLAttributes } from 'react';
+import { motion } from 'framer-motion';
 
 import { Typography } from '../../../components/Typography';
-import backgroundImg from '../../About/forest.jpeg';
-import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
-import { motion } from 'framer-motion';
-import { PropertyCard } from '../../../components/PropertyCard';
-import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
+import { Backdrop } from '../../../components/Backdrop';
+import { PropertyCard } from '../../../components/PropertyCard';
 
-interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {}
+import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithoutAccountSectionProps) => {
-  const suggestedProperties = useSuggestedPropertiesWithoutAccount();
+import { useCriteriaStore } from '../../../globalState/criteria';
+import backgroundImg from '../../About/forest.jpeg';
 
-  return (
-    <div className={classNames('matches-without-account-section', className)}>
-      <div className='section-header'>
-        <Typography className='matching-with'>
-          Matching with <span className='address'>properties in </span>
-        </Typography>
-        {suggestedProperties.data.length === 0 ? (
-          <Typography variant='body5' className='sub-title'>
-            No matches. Enter more details to refine your search.
+interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {
+  onCreateAccountClick: () => any;
+}
+
+export const MatchesWithoutAccountSection = styled(
+  ({ className, onCreateAccountClick }: MatchesWithoutAccountSectionProps) => {
+    const suggestedProperties = useSuggestedPropertiesWithoutAccount();
+    const criteriaStore = useCriteriaStore();
+
+    return (
+      <div className={classNames('matches-without-account-section', className)}>
+        <Backdrop open={suggestedProperties.isFetching} />
+        <div className='section-header'>
+          <Typography className='matching-with'>
+            Matching with{' '}
+            <span className='address'>properties in {criteriaStore.criteria.area_of_interest}</span>
           </Typography>
-        ) : (
-          <Typography variant='body5' className='sub-title'>
-            Displaying {suggestedProperties.data.length} matches. Enter more details to refine your search.
-          </Typography>
-        )}
-      </div>
-      <motion.div className='slides-wrapper'>
-        <div className='results-card'>
-          <Icon icon='intersect' size={64} color='#E5155A' />
-          <Typography variant='body2' className='title'>
-            Login or create an account to review the <span className='highlighted'>x potential matches</span>{' '}
-            we’ve found
-          </Typography>
-          <Typography variant='body4' className='description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua.
-          </Typography>
+          {suggestedProperties.data.length === 0 ? (
+            <Typography variant='body5' className='sub-title'>
+              No matches. Enter more details to refine your search.
+            </Typography>
+          ) : (
+            <Typography variant='body5' className='sub-title'>
+              Displaying {suggestedProperties.data.length} potential matches.
+            </Typography>
+          )}
         </div>
-        {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
-          const { property } = propertySuggestion;
+        <motion.div className='slides-wrapper'>
+          {suggestedProperties.data.length > 0 && (
+            <div className='results-card'>
+              <Icon icon='intersect' size={64} color='#E5155A' />
+              <Typography variant='body2' className='title'>
+                Login or create an account to review the
+                <span className='highlighted'> {suggestedProperties.data.length} potential matches</span>{' '}
+                we’ve found
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                labore et dolore magna aliqua.
+              </Typography>
+            </div>
+          )}
 
-          return (
-            <PropertyCard
-              key={tenantIndex}
-              name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
-              avatar={getAvatarFormIndex(property.created_by?.avatar)}
-              inView={false}
-              percentage={property.percentage}
-              onViewPropertyClick={() => {}}
-              image={`${property?.property_images?.[0]?.link || ''}`}
-              size='large'
-              property={property}
-            />
-          );
-        })}
-      </motion.div>
-      <Label size='large'>Create Account</Label>
-    </div>
-  );
-})`
+          {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
+            const { property } = propertySuggestion;
+
+            return (
+              <PropertyCard
+                key={tenantIndex}
+                name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
+                avatar={getAvatarFormIndex(property.created_by?.avatar)}
+                inView={false}
+                percentage={property.percentage}
+                onViewPropertyClick={() => {}}
+                image={`${property?.property_images?.[0]?.link || ''}`}
+                size='large'
+                property={property}
+              />
+            );
+          })}
+        </motion.div>
+        <Label size='large' onClick={onCreateAccountClick}>
+          Create Account
+        </Label>
+      </div>
+    );
+  }
+)`
   &.matches-without-account-section {
     position: relative;
     min-height: calc(100vh - 112px);
@@ -76,6 +93,7 @@ export const MatchesWithoutAccountSection = styled(({ className }: MatchesWithou
     align-content: space-between;
     box-sizing: border-box;
     row-gap: 32px;
+    overflow-x: clip;
 
     &::before {
       content: '';

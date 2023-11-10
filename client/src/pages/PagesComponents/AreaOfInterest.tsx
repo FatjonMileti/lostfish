@@ -1,7 +1,8 @@
 import { TextField, TextFieldProps } from '../../components/TextField';
 import React from 'react';
-import axios from '../../utils/axios';
+import axios from 'axios';
 import { useUserStore } from '../../globalState/user';
+import config from '../../config';
 
 export interface AreaOfInterestProps extends TextFieldProps {
   areaOfInterest?: string;
@@ -41,7 +42,7 @@ export const AreaOfInterest = ({ className, areaOfInterest, onAreaChange, ...res
 
       debounce(async () => {
         try {
-          const { data } = await axios(auth.access_token).get(`/api/map/address/${newAreaOfInterest}`);
+          const { data } = await axios.get(`${config.apiUrl}/api/map/address/${newAreaOfInterest}`);
           if (data?.formatted_address) {
             onAreaChange({
               formattedAddress: data?.formatted_address,

@@ -1,16 +1,19 @@
 import { styled } from '@mui/system';
-import { Modal, ModalProps } from '../../../components/Modal';
 import React from 'react';
 import classNames from 'classnames';
 
-import { Backdrop } from '../../../components/Backdrop';
+import { Modal, ModalProps } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
 import { CloseButton } from '../../../components/CloseButton';
 
 import { WhatAreYouLookingFor } from '../../InitialSetup/InitialSetupModal/InitialSetup.WhatAreYouLokingFor';
 import { CreteAccountOrSignIn } from './CreteAccountOrSignIn';
-import { LookingFor } from '../../SetCriteria/criteria.contants';
 import { SetCriteria } from './StartMatchingWithoutAccount.SetCriteria';
+
+import { useCriteriaStore } from '../../../globalState/criteria';
+
+import { LookingForType } from '../../SetCriteria/criteria.types';
+import { LookingFor } from '../../SetCriteria/criteria.contants';
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -21,83 +24,95 @@ const animationProps = {
 };
 
 interface StartMatchingWithoutAccountModalProps extends ModalProps {
+  closeStartMatching: () => any;
   visibilityStore: any[];
   onSigInClick: () => void;
   onCreateAccountClick: () => void;
+  afterSetCriteria: () => any;
 }
 export const StartMatchingWithoutAccountModal = styled(
   ({
     visibilityStore,
     className,
     onSigInClick,
-    onCreateAccountClick
+    onCreateAccountClick,
+    closeStartMatching,
+    afterSetCriteria
   }: StartMatchingWithoutAccountModalProps) => {
     const [visibility, setVisibility] = visibilityStore;
-    const [loading, setLoading] = React.useState<boolean>(false);
+
     const [step, setStep] = React.useState(0);
-    const [state, setState] = React.useState({
-      lookingFor: ''
+
+    React.useEffect(() => {
+      setStep(0);
+    }, [visibility]);
+
+    const [state, setState] = React.useState<{
+      lookingFor?: LookingForType;
+    }>({
+      lookingFor: undefined
     });
 
-    const onLookingForChange = (lookingFor: string) => {
+    const criteriaStore = useCriteriaStore();
+
+    const onLookingForChange = (lookingFor: LookingForType) => {
       setState((state) => ({ ...state, lookingFor }));
     };
 
+    const onNext = () => {
+      criteriaStore.setCriteria((criteria) => ({
+        ...criteria,
+        looking_for: state.lookingFor
+      }));
+
+      afterSetCriteria();
+    };
+
     return (
-      <Modal
-        className={classNames('start-matching-without-account-modal', className)}
-        open={visibility}
-        onBackdropClick={() => setVisibility(false)}>
-        <Backdrop open={loading}></Backdrop>
-        <div className='modal-header'>
-          <Typography variant='body2'>Match preferences</Typography>
+      <>
+        <Modal
+          className={classNames('start-matching-without-account-modal', className)}
+          open={visibility}
+          onBackdropClick={closeStartMatching}>
+          <div className='modal-header'>
+            <Typography variant='body2'>Match preferences</Typography>
 
-          <CloseButton
-            size='large'
-            onClick={async () => {
-              setVisibility(false);
-            }}
-          />
-        </div>
-        <div className='modal-body'>
-          {
-            [
-              <WhatAreYouLookingFor
-                key='whatAreYouLookingFor'
-                {...animationProps}
-                lookingFor={state.lookingFor}
-                onLookingForChange={onLookingForChange}
-                onNext={() => {
-                  setStep((step) => step + 1);
-                }}
-              />,
-              <>
-                {state.lookingFor === LookingFor.OwnAPlace && (
-                  <CreteAccountOrSignIn
-                    onSignInClick={() => {
-                      setVisibility(false);
-                      onSigInClick();
-                    }}
-                    onCreateAccountClick={() => {
-                      setVisibility(false);
-                      onCreateAccountClick();
-                    }}
-                  />
-                )}
+            <CloseButton size='large' onClick={closeStartMatching} />
+          </div>
+          <div className='modal-body'>
+            {
+              [
+                <WhatAreYouLookingFor
+                  key='whatAreYouLookingFor'
+                  {...animationProps}
+                  lookingFor={state.lookingFor}
+                  onLookingForChange={onLookingForChange}
+                  onNext={() => {
+                    setStep((step) => step + 1);
+                  }}
+                />,
+                <>
+                  {state.lookingFor === LookingFor.OwnAPlace && (
+                    <CreteAccountOrSignIn
+                      onSignInClick={() => {
+                        onSigInClick();
+                      }}
+                      onCreateAccountClick={() => {
+                        onCreateAccountClick();
+                      }}
+                      onBack={() => setStep((step) => step - 1)}
+                    />
+                  )}
 
-                {state.lookingFor === LookingFor.LookingForAPlace && (
-                  <SetCriteria
-                    onNext={() => {}}
-                    onBack={() => {
-                      setStep((step) => step - 1);
-                    }}
-                  />
-                )}
-              </>
-            ][step]
-          }
-        </div>
-      </Modal>
+                  {state.lookingFor === LookingFor.LookingForAPlace && (
+                    <SetCriteria onNext={onNext} onBack={() => setStep((step) => step - 1)} />
+                  )}
+                </>
+              ][step]
+            }
+          </div>
+        </Modal>
+      </>
     );
   }
 )`
@@ -126,6 +141,11 @@ export const StartMatchingWithoutAccountModal = styled(
         align-items: center;
 
         border-bottom: 2px solid #f3f4f5;
+      }
+
+      .modal-body {
+        display: grid;
+        overflow-y: auto;
       }
     }
   }

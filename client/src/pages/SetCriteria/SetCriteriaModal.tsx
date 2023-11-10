@@ -81,7 +81,7 @@ export const SetCriteriaModal = styled(
               size='large'
               className={classNames('start-matching-button', { hide: step !== 3 })}
               onClick={onStartMatchingClick}>
-              Start matching
+              Find matches
             </Label>
 
             <Label

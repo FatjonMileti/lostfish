@@ -30,7 +30,6 @@ export class SuggestionController {
 
     const criteria = req.body;
 
-    console.log('criteria: ', typeof criteria);
     const userId = res.locals.user_id as string;
 
     const pagingOptions = res.locals.paging_options as IPagingOptions;
