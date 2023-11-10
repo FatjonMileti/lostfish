@@ -1,14 +1,14 @@
 import { styled } from '@mui/system';
+import classNames from 'classnames';
+import React from 'react';
+
 import { Modal, ModalProps } from '../../components/Modal';
 import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import React from 'react';
 import { CloseButton } from '../../components/CloseButton';
-import classNames from 'classnames';
 import { Backdrop } from '../../components/Backdrop';
+import { Label } from '../../components/Label';
 
 import fastMessage from '../CreateAccount/fastMessage.svg';
-import { Label } from '../../components/Label';
 
 interface RecoverPasswordVerifyEmailModalProps extends ModalProps {
   onSigInClick: () => void;

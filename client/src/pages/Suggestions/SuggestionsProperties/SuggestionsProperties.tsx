@@ -15,11 +15,11 @@ import { ViewProperty } from '../../Matches/MatchesProperties/ViewProperty';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 
-import { SuggestedPropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-import forestBackgroundImage from '../../About/forest.jpeg';
+import forestBackgroundImage from '../../Home/forest.jpeg';
+import { SuggestedPropertyType } from '../../Matches/matches.type';
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
   const suggestedProperties = useSuggestedProperties({

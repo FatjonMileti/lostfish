@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Typography } from '../../../components/Typography';
 import { useSuggestedTenants } from './useSuggestedTenants';
 import { motion } from 'framer-motion';
-import { SuggestedTenantType } from '../../Matches/MatchesTenants/MatchesTenants';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
 import { ArrowButton } from '../../../components/ArrowButton';
@@ -16,8 +15,9 @@ import { useUserStore } from '../../../globalState/user';
 import { Backdrop } from '../../../components/Backdrop';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
 
-import forestBackgroundImage from '../../About/forest.jpeg';
+import forestBackgroundImage from '../../Home/forest.jpeg';
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
+import { SuggestedTenantType } from '../../Matches/matches.type';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {

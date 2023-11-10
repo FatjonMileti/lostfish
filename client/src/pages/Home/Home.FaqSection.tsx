@@ -1,27 +1,31 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
+import classNames from 'classnames';
+
 import { Typography } from '../../components/Typography';
-import { CustomSection } from './CustomSection';
-import backgroundImg from '../Home/home-background.png';
+
+import { FaqComponent } from './FaqComponent';
+
+import backgroundImg from './home-background.png';
 
 export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={className}>
+    <div className={classNames('faq-section', className)}>
       <Typography variant='body1'>Frequently asked questions</Typography>
       <div className='section-content'>
-        <CustomSection
+        <FaqComponent
           title='What information is needed to find a match?'
           description='Experts are saying there’s going to be a decrease in London property prices in the upcoming
         months, and provide information on how you can benefit.'
         />
 
-        <CustomSection
+        <FaqComponent
           title='Can somebody help me with viewing the apartment?'
           description='Dolore ad nisi mollit laboris irure qui amet dolor fugiat eiusmod mollit culpa duis.
            Esse enim ipsum exercitation et elit anim qui duis incididunt laboris ex. Officia et irure irure ea.'
         />
 
-        <CustomSection
+        <FaqComponent
           title='Why do I need to sign the transaction agreement?'
           description='Dolor ex ut consequat voluptate quis exercitation qui exercitation aute pariatur irure.
            Occaecat duis eiusmod excepteur ea exercitation incididunt laboris sint velit ipsum consectetur mollit.
@@ -30,7 +34,7 @@ export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>)
               Consequat sit aute voluptate id Lorem esse aliqua id.
                Velit magna laborum sint nostrud amet non non commodo.'
         />
-        <CustomSection
+        <FaqComponent
           title='How secure is my data?'
           description='Amet commodo sint est cupidatat proident velit sunt aliquip ex ullamco.
            Commodo voluptate consectetur cupidatat aliqua labore aliqua fugiat proident occaecat.
@@ -38,7 +42,7 @@ export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>)
              Nostrud pariatur deserunt eiusmod officia consectetur est labore laboris est veniam nulla sit pariatur.
               Anim consequat mollit Lorem incididunt eiusmod laboris.'
         />
-        <CustomSection
+        <FaqComponent
           title='Is there any assistance over the entire process?'
           description='Nisi duis qui enim duis laborum magna excepteur ipsum tempor mollit dolor.
            Commodo tempor mollit irure anim ex cillum. Proident veniam do ex laboris.
@@ -48,7 +52,7 @@ export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     </div>
   );
 })`
-  & {
+  &.faq-section {
     position: relative;
     display: grid;
     padding: 88px 36px;

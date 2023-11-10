@@ -8,10 +8,10 @@ import { CreateAccountModal } from '../CreateAccount/CreateAccountmodal';
 import { ForgotPasswordModal } from '../ForgotPassword/ForgotPasswordModal';
 import { ResetPasswordModal } from '../ResetPassword/ResetPasswordModal';
 import { SectionOne } from './Home.SectionOne';
-import { SectionTwo } from '../About/About.SectionTwo';
-import { SectionFive } from '../HomeLoggedIn/HomeLoggedIn.SectionFive';
-import { SectionThree } from '../HomeLoggedIn/HomeLoggedIn.SectionThree';
-import { FaqSection } from '../About/About.FaqSection';
+import { SectionTwo } from './Home.SectionTwo';
+import { ColoredCards } from './Home.ColoredCards';
+import { DailyNews } from './Home.DailyNews';
+import { FaqSection } from './Home.FaqSection';
 import { Footer } from './Footer';
 
 import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccount';
@@ -79,9 +79,12 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
                   section2Ref={section2Ref}
                   onStartMatchingClick={() => setShowStartMatching(true)}
                 />
+
                 <SectionTwo ref={section2Ref} />
-                <SectionFive onCreateAccountClick={onCreateAccountClick} />
-                <SectionThree />
+
+                <ColoredCards onCreateAccountClick={onCreateAccountClick} />
+
+                <DailyNews />
                 <FaqSection />
               </>
             )}

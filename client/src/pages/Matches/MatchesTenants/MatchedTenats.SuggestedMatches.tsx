@@ -7,13 +7,14 @@ import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
 import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchedSlide, SuggestedTenantType } from './MatchesTenants';
+import { MatchedSlide } from './MatchesTenants';
 import { Switch } from '../../../components/Switch';
 import { IconButton } from '../../../components/IconButton';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { useProfileStore } from '../../../globalState/profile';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { SuggestedTenantType } from '../matches.type';
 
 interface AddedTenantsProps extends HTMLAttributes<HTMLDivElement> {
   tenants: SuggestedTenantType[];

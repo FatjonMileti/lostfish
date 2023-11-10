@@ -1,13 +1,16 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
+import classNames from 'classnames';
+
 import { Typography } from '../../components/Typography';
-import image from './45.png';
+
+import image from './jumping.png';
 import multimedia from './start.svg';
 
 export const SectionTwo = styled(
   React.forwardRef<HTMLDivElement>(({ className }: HTMLAttributes<HTMLDivElement>, ref) => {
     return (
-      <div className={className} ref={ref}>
+      <div className={classNames('home-section-two', className)} ref={ref}>
         <div className='welcome'>
           <Typography className='perfect-match'>
             We use <span className='perfect-match-red'>Artificial Intelligence </span>
@@ -36,7 +39,7 @@ export const SectionTwo = styled(
     );
   })
 )`
-  & {
+  &.home-section-two {
     display: grid;
     padding: 88px 36px;
     justify-content: center;

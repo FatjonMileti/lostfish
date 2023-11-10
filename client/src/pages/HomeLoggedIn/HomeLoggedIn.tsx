@@ -4,14 +4,14 @@ import { styled } from '@mui/system';
 import { Header } from './Header';
 import { Backdrop } from '../../components/Backdrop';
 import { Footer } from '../Home/Footer';
-import { SectionThree } from './HomeLoggedIn.SectionThree';
-import { SectionFive } from './HomeLoggedIn.SectionFive';
-import { SectionTwo as HomeLoggedOutSectionTwo } from '../About/About.SectionTwo';
+import { DailyNews } from '../Home/Home.DailyNews';
+import { ColoredCards } from '../Home/Home.ColoredCards';
+import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
 
 import { Suggestions } from '../Suggestions/Suggestions';
-import { FaqSection } from '../About/About.FaqSection';
+import { FaqSection } from '../Home/Home.FaqSection';
 
-import forestBackgroundImage from '../About/forest.jpeg';
+import forestBackgroundImage from '../Home/forest.jpeg';
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { Role } from '../../enums';
@@ -37,8 +37,8 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       <div className='container'>
         <Suggestions />
         <HomeLoggedOutSectionTwo />
-        <SectionFive />
-        <SectionThree />
+        <ColoredCards />
+        <DailyNews />
         <FaqSection />
       </div>
 

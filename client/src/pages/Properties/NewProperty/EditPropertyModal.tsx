@@ -15,7 +15,6 @@ import { Furnished, OutsideSpace, PropertyType } from './property.constants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { useUserStore } from '../../../globalState/user';
 import { Backdrop } from '../../../components/Backdrop';
-import { GlobalStyles } from '@mui/material';
 
 export interface EditPropertyModalProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];

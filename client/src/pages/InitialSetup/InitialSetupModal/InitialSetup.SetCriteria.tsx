@@ -18,7 +18,6 @@ export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
 
 export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaProps) => {
   const [showModal, setShowModal] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
 
   const criteriaForm = useCriteriaForm();
   const profileStore = useProfileStore();
@@ -26,8 +25,6 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
-
       const payload: Partial<ApiCriteriaDocumentType> = {
         transaction_type_string: criteriaForm.getValues('transactionType'),
         area_of_interest: criteriaForm.getValues('areaOfInterest'),
@@ -118,8 +115,6 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
       profileStore.fetchProfile(userStore.auth.access_token);
     } catch (err) {
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 

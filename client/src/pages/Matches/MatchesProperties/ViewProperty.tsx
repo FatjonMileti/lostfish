@@ -1,21 +1,20 @@
 import { styled } from '@mui/system';
 import { Typography } from '../../../components/Typography';
 import { Modal, ModalProps } from '../../../components/Modal';
-import { IconButton } from '../../../components/IconButton';
+
 import { Icon } from '../../../components/Icon';
 import React, { useState } from 'react';
-import { Avatar } from '../../../components/Avatar';
 import { Map } from '../../../components/Map';
 import classNames from 'classnames';
 import { Carousel } from './MatchesProperties.Carousel';
 import { NearestThings } from './ViewProperty.NearestThings';
-import { SuggestedPropertyType } from './MatchesProperties';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
 import { AreaUnit } from '../../Properties/NewProperty/property.constants';
 import { CloseButton } from '../../../components/CloseButton';
 import { UnMatchButton } from '../../../components/UnMatchButton';
 import { MatchButton } from '../../../components/MatchButton';
+import { SuggestedPropertyType } from '../matches.type';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyToView: SuggestedPropertyType;

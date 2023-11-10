@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { SuggestedPropertyType } from './MatchesProperties';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { SuggestedPropertyType } from '../matches.type';
 
 export const useMatchedProperties = ({
   params = {},

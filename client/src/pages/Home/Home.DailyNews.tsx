@@ -1,13 +1,15 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
+import classNames from 'classnames';
+
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
 import { IconButton } from '../../components/IconButton';
-import apartament from './house-inside-ringbox2.png';
 import { Label } from '../../components/Label';
-import classNames from 'classnames';
 
-export const SectionThree = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+import apartament from './house-inside-ringbox2.png';
+
+export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={classNames('daily-news', className)}>
       <div className='content-wrapper'>

@@ -1,6 +1,5 @@
 import React, { ReactNode, useState, useCallback, useContext, useReducer, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useGlobalState } from '../globalState/globalState';
+
 import axios from '../utils/axios';
 import NotFoundPage from '../pages/404';
 import { ApiUserDocumentType } from '../pages/MyAccount/user.interface';

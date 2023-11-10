@@ -13,7 +13,7 @@ import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWi
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 import { useCriteriaStore } from '../../../globalState/criteria';
-import backgroundImg from '../../About/forest.jpeg';
+import backgroundImg from '../../Home/forest.jpeg';
 
 interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {
   onCreateAccountClick: () => any;

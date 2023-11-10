@@ -5,12 +5,10 @@ import NotFound from './pages/404';
 import { PreviewComponents } from './pages/PreviewComponents';
 import { HomeLoggedIn } from './pages/HomeLoggedIn/HomeLoggedIn';
 import { Home } from './pages/Home/Home';
-import { CreateAccount } from './pages/CreateAccount/CreateAccount';
 import { VerifyAccount } from './pages/CreateAccount/VerifyAccount';
 import { Messages } from './pages/Messages/Messages';
 import config from './config';
 import SocketContext from './context/SocketContext';
-import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
 import { UserProvider } from './context/UserProvider';
@@ -84,8 +82,6 @@ function App() {
                 <Route path='/policy-agreement' element={<PolicyAgreement />} />
                 <Route path='/agreement/:id' element={<AgreementDetails />} />
                 <Route path='/components' element={<PreviewComponents />} />
-                <Route path='/forgot-password' element={<ForgotPassword />} />
-                <Route path='/create-account' element={<CreateAccount />} />
                 <Route path='/google/redirect' element={<RedirectUriPage />} />
                 <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                 <Route path='/activate-account/:token' element={<VerifyAccount />} />

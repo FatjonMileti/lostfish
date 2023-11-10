@@ -1,16 +1,12 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
-
-import { Button } from '../../../components/Button';
-import { ArrowButton } from '../../../components/ArrowButton';
-import { Typography } from '../../../components/Typography';
-import { Avatar } from '../../../components/Avatar';
-
-import { avatars } from '../../HomeLoggedIn/avatars';
+import React from 'react';
 import classNames from 'classnames';
+import { HTMLMotionProps, motion } from 'framer-motion';
+
+import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Icon } from '../../../components/Icon';
-import { HTMLMotionProps, motion } from 'framer-motion';
+
 import { AddPropertyModal } from '../../Properties/NewProperty/AddPropertyModal';
 
 export interface SelectAvatarProps extends HTMLMotionProps<'div'> {

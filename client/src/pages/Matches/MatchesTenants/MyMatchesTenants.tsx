@@ -6,7 +6,6 @@ import React, { HTMLAttributes } from 'react';
 import { TenantCard } from '../../../components/TenantCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from './ViewProfile';
-import { SuggestedTenantType } from './MatchesTenants';
 import { Footer } from '../../Home/Footer';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../../components/Typography';
@@ -18,6 +17,7 @@ import { useMatchesCount } from '../useMatchesCount';
 import { useMatchedTenants } from './useMatchedTenants';
 import { TenantsReviewHeader } from './TenantsReviewHeader';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
+import { SuggestedTenantType } from '../matches.type';
 
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 

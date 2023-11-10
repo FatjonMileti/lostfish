@@ -7,11 +7,12 @@ import { Backdrop } from '../../components/Backdrop';
 import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
 import { motion } from 'framer-motion';
-import { MatchedSlide, SuggestedTenantType } from '../Matches/MatchesTenants/MatchesTenants';
+import { MatchedSlide } from '../Matches/MatchesTenants/MatchesTenants';
 import { getAvatarFormIndex } from './avatars';
 import { ArrowButton } from '../../components/ArrowButton';
 import { mapCriteria } from '../Matches/MatchesTenants/serializers';
 import { ViewProfile } from '../Matches/MatchesTenants/ViewProfile';
+import { SuggestedTenantType } from '../Matches/matches.type';
 
 export interface NewPropertyProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];

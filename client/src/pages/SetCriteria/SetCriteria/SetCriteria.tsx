@@ -1,8 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import axios from '../../../utils/axios';
 import request from '../../../utils/axios';
@@ -19,18 +17,8 @@ import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { Label } from '../../../components/Label';
 import { Backdrop } from '../../../components/Backdrop';
-import { IconButton } from '../../../components/IconButton';
-import { Icon } from '../../../components/Icon';
-import {
-  BudgetFor,
-  ContractDetail,
-  CreditScore,
-  criteriaFormSchema,
-  DistanceUnit,
-  SpecificPropertyFeature,
-  Transaction
-} from '../criteria.contants';
-import { AreaUnit, Parking, PropertyType } from '../../Properties/NewProperty/property.constants';
+
+import { Parking } from '../../Properties/NewProperty/property.constants';
 import { useProfileStore } from '../../../globalState/profile';
 
 import { OutsideSpaceType } from '../../Properties/NewProperty/property.types';

@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-import { SuggestedPropertyType } from '../../Matches/MatchesProperties/MatchesProperties';
 import { useQuery } from '@tanstack/react-query';
 import config from '../../../config';
 import { useCriteriaStore } from '../../../globalState/criteria';
+import { SuggestedPropertyType } from '../../Matches/matches.type';
 
 export const useSuggestedPropertiesWithoutAccount = () => {
   const criteriaStore = useCriteriaStore();

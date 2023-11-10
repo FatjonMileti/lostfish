@@ -1,13 +1,17 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
+import classNames from 'classnames';
+
 import { Typography } from '../../components/Typography';
+import { Button } from '../../components/Button';
+
+import { useUserStore } from '../../globalState/user';
+
 import image1 from './paper1.png';
 import image2 from './paper2.png';
 import image3 from './paper3.png';
-import { Button } from '../../components/Button';
-import { useUserStore } from '../../globalState/user';
 
-export const SectionFive = styled(
+export const ColoredCards = styled(
   ({
     className,
     onCreateAccountClick = () => {}
@@ -16,7 +20,7 @@ export const SectionFive = styled(
   }) => {
     const userStore = useUserStore();
     return (
-      <div className={className}>
+      <div className={classNames('colored-cards', className)}>
         <div className='section-content-wrapper'>
           <div className='images'>
             <div className='image image-1'>
@@ -83,7 +87,7 @@ export const SectionFive = styled(
     );
   }
 )`
-  & {
+  &.colored-cards {
     display: grid;
 
     background: #f7f1e7;

@@ -9,7 +9,7 @@ import HomeImg from './property.jpg';
 import TenantImg from './tenant.jpg';
 import classNames from 'classnames';
 
-import backgroundImg from '../About/forest.jpeg';
+import backgroundImg from './forest.jpeg';
 export const SectionOne = styled(
   ({
     className,

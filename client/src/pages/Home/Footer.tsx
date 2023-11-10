@@ -1,6 +1,5 @@
 import { styled } from '@mui/system';
 import React from 'react';
-import { Link } from '../../components/Link';
 
 import LogoPlusTextBlack from '../../assets/images/LogoPlusTextBlack.svg';
 import { SocialAccountButton } from '../../components/SocialAccountButton';

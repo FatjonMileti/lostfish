@@ -7,7 +7,6 @@ import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from '../../utils/axios';
-import { useGlobalState } from '../../globalState/globalState';
 
 import { useUserStore } from '../../globalState/user';
 

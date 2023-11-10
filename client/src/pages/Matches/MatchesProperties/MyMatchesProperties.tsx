@@ -15,13 +15,13 @@ import { Label } from '../../../components/Label';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
-import { SuggestedPropertyType } from './MatchesProperties';
 import { ViewProperty } from './ViewProperty';
 import { PropertyCard } from '../../../components/PropertyCard';
 import { useMatchedProperties } from './useMatchedProperties';
 import { useMatchesCount } from '../useMatchesCount';
 import { PropertiesReviewHeader } from './PropertiesReviewHeader';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
+import { SuggestedPropertyType } from '../matches.type';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 

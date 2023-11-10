@@ -1,8 +1,8 @@
 import axios from '../../../utils/axios';
 import { mapTenant } from './serializers';
 import { useUserStore } from '../../../globalState/user';
-import { SuggestedTenantType } from './MatchesTenants';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { SuggestedTenantType } from '../matches.type';
 
 export const useMatchedTenants = ({
   params = {},
