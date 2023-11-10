@@ -497,30 +497,36 @@ export default class SuggestionService {
 
       // Preferred size
       {
-        let propertySizeInSquareMeters;
-        let criteriaMinSizeInSquareMeters;
-        let criteriaMaxSizeInSquareMeters;
+        if (!!clientCriteria.flat_details.preferred_size) {
+          let propertySizeInSquareMeters;
+          let criteriaMinSizeInSquareMeters;
+          let criteriaMaxSizeInSquareMeters;
 
-        if (property.floor_size_unit === FloorSizeUnit.SQR_MTRS) {
-          propertySizeInSquareMeters = property.floor_size;
-        } else {
-          propertySizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.min);
-        }
+          if (property.floor_size_unit === FloorSizeUnit.SQR_MTRS) {
+            propertySizeInSquareMeters = property.floor_size;
+          } else {
+            propertySizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.min);
+          }
 
-        if (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS) {
-          criteriaMinSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.min;
-          criteriaMaxSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.max;
-        } else {
-          criteriaMinSizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.min);
-          criteriaMaxSizeInSquareMeters = toSquareMeters(clientCriteria.flat_details.preferred_size.size.max);
-        }
+          if (clientCriteria.flat_details.preferred_size.unit === FloorSizeUnit.SQR_MTRS) {
+            criteriaMinSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.min;
+            criteriaMaxSizeInSquareMeters = clientCriteria.flat_details.preferred_size.size.max;
+          } else {
+            criteriaMinSizeInSquareMeters = toSquareMeters(
+              clientCriteria.flat_details.preferred_size.size.min
+            );
+            criteriaMaxSizeInSquareMeters = toSquareMeters(
+              clientCriteria.flat_details.preferred_size.size.max
+            );
+          }
 
-        if (
-          propertySizeInSquareMeters >= criteriaMinSizeInSquareMeters &&
-          propertySizeInSquareMeters <= criteriaMaxSizeInSquareMeters
-        ) {
-          matchingCriteria++;
-          matchLog['flat_details.preferred_size'] = true;
+          if (
+            propertySizeInSquareMeters >= criteriaMinSizeInSquareMeters &&
+            propertySizeInSquareMeters <= criteriaMaxSizeInSquareMeters
+          ) {
+            matchingCriteria++;
+            matchLog['flat_details.preferred_size'] = true;
+          }
         }
       }
 
