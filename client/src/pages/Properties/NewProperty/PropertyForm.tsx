@@ -7,7 +7,7 @@ import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { Textarea } from '../../../components/Textarea';
 import { Select } from '../../../components/Select/Select';
 import { TextField } from '../../../components/TextField';
@@ -252,7 +252,7 @@ export const PropertyForm = styled(
 
     return (
       <div className={classNames('property-form', className)}>
-        <Backdrop open={state.savingProperty}></Backdrop>
+        {state.savingProperty && <ShowGlobalLoading />}
         <div className='container'>
           <div className='left'>
             <TextField

@@ -7,7 +7,7 @@ import axios, { AxiosError } from 'axios';
 import * as yup from 'yup';
 
 import { Modal, ModalProps } from '../../components/Modal';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
@@ -95,7 +95,8 @@ export const CreateAccountModal = styled(
 
     return (
       <>
-        <Backdrop open={loading}></Backdrop>
+        {loading && <ShowGlobalLoading />}
+
         <VerifyEmailModal
           open={showVerifyEmailModal}
           onBackdropClick={() => setShowVerifyEmailModal(false)}

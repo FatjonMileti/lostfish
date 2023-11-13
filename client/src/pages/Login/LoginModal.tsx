@@ -9,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 
 import { Modal, ModalProps } from '../../components/Modal';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
@@ -161,7 +161,7 @@ export const LoginModal = styled(
 
     return (
       <>
-        <Backdrop open={loading}></Backdrop>
+        {loading && <ShowGlobalLoading />}
         <Modal {...otherProps} className={classNames('login-with-modal', className)}>
           <div className='modal-header'>
             <Typography variant='body3' className='title'>

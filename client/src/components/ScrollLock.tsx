@@ -1,20 +1,48 @@
 import React from 'react';
+import { create } from 'zustand';
 
-export const ScrollLock = ({ lock = true }: { lock?: boolean }) => {
-  const openedOnceRef = React.useRef(false);
+interface ScrollLockStoreType {
+  ids: any;
+  lock: (id: string) => any;
+  unlock: (id: string) => any;
+}
+
+const useScrollLockStore = create<ScrollLockStoreType>((setState) => {
+  return {
+    ids: {},
+    lock: (id: string) => {
+      setState(({ ids }) => {
+        ids[id] = true;
+
+        if (Object.keys(ids).length === 1) {
+          document.body.style.overflow = 'hidden';
+        }
+        return { ids };
+      });
+    },
+    unlock: (id: string) => {
+      setState(({ ids }) => {
+        delete ids[id];
+
+        if (Object.keys(ids).length === 0) {
+          document.body.style.overflow = 'unset';
+        }
+        return { ids };
+      });
+    }
+  };
+});
+
+export const ScrollLock = () => {
+  const id = React.useId();
+  const scrollLockStore = useScrollLockStore();
+
   React.useEffect(() => {
-    if (lock) {
-      setTimeout(() => (document.body.style.overflow = 'hidden'));
-      openedOnceRef.current = true;
-    } else if (!lock && openedOnceRef.current) {
-      document.body.style.overflow = 'unset';
-    }
-    if (openedOnceRef.current) {
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }
-  }, [lock]);
+    scrollLockStore.lock(id);
+    return () => {
+      scrollLockStore.unlock(id);
+    };
+  }, []);
 
   return null;
 };

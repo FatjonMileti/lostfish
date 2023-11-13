@@ -1,8 +1,9 @@
 import { styled } from '@mui/system';
 import { Header } from '../../HomeLoggedIn/Header';
 import classNames from 'classnames';
+import { useMutation } from '@tanstack/react-query';
 
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import React, { HTMLAttributes } from 'react';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
@@ -48,25 +49,23 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     } catch (err) {}
   };
 
-  const dislikeProperty = async ({ matchId }: { matchId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
-
+  const dislikeProperty = useMutation({
+    mutationFn: ({ matchId }: { matchId: string }) => {
+      return axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
+    },
+    onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
       }
-
       matchedProperties.refetch();
       matchesCount.refetch();
       suggestedProperties.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
   return (
     <>
-      <Backdrop open={matchedProperties.isFetching}></Backdrop>
+      {(matchedProperties.isFetching || dislikeProperty.isLoading) && <ShowGlobalLoading />}
       <div className={classNames('my-matches-properties', className)}>
         <div className='header-and-content-wrapper'>
           <Header
@@ -131,7 +130,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
           disableLikeProperty
-          dislikeProperty={() => dislikeProperty({ matchId: propertyToView?.matchId || '' })}
+          dislikeProperty={() => dislikeProperty.mutate({ matchId: propertyToView?.matchId || '' })}
         />
       )}
     </>

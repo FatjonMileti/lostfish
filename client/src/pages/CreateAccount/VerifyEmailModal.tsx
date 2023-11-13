@@ -5,7 +5,7 @@ import { Button } from '../../components/Button';
 import React from 'react';
 import { CloseButton } from '../../components/CloseButton';
 import classNames from 'classnames';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 
 import fastMessage from './fastMessage.svg';
 import { Label } from '../../components/Label';
@@ -25,7 +25,7 @@ export const VerifyEmailModal = styled(
 
     return (
       <>
-        <Backdrop open={loading}></Backdrop>
+        {loading && <ShowGlobalLoading />}
         <Modal className={classNames('verify-email-modal', className)} {...otherProps}>
           <div className='modal-header'>
             <Typography variant='body3' className='title'></Typography>

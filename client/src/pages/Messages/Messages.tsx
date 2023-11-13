@@ -4,7 +4,7 @@ import { useLocation, useNavigate, Location } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { Typography } from '../../components/Typography';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Button } from '../../components/Button';
 
 import { Conversation } from './Conversation';
@@ -22,11 +22,12 @@ import { useNotificationsStore } from '../../globalState/notifications';
 import { IMessageItem, IRoom } from './messages.interface';
 
 import noMessages from './noMessages.png';
-import messagesBackground from '../Home/home-background.png';
 import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 import { useProfileStore } from '../../globalState/profile';
+import { Footer } from '../Home/Footer';
+import classNames from 'classnames';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -40,6 +41,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const [room, setRoom] = React.useState<IRoom | null>(null);
 
   const [messages, setMessages] = React.useState<IMessageItem[]>([]);
+
   const [conversations, setConversations] = React.useState<IRoom[]>([]);
 
   const [filterByProperty, setFilterByProperty] = React.useState('');
@@ -170,119 +172,131 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   return (
     <>
       <div
-        className={`messages-page ${
-          !chatRooms.isLoading && chatRooms.data?.length === 0 ? 'no-messages' : ''
-        } ${className}`}>
-        <Header
-          middleContent={
-            <>
-              {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
-              {profileStore.role === Role.Client && <PropertiesReviewHeader />}
-            </>
-          }
-        />
-        <Backdrop open={chatRooms.isLoading || chatRooms.isFetching}></Backdrop>
-        {!chatRooms.isLoading && chatRooms.data?.length === 0 && (
-          <div className='no-messages-view'>
-            <img src={noMessages} alt='no messages' />
-            <Typography variant='body2' className='title'>
-              You don’t have any messages at the moment.
-            </Typography>
-            <Typography variant='body5' className='description'>
-              Once you perfectly match with someone, you can start a conversation and it will appear here.
-            </Typography>
-          </div>
-        )}
-        {chatRooms.isLoading && <div />}
-        {!chatRooms.isLoading && chatRooms.data?.length !== 0 && (
-          <div className='container'>
-            <div className='chats'>
-              <div className='chats-header'>
-                <Typography variant='body2'>Your inbox</Typography>
+        className={classNames('messages-page', className, {
+          'no-messages': !chatRooms.isLoading && chatRooms.data?.length === 0
+        })}>
+        <div className='header-and-content-wrapper'>
+          <Header
+            middleContent={
+              <>
+                {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
+                {profileStore.role === Role.Client && <PropertiesReviewHeader />}
+              </>
+            }
+          />
 
-                <Typography variant='body5'>
-                  Here you can find all your conversations with your matches or Lostfish representatives
-                </Typography>
-              </div>
-
-              <MessagesProperties
-                onPropertySelect={(propertyId) => {
-                  setFilterByProperty(propertyId);
-                }}
-              />
-
-              <div className='conversations-list'>
-                {conversations.map((row: IRoom, rowIndex: number) => {
-                  const fullName =
-                    userStore.userDetails?.user_id === row?.author?._id
-                      ? `${row.participant?.first_name} ${row.participant?.last_name}`
-                      : `${row.author?.first_name} ${row.author?.last_name}`;
-
-                  return (
-                    <Conversation
-                      key={rowIndex}
-                      joinRoom={joinRoom}
-                      fullName={fullName}
-                      row={row}
-                      active={room?._id === row?._id}
-                    />
-                  );
-                })}
-              </div>
+          {chatRooms.isLoading || (chatRooms.isFetching && <ShowGlobalLoading />)}
+          {!chatRooms.isLoading && chatRooms.data?.length === 0 && (
+            <div className='no-messages-view'>
+              <img src={noMessages} alt='no messages' />
+              <Typography variant='body2' className='title'>
+                You don’t have any messages at the moment.
+              </Typography>
+              <Typography variant='body5' className='description'>
+                Once you perfectly match with someone, you can start a conversation and it will appear here.
+              </Typography>
             </div>
+          )}
+          {chatRooms.isLoading && <div />}
+          {!chatRooms.isLoading && chatRooms.data?.length !== 0 && (
+            <div className='container'>
+              <div className='chats'>
+                <div className='chats-header'>
+                  <Typography variant='body2'>Your inbox</Typography>
 
-            {room ? (
-              1 == 1 ? (
-                <ChatBox
-                  username={userStore.userDetails?.username}
-                  room={room}
-                  user_id={userStore.userDetails?.user_id}
-                  messages={messages}
-                  socket={socket}
-                  closeDeal={closeChatBox}
-                  updateList={reorderMessages}
-                />
-              ) : (
-                <div className='transaction-agreement'>
-                  <Typography variant='body2' className='transaction-title'>
-                    Sign the transaction agreement to view the conversation
+                  <Typography variant='body5'>
+                    Here you can find all your conversations with your matches or Lostfish representatives
                   </Typography>
-
-                  <Typography className='transaction-description' variant='body4'>
-                    In order to be compliant with our <a>Terms & Conditions</a> you need to sign the
-                    transaction agreement. This document allows every party involved to have a transparent and
-                    legal view over the entire process. Don’t worry, all your progress will remain saved.
-                  </Typography>
-
-                  <Button className='go-to-transaction-button'>Go to transaction agreement</Button>
                 </div>
-              )
-            ) : (
-              <div />
-            )}
-            {room?.property ? <DocumentsTest room={room} /> : <div />}
-          </div>
-        )}
+
+                <MessagesProperties
+                  onPropertySelect={(propertyId) => {
+                    setFilterByProperty(propertyId);
+                  }}
+                />
+
+                <div className='conversations-list'>
+                  {conversations.map((row: IRoom, rowIndex: number) => {
+                    const fullName =
+                      userStore.userDetails?.user_id === row?.author?._id
+                        ? `${row.participant?.first_name} ${row.participant?.last_name}`
+                        : `${row.author?.first_name} ${row.author?.last_name}`;
+
+                    return (
+                      <Conversation
+                        key={rowIndex}
+                        joinRoom={joinRoom}
+                        fullName={fullName}
+                        row={row}
+                        active={room?._id === row?._id}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {room ? (
+                1 == 1 ? (
+                  <ChatBox
+                    username={userStore.userDetails?.username}
+                    room={room}
+                    user_id={userStore.userDetails?.user_id}
+                    messages={messages}
+                    socket={socket}
+                    closeDeal={closeChatBox}
+                    updateList={reorderMessages}
+                  />
+                ) : (
+                  <div className='transaction-agreement'>
+                    <Typography variant='body2' className='transaction-title'>
+                      Sign the transaction agreement to view the conversation
+                    </Typography>
+
+                    <Typography className='transaction-description' variant='body4'>
+                      In order to be compliant with our <a>Terms & Conditions</a> you need to sign the
+                      transaction agreement. This document allows every party involved to have a transparent
+                      and legal view over the entire process. Don’t worry, all your progress will remain
+                      saved.
+                    </Typography>
+
+                    <Button className='go-to-transaction-button'>Go to transaction agreement</Button>
+                  </div>
+                )
+              ) : (
+                <div />
+              )}
+              {room?.property ? <DocumentsTest room={room} /> : <div />}
+            </div>
+          )}
+        </div>
+
+        <Footer />
       </div>
-      <BackgroundImage />
     </>
   );
 })`
   &.messages-page {
     z-index: 1;
-    min-height: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: grid;
     box-sizing: border-box;
-    grid-template-rows: min-content auto;
+    grid-template-rows: auto min-content;
     position: relative;
 
     background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
+
+    .header-and-content-wrapper {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: min-content auto;
+      box-sizing: border-box;
+    }
 
     .no-messages-view {
       display: grid;
       justify-items: center;
       align-content: center;
+      min-height: calc(100vh - 112px);
       padding: 36px;
 
       img {
@@ -306,7 +320,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       column-gap: 24px;
       overflow-y: auto;
       padding: 24px 36px 36px 36px;
-      min-height: calc(100vh - 108px);
+      min-height: calc(100vh - 112px);
       box-sizing: border-box;
     }
 
@@ -354,13 +368,4 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       }
     }
   }
-`;
-
-const BackgroundImage = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  return <div className={className} />;
-})`
-  position: fixed;
-  inset: 0;
-
-  background: url(${messagesBackground}) center/cover no-repeat;
 `;

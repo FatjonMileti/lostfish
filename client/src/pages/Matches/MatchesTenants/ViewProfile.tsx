@@ -3,7 +3,6 @@ import { styled } from '@mui/system';
 
 import { Modal } from '../../../components/Modal';
 import { Typography } from '../../../components/Typography';
-import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
 import verified from '../../MyAccount/images/verified.svg';

@@ -12,12 +12,13 @@ import { UnMatchButton } from '../../../components/UnMatchButton';
 import { TenantCard } from '../../../components/TenantCard';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 import { SuggestedTenantType } from '../../Matches/matches.type';
+import { useMutation } from '@tanstack/react-query';
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
@@ -47,51 +48,49 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
-  const likeTenant = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).post('/api/match/tenants', {
+  const likeTenant = useMutation({
+    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+      return axios(userStore.auth.access_token).post('/api/match/tenants', {
         tenant: tenantId,
         property: propertyId
       });
-
+    },
+    onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
       }
-
       if (suggestedTenants.data.length - 1 === activeSlide && suggestedTenants.data.length > 1) {
         previous();
       }
-      await suggestedTenants.refetch();
+      suggestedTenants.refetch();
       matchesCount.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
-  const dislikeTenant = async ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).post('/api/match/dislikes/tenants', {
+  const dislikeTenant = useMutation({
+    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
+      return axios(userStore.auth.access_token).post('/api/match/dislikes/tenants', {
         tenant: tenantId,
         property: propertyId
       });
-
+    },
+    onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
       }
-
       if (suggestedTenants.data.length - 1 === activeSlide && suggestedTenants.data.length > 1) {
         previous();
       }
-      await suggestedTenants.refetch();
+      suggestedTenants.refetch();
       matchesCount.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
   return (
     <>
-      <Backdrop open={suggestedTenants.isFetching}></Backdrop>
+      {(suggestedTenants.isFetching || dislikeTenant.isLoading || likeTenant.isLoading) && (
+        <ShowGlobalLoading />
+      )}
       <div className={classNames('suggestions-tenants', className)}>
         <div className='section-header'>
           <Typography className='matching-with'>
@@ -152,7 +151,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               <UnMatchButton
                 size='large'
                 onClick={() => {
-                  dislikeTenant({
+                  dislikeTenant.mutate({
                     propertyId: suggestedTenant.property._id,
                     tenantId: suggestedTenant.criteria.tenantId
                   });
@@ -161,7 +160,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
               <MatchButton
                 size='large'
                 onClick={() => {
-                  likeTenant({
+                  likeTenant.mutate({
                     propertyId: suggestedTenant.property._id,
                     tenantId: suggestedTenant.criteria.tenantId
                   });
@@ -185,13 +184,13 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
           criteria={tenantToView.criteria}
           closeViewProfile={() => setTenantToView(null)}
           likeTenant={() => {
-            likeTenant({
+            likeTenant.mutate({
               propertyId: tenantToView.property._id,
               tenantId: tenantToView.criteria.tenantId
             });
           }}
           dislikeTenant={() => {
-            dislikeTenant({
+            dislikeTenant.mutate({
               propertyId: tenantToView.property._id,
               tenantId: tenantToView.criteria.tenantId
             });

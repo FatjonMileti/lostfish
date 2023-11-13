@@ -19,7 +19,8 @@ export const Drawer = styled(
 
     return createPortal(
       <>
-        <ScrollLock lock={open && !disableScrollLock} />
+        {open && !disableScrollLock && <ScrollLock />}
+
         <AnimatePresence>
           {open && (
             <motion.div

@@ -10,7 +10,7 @@ import { TextField } from '../../../../components/TextField';
 import { Textarea } from '../../../../components/Textarea';
 import { Icon } from '../../../../components/Icon';
 import Can from '../../../../components/Can';
-import { Backdrop } from '../../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
 import { Avatar } from '../../../../components/Avatar';
 
 import axios from '../../../../utils/axios';
@@ -99,7 +99,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
   return (
     <>
       <form onSubmit={profileDetailsForm.handleSubmit(onSubmit)} className={`profile-details ${className}`}>
-        <Backdrop open={loading} />
+        {loading && <ShowGlobalLoading />}
         <div className='left-part'>
           <div className='section'>
             <Typography className='section-title' variant='body4'>

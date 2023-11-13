@@ -15,57 +15,53 @@ interface BackdropStoreType {
       | ((state: BackdropStoreType) => BackdropStoreType | Partial<BackdropStoreType>),
     replace?: boolean | undefined
   ) => void;
+  show: (id: string) => void;
+  hide: (id: string) => void;
 }
 
 const useBackdropStore = create<BackdropStoreType>((setState) => {
   return {
     ids: {},
-    setState
-  };
-});
-
-export interface BackdropProps extends HTMLAttributes<HTMLDivElement> {
-  open: boolean;
-}
-
-export const Backdrop = ({ className, open }: BackdropProps) => {
-  const bacdropStore = useBackdropStore();
-  const id = React.useId();
-
-  React.useEffect(() => {
-    if (open) {
-      bacdropStore.setState(({ ids }) => {
+    setState,
+    show: (id) => {
+      setState(({ ids }) => {
         ids[id] = true;
         return { ids };
       });
-    } else {
-      bacdropStore.setState(({ ids }) => {
+    },
+    hide: (id) => {
+      setState(({ ids }) => {
         delete ids[id];
         return { ids };
       });
     }
+  };
+});
+
+export const ShowGlobalLoading = () => {
+  const backdropStore = useBackdropStore();
+
+  const id = React.useId();
+
+  React.useEffect(() => {
+    backdropStore.show(id);
 
     return () => {
-      bacdropStore.setState(({ ids }) => {
-        delete ids[id];
-        return { ids };
-      });
+      backdropStore.hide(id);
     };
-  }, [open]);
+  }, []);
 
   return null;
 };
 
 export const GlobalLoading = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const bacdropStore = useBackdropStore();
+  const backdropStore = useBackdropStore();
 
-  return Object.values(bacdropStore.ids).length > 0
+  return Object.values(backdropStore.ids).length > 0
     ? createPortal(
-        <>
-          <motion.div className={className}>
-            <LoadingMatch />
-          </motion.div>
-        </>,
+        <motion.div className={className}>
+          <LoadingMatch />
+        </motion.div>,
         document.body
       )
     : null;

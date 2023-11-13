@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 import { Icon } from '../../../components/Icon';
 import { usePropertyDetailsHook } from '../../HomeLoggedIn/hooks/usePropertyDetails.hook';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 
 export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [showEditProperty, setShowEditProperty] = React.useState<string | undefined>(undefined);
@@ -17,7 +17,7 @@ export const DashboardYourProperties = styled(({ className }: HTMLAttributes<HTM
   return (
     <>
       <div className={classNames('your-properties', className)}>
-        <Backdrop open={propertiesQuery.isFetching} />
+        {propertiesQuery.isFetching && <ShowGlobalLoading />}
         <Typography className='title' variant='body4'>
           Your properties
         </Typography>

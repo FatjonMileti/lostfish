@@ -1,7 +1,7 @@
 import { styled } from '@mui/system';
 import { Header } from '../../HomeLoggedIn/Header';
 import classNames from 'classnames';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import React, { HTMLAttributes } from 'react';
 import { TenantCard } from '../../../components/TenantCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
@@ -18,6 +18,7 @@ import { useMatchedTenants } from './useMatchedTenants';
 import { TenantsReviewHeader } from './TenantsReviewHeader';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { SuggestedTenantType } from '../matches.type';
+import { useMutation } from '@tanstack/react-query';
 
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 
@@ -46,23 +47,23 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     } catch (err) {}
   };
 
-  const dislikeTenant = async ({ matchId }: { matchId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
+  const dislikeTenant = useMutation({
+    mutationFn: ({ matchId }: { matchId: string }) => {
+      return axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
+    },
+    onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
       }
       matchedTenants.refetch();
       matchesCount.refetch();
       suggestedTenants.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
   return (
     <>
-      <Backdrop open={matchedTenants.isFetching}></Backdrop>
+      {(matchedTenants.isFetching || dislikeTenant.isLoading) && <ShowGlobalLoading />}
       <div className={classNames('my-matches-tenants', className)}>
         <div className='header-and-content-wrapper'>
           <Header
@@ -120,7 +121,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
         <ViewProfile
           criteria={tenantToView.criteria}
           closeViewProfile={() => setTenantToView(null)}
-          dislikeTenant={() => dislikeTenant({ matchId: tenantToView?.matchId || '' })}
+          dislikeTenant={() => dislikeTenant.mutate({ matchId: tenantToView?.matchId || '' })}
           disableLikeTenant
         />
       )}

@@ -16,7 +16,7 @@ import { SetCriteriaBudget } from './SetCriteria.Budged';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { Label } from '../../../components/Label';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 
 import { Parking } from '../../Properties/NewProperty/property.constants';
 import { useProfileStore } from '../../../globalState/profile';
@@ -320,7 +320,8 @@ export const SetCriteria = styled(
 
     return (
       <>
-        <Backdrop open={loading} />
+        {loading && <ShowGlobalLoading />}
+
         <div className={classNames(className, 'criteria-container')}>
           <div className='criteria-header'>
             <Typography variant='body2'>Refine your search</Typography>

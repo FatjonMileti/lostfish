@@ -4,7 +4,7 @@ import config from '../../config';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from './LoginModal';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 
@@ -120,5 +120,5 @@ export const SessionMaintainer = ({
     }
   }, [user.auth]);
 
-  return <>{resumingSession ? <Backdrop open></Backdrop> : <>{children}</>}</>;
+  return <>{resumingSession ? <ShowGlobalLoading /> : <>{children}</>}</>;
 };

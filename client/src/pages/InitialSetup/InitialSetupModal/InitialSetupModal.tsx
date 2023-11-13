@@ -12,7 +12,7 @@ import { WhatAreYouLookingFor } from './InitialSetup.WhatAreYouLokingFor';
 import { AddProperty } from './InitialSetup.AddProperty';
 import { SetCriteria } from './InitialSetup.SetCriteria';
 
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { Modal, ModalProps } from '../../../components/Modal';
 import { CloseButton } from '../../../components/CloseButton';
 import { Typography } from '../../../components/Typography';
@@ -83,7 +83,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
 
   return (
     <Modal className={classNames('initial-setup-modal', className)} open={open}>
-      <Backdrop open={loading}></Backdrop>
+      {loading && <ShowGlobalLoading />}
       <div className='modal-header'>
         <Typography variant='body2'>Match preferences</Typography>
         {step >= 2 && (

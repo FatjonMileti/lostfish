@@ -7,7 +7,7 @@ import { Typography } from '../../../components/Typography';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { MatchButton } from '../../../components/MatchButton';
 import { UnMatchButton } from '../../../components/UnMatchButton';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 
 import { useSuggestedProperties } from './useSuggestedProperties';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
@@ -20,6 +20,7 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
 import { SuggestedPropertyType } from '../../Matches/matches.type';
+import { useMutation } from '@tanstack/react-query';
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
   const suggestedProperties = useSuggestedProperties({
@@ -42,57 +43,53 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     params: { chosen: false, disliked: false }
   });
 
-  console.log('suggestedProperties: ', suggestedProperties);
-
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.data?.length));
   const previous = () => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
-  const likeProperty = async ({ propertyId }: { propertyId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).post('/api/match/properties', {
+  const likeProperty = useMutation({
+    mutationFn: ({ propertyId }: { propertyId: string }) => {
+      return axios(userStore.auth.access_token).post('/api/match/properties', {
         property: propertyId
       });
-
+    },
+    onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
       }
-
       if (suggestedProperties.data.length - 1 === activeSlide && suggestedProperties.data.length > 1) {
         previous();
       }
-      await suggestedProperties.refetch();
+      suggestedProperties.refetch();
       matchesCount.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
-  const dislikeProperty = async ({ propertyId }: { propertyId: string }) => {
-    try {
-      await axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
+  const dislikeProperty = useMutation({
+    mutationFn: ({ propertyId }: { propertyId: string }) => {
+      return axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
         property: propertyId
       });
-
+    },
+    onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
       }
-
       if (suggestedProperties.data.length - 1 === activeSlide && suggestedProperties.data.length > 1) {
         previous();
       }
-      await suggestedProperties.refetch();
+      suggestedProperties.refetch();
       matchesCount.refetch();
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
   return (
     <>
-      <Backdrop open={suggestedProperties.isFetching}></Backdrop>
+      {(suggestedProperties.isFetching || likeProperty.isLoading || dislikeProperty.isLoading) && (
+        <ShowGlobalLoading />
+      )}
       <div className={classNames('suggestions-properties', className)}>
         <div className='section-header'>
           <Typography className='matching-with'>
@@ -146,7 +143,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
               <UnMatchButton
                 size='large'
                 onClick={() => {
-                  dislikeProperty({
+                  dislikeProperty.mutate({
                     propertyId: suggestedProperty.property._id
                   });
                 }}
@@ -154,7 +151,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
               <MatchButton
                 size='large'
                 onClick={() => {
-                  likeProperty({
+                  likeProperty.mutate({
                     propertyId: suggestedProperty.property._id
                   });
                 }}
@@ -179,7 +176,8 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
-          likeProperty={() => likeProperty({ propertyId: propertyToView?.property._id })}
+          dislikeProperty={() => dislikeProperty.mutate({ propertyId: propertyToView?.property._id })}
+          likeProperty={() => likeProperty.mutate({ propertyId: propertyToView?.property._id })}
         />
       )}
     </>

@@ -5,7 +5,7 @@ import React from 'react';
 import { Modal, ModalProps } from '../../components/Modal';
 import { Typography } from '../../components/Typography';
 import { CloseButton } from '../../components/CloseButton';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Label } from '../../components/Label';
 
 import fastMessage from '../CreateAccount/fastMessage.svg';
@@ -26,7 +26,7 @@ export const RecoverPasswordVerifyEmailModal = styled(
 
     return (
       <>
-        <Backdrop open={loading}></Backdrop>
+        {loading && <ShowGlobalLoading />}
         <Modal className={classNames('verify-email-modal', className)} {...otherProps}>
           <div className='modal-header'>
             <Typography variant='body3' className='title'></Typography>

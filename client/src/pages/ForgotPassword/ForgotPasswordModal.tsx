@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios, { AxiosError } from 'axios';
 import config from '../../config';
 import { Label } from '../../components/Label';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { RecoverPasswordVerifyEmailModal } from './RecoverPasswordVerifyEmailModal';
 
 const schema = yup.object().shape({
@@ -61,7 +61,7 @@ export const ForgotPasswordModal = styled(
 
     return (
       <>
-        <Backdrop open={loading}></Backdrop>
+        {loading && <ShowGlobalLoading />}
         <RecoverPasswordVerifyEmailModal
           open={showEmailSentModal}
           onSigInClick={() => {

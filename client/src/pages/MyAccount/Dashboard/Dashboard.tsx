@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { useAgreement } from '../useAgreement';
 import hand from '../images/hand.png';
 import propertyImage from '../images/property.png';
@@ -16,7 +16,7 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
   return (
     <div className={`dashboard ${className}`}>
-      <Backdrop open={loading}></Backdrop>
+      {loading && <ShowGlobalLoading />}
 
       <div className='transaction-agreement'>
         <div className='left-part'>

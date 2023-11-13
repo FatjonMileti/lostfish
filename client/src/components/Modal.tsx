@@ -56,7 +56,7 @@ export const Modal = styled(
   }: ModalProps) => {
     return createPortal(
       <>
-        <ScrollLock lock={open && !disableScrollLock} />
+        {open && !disableScrollLock && <ScrollLock />}
 
         <AnimatePresence>
           {(open || preMount) && (

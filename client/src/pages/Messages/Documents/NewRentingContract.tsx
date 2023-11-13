@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { Button } from '../../../components/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -96,7 +96,7 @@ export const NewRentingContract = (props: INewRentingContract) => {
     }
   };
   return loading ? (
-    <Backdrop open={loading} />
+    <ShowGlobalLoading />
   ) : (
     <Button
       className='login-button'

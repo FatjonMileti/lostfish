@@ -7,7 +7,7 @@ import axios from '../../utils/axios';
 import { DOCUMENT_TYPES, DocumentType, IUser_Documents } from './user.interface';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { DocumentsView } from './components/DocumentsView';
 import { useAgreement } from './useAgreement';
 
@@ -90,7 +90,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
 
   return (
     <div className={`transaction-agreement ${className}`}>
-      <Backdrop open={loading} />
+      {loading && <ShowGlobalLoading />}
       <div className='body-content'>
         <DocumentsView documents={documents} handleFileChange={handleFileChange} />
 

@@ -10,7 +10,7 @@ import { Typography } from '../../components/Typography';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { Modal, ModalProps } from '../../components/Modal';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 
 import { strongPasswordValidator } from '../../utils/validation.helper';
 import { useUserStore } from '../../globalState/user';
@@ -78,7 +78,7 @@ export const ResetPasswordModal = styled(({ className }: ResetPasswordModalProps
 
   return (
     <>
-      <Backdrop open={loading}></Backdrop>
+      {loading && <ShowGlobalLoading />}
       <Modal
         open={showResetPasswordModal}
         className={classNames('reset-password-modal', className)}

@@ -4,7 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import config from '../../config';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { buildAbilityFor } from '../../utils/ability.util';
 import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from '../Login/LoginModal';
@@ -62,11 +62,7 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
     }
   };
 
-  return (
-    <div className={`set-password ${className}`}>
-      <Backdrop open={loading}></Backdrop>
-    </div>
-  );
+  return <div className={`set-password ${className}`}>{loading && <ShowGlobalLoading />}</div>;
 })`
   min-height: 100vh;
   background: linear-gradient(180deg, #ffffff 0%, #f3edea 30.91%);

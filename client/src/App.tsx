@@ -27,7 +27,7 @@ import { useNotificationsStore } from './globalState/notifications';
 
 import { CookieConsent } from './components/CookieConsent';
 import { MyMatches } from './pages/Matches/MyMatches';
-import { GlobalLoading } from './components/Backdrop';
+import { GlobalLoading } from './components/ShowGlobalLoading';
 
 function App() {
   const userStore = useUserStore();

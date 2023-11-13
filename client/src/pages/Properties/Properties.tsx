@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Label } from '../../components/Label';
 
 import axios from '../../utils/axios';
@@ -92,7 +92,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
   return (
     <div className={`properties-page ${className}`}>
-      <Backdrop open={list.loading}></Backdrop>
+      {list.loading && <ShowGlobalLoading />}
 
       {editPropertyId && (
         <EditPropertyModal

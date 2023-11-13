@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from '@mui/system';
 
 import { Header } from './Header';
-import { Backdrop } from '../../components/Backdrop';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Footer } from '../Home/Footer';
 import { DailyNews } from '../Home/Home.DailyNews';
 import { ColoredCards } from '../Home/Home.ColoredCards';
@@ -11,7 +11,6 @@ import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
 import { Suggestions } from '../Suggestions/Suggestions';
 import { FaqSection } from '../Home/Home.FaqSection';
 
-import forestBackgroundImage from '../Home/forest.jpeg';
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { Role } from '../../enums';
@@ -32,7 +31,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
         }
       />
 
-      <Backdrop open={loading}></Backdrop>
+      {loading && <ShowGlobalLoading />}
 
       <div className='container'>
         <Suggestions />

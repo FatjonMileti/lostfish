@@ -14,7 +14,7 @@ import { ApiPropertyDocumentType } from './property.types';
 import { Furnished, OutsideSpace, PropertyType } from './property.constants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { useUserStore } from '../../../globalState/user';
-import { Backdrop } from '../../../components/Backdrop';
+import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 
 export interface EditPropertyModalProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -204,7 +204,8 @@ export const EditPropertyModal = styled(
         open={modalVisibility}
         onBackdropClick={() => setModalVisibility(false)}
         onClose={() => setModalVisibility(false)}>
-        <Backdrop open={loadingProperty}></Backdrop>
+        {loadingProperty && <ShowGlobalLoading />}
+
         <div className='header'>
           <Typography variant='body2'>Add property</Typography>
           <div className='right-side'>
