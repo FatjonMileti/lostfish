@@ -12,8 +12,8 @@ import { PropertyCard } from '../../../components/PropertyCard';
 import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-import { useCriteriaStore } from '../../../globalState/criteria';
 import backgroundImg from '../../Home/forest.jpeg';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {
   onCreateAccountClick: () => any;
@@ -22,7 +22,7 @@ interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElemen
 export const MatchesWithoutAccountSection = styled(
   ({ className, onCreateAccountClick }: MatchesWithoutAccountSectionProps) => {
     const suggestedProperties = useSuggestedPropertiesWithoutAccount();
-    const criteriaStore = useCriteriaStore();
+    const criteriaStore = useCriteriaWithoutAccountStore();
 
     return (
       <div className={classNames('matches-without-account-section', className)}>

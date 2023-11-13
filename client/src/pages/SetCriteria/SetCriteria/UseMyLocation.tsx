@@ -3,8 +3,9 @@ import { Button, ButtonProps } from '../../../components/Button';
 import { Icon } from '../../../components/Icon';
 import React from 'react';
 import classNames from 'classnames';
-import axios from '../../../utils/axios';
+import axios from 'axios';
 import { useUserStore } from '../../../globalState/user';
+import config from '../../../config';
 
 interface UseMyLocationProps extends ButtonProps {
   onLocation?: (location: {
@@ -34,7 +35,7 @@ export const UseMyLocation = styled(({ className, onLocation = () => {} }: UseMy
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
       });
 
-      const place = await axios(userStore.auth.access_token).get('/api/map', {
+      const place = await axios.get(`${config.apiUrl}/api/map`, {
         params: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude

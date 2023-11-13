@@ -20,6 +20,7 @@ import { Typography } from '../../../components/Typography';
 import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
 import { LookingForType } from '../../SetCriteria/criteria.types';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 interface InitialSetupModalProps extends ModalProps {}
 
@@ -38,12 +39,14 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
   const profileStore = useProfileStore();
   const userStore = useUserStore();
 
+  const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
+
   const [state, setState] = React.useState<{
     avatar: string;
     lookingFor?: LookingForType;
   }>({
     avatar: '0',
-    lookingFor: undefined
+    lookingFor: criteriaWithoutAccountStore.criteria.looking_for
   });
 
   const onLookingForNext = async () => {
@@ -88,6 +91,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
             size='large'
             onClick={async () => {
               await refreshToken(true);
+              useCriteriaWithoutAccountStore.persist.clearStorage();
               setOpen(false);
             }}
           />
@@ -118,6 +122,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                     {...animationProps}
                     afterAddProperty={async () => {
                       await refreshToken(true);
+                      useCriteriaWithoutAccountStore.persist.clearStorage();
                       setOpen(false);
                     }}
                     onBack={() => setStep((step) => step - 1)}
@@ -130,6 +135,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                     {...animationProps}
                     onNext={async () => {
                       await refreshToken(true);
+                      useCriteriaWithoutAccountStore.persist.clearStorage();
                       setOpen(false);
                     }}
                     onBack={() => setStep((step) => step - 1)}

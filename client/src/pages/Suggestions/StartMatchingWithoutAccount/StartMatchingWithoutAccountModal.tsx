@@ -10,10 +10,9 @@ import { WhatAreYouLookingFor } from '../../InitialSetup/InitialSetupModal/Initi
 import { CreteAccountOrSignIn } from './CreteAccountOrSignIn';
 import { SetCriteria } from './StartMatchingWithoutAccount.SetCriteria';
 
-import { useCriteriaStore } from '../../../globalState/criteria';
-
 import { LookingForType } from '../../SetCriteria/criteria.types';
 import { LookingFor } from '../../SetCriteria/criteria.contants';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -39,6 +38,8 @@ export const StartMatchingWithoutAccountModal = styled(
     closeStartMatching,
     afterSetCriteria
   }: StartMatchingWithoutAccountModalProps) => {
+    const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
+
     const [visibility, setVisibility] = visibilityStore;
 
     const [step, setStep] = React.useState(0);
@@ -50,21 +51,16 @@ export const StartMatchingWithoutAccountModal = styled(
     const [state, setState] = React.useState<{
       lookingFor?: LookingForType;
     }>({
-      lookingFor: undefined
+      lookingFor: criteriaWithoutAccountStore.criteria.looking_for
     });
 
-    const criteriaStore = useCriteriaStore();
-
     const onLookingForChange = (lookingFor: LookingForType) => {
-      setState((state) => ({ ...state, lookingFor }));
+      criteriaWithoutAccountStore.setCriteria({
+        looking_for: lookingFor
+      });
     };
 
     const onNext = () => {
-      criteriaStore.setCriteria((criteria) => ({
-        ...criteria,
-        looking_for: state.lookingFor
-      }));
-
       afterSetCriteria();
     };
 
@@ -85,14 +81,14 @@ export const StartMatchingWithoutAccountModal = styled(
                 <WhatAreYouLookingFor
                   key='whatAreYouLookingFor'
                   {...animationProps}
-                  lookingFor={state.lookingFor}
+                  lookingFor={criteriaWithoutAccountStore.criteria.looking_for}
                   onLookingForChange={onLookingForChange}
                   onNext={() => {
                     setStep((step) => step + 1);
                   }}
                 />,
                 <>
-                  {state.lookingFor === LookingFor.OwnAPlace && (
+                  {criteriaWithoutAccountStore.criteria.looking_for === LookingFor.OwnAPlace && (
                     <CreteAccountOrSignIn
                       onSignInClick={() => {
                         onSigInClick();
@@ -104,7 +100,7 @@ export const StartMatchingWithoutAccountModal = styled(
                     />
                   )}
 
-                  {state.lookingFor === LookingFor.LookingForAPlace && (
+                  {criteriaWithoutAccountStore.criteria.looking_for === LookingFor.LookingForAPlace && (
                     <SetCriteria onNext={onNext} onBack={() => setStep((step) => step - 1)} />
                   )}
                 </>

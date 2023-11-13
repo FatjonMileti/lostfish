@@ -17,46 +17,45 @@ export interface CriteriaStoreType {
 
 export const useCriteriaStore = create<CriteriaStoreType>()(
   devtools(
-    // persist(
-    //
-    (setState) => ({
-      criteria: {},
-      setCriteria: (arg: CriteriaType | ((prevState: CriteriaType) => CriteriaType)) => {
-        setState((prevState) => ({
-          criteria:
-            typeof arg === 'function'
-              ? (arg as (prevState: CriteriaType) => CriteriaType)(prevState.criteria)
-              : arg
-        }));
-      },
-      reset: () =>
-        setState((profile) => ({
-          criteria: {}
-        })),
-
-      fetchCriteria: async (access_token: string) => {
-        try {
-          const { data } = await axios(access_token).get<ApiCriteriaDocumentType>('/api/criteria');
-
-          setState((prevCriteria) => ({
-            criteria: {
-              ...data
-            }
+    persist(
+      (setState) => ({
+        criteria: {},
+        setCriteria: (arg: CriteriaType | ((prevState: CriteriaType) => CriteriaType)) => {
+          setState((prevState) => ({
+            criteria:
+              typeof arg === 'function'
+                ? (arg as (prevState: CriteriaType) => CriteriaType)(prevState.criteria)
+                : arg
           }));
-        } catch (err: any) {
-          if (err.response.status === 404) {
-            setState((criteria) => ({
-              criteria: {}
+        },
+        reset: () =>
+          setState((profile) => ({
+            criteria: {}
+          })),
+
+        fetchCriteria: async (access_token: string) => {
+          try {
+            const { data } = await axios(access_token).get<ApiCriteriaDocumentType>('/api/criteria');
+
+            setState((prevCriteria) => ({
+              criteria: {
+                ...data
+              }
             }));
-          } else {
-            console.log('criteria error: ', err.response.status);
+          } catch (err: any) {
+            if (err.response.status === 404) {
+              setState((criteria) => ({
+                criteria: {}
+              }));
+            } else {
+              console.log('criteria error: ', err.response.status);
+            }
           }
         }
-      }
-    }),
+      }),
 
-    //   { name: 'criteria' }
-    // ),
+      { name: 'criteria' }
+    ),
     {
       store: 'criteria'
     }

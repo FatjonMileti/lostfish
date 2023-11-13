@@ -2,15 +2,15 @@ import axios from 'axios';
 
 import { useQuery } from '@tanstack/react-query';
 import config from '../../../config';
-import { useCriteriaStore } from '../../../globalState/criteria';
 import { SuggestedPropertyType } from '../../Matches/matches.type';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 export const useSuggestedPropertiesWithoutAccount = () => {
-  const criteriaStore = useCriteriaStore();
+  const criteriaStore = useCriteriaWithoutAccountStore();
   const getSuggestedProperties = async () => {
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/api/suggestion/without-account/properties`,
+        `${config.apiUrl}/api/suggestion/without-account/properties`,
 
         criteriaStore.criteria
       );

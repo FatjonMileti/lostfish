@@ -41,8 +41,10 @@ function App() {
     if (userStore.auth) {
       criteriaStore.fetchCriteria(userStore.auth.access_token);
       notificationsStore.fetchNotifications(userStore.auth.access_token);
-    } else {
-      criteriaStore.reset();
+
+      return () => {
+        criteriaStore.reset();
+      };
     }
   }, [userStore.auth]);
 

@@ -7,9 +7,7 @@ import { SetCriteriaModal } from '../../SetCriteria/SetCriteriaModal';
 import { useCriteriaForm } from '../../SetCriteria/useCriteriaForm';
 import { ApiCriteriaDocumentType, HouseType, PropertyFeatureType } from '../../SetCriteria/criteria.types';
 import { OutsideSpaceType } from '../../Properties/NewProperty/property.types';
-import axios from '../../../utils/axios';
-import { useProfileStore } from '../../../globalState/profile';
-import { useCriteriaStore } from '../../../globalState/criteria';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
   onNext: () => void;
@@ -20,7 +18,7 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
   const [showModal, setShowModal] = React.useState(true);
   const criteriaForm = useCriteriaForm();
 
-  const criteriaStore = useCriteriaStore();
+  const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
 
   const onStartMatchingClick = () => {
     const payload: Partial<ApiCriteriaDocumentType> = {
@@ -100,7 +98,10 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
         .map(([key, value]) => key)
     };
 
-    criteriaStore.setCriteria(payload);
+    criteriaWithoutAccountStore.setCriteria((previousCriteria) => {
+      return { ...previousCriteria, ...payload };
+    });
+
     setShowModal(false);
     onNext();
   };

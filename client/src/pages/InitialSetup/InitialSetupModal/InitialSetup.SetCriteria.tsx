@@ -5,11 +5,18 @@ import { HTMLMotionProps } from 'framer-motion';
 
 import { SetCriteriaModal } from '../../SetCriteria/SetCriteriaModal';
 import { useCriteriaForm } from '../../SetCriteria/useCriteriaForm';
-import { ApiCriteriaDocumentType, HouseType, PropertyFeatureType } from '../../SetCriteria/criteria.types';
+import {
+  ApiCriteriaDocumentType,
+  CriteriaFormType,
+  HouseType,
+  PropertyFeatureType
+} from '../../SetCriteria/criteria.types';
 import { OutsideSpaceType } from '../../Properties/NewProperty/property.types';
 import axios from '../../../utils/axios';
 import { useProfileStore } from '../../../globalState/profile';
 import { useUserStore } from '../../../globalState/user';
+import { Parking } from '../../Properties/NewProperty/property.constants';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
 
 export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
   onNext: () => void;
@@ -19,9 +26,165 @@ export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
 export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaProps) => {
   const [showModal, setShowModal] = React.useState(true);
 
+  const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
+
   const criteriaForm = useCriteriaForm();
   const profileStore = useProfileStore();
   const userStore = useUserStore();
+
+  React.useEffect(() => {
+    if (Object.keys(criteriaWithoutAccountStore.criteria).length > 0) {
+      loadCriteria(criteriaWithoutAccountStore.criteria);
+    }
+  }, []);
+
+  const loadCriteria = (data: any) => {
+    criteriaForm.setValue('transactionType', data.transaction_type_string);
+
+    criteriaForm.setValue('areaOfInterest', data.area_of_interest);
+
+    if (data?.asset_address?.latitude && data?.asset_address?.longitude) {
+      criteriaForm.setValue('location', {
+        latitude: data.asset_address.latitude,
+        longitude: data.asset_address.longitude
+      });
+    }
+
+    criteriaForm.setValue('radius', data.radius);
+
+    criteriaForm.setValue('whenDoYouWantToMove', data.moving_time || undefined);
+
+    data.property_type.map((type: keyof CriteriaFormType['propertyType']) => {
+      criteriaForm.setValue(`propertyType.${type}`, true);
+    });
+
+    criteriaForm.setValue(
+      'houseDetails.houseType',
+      Object.fromEntries((data?.house_details?.house_type || []).map((key: HouseType) => [key, true])) as {
+        [key in HouseType]: boolean;
+      }
+    );
+    criteriaForm.setValue('houseDetails.homeStyle', data.house_details.home_style);
+
+    criteriaForm.setValue('houseDetails.condition', data.house_details?.condition);
+
+    criteriaForm.setValue('houseDetails.parking', data.house_details?.parking);
+
+    criteriaForm.setValue('houseDetails.preferredSize', data.house_details.preferred_size);
+    criteriaForm.setValue('houseDetails.garden', data.house_details.garden);
+    if (data.house_details?.storeys) {
+      criteriaForm.setValue('houseDetails.storeys', data.house_details.storeys);
+    }
+    criteriaForm.setValue('houseDetails.nrOfBedrooms', data.house_details.number_of_bedrooms);
+    criteriaForm.setValue('houseDetails.nrOfBathrooms', data.house_details.number_of_bathrooms);
+
+    criteriaForm.setValue('flatDetails.propertyPurpose', data?.flat_details?.property_purpose);
+    criteriaForm.setValue('flatDetails.preferredFloor', data.flat_details.preferred_floor);
+    criteriaForm.setValue('flatDetails.condition', data.flat_details.condition);
+
+    (data.flat_details.outside_space || []).forEach((os: OutsideSpaceType) => {
+      criteriaForm.setValue(`flatDetails.outsideSpace.${os}`, true);
+    });
+
+    if (data.flat_details.preferred_size?.size && data.flat_details.preferred_size?.unit) {
+      criteriaForm.setValue('flatDetails.preferredSize', data.flat_details.preferred_size);
+    }
+
+    if (data.flat_details?.number_of_bedrooms?.max) {
+      criteriaForm.setValue('flatDetails.nrOfBedrooms', data.flat_details.number_of_bedrooms);
+    }
+
+    if (data.flat_details?.number_of_bathrooms?.max) {
+      criteriaForm.setValue('flatDetails.nrOfBathrooms', data.flat_details.number_of_bathrooms);
+    }
+
+    criteriaForm.setValue('flatDetails.lift', data?.flat_details?.lift);
+    criteriaForm.setValue('flatDetails.security', data?.flat_details?.security);
+    criteriaForm.setValue('flatDetails.parkingSpace', data?.flat_details?.parking_space);
+    criteriaForm.setValue('flatDetails.gymSpa', data?.flat_details?.gym_spa);
+
+    (
+      Object.keys(criteriaForm.getValues('propertyClass')) as [keyof CriteriaFormType['propertyClass']]
+    ).forEach((key) => {
+      criteriaForm.setValue(`propertyClass.${key}`, data.property_preferences.includes(key));
+    });
+
+    (
+      Object.keys(criteriaForm.getValues('propertyFeatures')) as [keyof CriteriaFormType['propertyFeatures']]
+    ).forEach((key) => {
+      criteriaForm.setValue(`propertyFeatures.${key}`, data.property_features.includes(key));
+    });
+
+    if (data.floor_size?.includes('-')) {
+      criteriaForm.setValue('area', [
+        parseInt(data.floor_size.split('-')[0]),
+        parseInt(data.floor_size.split('-')[1])
+      ]);
+    }
+
+    if (data?.floor_size_unit) {
+      criteriaForm.setValue('areaUnit', data?.floor_size_unit);
+    }
+
+    if (data.room_details?.number_of_bedrooms) {
+      criteriaForm.setValue('nrOfBedrooms', [
+        parseInt(data.room_details?.number_of_bedrooms?.split('-')[0] || '0'),
+        parseInt(data.room_details?.number_of_bedrooms?.split('-')[1] || '0')
+      ]);
+    }
+
+    if (data.room_details?.number_of_bathrooms) {
+      criteriaForm.setValue('nrOfBathrooms', [
+        parseInt(data.room_details?.number_of_bathrooms?.split('-')[0] || '0'),
+        parseInt(data.room_details?.number_of_bathrooms?.split('-')[1] || '0')
+      ]);
+    }
+
+    criteriaForm.setValue(
+      'specificPropertyFeatures',
+      data.specific_property_features.reduce((acc: { [key: string]: boolean }, spf: string) => {
+        acc[spf] = true;
+        return acc;
+      }, {}) as CriteriaFormType['specificPropertyFeatures']
+    );
+
+    criteriaForm.setValue('parkingType.On street', data.parking_details?.includes(Parking.OnStreet));
+    criteriaForm.setValue('parkingType.Off street', data.parking_details?.includes(Parking.OffStreet));
+    criteriaForm.setValue('parkingType.Garage', data.parking_details?.includes(Parking.Garage));
+
+    criteriaForm.setValue('idealBudget', [data.budget?.min, data.budget?.max]);
+
+    if (data.budget_for) {
+      criteriaForm.setValue('budgetFor', data.budget_for);
+    }
+
+    criteriaForm.setValue('depositAmount', data.deposit_amount);
+
+    criteriaForm.setValue('creditScore', data.credit_score_requirements);
+    criteriaForm.setValue(
+      'contractDetails',
+      data.contract_details.reduce((acc: { [key: string]: boolean }, cd: string) => {
+        acc[cd] = true;
+        return acc;
+      }, {}) as CriteriaFormType['contractDetails']
+    );
+
+    if (data?.distance_from_underground) {
+      criteriaForm.setValue('distanceFromUnderground', data.distance_from_underground);
+    }
+
+    if (data?.distance_from_schools) {
+      criteriaForm.setValue('distanceFromSchools', data.distance_from_schools);
+    }
+
+    if (data?.distance_from_high_street) {
+      criteriaForm.setValue('distanceFromHighStreet', data.distance_from_high_street);
+    }
+
+    if (data?.distance_from_gym) {
+      criteriaForm.setValue('distanceFromGym', data.distance_from_gym);
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -111,6 +274,7 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
       };
 
       await axios(userStore.auth.access_token).patch(`/api/criteria`, payload);
+
       await onNext();
       profileStore.fetchProfile(userStore.auth.access_token);
     } catch (err) {
