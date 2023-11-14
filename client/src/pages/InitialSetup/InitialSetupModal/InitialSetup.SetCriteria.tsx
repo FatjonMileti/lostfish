@@ -33,7 +33,7 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
   const userStore = useUserStore();
 
   React.useEffect(() => {
-    if (Object.keys(criteriaWithoutAccountStore.criteria).length > 0) {
+    if (Object.keys(criteriaWithoutAccountStore.criteria).length > 1) {
       loadCriteria(criteriaWithoutAccountStore.criteria);
     }
   }, []);

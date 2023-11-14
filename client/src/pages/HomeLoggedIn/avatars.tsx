@@ -4,7 +4,8 @@ import avatar2 from '../MyAccount/images/fancy-avatar-2.jpg';
 import avatar3 from '../MyAccount/images/fancy-avatar-3.jpg';
 import avatar4 from '../MyAccount/images/fancy-avatar-4.jpg';
 import avatar5 from '../MyAccount/images/fancy-avatar-5.jpg';
-import lostfishLogoColored from '../../assets/svg/LogoLostFishColored.svg';
+import lostfishLogoColored from '../../assets/svg/lostfish-white.svg';
+import { Icon } from '../../components/Icon';
 
 export type AvatarType = { image: string; backgroundColor: string };
 
@@ -49,5 +50,5 @@ export const avatars: AvatarType[] = [
 
 const agentAvatar: AvatarType = {
   image: lostfishLogoColored,
-  backgroundColor: 'white'
+  backgroundColor: '#184D6D'
 };

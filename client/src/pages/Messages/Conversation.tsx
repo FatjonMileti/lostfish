@@ -6,6 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import moment from 'moment';
 import { useUserStore } from '../../globalState/user';
+import classNames from 'classnames';
 
 export const Conversation = styled(
   (props: {
@@ -19,14 +20,20 @@ export const Conversation = styled(
 
     const userStore = useUserStore();
 
-    const avatar = getAvatarFormIndex(
-      userStore.userDetails?.user_id === row?.author?._id ? row?.participant?.avatar : row?.author?.avatar
-    );
+    const avatarKey =
+      userStore.userDetails?.user_id === row?.author?._id ? row?.participant?.avatar : row?.author?.avatar;
+
+    const avatar = getAvatarFormIndex(avatarKey);
 
     return (
       <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
         <div className='match-avatar-intersection'>
-          <Avatar image={avatar} />
+          <Avatar
+            image={avatar}
+            className={classNames({
+              lostfish: avatarKey === 'lostfish'
+            })}
+          />
 
           {row.unseen_messages > 0 && <span className='unseen-messages-nr'>{row.unseen_messages}</span>}
         </div>
@@ -51,18 +58,19 @@ export const Conversation = styled(
     box-sizing: border-box;
     background-color: white;
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    border: 2px solid white;
+    border: 1px solid white;
 
     &:hover {
       //background-color: #f7f1e7;
     }
 
     &.active {
-      //background-color: #f7f1e7;
-      //border-radius: 12px;
-      border: 2px solid #184d6d;
+      border: 1px solid #e5155a;
+
+      /* Nav Shadow */
+      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
     }
 
     .avatar {
@@ -92,6 +100,11 @@ export const Conversation = styled(
       .avatar {
         width: 64px;
         height: 64px;
+
+        &.lostfish {
+          background-size: 40px 40px;
+          background-color: #184d6d;
+        }
       }
 
       .unseen-messages-nr {
