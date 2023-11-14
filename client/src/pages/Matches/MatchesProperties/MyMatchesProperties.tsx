@@ -23,16 +23,26 @@ import { useMatchesCount } from '../useMatchesCount';
 import { PropertiesReviewHeader } from './PropertiesReviewHeader';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { SuggestedPropertyType } from '../matches.type';
+import { CloseButton } from '../../../components/CloseButton';
+import { Radio } from '../../../components/Radio';
+import { Select } from '../../../components/Select/Select';
+import { Button } from '../../../components/Button';
+import { Modal } from '../../../components/Modal';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
 export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) => {
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
+  const [filterMatchesModal, setFilterMatchesModal] = React.useState(false);
+  const [filter, setFilter] = React.useState({
+    withOffers: false,
+    matchRate: 20
+  });
   const navigate = useNavigate();
   const userStore = useUserStore();
 
   const matchedProperties = useMatchedProperties({
-    params: { chosen: true },
+    params: { chosen: true, matchRate: filter.matchRate },
     options: {
       refetchOnMount: true
     }
@@ -63,10 +73,63 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     }
   });
 
+  const onCloseFilterModal = () => {
+    setFilterMatchesModal(false);
+  };
+
   return (
     <>
       {(matchedProperties.isFetching || dislikeProperty.isLoading) && <ShowGlobalLoading />}
       <div className={classNames('my-matches-properties', className)}>
+        <FilterMatchesModal disableScrollLock open={filterMatchesModal} onBackdropClick={onCloseFilterModal}>
+          <div className='modal-header'>
+            <Typography variant='body2'>Filter your matches</Typography>
+            <CloseButton onClick={onCloseFilterModal} />
+          </div>
+          <div className='modal-body'>
+            <div className='matches-with-offers'>
+              <Typography variant='body4' className='show-only-matches-with-offers'>
+                Show only matches with offers
+              </Typography>
+              <Radio />
+            </div>
+            <Select
+              label='Match rate:'
+              className='match-rate'
+              onChange={(e) => {
+                setFilter((prevFilter) => ({
+                  ...prevFilter,
+                  matchRate: Number(e.target.value)
+                }));
+              }}>
+              {[20, 30, 40, 50, 60, 70, 80, 90].map((value) => (
+                <option key={value} value={value} selected={filter.matchRate === value}>
+                  {`${value}% and above`}
+                </option>
+              ))}
+            </Select>
+            <div className='actions'>
+              <Button
+                size='large'
+                variant='secondary'
+                onClick={() =>
+                  setFilter((prevFilter) => ({
+                    ...prevFilter,
+                    matchRate: 20
+                  }))
+                }>
+                Reset filters
+              </Button>
+              <Button
+                size='large'
+                onClick={() => {
+                  matchedProperties.refetch(), onCloseFilterModal();
+                }}>
+                Set filters
+              </Button>
+            </div>
+          </div>
+        </FilterMatchesModal>
         <div className='header-and-content-wrapper'>
           <Header
             middleContent={
@@ -84,7 +147,10 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                 </Typography>
               </div>
 
-              <Label variant='secondary' className='filters-button'>
+              <Label
+                variant='secondary'
+                className='filters-button'
+                onClick={() => setFilterMatchesModal(true)}>
                 <Icon icon='filter' />
                 Filter matches
               </Label>
@@ -186,6 +252,72 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           justify-items: center;
           justify-self: center;
           align-content: flex-start;
+        }
+      }
+    }
+  }
+`;
+const FilterMatchesModal = styled(Modal)`
+  & {
+    .modal-container {
+      padding: 0;
+    }
+    padding: 24px;
+    max-width: 440px;
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      .close-button {
+        width: 48px;
+        height: 48px;
+        padding: 12px;
+      }
+    }
+    .modal-body {
+      display: grid;
+      padding-top: 16px;
+      gap: 32px;
+      .matches-with-offers {
+        display: flex;
+        padding: 24px;
+        border: 1px solid #e7e7e7;
+        border-radius: 8px;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+
+        .show-only-matches-with-offers {
+          font-weight: 700;
+        }
+        .radio-button {
+          border: 2px solid #184d6d;
+        }
+      }
+      .match-rate {
+        label {
+          font-size: 14px;
+          line-height: 20px;
+          font-weight: 700;
+          color: #cfd5d5;
+        }
+        .input-wrapper {
+          select {
+            border: 1px solid #a7a7a7;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 700;
+          }
+        }
+      }
+      .actions {
+        display: flex;
+        column-gap: 16px;
+        .button {
+          width: 188px;
+          padding: 20px 32px;
+          flex-grow: 1;
         }
       }
     }

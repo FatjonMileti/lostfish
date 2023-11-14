@@ -338,7 +338,7 @@ export class MatchController {
    * @apiUse paging
    */
   private getAllMatches = async (req: Request, res: Response) => {
-    const { starred, chosen, propertyId } = req.query;
+    const { starred, chosen, matchRate, propertyId } = req.query;
 
     const query: IMatchQueryParams = {};
     if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
@@ -357,12 +357,12 @@ export class MatchController {
     if (propertyId) {
       query.property = <string>propertyId;
     }
-
     try {
-      const matches = await this.matchService.getAllMatches(
-        query,
-        res.locals.paging_options as IPagingOptions
-      );
+      const matches = await this.matchService.getAllMatches(query, {
+        pagination: false,
+        lean: true,
+        sort: { created_at: -1 }
+      });
 
       matches.docs = generateLinksForMatchesImages(matches.docs);
 
@@ -403,8 +403,21 @@ export class MatchController {
           currentMatch.matched = !!matched;
         }
       }
-      await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
-      return res.status(200).json(matches);
+      if (matchRate) {
+        const { docs } = matches;
+        const filteredMatchesDocs = docs.filter((match: any) => match.property.percentage >= matchRate);
+
+        const filteredMatchesResponse = {
+          docs: filteredMatchesDocs,
+          totalDocs: filteredMatchesDocs.length
+        };
+
+        await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
+        return res.status(200).json(filteredMatchesResponse);
+      } else {
+        await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, info: query });
+        return res.status(200).json(matches);
+      }
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: 'Unable to fetch matches.' });
@@ -426,7 +439,6 @@ export class MatchController {
    */
   private getAllPropertyMatches = async (req: Request, res: Response) => {
     const { starred, chosen, propertyId } = req.query;
-
     const query: any = {
       created_by: { $ne: res.locals.user_id }
     };
