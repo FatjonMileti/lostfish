@@ -202,7 +202,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             <div className='container'>
               <div className='chats'>
                 <div className='chats-header'>
-                  <Typography variant='body2'>Your inbox</Typography>
+                  <Typography variant='body2'>My messages</Typography>
 
                   <Typography variant='body5'>
                     Here you can find all your conversations with your matches or Lostfish representatives

@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "lostfish"
   | "eye-line"
   | "pound-coin"
   | "intersect"

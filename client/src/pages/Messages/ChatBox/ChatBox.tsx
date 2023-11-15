@@ -54,9 +54,9 @@ export const ChatBox = styled(
       }
     }, [messageList]);
 
-    const avatarById = {
-      [room.author._id]: getAvatarFormIndex(room.author.avatar),
-      [room.participant._id]: getAvatarFormIndex(room.participant.avatar)
+    const avatarKeyById = {
+      [room.author._id]: room.author.avatar,
+      [room.participant._id]: room.participant.avatar
     };
 
     const sendMessage = async () => {
@@ -127,7 +127,8 @@ export const ChatBox = styled(
                 messageList[messageIndex - 1]?.sender?._id === authorId &&
                 (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
 
-              const avatar = avatarById[authorId];
+              const avatarKey = avatarKeyById[authorId];
+              const avatar = getAvatarFormIndex(avatarKey);
 
               return (
                 <div
@@ -140,7 +141,12 @@ export const ChatBox = styled(
                     'last-in-group': lastInGroup
                   })}
                   key={messageIndex}>
-                  <Avatar image={avatar} />
+                  <Avatar
+                    image={avatar}
+                    className={classNames({
+                      lostfish: avatarKey === 'lostfish'
+                    })}
+                  />
 
                   <Typography variant='body5' className='text'>
                     {messageContent.message}
@@ -236,6 +242,11 @@ export const ChatBox = styled(
             text-transform: uppercase;
             font-weight: 600;
             visibility: hidden;
+
+            &.lostfish {
+              background-size: 12px 12px;
+              background-color: #184d6d;
+            }
           }
 
           .text {
