@@ -96,14 +96,16 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             <Select
               label='Match rate:'
               className='match-rate'
+              value={filter.matchRate}
               onChange={(e) => {
                 setFilter((prevFilter) => ({
                   ...prevFilter,
                   matchRate: Number(e.target.value)
                 }));
-              }}>
+              }}
+                >
               {[20, 30, 40, 50, 60, 70, 80, 90].map((value) => (
-                <option key={value} value={value} selected={filter.matchRate === value}>
+                <option key={value} value={value} >
                   {`${value}% and above`}
                 </option>
               ))}
