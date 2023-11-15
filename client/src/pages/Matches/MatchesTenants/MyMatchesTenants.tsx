@@ -78,7 +78,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     <>
       {(matchedTenants.isFetching || dislikeTenant.isLoading) && <ShowGlobalLoading />}
       <div className={classNames('my-matches-tenants', className)}>
-        <FilterMatchesModal disableScrollLock open={filterMatchesModal} onBackdropClick={onCloseFilterModal}>
+        <FilterMatchesModal open={filterMatchesModal} onBackdropClick={onCloseFilterModal}>
           <div className='modal-header'>
             <Typography variant='body2'>Filter your matches</Typography>
             <CloseButton onClick={onCloseFilterModal} />
@@ -252,7 +252,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
 const FilterMatchesModal = styled(Modal)`
   & {
     .modal-container {
-      padding: 0;
+      padding: 0 !important;
     }
     padding: 24px;
     max-width: 440px;
@@ -260,7 +260,8 @@ const FilterMatchesModal = styled(Modal)`
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 16px;
+      padding: 24px 24px 16px 24px;
+      box-sizing: border-box;
       .close-button {
         width: 48px;
         height: 48px;
@@ -269,7 +270,8 @@ const FilterMatchesModal = styled(Modal)`
     }
     .modal-body {
       display: grid;
-      padding-top: 16px;
+      padding: 16px 24px 24px 24px;
+      justify-content: center;
       gap: 32px;
       .matches-with-offers {
         display: flex;
@@ -292,7 +294,7 @@ const FilterMatchesModal = styled(Modal)`
           font-size: 14px;
           line-height: 20px;
           font-weight: 700;
-          color: #cfd5d5;
+          color: #6A6D6D;
         }
         .input-wrapper {
           select {
@@ -300,6 +302,8 @@ const FilterMatchesModal = styled(Modal)`
             font-size: 16px;
             line-height: 24px;
             font-weight: 700;
+            color: #0D2A38;
+            font-family: 'Roobert',serif;
           }
         }
       }

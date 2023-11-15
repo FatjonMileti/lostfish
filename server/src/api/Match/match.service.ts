@@ -32,7 +32,6 @@ export default class MatchService {
 
   // Get all matches
   public async getAllMatches(query: IMatchQueryParams, paginateOptions: IPagingOptions): Promise<any> {
-    console.log('paginateOptions: ', paginateOptions);
     return this.matchModel
       .paginate(query, {
         ...paginateOptions,
