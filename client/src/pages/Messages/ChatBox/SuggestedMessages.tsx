@@ -61,7 +61,7 @@ export const SuggestedMessages = styled(
           <div className={classNames(className, 'suggested-messages')}>
             <AnimatePresence>
               {{
-                [Role.Client]: <SuggestedAnswers lastMessage={lastMessage} sendMessage={sendMessage} />,
+                [Role.Tenant]: <SuggestedAnswers lastMessage={lastMessage} sendMessage={sendMessage} />,
                 [Role.Landlord]: (
                   <SuggestedQuestions lastMessage={lastMessage} sendMessage={sendMessage} room={room} />
                 )

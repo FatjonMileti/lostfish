@@ -80,7 +80,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             middleContent={
               <>
                 {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
-                {profileStore.role === Role.Client && <PropertiesReviewHeader />}
+                {profileStore.role === Role.Tenant && <PropertiesReviewHeader />}
               </>
             }
           />

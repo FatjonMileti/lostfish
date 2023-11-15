@@ -28,6 +28,7 @@ import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesR
 import { useProfileStore } from '../../globalState/profile';
 import { Footer } from '../Home/Footer';
 import classNames from 'classnames';
+import { MatchDetails } from './MatchDetails/MatchDetails';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -180,7 +181,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             middleContent={
               <>
                 {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
-                {profileStore.role === Role.Client && <PropertiesReviewHeader />}
+                {profileStore.role === Role.Tenant && <PropertiesReviewHeader />}
               </>
             }
           />
@@ -265,7 +266,14 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
               ) : (
                 <div />
               )}
-              {room?.property ? <DocumentsTest room={room} /> : <div />}
+              {room?.property ? (
+                <>
+                  <MatchDetails room={room} />
+                  {/*<DocumentsTest room={room} />*/}
+                </>
+              ) : (
+                <div />
+              )}
             </div>
           )}
         </div>
@@ -277,7 +285,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 })`
   &.messages-page {
     z-index: 1;
-    min-height: 100vh;
+    min-height: 0;
+    height: 100vh;
     display: grid;
     box-sizing: border-box;
     grid-template-rows: auto min-content;

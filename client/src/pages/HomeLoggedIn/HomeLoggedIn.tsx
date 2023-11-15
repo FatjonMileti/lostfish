@@ -26,7 +26,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
         middleContent={
           <>
             {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
-            {profileStore.role === Role.Client && <PropertiesMatchingHeader />}
+            {profileStore.role === Role.Tenant && <PropertiesMatchingHeader />}
           </>
         }
       />

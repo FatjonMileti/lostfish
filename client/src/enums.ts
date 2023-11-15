@@ -1,6 +1,6 @@
 export enum Role {
   Agent = 'Agent',
-  Client = 'Tenant',
+  Tenant = 'Tenant',
   Landlord = 'Landlord',
   NeWUser = 'NewUser'
 }

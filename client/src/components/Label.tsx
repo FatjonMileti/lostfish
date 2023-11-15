@@ -58,6 +58,8 @@ export const Label = styled(
 
     justify-content: center;
 
+    transition: all 0.2s ease-in-out;
+
     &.variant-primary {
       border: 1px solid #184d6d;
       background: #184d6d;
@@ -184,6 +186,15 @@ export const Label = styled(
           color: #0d2a38;
           border-bottom: 2px solid white;
           background-color: white;
+        }
+      }
+
+      &.special {
+        border: 2px solid #e5155a;
+        color: #e5155a;
+        &:hover {
+          color: white;
+          background-color: #e5155a;
         }
       }
 

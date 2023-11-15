@@ -7,6 +7,7 @@ const schema = new Schema<RoomDocument>({
   participant: { type: Schema.Types.ObjectId, ref: 'user' },
   last_message: { type: Schema.Types.ObjectId, ref: 'message' },
   property: { type: Schema.Types.ObjectId, ref: 'property' },
+  tenant: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: { type: Date, required: true, default: () => new Date() }
 });
 
