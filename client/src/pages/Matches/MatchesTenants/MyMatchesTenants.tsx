@@ -93,6 +93,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
             <Select
               label='Match rate:'
               className='match-rate'
+              value={filter.matchRate}
               onChange={(e) => {
                 setFilter((prevFilter) => ({
                   ...prevFilter,
@@ -100,7 +101,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                 }));
               }}>
               {[20, 30, 40, 50, 60, 70, 80, 90].map((value) => (
-                <option key={value} value={value} selected={filter.matchRate === value}>
+                <option key={value} value={value} >
                   {`${value}% and above`}
                 </option>
               ))}
@@ -298,7 +299,6 @@ const FilterMatchesModal = styled(Modal)`
         }
         .input-wrapper {
           select {
-            border: 1px solid #a7a7a7;
             font-size: 16px;
             line-height: 24px;
             font-weight: 700;
