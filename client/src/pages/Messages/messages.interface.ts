@@ -1,3 +1,5 @@
+import { ApiPropertyDocumentType } from '../Properties/NewProperty/property.types';
+
 interface IChatUser {
   first_name: string;
   last_name: string;
@@ -8,6 +10,7 @@ interface IChatUser {
 
 interface ILastMessage {
   message: string;
+  created_at?: string;
 }
 
 export interface IMessageBody {
@@ -27,8 +30,18 @@ export interface IMessageItem extends IMessageBody {
 export interface IRoom {
   author: IChatUser;
   participant: IChatUser;
-  last_message: ILastMessage | null;
-  property: any;
+  last_message?: ILastMessage | null;
+  property: Partial<ApiPropertyDocumentType>;
   _id: string;
   unseen_messages?: number;
+  property_match?: PropertyMatch;
+  tenant_match?: TenantMatch;
+}
+
+export interface PropertyMatch {
+  created_at: string;
+}
+
+export interface TenantMatch {
+  created_at: string;
 }

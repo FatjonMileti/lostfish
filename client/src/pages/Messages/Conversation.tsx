@@ -12,21 +12,21 @@ export const Conversation = styled(
   (props: {
     joinRoom: (roomId: IRoom) => void;
     fullName: string;
-    row: any;
+    room: IRoom;
     className?: string;
     active?: boolean;
   }) => {
-    const { joinRoom, fullName, row, className, active } = props;
+    const { joinRoom, fullName, room: room, className, active } = props;
 
     const userStore = useUserStore();
 
     const avatarKey =
-      userStore.userDetails?.user_id === row?.author?._id ? row?.participant?.avatar : row?.author?.avatar;
+      userStore.userDetails?.user_id === room?.author?._id ? room?.participant?.avatar : room?.author?.avatar;
 
     const avatar = getAvatarFormIndex(avatarKey);
 
     return (
-      <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(row)}>
+      <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(room)}>
         <div className='match-avatar-intersection'>
           <Avatar
             image={avatar}
@@ -35,7 +35,9 @@ export const Conversation = styled(
             })}
           />
 
-          {row.unseen_messages > 0 && <span className='unseen-messages-nr'>{row.unseen_messages}</span>}
+          {room.unseen_messages !== undefined && room.unseen_messages > 0 && (
+            <span className='unseen-messages-nr'>{room.unseen_messages}</span>
+          )}
         </div>
 
         <div className='details'>
@@ -43,7 +45,8 @@ export const Conversation = styled(
             {fullName}
           </Typography>
           <Typography variant='body6'>
-            {row.last_message?.created_at && moment(row.last_message.created_at).format('dddd, MMMM Do YYYY')}
+            {room.last_message?.created_at &&
+              moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}
           </Typography>
         </div>
       </div>

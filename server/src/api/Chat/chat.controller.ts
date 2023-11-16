@@ -13,6 +13,8 @@ import { Role } from '../User/user.interface';
 import { IEnvelope } from '../Docusign/schemas/envelope';
 import assetService from '../Property/services/property.service';
 import validateId from '../../middleware/object-id.validator';
+import MatchService from '../Match/match.service';
+import { MatchDocument, MatchingType } from '../Match/match.interface';
 const router: Router = Router();
 
 const isValidObjectId = (id: string): boolean => {
@@ -20,16 +22,20 @@ const isValidObjectId = (id: string): boolean => {
 };
 
 export class ChatController {
+  private matchService: MatchService;
   public router = router;
 
-  constructor() {
+  constructor(matchService: MatchService) {
+    this.matchService = matchService;
     this.initializeRoutes();
   }
 
   private initializeRoutes() {
     this.router.get('/', paging({ sort: { created_at: -1 } }), this.getAll);
+    this.router.get('/matches/:matchId', this.getMatchRoom);
     this.router.get('/started-conversations', this.getAllConversationsByProperties);
     this.router.post('/create', this.create);
+
     this.router.put('/read', this.readMessages);
     this.router.get('/room', this.checkIfRoomExist);
     this.router.get('/:id', paging({ sort: { created_at: -1 } }), validateId, this.getById);
@@ -207,6 +213,93 @@ export class ChatController {
     );
 
     res.send(updateMany);
+  };
+
+  /**
+   * @api {post} /api/chat Post
+   * @apiDescription Start new chat
+   * @apiGroup Chat
+   * @apiSampleRequest /api/chat
+   *
+   * @apiBody {string} author
+   * @apiBody {string} participant
+   *
+   * @apiPermission admin
+   * @apiUse bearer
+   */
+  private getMatchRoom = async (req: express.Request, res: express.Response) => {
+    const matchId = req.params.matchId;
+
+    console.log('got request with matchId: ', matchId);
+
+    const existingRoom = await roomService.findOne({
+      $or: [
+        {
+          property_match: {
+            $eq: new Types.ObjectId(matchId)
+          }
+        },
+        {
+          tenant_match: {
+            $eq: new Types.ObjectId(matchId)
+          }
+        }
+      ]
+    });
+
+    if (existingRoom) {
+      return res.status(200).send(existingRoom);
+    }
+
+    console.log('room does not exist creating one...');
+
+    const currentMatch = await this.matchService.findMatchById(matchId);
+
+    if (!currentMatch) {
+      return res.status(404).json({ message: 'match not found' });
+    }
+
+    if (currentMatch.type === MatchingType.PROPERTY) {
+      const tenantMatch = await this.matchService.getMatchByQuery({
+        type: MatchingType.USER,
+        tenant: currentMatch.tenant,
+        property: currentMatch.property,
+        chosen: true
+      });
+
+      const author = currentMatch.tenant;
+      const participant = currentMatch.landlord;
+
+      const newRoom = await RoomSchema.create({
+        author,
+        participant,
+        property: currentMatch.property,
+        property_match: currentMatch,
+        tenant_match: tenantMatch
+      });
+
+      return res.status(200).send(newRoom);
+    } else {
+      const propertyMatch = await this.matchService.getMatchByQuery({
+        type: MatchingType.PROPERTY,
+        landlord: currentMatch.landlord,
+        property: currentMatch.property,
+        chosen: true
+      });
+
+      const author = currentMatch.tenant;
+      const participant = currentMatch.landlord;
+
+      const newRoom = await RoomSchema.create({
+        author,
+        participant,
+        property: currentMatch.property,
+        property_match: propertyMatch,
+        tenant_match: currentMatch
+      });
+
+      return res.status(200).send(newRoom);
+    }
   };
 
   /**

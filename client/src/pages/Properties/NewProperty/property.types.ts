@@ -131,7 +131,7 @@ export interface ApiPropertyDocumentType {
   };
   statistics: any;
   specific_property_features: (OtherSpecificPropertyFeature | Furnished)[];
-  property_images: any[];
+  property_images: { link: string }[];
   credit_score_requirements: CreditScoreType;
   contract_details: ContractDetailType[];
   settings: any;

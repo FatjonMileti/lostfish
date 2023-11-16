@@ -16,7 +16,8 @@ export const mapTenant = ({
   starred,
   percentage,
   matchId,
-  unread_messages
+  unread_messages,
+  _id: matchId
 });
 
 export const mapCriteria = (criteria: any) => {

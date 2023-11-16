@@ -49,6 +49,12 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     } catch (err) {}
   };
 
+  const newChatWith = async ({ matchId }: { matchId: string }) => {
+    console.log('executed new chat with');
+
+    navigate(`/messages?matchId=${matchId}`);
+  };
+
   const dislikeProperty = useMutation({
     mutationFn: ({ matchId }: { matchId: string }) => {
       return axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
@@ -91,8 +97,8 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             </div>
 
             <div className='content'>
-              {matchedProperties.data.map((suggestion, suggestionIndex) => {
-                const { property } = suggestion;
+              {matchedProperties.data.map((propertyMatch, suggestionIndex) => {
+                const { property } = propertyMatch;
 
                 return (
                   <PropertyCard
@@ -100,18 +106,21 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
                     avatar={getAvatarFormIndex(property.created_by?.avatar)}
                     inView={true}
-                    matched={suggestion.matched}
+                    matched={propertyMatch.matched}
                     percentage={property.percentage}
-                    onViewPropertyClick={() => setPropertyToView(suggestion)}
+                    onViewPropertyClick={() => setPropertyToView(propertyMatch)}
                     image={`${property?.property_images?.[0]?.link || ''}`}
                     size='large'
                     property={property}
-                    awaitingMatch={suggestion.chosen && !suggestion.matched}
+                    awaitingMatch={propertyMatch.chosen && !propertyMatch.matched}
                     chatWith={() => {
-                      chatWith({
-                        userId: suggestion.property.created_by._id,
-                        propertyId: suggestion.property._id
+                      newChatWith({
+                        matchId: propertyMatch._id
                       });
+                      // chatWith({
+                      //   userId: suggestion.property.created_by._id,
+                      //   propertyId: suggestion.property._id
+                      // });
                     }}
                   />
                 );

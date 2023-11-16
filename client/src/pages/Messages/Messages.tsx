@@ -66,8 +66,12 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   }, [reorderMessages]);
 
+  // React.useEffect(() => {
+  //   handleRoomIdInQueryParams();
+  // }, []);
+  //
   React.useEffect(() => {
-    handleRoomIdInQueryParams();
+    handleMatchIdInQueryParams();
   }, []);
 
   const handleRoomIdInQueryParams = async () => {
@@ -87,6 +91,33 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       }
     } catch (err) {
       throw err;
+    }
+  };
+
+  const handleMatchIdInQueryParams = async () => {
+    try {
+      const matchIdInQueryParams = queryParams.get('matchId');
+
+      if (matchIdInQueryParams) {
+        const room = await getRoomWithMatchId(matchIdInQueryParams);
+        if (room) {
+          joinRoom(room);
+          chatRooms.refetch();
+        } else {
+          navigate(`/messages`);
+        }
+      }
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const getRoomWithMatchId = async (matchId: string): Promise<IRoom | false> => {
+    try {
+      const { data } = await axios(userStore.auth.access_token).get(`/api/chat/matches/${matchId}`);
+      return data;
+    } catch (err) {
+      return false;
     }
   };
 
@@ -228,7 +259,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
                         key={rowIndex}
                         joinRoom={joinRoom}
                         fullName={fullName}
-                        row={row}
+                        room={row}
                         active={room?._id === row?._id}
                       />
                     );

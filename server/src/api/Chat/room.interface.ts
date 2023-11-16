@@ -6,6 +6,9 @@ export interface RoomDocument extends Document {
   property: ObjectId | string;
   tenant: ObjectId | string;
   last_message?: any;
+
+  tenant_match: ObjectId | string;
+  property_match: ObjectId | string;
   created_at?: Date;
 }
 

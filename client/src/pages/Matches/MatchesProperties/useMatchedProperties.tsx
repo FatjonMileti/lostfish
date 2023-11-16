@@ -1,8 +1,7 @@
-import React from 'react';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { SuggestedPropertyType } from '../matches.type';
+import { MatchedPropertyType } from '../matches.type';
 
 export const useMatchedProperties = ({
   params = {},
@@ -24,7 +23,7 @@ export const useMatchedProperties = ({
     }
   };
 
-  const query = useQuery<SuggestedPropertyType[]>({
+  const query = useQuery<MatchedPropertyType[]>({
     queryKey: ['matched-properties'],
     queryFn: () => getMatchedProperties(),
     initialData: [],

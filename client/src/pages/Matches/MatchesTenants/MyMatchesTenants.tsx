@@ -47,6 +47,12 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     } catch (err) {}
   };
 
+  const newChatWith = async ({ matchId }: { matchId: string }) => {
+    console.log('executed new chat with');
+
+    navigate(`/messages?matchId=${matchId}`);
+  };
+
   const dislikeTenant = useMutation({
     mutationFn: ({ matchId }: { matchId: string }) => {
       return axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
@@ -89,8 +95,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
             </div>
 
             <div className='content'>
-              {matchedTenants.data.map((tenant, tenantIndex) => {
-                const { criteria: tenantCriteria } = tenant;
+              {matchedTenants.data.map((tenantMatch, tenantIndex) => {
+                const { criteria: tenantCriteria } = tenantMatch;
 
                 return (
                   <TenantCard
@@ -99,15 +105,18 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     name={`${tenantCriteria.firstName} ${tenantCriteria.lastName}`}
                     avatar={getAvatarFormIndex(tenantCriteria.avatar)}
                     inView={true}
-                    percentage={tenant?.property.percentage}
-                    onViewProfileClick={() => setTenantToView(tenant)}
-                    matched={tenant.matched}
-                    awaitingMatch={tenant.chosen && !tenant.matched}
+                    percentage={tenantMatch?.property.percentage}
+                    onViewProfileClick={() => setTenantToView(tenantMatch)}
+                    matched={tenantMatch.matched}
+                    awaitingMatch={tenantMatch.chosen && !tenantMatch.matched}
                     chatWith={() => {
-                      chatWith({
-                        userId: tenant.criteria.tenantId,
-                        propertyId: tenant.property._id
+                      newChatWith({
+                        matchId: tenantMatch._id
                       });
+                      // chatWith({
+                      //   userId: tenant.criteria.tenantId,
+                      //   propertyId: tenant.property._id
+                      // });
                     }}
                   />
                 );

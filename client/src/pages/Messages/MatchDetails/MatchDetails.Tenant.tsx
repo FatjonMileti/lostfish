@@ -30,20 +30,15 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
   return (
     <div className={classNames('match-details-tenant', className)}>
       <div className={`tenant-details ${className}`}>
-        <Avatar
-          image={avatar}
-          className={classNames({
-            lostfish: avatarKey === 'lostfish'
-          })}
-        />
+        <Avatar image={avatar} />
 
         <div className='details'>
           <Typography variant='body4' className='name'>
             {fullName}
           </Typography>
-          <Typography variant='body6'>
-            {/*{room.last_message?.created_at &&*/}
-            {/*  moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}*/}
+          <Typography variant='body6' className='matched-date'>
+            {'Matched on '}
+            {room.tenant_match?.created_at && moment(room.tenant_match.created_at).format('MMMM Do YYYY')}
           </Typography>
         </div>
       </div>
@@ -110,6 +105,10 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
         .name {
           color: #0d2a38;
           font-weight: 700;
+        }
+
+        .matched-date {
+          color: #a7a7a7;
         }
       }
     }

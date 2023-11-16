@@ -66,6 +66,34 @@ const PaginationPipeline: PaginationPipelineFunc = (
     },
     {
       $lookup: {
+        from: 'matches',
+        localField: 'property_match',
+        foreignField: '_id',
+        as: 'property_match'
+      }
+    },
+    {
+      $unwind: {
+        path: '$property_match',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
+        from: 'matches',
+        localField: 'tenant_match',
+        foreignField: '_id',
+        as: 'tenant_match'
+      }
+    },
+    {
+      $unwind: {
+        path: '$tenant_match',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $lookup: {
         from: 'properties',
         localField: 'property',
         foreignField: '_id',
@@ -125,7 +153,21 @@ const PaginationPipeline: PaginationPipelineFunc = (
         last_message: { message: 1, seen: 1, sender: 1, created_at: 1 },
         author: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
         participant: { first_name: 1, last_name: 1, _id: 1, avatar: 1, deleted_at: 1 },
-        property: { area_of_interest: 1, asset_address: 1, property_type: 1, _id: 1, title: 1 },
+        property: {
+          area_of_interest: 1,
+          asset_address: 1,
+          property_type: 1,
+          _id: 1,
+          title: 1,
+          property_images: 1,
+          room_details: 1
+        },
+        property_match: {
+          created_at: 1
+        },
+        tenant_match: {
+          created_at: 1
+        },
         unseen_messages: 1
       }
     },
