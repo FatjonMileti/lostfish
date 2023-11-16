@@ -25,7 +25,7 @@ export const useMatchedTenants = ({
   };
 
   const query = useQuery<SuggestedTenantType[]>({
-    queryKey: ['matched-tenants'],
+    queryKey: ['matched-tenants', params],
     queryFn: () => getMatchedTenants(),
     initialData: [],
     refetchIntervalInBackground: false,

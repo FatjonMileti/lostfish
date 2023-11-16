@@ -755,7 +755,7 @@ export const PropertyForm = styled(
                   className={`progress-item ${progressItem.checked ? 'active' : ''}`}
                   key={progressItemIndex}>
                   <div className='progress-item-indicator'>
-                    <Icon icon='checked' size={10} />
+                    <Icon icon='checked' size={16} />
                   </div>
                   <Typography variant='body4' className='progress-item-text'>
                     {progressItem.name}
@@ -1081,7 +1081,6 @@ export const PropertyForm = styled(
               border-radius: 50%;
               background-color: #cfd5d5;
               color: #cfd5d5;
-              padding: 7px;
               width: 24px;
               height: 24px;
               box-sizing: border-box;
