@@ -7,7 +7,7 @@ export const useMatchedProperties = ({
   params = {},
   options = {}
 }: {
-  params?: { disliked?: boolean; chosen?: boolean };
+  params?: { disliked?: boolean; chosen?: boolean; matchRate?: number };
   options?: UseQueryOptions;
 }) => {
   const userStore = useUserStore();

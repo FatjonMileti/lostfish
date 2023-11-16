@@ -4,20 +4,22 @@ import classNames from 'classnames';
 
 import { Label } from '../../../components/Label';
 import { Typography } from '../../../components/Typography';
+import { Icon } from '../../../components/Icon';
 
 import { useCriteriaStore } from '../../../globalState/criteria';
-import { Icon } from '../../../components/Icon';
-import { SetCriteriaDrawer } from '../../SetCriteria/SetCriteriaDrawer';
+
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { useUserStore } from '../../../globalState/user';
+import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 
 interface PropertiesMatchingHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchingHeaderProps) => {
   const criteriaStore = useCriteriaStore();
   const userStore = useUserStore();
-  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
   const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
+
+  const globalSetCriteria = useGlobalSetCriteria();
 
   return (
     <>
@@ -52,20 +54,20 @@ export const PropertiesMatchingHeader = styled(({ className }: PropertiesMatchin
           </div>
           <div className='divider-line' />
         </div>
-        <Label variant='tertiary' onClick={() => setCriteriaModalVisibility(true)}>
+        <Label
+          variant='tertiary'
+          onClick={() =>
+            globalSetCriteria.openSetCriteria({
+              afterSetCriteria: () => {
+                suggestedProperties.refetch();
+                criteriaStore.fetchCriteria(userStore.auth.access_token);
+              }
+            })
+          }>
           <Icon icon='filter' />
           Preferences
         </Label>
       </div>
-
-      <SetCriteriaDrawer
-        open={criteriaModalVisibility}
-        setOpen={setCriteriaModalVisibility}
-        afterRefineSearch={() => {
-          suggestedProperties.refetch();
-          criteriaStore.fetchCriteria(userStore.auth.access_token);
-        }}
-      />
     </>
   );
 })`

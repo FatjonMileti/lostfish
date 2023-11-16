@@ -286,7 +286,6 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
     <SetCriteriaModal
       open={showModal}
       onBack={onBack}
-      afterRefineSearch={onNext}
       onBackdropClick={onBack}
       form={criteriaForm}
       onStartMatchingClick={handleSubmit}
