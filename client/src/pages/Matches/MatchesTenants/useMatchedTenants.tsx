@@ -2,7 +2,7 @@ import axios from '../../../utils/axios';
 import { mapTenant } from './serializers';
 import { useUserStore } from '../../../globalState/user';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { MatchedTenantType, SuggestedTenantType } from '../matches.type';
+import { MatchedTenantType } from '../matches.type';
 
 export const useMatchedTenants = ({
   params = {},
@@ -25,7 +25,7 @@ export const useMatchedTenants = ({
   };
 
   const query = useQuery<MatchedTenantType[]>({
-    queryKey: ['matched-tenants'],
+    queryKey: ['matched-tenants', params],
     queryFn: () => getMatchedTenants(),
     initialData: [],
     refetchIntervalInBackground: false,

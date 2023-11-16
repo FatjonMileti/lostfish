@@ -24,7 +24,7 @@ export const useMatchedProperties = ({
   };
 
   const query = useQuery<MatchedPropertyType[]>({
-    queryKey: ['matched-properties'],
+    queryKey: ['matched-properties', params],
     queryFn: () => getMatchedProperties(),
     initialData: [],
     refetchIntervalInBackground: false,

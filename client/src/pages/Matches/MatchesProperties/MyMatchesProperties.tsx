@@ -38,6 +38,10 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     withOffers: false,
     matchRate: 20
   });
+  const [draftFilter, setDraftFilter] = React.useState({
+    withOffers: false,
+    matchRate: 20
+  });
   const navigate = useNavigate();
   const userStore = useUserStore();
 
@@ -102,16 +106,15 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
             <Select
               label='Match rate:'
               className='match-rate'
-              value={filter.matchRate}
+              value={draftFilter.matchRate}
               onChange={(e) => {
-                setFilter((prevFilter) => ({
-                  ...prevFilter,
+                setDraftFilter((prevDraftFilter) => ({
+                  ...prevDraftFilter,
                   matchRate: Number(e.target.value)
                 }));
-              }}
-                >
+              }}>
               {[20, 30, 40, 50, 60, 70, 80, 90].map((value) => (
-                <option key={value} value={value} >
+                <option key={value} value={value}>
                   {`${value}% and above`}
                 </option>
               ))}
@@ -120,18 +123,18 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
               <Button
                 size='large'
                 variant='secondary'
-                onClick={() =>
-                  setFilter((prevFilter) => ({
-                    ...prevFilter,
-                    matchRate: 20
-                  }))
-                }>
+                onClick={() => {
+                  setDraftFilter({ matchRate: 20,  withOffers: false });
+                  setFilter({  matchRate: 20,  withOffers: false })
+                  onCloseFilterModal();
+                }}>
                 Reset filters
               </Button>
               <Button
                 size='large'
                 onClick={() => {
-                  matchedProperties.refetch(), onCloseFilterModal();
+                  setFilter({ ...draftFilter });
+                  onCloseFilterModal();
                 }}>
                 Set filters
               </Button>
@@ -312,15 +315,15 @@ const FilterMatchesModal = styled(Modal)`
           font-size: 14px;
           line-height: 20px;
           font-weight: 700;
-          color: #6A6D6D;
+          color: #6a6d6d;
         }
         .input-wrapper {
           select {
             font-size: 16px;
             line-height: 24px;
             font-weight: 700;
-            color: #0D2A38;
-            font-family: 'Roobert',serif;
+            color: #0d2a38;
+            font-family: 'Roobert', serif;
           }
         }
       }
