@@ -25,7 +25,7 @@ export const useMatchedProperties = ({
   };
 
   const query = useQuery<SuggestedPropertyType[]>({
-    queryKey: ['matched-properties'],
+    queryKey: ['matched-properties', params],
     queryFn: () => getMatchedProperties(),
     initialData: [],
     refetchIntervalInBackground: false,
