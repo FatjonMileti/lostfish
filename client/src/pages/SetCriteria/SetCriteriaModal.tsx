@@ -27,13 +27,15 @@ const animationProps = {
 
 interface SetCriteriaModalProps extends ModalProps {
   onBack: () => void;
-  afterRefineSearch: () => void | any;
   form: UseFormReturn<CriteriaFormType>;
   onStartMatchingClick: () => any;
 }
 export const SetCriteriaModal = styled(
-  ({ className, onBack, afterRefineSearch, form, onStartMatchingClick, ...rest }: SetCriteriaModalProps) => {
+  ({ className, onBack, form, onStartMatchingClick, ...rest }: SetCriteriaModalProps) => {
     const [step, setStep] = React.useState(0);
+    React.useEffect(() => {
+      setStep(0);
+    }, [rest.open]);
 
     return (
       <Modal className={classNames('set-criteria-modal', className)} {...rest}>

@@ -28,6 +28,8 @@ import { useNotificationsStore } from './globalState/notifications';
 import { CookieConsent } from './components/CookieConsent';
 import { MyMatches } from './pages/Matches/MyMatches';
 import { GlobalLoading } from './components/ShowGlobalLoading';
+import { GlobalSetCriteria } from './pages/SetCriteria/GlobalSetCriteria';
+import { Role } from './enums';
 
 function App() {
   const userStore = useUserStore();
@@ -79,6 +81,10 @@ function App() {
       <SessionMaintainer debug>
         <SocketContext.Provider value={value}>
           <UserProvider>
+            {userStore.auth && profileStore.hasCompletedInitialSetup && profileStore.role === Role.Client && (
+              <GlobalSetCriteria />
+            )}
+
             <BrowserRouter>
               <Routes>
                 <Route path='/policy-agreement' element={<PolicyAgreement />} />

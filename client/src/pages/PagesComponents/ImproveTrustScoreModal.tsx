@@ -1,39 +1,29 @@
 import { styled } from '@mui/system';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Modal, ModalProps } from '../../components/Modal';
 import { Typography } from '../../components/Typography';
-import { IconButton } from '../../components/IconButton';
 import { Icon } from '../../components/Icon';
-import React from 'react';
 import { Label } from '../../components/Label';
-import { useProfileStore } from '../../globalState/profile';
-import { useNavigate } from 'react-router-dom';
-import { SetCriteriaDrawer } from '../SetCriteria/SetCriteriaDrawer';
 import { CloseButton } from '../../components/CloseButton';
-import { Button } from '../../components/Button';
+
+import { useProfileStore } from '../../globalState/profile';
+import { useGlobalSetCriteria } from '../SetCriteria/GlobalSetCriteria';
 
 interface ImproveTrustScoreModalProps extends ModalProps {
-  afterRefineSearch?: () => void;
+  afterRefineSearch?: () => any;
 }
 
 export const ImproveTrustScoreModal = styled(
   ({ closeModal = () => {}, afterRefineSearch = () => {}, ...rest }: ImproveTrustScoreModalProps) => {
     const profileStore = useProfileStore();
     const navigate = useNavigate();
-    const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
+
+    const globalSetCriteria = useGlobalSetCriteria();
 
     return (
       <>
-        {profileStore.role === 'Tenant' && (
-          <SetCriteriaDrawer
-            open={criteriaModalVisibility}
-            setOpen={setCriteriaModalVisibility}
-            afterRefineSearch={() => {
-              afterRefineSearch();
-            }}
-          />
-        )}
-
         <Modal {...rest} onBackdropClick={closeModal}>
           <div className='modal-header'>
             <div className='left-texts'>
@@ -58,10 +48,12 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.description ? (
-                  <Label size='medium' variant='secondary'
+                <Label
+                  size='medium'
+                  variant='secondary'
                   onClick={() => navigate('/my-account/account-settings')}>
                   Add a description
-                  </Label>
+                </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -84,10 +76,14 @@ export const ImproveTrustScoreModal = styled(
                     ut labore et dolore.
                   </Typography>
 
-                  <Label size='medium' variant='secondary'
+                  <Label
+                    size='medium'
+                    variant='secondary'
                     onClick={() => {
                       closeModal();
-                      setCriteriaModalVisibility(true);
+                      globalSetCriteria.openSetCriteria({
+                        afterSetCriteria: afterRefineSearch
+                      });
                     }}>
                     Refine search
                   </Label>
@@ -106,10 +102,9 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.description ? (
-                  <Label size='medium' variant='secondary'
-                      onClick={() => navigate('/my-account/solicitors')}>
-                    Solicitors
-                  </Label>
+                <Label size='medium' variant='secondary' onClick={() => navigate('/my-account/solicitors')}>
+                  Solicitors
+                </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -131,10 +126,12 @@ export const ImproveTrustScoreModal = styled(
               </Typography>
 
               {!profileStore.avatar ? (
-                  <Label size='medium' variant='secondary'
-                      onClick={() => navigate('/my-account/account-settings')}>
-                    Select avatar
-                  </Label>
+                <Label
+                  size='medium'
+                  variant='secondary'
+                  onClick={() => navigate('/my-account/account-settings')}>
+                  Select avatar
+                </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
@@ -155,10 +152,12 @@ export const ImproveTrustScoreModal = styled(
                 labore et dolore.
               </Typography>
               {!profileStore.documents.find((doc) => doc.type === 'Proof of ID') ? (
-                  <Label size='medium' variant='secondary'
-                      onClick={() => navigate('/my-account/transaction-agreement')}>
-                    Verify
-                  </Label>
+                <Label
+                  size='medium'
+                  variant='secondary'
+                  onClick={() => navigate('/my-account/transaction-agreement')}>
+                  Verify
+                </Label>
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
