@@ -9,12 +9,16 @@ import { Avatar } from '../../../components/Avatar';
 import moment from 'moment/moment';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { useUserStore } from '../../../globalState/user';
+import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
+import { MatchedTenantType } from '../../Matches/matches.type';
 
 interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
 }
 
 export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenantProps) => {
+  const [tenantToView, setTenantToView] = React.useState<MatchedTenantType | null>();
+
   const userStore = useUserStore();
 
   const avatarKey =
@@ -28,59 +32,69 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
       : `${room.author?.first_name} ${room.author?.last_name}`;
 
   return (
-    <div className={classNames('match-details-tenant', className)}>
-      <div className={`tenant-details ${className}`}>
-        <Avatar image={avatar} />
+    <>
+      <div className={classNames('match-details-tenant', className)}>
+        <div className={`tenant-details ${className}`}>
+          <Avatar image={avatar} />
 
-        <div className='details'>
-          <Typography variant='body4' className='name'>
-            {fullName}
+          <div className='details'>
+            <Typography variant='body4' className='name'>
+              {fullName}
+            </Typography>
+            <Typography variant='body6' className='matched-date'>
+              {'Matched on '}
+              {room.tenant_match?.created_at && moment(room.tenant_match.created_at).format('MMMM Do YYYY')}
+            </Typography>
+          </div>
+        </div>
+
+        <Label variant='secondary' className='view-profile-button'>
+          View profile
+        </Label>
+
+        <div className='explanation'>
+          <Typography variant='body6' className='explanation-title'>
+            Offers
           </Typography>
-          <Typography variant='body6' className='matched-date'>
-            {'Matched on '}
-            {room.tenant_match?.created_at && moment(room.tenant_match.created_at).format('MMMM Do YYYY')}
+          <Typography variant='body6' className='explanation-description'>
+            Any offers that this tenant sends you will appear here. You can{' '}
+            <span className='bold'>Accept, Reject</span> or
+            <span className='bold'> Reject and unmatch</span>
           </Typography>
         </div>
+
+        <div className='divider' />
+
+        <div className='explanation'>
+          <Typography variant='body6' className='explanation-title'>
+            Connection
+          </Typography>
+          <Typography variant='body6' className='explanation-dsecription'>
+            In order to complete the transaction, you will need to provide us with some documents. Once you
+            have all the documents uploaded you can complete the transaction.
+          </Typography>
+        </div>
+
+        <div className='action-buttons'>
+          <Label special variant='secondary'>
+            <Icon icon='dislike' size={24} />
+            Unmatch
+          </Label>
+          <Label variant='secondary'>
+            <Icon icon='email' />
+            Report
+          </Label>
+        </div>
       </div>
-
-      <Label variant='secondary' className='view-profile-button'>
-        View profile
-      </Label>
-
-      <div className='explanation'>
-        <Typography variant='body6' className='explanation-title'>
-          Offers
-        </Typography>
-        <Typography variant='body6' className='explanation-description'>
-          Any offers that this tenant sends you will appear here. You can{' '}
-          <span className='bold'>Accept, Reject</span> or
-          <span className='bold'> Reject and unmatch</span>
-        </Typography>
-      </div>
-
-      <div className='divider' />
-
-      <div className='explanation'>
-        <Typography variant='body6' className='explanation-title'>
-          Connection
-        </Typography>
-        <Typography variant='body6' className='explanation-dsecription'>
-          In order to complete the transaction, you will need to provide us with some documents. Once you have
-          all the documents uploaded you can complete the transaction.
-        </Typography>
-      </div>
-
-      <div className='action-buttons'>
-        <Label special variant='secondary'>
-          <Icon icon='dislike' size={24} />
-          Unmatch
-        </Label>
-        <Label variant='secondary'>
-          <Icon icon='email' />
-          Report
-        </Label>
-      </div>
-    </div>
+      {tenantToView && (
+        <ViewProfile
+          criteria={tenantToView.criteria}
+          closeViewProfile={() => setTenantToView(null)}
+          dislikeTenant={() => {}}
+          disableLikeTenant
+        />
+      )}
+    </>
   );
 })`
   &.match-details-tenant {

@@ -81,7 +81,7 @@ function App() {
       <SessionMaintainer debug>
         <SocketContext.Provider value={value}>
           <UserProvider>
-            {userStore.auth && profileStore.hasCompletedInitialSetup && profileStore.role === Role.Client && (
+            {userStore.auth && profileStore.hasCompletedInitialSetup && profileStore.role === Role.Tenant && (
               <GlobalSetCriteria />
             )}
 
