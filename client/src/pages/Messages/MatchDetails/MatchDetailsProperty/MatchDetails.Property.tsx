@@ -145,7 +145,11 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
           </div>
         </div>
       </div>
-      <MakeAnOfferModal open={offerModalVisibility} onBackdropClick={() => setOfferModalVisibility(false)} />
+      <MakeAnOfferModal
+        room={room}
+        open={offerModalVisibility}
+        onBackdropClick={() => setOfferModalVisibility(false)}
+      />
     </>
   );
 })`

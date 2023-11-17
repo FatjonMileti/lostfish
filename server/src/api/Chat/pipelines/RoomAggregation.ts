@@ -227,7 +227,9 @@ const PaginationPipeline: PaginationPipelineFunc = (
           title: 1,
           property_images: 1,
           room_details: 1,
-          budget: 1
+          budget: 1,
+          floor_size_unit: 1,
+          floor_size: 1
         },
         property_match: {
           created_at: 1,
