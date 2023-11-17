@@ -1,32 +1,33 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, useState } from 'react';
+import React, { HTMLAttributes } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
+
 import { Typography } from '../../components/Typography';
 import { Button } from '../../components/Button';
 import { Link } from '../../components/Link';
+import { CloseButton } from '../../components/CloseButton';
+import { Modal } from '../../components/Modal';
+
 import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
-import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
-import {CloseButton} from "../../components/CloseButton";
-import {Modal} from "../../components/Modal";
-import {extend} from "lodash";
 
 export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [openAccountSettingsConfirmationModalForDeleteAccount, setOpenAccountSettingsConfirmationModalForDeleteAccount] = React.useState(false);
-  const [openAccountSettingsConfirmationModalForResetPassword, setOpenAccountSettingsConfirmationModalForResetPassword] = React.useState(false);
+  const [deleteAccountModalVisibility, setDeleteAccountModalVisibility] = React.useState(false);
+  const [resetPasswordModalVisibility, setResetPasswordModalVisibility] = React.useState(false);
 
   const userStore = useUserStore();
   const navigate = useNavigate();
 
   const onCloseAccount = async () => {
-      try {
-        const response = await request(userStore.auth.access_token).delete('/api/user');
-        if (response.status === 204) {
-          logOut();
-        }
-      } catch (error: any) {
-        console.log(error);
+    try {
+      const response = await request(userStore.auth.access_token).delete('/api/user');
+      if (response.status === 204) {
+        logOut();
       }
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   const logOut = async () => {
@@ -42,77 +43,73 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
   };
 
   const onResetPassword = async () => {
-      try {
-        const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
+    try {
+      const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
 
-        if (response.status === 201) {
-          logOut();
-        }
-      } catch (err: AxiosError | any) {
-        const message = err?.response?.data?.message;
-
-        if (!message) throw err;
+      if (response.status === 201) {
+        logOut();
       }
-  };
+    } catch (err: AxiosError | any) {
+      const message = err?.response?.data?.message;
 
-  const onCancelDelete = () => {
-    setOpenAccountSettingsConfirmationModalForDeleteAccount(false);
+      if (!message) throw err;
+    }
   };
 
   return (
     <div className={`account-settings ${className}`}>
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Password reset
+      <div className='section'>
+        <Typography className='section-title' variant='body4'>
+          Password reset
+        </Typography>
+        <div className='password-reset'>
+          <Typography variant='body5'>
+            An email with password reset instructions will be sent to your email. After reseting your password
+            you will have to login again.
           </Typography>
-          <div className='password-reset'>
-            <Typography variant='body5'>
-              An email with password reset instructions will be sent to your email. After reseting your
-              password you will have to login again.
-            </Typography>
 
-            <Button variant='secondary' size='medium' onClick={() => setOpenAccountSettingsConfirmationModalForResetPassword(true)}>
-              Reset password
-            </Button>
-          </div>
+          <Button variant='secondary' size='medium' onClick={() => setResetPasswordModalVisibility(true)}>
+            Reset password
+          </Button>
         </div>
+      </div>
 
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Close account
+      <div className='section'>
+        <Typography className='section-title' variant='body4'>
+          Close account
+        </Typography>
+        <div className='close-account'>
+          <Typography variant='body5'>
+            If you want to delete your account you can do so by clicking the button below. Be aware that any
+            matches or ongoing messages will be deleted and can not be recovered.
           </Typography>
-          <div className='close-account'>
-            <Typography variant='body5'>
-              If you want to delete your account you can do so by clicking the button below. Be aware that any
-              matches or ongoing messages will be deleted and can not be recovered.
-            </Typography>
-            <Link onClick={()=>setOpenAccountSettingsConfirmationModalForDeleteAccount(true)}>Close my Lostfish account</Link>
-          </div>
+          <Link onClick={() => setDeleteAccountModalVisibility(true)}>Close my Lostfish account</Link>
         </div>
-      <AccountSettingsConfirmationModal
-          open={openAccountSettingsConfirmationModalForResetPassword}
-          onBackdropClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)}>
+      </div>
+      <ConfirmationModal
+        open={resetPasswordModalVisibility}
+        onBackdropClick={() => setResetPasswordModalVisibility(false)}>
         <div className='modal-header'>
-          <CloseButton onClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)} />
+          <CloseButton onClick={() => setResetPasswordModalVisibility(false)} />
         </div>
         <Typography variant='body4' className='description'>
-          An email with password reset instructions will be sent to your email.
-          After reseting your password you will have to login again.
+          An email with password reset instructions will be sent to your email. After reseting your password
+          you will have to login again.
         </Typography>
         <div className='actions'>
-          <Button size='large' variant='secondary' onClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)}>
+          <Button size='large' variant='secondary' onClick={() => setResetPasswordModalVisibility(false)}>
             Cancel
           </Button>
-          <Button size='large' onClick={()=>onResetPassword()}>
-            Delete
+          <Button size='large' onClick={() => onResetPassword()}>
+            Reset
           </Button>
         </div>
-      </AccountSettingsConfirmationModal>
-      <AccountSettingsConfirmationModal
-          open={openAccountSettingsConfirmationModalForDeleteAccount}
-          onBackdropClick={onCancelDelete}>
+      </ConfirmationModal>
+      <ConfirmationModal
+        open={deleteAccountModalVisibility}
+        onBackdropClick={() => setDeleteAccountModalVisibility(false)}>
         <div className='modal-header'>
-          <CloseButton onClick={onCancelDelete} />
+          <CloseButton onClick={() => setDeleteAccountModalVisibility(false)} />
         </div>
         <Typography variant='body2' className='title'>
           Are you sure you want to delete the account?
@@ -121,14 +118,14 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
           The action can't be reverted anymore. Do you want to delete the account?
         </Typography>
         <div className='actions'>
-          <Button size='large' variant='secondary' onClick={onCancelDelete}>
+          <Button size='large' variant='secondary' onClick={() => setDeleteAccountModalVisibility(false)}>
             Cancel
           </Button>
           <Button size='large' onClick={onCloseAccount}>
             Delete
           </Button>
         </div>
-      </AccountSettingsConfirmationModal>
+      </ConfirmationModal>
     </div>
   );
 })`
@@ -150,7 +147,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     .password-reset {
       display: grid;
       row-gap: 16px;
-      
+
       .button {
         padding: 12px 20px;
       }
@@ -162,7 +159,8 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     }
   }
 `;
-const AccountSettingsConfirmationModal = styled(Modal)`
+
+const ConfirmationModal = styled(Modal)`
   & {
     .modal-container {
       padding: 0;
