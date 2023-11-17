@@ -3,6 +3,10 @@ import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 
+import { useMutation } from '@tanstack/react-query';
+import { Icon } from '../../../components/Icon';
+import { Label } from '../../../components/Label';
+import { PropertyCard } from '../../../components/PropertyCard';
 import { Typography } from '../../../components/Typography';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { MatchButton } from '../../../components/MatchButton';
@@ -12,19 +16,16 @@ import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { useSuggestedProperties } from './useSuggestedProperties';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
 import { ViewProperty } from '../../Matches/MatchesProperties/ViewProperty';
+
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
-
-import { PropertyCard } from '../../../components/PropertyCard';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { useCriteriaStore } from '../../../globalState/criteria';
+import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
 import { SuggestedPropertyType } from '../../Matches/matches.type';
-import { useMutation } from '@tanstack/react-query';
-import { Icon } from '../../../components/Icon';
-import {Label} from "../../../components/Label";
-import {SetCriteriaDrawer} from "../../SetCriteria/SetCriteriaDrawer";
-import {useCriteriaStore} from "../../../globalState/criteria";
+
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
   const suggestedProperties = useSuggestedProperties({
@@ -37,7 +38,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
-  const [criteriaModalVisibility, setCriteriaModalVisibility] = React.useState(false);
 
   const userStore = useUserStore();
 
@@ -48,6 +48,8 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const matchesCount = useMatchesCount({
     params: { chosen: false, disliked: false }
   });
+
+  const globalSetCriteria = useGlobalSetCriteria();
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % suggestedProperties.data?.length));
@@ -128,23 +130,21 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
                 </Typography>
               </div>
               <Label
-                  variant='secondary'
-                  size='large'
-                  className='action-button'
-                  onClick={() => setCriteriaModalVisibility(true)}>
+                variant='secondary'
+                size='large'
+                className='action-button'
+                onClick={() =>
+                  globalSetCriteria.openSetCriteria({
+                    afterSetCriteria: () => {
+                      suggestedProperties.refetch();
+                      criteriaStore.fetchCriteria(userStore.auth.access_token);
+                    }
+                  })
+                }>
                 Adjust match preferences
               </Label>
             </div>
           )}
-
-          <SetCriteriaDrawer
-              open={criteriaModalVisibility}
-              setOpen={setCriteriaModalVisibility}
-              afterRefineSearch={() => {
-                suggestedProperties.refetch();
-                criteriaStore.fetchCriteria(userStore.auth.access_token);
-              }}
-          />
 
           {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
             const { property } = propertySuggestion;
@@ -169,40 +169,42 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
           })}
         </motion.div>
 
-          <div className='matches-slider-footer' style={{visibility: !suggestedProperties.data.length ? 'hidden' : 'initial'}}>
-            <ArrowButton
-              direction='left'
-              onClick={previous}
-              style={{ visibility: activeSlide === 0 ? 'hidden' : 'inherit' }}
+        <div
+          className='matches-slider-footer'
+          style={{ visibility: !suggestedProperties.data.length ? 'hidden' : 'initial' }}>
+          <ArrowButton
+            direction='left'
+            onClick={previous}
+            style={{ visibility: activeSlide === 0 ? 'hidden' : 'inherit' }}
+            size='large'
+          />
+          <div className='match-actions'>
+            <UnMatchButton
               size='large'
+              onClick={() => {
+                dislikeProperty.mutate({
+                  propertyId: suggestedProperty.property._id
+                });
+              }}
             />
-            <div className='match-actions'>
-              <UnMatchButton
-                size='large'
-                onClick={() => {
-                  dislikeProperty.mutate({
-                    propertyId: suggestedProperty.property._id
-                  });
-                }}
-              />
-              <MatchButton
-                size='large'
-                onClick={() => {
-                  likeProperty.mutate({
-                    propertyId: suggestedProperty.property._id
-                  });
-                }}
-              />
-            </div>
-            <ArrowButton
-              direction='right'
-              onClick={next}
+            <MatchButton
               size='large'
-              style={{
-                visibility: activeSlide === suggestedProperties.data.length - 1 ? 'hidden' : 'inherit'
+              onClick={() => {
+                likeProperty.mutate({
+                  propertyId: suggestedProperty.property._id
+                });
               }}
             />
           </div>
+          <ArrowButton
+            direction='right'
+            onClick={next}
+            size='large'
+            style={{
+              visibility: activeSlide === suggestedProperties.data.length - 1 ? 'hidden' : 'inherit'
+            }}
+          />
+        </div>
       </div>
 
       {propertyToView && (
@@ -319,7 +321,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
               color: #000;
             }
           }
-          
 
           .title {
             .highlighted {

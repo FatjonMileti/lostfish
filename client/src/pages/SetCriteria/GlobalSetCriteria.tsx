@@ -322,6 +322,7 @@ export const GlobalSetCriteria = styled(({}: GlobalSetCriteriaProps) => {
         onBackdropClick={globalSetCriteria.closeSetCriteria}
         form={criteriaForm}
         onStartMatchingClick={handleSubmit}
+        showTabs={true}
       />
     </>
   );

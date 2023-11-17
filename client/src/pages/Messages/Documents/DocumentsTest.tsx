@@ -105,7 +105,10 @@ export const DocumentsTest = styled(({ room, className }: DocumentsTestProps) =>
           </Label>
         )}
       </div>
-      <Modal open={showModal} className='view-documents-modal' onBackdropClick={() => onModalClose()}>
+      <ViewDocumentsModal
+        open={showModal}
+        className='view-documents-modal'
+        onBackdropClick={() => onModalClose()}>
         <div className='modal-header'>
           <div />
           <div className='tabs-wrapper'>
@@ -124,7 +127,7 @@ export const DocumentsTest = styled(({ room, className }: DocumentsTestProps) =>
           {activeTab === 1 && <SignedDocuments room={room} />}
           {activeTab === 2 && <LostfishTermsAndCondition />}
         </div>
-      </Modal>
+      </ViewDocumentsModal>
     </div>
   );
 })`
@@ -161,39 +164,41 @@ export const DocumentsTest = styled(({ room, className }: DocumentsTestProps) =>
         width: auto;
       }
     }
+  }
+`;
 
-    .view-documents-modal {
-      box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.04);
-      .modal-container {
-        width: 1020px;
-        max-width: 100vw;
-        height: 730px;
-        max-height: 100vh;
-        padding: 0;
-      }
+const ViewDocumentsModal = styled(Modal)`
+  &.view-documents-modal {
+    box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.04);
+    .modal-container {
+      width: 1020px;
+      max-width: 100vw;
+      height: 730px;
+      max-height: 100vh;
+      padding: 0;
+    }
 
-      .modal-header {
-        display: grid;
-        grid-template-columns: min-content auto min-content;
-        justify-content: space-between;
-        padding: 20px 36px;
+    .modal-header {
+      display: grid;
+      grid-template-columns: min-content auto min-content;
+      justify-content: space-between;
+      padding: 20px 36px;
 
-        align-items: center;
+      align-items: center;
 
-        .tabs-wrapper {
-          .tabs {
-            .tab {
-              padding: 12px 24px;
-            }
+      .tabs-wrapper {
+        .tabs {
+          .tab {
+            padding: 12px 24px;
           }
         }
       }
+    }
 
-      .modal-body {
-        padding: 16px 32px;
-        display: grid;
-        row-gap: 24px;
-      }
+    .modal-body {
+      padding: 16px 32px;
+      display: grid;
+      row-gap: 24px;
     }
   }
 `;
