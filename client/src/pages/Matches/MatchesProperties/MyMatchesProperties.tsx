@@ -51,7 +51,12 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
       refetchOnMount: true
     }
   });
-  const suggestedProperties = useSuggestedProperties({ params: { disliked: false, chosen: false } });
+  const suggestedProperties = useSuggestedProperties({
+    params: { disliked: false, chosen: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
 
   const matchesCount = useMatchesCount({
     params: { chosen: true, disliked: false }
@@ -118,8 +123,8 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                 size='large'
                 variant='secondary'
                 onClick={() => {
-                  setDraftFilter({ matchRate: 20,  withOffers: false });
-                  setFilter({  matchRate: 20,  withOffers: false })
+                  setDraftFilter({ matchRate: 20, withOffers: false });
+                  setFilter({ matchRate: 20, withOffers: false });
                   onCloseFilterModal();
                 }}>
                 Reset filters
