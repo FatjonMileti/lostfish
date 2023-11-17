@@ -1,4 +1,6 @@
 import { ApiPropertyDocumentType } from '../Properties/NewProperty/property.types';
+import { ApiUserDocumentType } from '../MyAccount/user.interface';
+import { ApiCriteriaDocumentType } from '../SetCriteria/criteria.types';
 
 interface IChatUser {
   first_name: string;
@@ -40,8 +42,11 @@ export interface IRoom {
 
 export interface PropertyMatch {
   created_at: string;
+  landlord: Partial<ApiUserDocumentType>;
 }
 
 export interface TenantMatch {
   created_at: string;
+  criteria: ApiCriteriaDocumentType;
+  tenant: Partial<ApiUserDocumentType>;
 }

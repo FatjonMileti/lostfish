@@ -11,13 +11,14 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { useUserStore } from '../../../globalState/user';
 import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
 import { MatchedTenantType } from '../../Matches/matches.type';
+import { mapCriteria } from '../../Matches/MatchesTenants/serializers';
 
 interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
 }
 
 export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenantProps) => {
-  const [tenantToView, setTenantToView] = React.useState<MatchedTenantType | null>();
+  const [tenantToView, setTenantToView] = React.useState<Partial<MatchedTenantType> | null>();
 
   const userStore = useUserStore();
 
@@ -26,10 +27,7 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
 
   const avatar = getAvatarFormIndex(avatarKey);
 
-  const fullName =
-    userStore.userDetails?.user_id === room?.author?._id
-      ? `${room.participant?.first_name} ${room.participant?.last_name}`
-      : `${room.author?.first_name} ${room.author?.last_name}`;
+  const fullName = `${room.tenant_match?.tenant?.first_name} ${room.tenant_match?.tenant?.last_name}`;
 
   return (
     <>
@@ -48,7 +46,17 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
           </div>
         </div>
 
-        <Label variant='secondary' className='view-profile-button'>
+        <Label
+          variant='secondary'
+          className='view-profile-button'
+          onClick={() => {
+            setTenantToView({
+              criteria: mapCriteria({
+                ...room.tenant_match?.criteria,
+                created_by: room.tenant_match?.tenant
+              })
+            });
+          }}>
           View profile
         </Label>
 

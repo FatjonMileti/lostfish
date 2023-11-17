@@ -96,7 +96,7 @@ export const ViewProperty = styled(
                 </Typography>
                 <div className='detail'>
                   <Icon icon='banknote' />
-                  <Typography variant='body5'>£{parsedProperty.rentingPrice} PCM</Typography>
+                  <Typography variant='body5'>{parsedProperty.rentingPrice} PCM</Typography>
                 </div>
                 <Typography variant='body4' className='dot'>
                   •

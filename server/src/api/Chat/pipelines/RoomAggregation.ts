@@ -69,6 +69,32 @@ const PaginationPipeline: PaginationPipelineFunc = (
         from: 'matches',
         localField: 'property_match',
         foreignField: '_id',
+        pipeline: [
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'landlord',
+              pipeline: [
+                {
+                  $project: {
+                    avatar: 1,
+                    first_name: 1,
+                    last_name: 1,
+                    _id: 1
+                  }
+                }
+              ],
+              foreignField: '_id',
+              as: 'landlord'
+            }
+          },
+          {
+            $unwind: {
+              path: '$landlord',
+              preserveNullAndEmptyArrays: true
+            }
+          }
+        ],
         as: 'property_match'
       }
     },
@@ -83,6 +109,46 @@ const PaginationPipeline: PaginationPipelineFunc = (
         from: 'matches',
         localField: 'tenant_match',
         foreignField: '_id',
+        pipeline: [
+          {
+            $lookup: {
+              from: 'criterias',
+              localField: 'tenant',
+              foreignField: 'created_by',
+              as: 'criteria'
+            }
+          },
+          {
+            $unwind: {
+              path: '$criteria',
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'tenant',
+              pipeline: [
+                {
+                  $project: {
+                    avatar: 1,
+                    first_name: 1,
+                    last_name: 1,
+                    _id: 1
+                  }
+                }
+              ],
+              foreignField: '_id',
+              as: 'tenant'
+            }
+          },
+          {
+            $unwind: {
+              path: '$tenant',
+              preserveNullAndEmptyArrays: true
+            }
+          }
+        ],
         as: 'tenant_match'
       }
     },
@@ -160,13 +226,17 @@ const PaginationPipeline: PaginationPipelineFunc = (
           _id: 1,
           title: 1,
           property_images: 1,
-          room_details: 1
+          room_details: 1,
+          budget: 1
         },
         property_match: {
-          created_at: 1
+          created_at: 1,
+          landlord: 1
         },
         tenant_match: {
-          created_at: 1
+          created_at: 1,
+          tenant: 1,
+          criteria: 1
         },
         unseen_messages: 1
       }

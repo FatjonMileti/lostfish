@@ -1,7 +1,7 @@
 import { IRoom } from '../messages.interface';
 import { useProfileStore } from '../../../globalState/profile';
 import { Role } from '../../../enums';
-import { MatchDetailsProperty } from './MatchDetails.Property';
+import { MatchDetailsProperty } from './MatchDetailsProperty/MatchDetails.Property';
 import { MatchDetailsTenant } from './MatchDetails.Tenant';
 
 interface MatchDetailsProps {
