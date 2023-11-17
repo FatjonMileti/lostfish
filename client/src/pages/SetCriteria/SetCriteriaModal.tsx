@@ -17,6 +17,8 @@ import { SetCriteriaHouseDetails } from './SetCriteria/SetCriteria.HouseDetails'
 
 import { CriteriaFormType } from './criteria.types';
 
+const tabLabels = ['Location', 'House type', 'Budget', 'House details'];
+
 const animationProps = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
@@ -29,9 +31,10 @@ interface SetCriteriaModalProps extends ModalProps {
   onBack: () => void;
   form: UseFormReturn<CriteriaFormType>;
   onStartMatchingClick: () => any;
+  showTabs?: boolean;
 }
 export const SetCriteriaModal = styled(
-  ({ className, onBack, form, onStartMatchingClick, ...rest }: SetCriteriaModalProps) => {
+  ({ className, onBack, form, onStartMatchingClick, showTabs=false, ...rest }: SetCriteriaModalProps) => {
     const [step, setStep] = React.useState(0);
     React.useEffect(() => {
       setStep(0);
@@ -39,15 +42,33 @@ export const SetCriteriaModal = styled(
 
     return (
       <Modal className={classNames('set-criteria-modal', className)} {...rest}>
-        <div className='modal-header'>
-          <Typography variant='body2'>Match preferences</Typography>
+        <div className={showTabs ? 'modal-header-with-tabs' :'modal-header' }>
+            <div className="title-button">
+                <Typography variant='body2'>Match preferences</Typography>
 
-          <CloseButton
-            size='large'
-            onClick={async () => {
-              onBack();
-            }}
-          />
+                <CloseButton
+                    size='large'
+                    onClick={async () => {
+                        onBack();
+                    }}
+                />
+            </div>
+
+            {showTabs && (
+                <div className='criteria-tabs-bar'>
+                    {tabLabels.map((tabLabel, tabLabelIndex) => (
+                        <Label
+                            className='criteria-tab-label'
+                            active={tabLabelIndex === step}
+                            variant='tertiary'
+                            key={tabLabelIndex}
+                            onClick={() => setStep(tabLabelIndex)}
+                        >
+                            {tabLabel}
+                        </Label>
+                    ))}
+                </div>
+            )}
         </div>
 
         <div className='modal-body'>
@@ -114,14 +135,54 @@ export const SetCriteriaModal = styled(
       display: grid;
       grid-template-rows: max-content auto;
       background: #fff;
-
+      
       .modal-header {
-        padding: 23px 36px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        .title-button {
+          padding: 23px 36px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          border-bottom: 2px solid #f3f4f5;
+        }
+      }
+
+      .modal-header-with-tabs {
+        display: grid;
+        padding: 24px 36px 0px 36px;
+        gap: 16px;
 
         border-bottom: 2px solid #f3f4f5;
+        box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
+
+        .title-button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .criteria-tabs-bar {
+          display: flex;
+          align-items: flex-start;
+          column-gap: 32px;
+
+          .label {
+            padding: 16px 0;
+            margin-bottom: -2px;
+            height: auto !important;
+
+            color: #646464;
+
+            :hover {
+              color: #0d2a38;
+              border-color: #0d2a38;
+            }
+            &.active {
+              color: #0d2a38;
+              border-color: #0d2a38;
+            }
+          }
+        }
       }
 
       .modal-body {
