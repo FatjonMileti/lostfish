@@ -7,15 +7,18 @@ import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import {CloseButton} from "../../components/CloseButton";
+import {Modal} from "../../components/Modal";
+import {extend} from "lodash";
 
 export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const userStore = useUserStore();
+  const [openAccountSettingsConfirmationModalForDeleteAccount, setOpenAccountSettingsConfirmationModalForDeleteAccount] = React.useState(false);
+  const [openAccountSettingsConfirmationModalForResetPassword, setOpenAccountSettingsConfirmationModalForResetPassword] = React.useState(false);
 
+  const userStore = useUserStore();
   const navigate = useNavigate();
 
-  const closeAccount = async () => {
-    const confirmation = confirm('Are you sure you want to delete?');
-    if (confirmation) {
+  const onCloseAccount = async () => {
       try {
         const response = await request(userStore.auth.access_token).delete('/api/user');
         if (response.status === 204) {
@@ -24,9 +27,6 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
       } catch (error: any) {
         console.log(error);
       }
-    } else {
-      console.log('Deletion canceled.');
-    }
   };
 
   const logOut = async () => {
@@ -41,11 +41,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     }
   };
 
-  const resetPassword = async () => {
-    const confirmation = confirm(
-      'An email with password reset instructions will be sent to your email. After reseting your password you will have to login again.'
-    );
-    if (confirmation) {
+  const onResetPassword = async () => {
       try {
         const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
 
@@ -57,7 +53,10 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
 
         if (!message) throw err;
       }
-    }
+  };
+
+  const onCancelDelete = () => {
+    setOpenAccountSettingsConfirmationModalForDeleteAccount(false);
   };
 
   return (
@@ -72,7 +71,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
               password you will have to login again.
             </Typography>
 
-            <Button variant='secondary' size='medium' onClick={() => resetPassword()}>
+            <Button variant='secondary' size='medium' onClick={() => setOpenAccountSettingsConfirmationModalForResetPassword(true)}>
               Reset password
             </Button>
           </div>
@@ -87,9 +86,49 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
               If you want to delete your account you can do so by clicking the button below. Be aware that any
               matches or ongoing messages will be deleted and can not be recovered.
             </Typography>
-            <Link onClick={() => closeAccount()}>Close my Lostfish account</Link>
+            <Link onClick={()=>setOpenAccountSettingsConfirmationModalForDeleteAccount(true)}>Close my Lostfish account</Link>
           </div>
         </div>
+      <AccountSettingsConfirmationModal
+          open={openAccountSettingsConfirmationModalForResetPassword}
+          onBackdropClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)}>
+        <div className='modal-header'>
+          <CloseButton onClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)} />
+        </div>
+        <Typography variant='body4' className='description'>
+          An email with password reset instructions will be sent to your email.
+          After reseting your password you will have to login again.
+        </Typography>
+        <div className='actions'>
+          <Button size='large' variant='secondary' onClick={()=>setOpenAccountSettingsConfirmationModalForResetPassword(false)}>
+            Cancel
+          </Button>
+          <Button size='large' onClick={()=>onResetPassword()}>
+            Delete
+          </Button>
+        </div>
+      </AccountSettingsConfirmationModal>
+      <AccountSettingsConfirmationModal
+          open={openAccountSettingsConfirmationModalForDeleteAccount}
+          onBackdropClick={onCancelDelete}>
+        <div className='modal-header'>
+          <CloseButton onClick={onCancelDelete} />
+        </div>
+        <Typography variant='body2' className='title'>
+          Are you sure you want to delete the account?
+        </Typography>
+        <Typography variant='body4' className='description'>
+          The action can't be reverted anymore. Do you want to delete the account?
+        </Typography>
+        <div className='actions'>
+          <Button size='large' variant='secondary' onClick={onCancelDelete}>
+            Cancel
+          </Button>
+          <Button size='large' onClick={onCloseAccount}>
+            Delete
+          </Button>
+        </div>
+      </AccountSettingsConfirmationModal>
     </div>
   );
 })`
@@ -120,6 +159,36 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     .close-account {
       display: grid;
       row-gap: 16px;
+    }
+  }
+`;
+const AccountSettingsConfirmationModal = styled(Modal)`
+  & {
+    .modal-container {
+      padding: 0;
+    }
+    padding: 24px;
+    max-width: 440px;
+    .modal-header {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .title {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .description {
+      margin-top: 16px;
+      text-align: center;
+    }
+    .actions {
+      margin-top: 48px;
+      display: flex;
+      column-gap: 16px;
+      .button {
+        flex-grow: 1;
+      }
     }
   }
 `;
