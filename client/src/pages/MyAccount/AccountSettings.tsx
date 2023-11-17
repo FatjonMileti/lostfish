@@ -1,31 +1,32 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, useState } from 'react';
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import { Link } from '../../components/Link';
-import request from '../../utils/axios';
-import { useUserStore } from '../../globalState/user';
+import React, { HTMLAttributes } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
-export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const userStore = useUserStore();
+import { Typography } from '../../components/Typography';
+import { Button } from '../../components/Button';
+import { Link } from '../../components/Link';
+import { CloseButton } from '../../components/CloseButton';
+import { Modal } from '../../components/Modal';
 
+import request from '../../utils/axios';
+import { useUserStore } from '../../globalState/user';
+
+export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const [deleteAccountModalVisibility, setDeleteAccountModalVisibility] = React.useState(false);
+  const [resetPasswordModalVisibility, setResetPasswordModalVisibility] = React.useState(false);
+
+  const userStore = useUserStore();
   const navigate = useNavigate();
 
-  const closeAccount = async () => {
-    const confirmation = confirm('Are you sure you want to delete?');
-    if (confirmation) {
-      try {
-        const response = await request(userStore.auth.access_token).delete('/api/user');
-        if (response.status === 204) {
-          logOut();
-        }
-      } catch (error: any) {
-        console.log(error);
+  const onCloseAccount = async () => {
+    try {
+      const response = await request(userStore.auth.access_token).delete('/api/user');
+      if (response.status === 204) {
+        logOut();
       }
-    } else {
-      console.log('Deletion canceled.');
+    } catch (error: any) {
+      console.log(error);
     }
   };
 
@@ -41,55 +42,90 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     }
   };
 
-  const resetPassword = async () => {
-    const confirmation = confirm(
-      'An email with password reset instructions will be sent to your email. After reseting your password you will have to login again.'
-    );
-    if (confirmation) {
-      try {
-        const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
+  const onResetPassword = async () => {
+    try {
+      const response = await request(userStore.auth.access_token).post('/api/user/change-password', {});
 
-        if (response.status === 201) {
-          logOut();
-        }
-      } catch (err: AxiosError | any) {
-        const message = err?.response?.data?.message;
-
-        if (!message) throw err;
+      if (response.status === 201) {
+        logOut();
       }
+    } catch (err: AxiosError | any) {
+      const message = err?.response?.data?.message;
+
+      if (!message) throw err;
     }
   };
 
   return (
     <div className={`account-settings ${className}`}>
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Password reset
+      <div className='section'>
+        <Typography className='section-title' variant='body4'>
+          Password reset
+        </Typography>
+        <div className='password-reset'>
+          <Typography variant='body5'>
+            An email with password reset instructions will be sent to your email. After reseting your password
+            you will have to login again.
           </Typography>
-          <div className='password-reset'>
-            <Typography variant='body5'>
-              An email with password reset instructions will be sent to your email. After reseting your
-              password you will have to login again.
-            </Typography>
 
-            <Button variant='secondary' size='medium' onClick={() => resetPassword()}>
-              Reset password
-            </Button>
-          </div>
+          <Button variant='secondary' size='medium' onClick={() => setResetPasswordModalVisibility(true)}>
+            Reset password
+          </Button>
         </div>
+      </div>
 
-        <div className='section'>
-          <Typography className='section-title' variant='body4'>
-            Close account
+      <div className='section'>
+        <Typography className='section-title' variant='body4'>
+          Close account
+        </Typography>
+        <div className='close-account'>
+          <Typography variant='body5'>
+            If you want to delete your account you can do so by clicking the button below. Be aware that any
+            matches or ongoing messages will be deleted and can not be recovered.
           </Typography>
-          <div className='close-account'>
-            <Typography variant='body5'>
-              If you want to delete your account you can do so by clicking the button below. Be aware that any
-              matches or ongoing messages will be deleted and can not be recovered.
-            </Typography>
-            <Link onClick={() => closeAccount()}>Close my Lostfish account</Link>
-          </div>
+          <Link onClick={() => setDeleteAccountModalVisibility(true)}>Close my Lostfish account</Link>
         </div>
+      </div>
+      <ConfirmationModal
+        open={resetPasswordModalVisibility}
+        onBackdropClick={() => setResetPasswordModalVisibility(false)}>
+        <div className='modal-header'>
+          <CloseButton onClick={() => setResetPasswordModalVisibility(false)} />
+        </div>
+        <Typography variant='body4' className='description'>
+          An email with password reset instructions will be sent to your email. After reseting your password
+          you will have to login again.
+        </Typography>
+        <div className='actions'>
+          <Button size='large' variant='secondary' onClick={() => setResetPasswordModalVisibility(false)}>
+            Cancel
+          </Button>
+          <Button size='large' onClick={() => onResetPassword()}>
+            Reset
+          </Button>
+        </div>
+      </ConfirmationModal>
+      <ConfirmationModal
+        open={deleteAccountModalVisibility}
+        onBackdropClick={() => setDeleteAccountModalVisibility(false)}>
+        <div className='modal-header'>
+          <CloseButton onClick={() => setDeleteAccountModalVisibility(false)} />
+        </div>
+        <Typography variant='body2' className='title'>
+          Are you sure you want to delete the account?
+        </Typography>
+        <Typography variant='body4' className='description'>
+          The action can't be reverted anymore. Do you want to delete the account?
+        </Typography>
+        <div className='actions'>
+          <Button size='large' variant='secondary' onClick={() => setDeleteAccountModalVisibility(false)}>
+            Cancel
+          </Button>
+          <Button size='large' onClick={onCloseAccount}>
+            Delete
+          </Button>
+        </div>
+      </ConfirmationModal>
     </div>
   );
 })`
@@ -111,7 +147,7 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     .password-reset {
       display: grid;
       row-gap: 16px;
-      
+
       .button {
         padding: 12px 20px;
       }
@@ -120,6 +156,37 @@ export const AccountSettings = styled(({ className }: HTMLAttributes<HTMLDivElem
     .close-account {
       display: grid;
       row-gap: 16px;
+    }
+  }
+`;
+
+const ConfirmationModal = styled(Modal)`
+  & {
+    .modal-container {
+      padding: 0;
+    }
+    padding: 24px;
+    max-width: 440px;
+    .modal-header {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .title {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .description {
+      margin-top: 16px;
+      text-align: center;
+    }
+    .actions {
+      margin-top: 48px;
+      display: flex;
+      column-gap: 16px;
+      .button {
+        flex-grow: 1;
+      }
     }
   }
 `;

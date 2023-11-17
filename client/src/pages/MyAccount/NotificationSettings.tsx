@@ -79,7 +79,6 @@ export const NotificationSettings = styled(({ className }: HTMLAttributes<HTMLDi
     });
     if (response.status === 200) {
       getOne();
-      alert('Updated with success!');
     }
   };
 
