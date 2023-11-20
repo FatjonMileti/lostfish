@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
-import { useLocation, useNavigate, Location } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 import { Typography } from '../../components/Typography';
@@ -35,8 +35,6 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   const notificationsStore = useNotificationsStore();
   const profileStore = useProfileStore();
 
-  const location: Location = useLocation();
-
   const { socket } = React.useContext(SocketContext);
 
   const [room, setRoom] = React.useState<IRoom | null>(null);
@@ -66,33 +64,9 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   }, [reorderMessages]);
 
-  // React.useEffect(() => {
-  //   handleRoomIdInQueryParams();
-  // }, []);
-  //
   React.useEffect(() => {
     handleMatchIdInQueryParams();
   }, []);
-
-  const handleRoomIdInQueryParams = async () => {
-    try {
-      const userIdInQueryParams = queryParams.get('userId');
-
-      if (userIdInQueryParams && location.state.propertyId) {
-        const room =
-          (await getRoomWithUser(userIdInQueryParams, location.state.propertyId)) ||
-          (await createRoom(userIdInQueryParams, location.state.propertyId));
-        if (room) {
-          joinRoom(room);
-          chatRooms.refetch();
-        } else {
-          navigate(`/messages`);
-        }
-      }
-    } catch (err) {
-      throw err;
-    }
-  };
 
   const handleMatchIdInQueryParams = async () => {
     try {
@@ -101,11 +75,15 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       if (matchIdInQueryParams) {
         const room = await getRoomWithMatchId(matchIdInQueryParams);
         if (room) {
-          joinRoom(room);
-          chatRooms.refetch();
-        } else {
-          navigate(`/messages`);
+          chatRooms.refetch().then((response) => {
+            const foundRoom = response?.data?.find((r) => r._id === room._id);
+
+            if (foundRoom) {
+              joinRoom(foundRoom);
+            }
+          });
         }
+        navigate(`/messages`);
       }
     } catch (err) {
       throw err;
@@ -146,7 +124,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
   };
 
   const chatRooms = useQuery<IRoom[]>(
-    ['messages'],
+    ['messages', filterByProperty],
     async (): Promise<any[]> => {
       const response = await axios(userStore.auth.access_token).get('/api/chat', {
         params: {
@@ -158,7 +136,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       return response.data.docs;
     },
     {
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      initialData: []
     }
   );
 

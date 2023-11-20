@@ -230,7 +230,11 @@ export class ChatController {
   private getMatchRoom = async (req: express.Request, res: express.Response) => {
     const matchId = req.params.matchId;
 
-    console.log('got request with matchId: ', matchId);
+    const match = await this.matchService.findMatchById(matchId);
+
+    if (!match) {
+      return res.status(404).json({ message: 'match not found' });
+    }
 
     const existingRoom = await roomService.findOne({
       $or: [
@@ -250,8 +254,6 @@ export class ChatController {
     if (existingRoom) {
       return res.status(200).send(existingRoom);
     }
-
-    console.log('room does not exist creating one...');
 
     const currentMatch = await this.matchService.findMatchById(matchId);
 

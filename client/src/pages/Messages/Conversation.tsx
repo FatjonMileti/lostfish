@@ -27,7 +27,7 @@ export const Conversation = styled(
 
     return (
       <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(room)}>
-        <div className='match-avatar-intersection'>
+        <div className='avatar-and-unseen-messages-wrapper'>
           <Avatar
             image={avatar}
             className={classNames({
@@ -55,7 +55,7 @@ export const Conversation = styled(
 )`
   &.conversation {
     display: flex;
-    column-gap: 10px;
+    column-gap: 16px;
     padding: 16px;
     align-items: center;
     box-sizing: border-box;
@@ -63,51 +63,19 @@ export const Conversation = styled(
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
     border-radius: 8px;
     cursor: pointer;
-    border: 1px solid white;
-
-    &:hover {
-      //background-color: #f7f1e7;
-    }
+    border: 2px solid white;
 
     &.active {
-      border: 1px solid #e5155a;
-
-      /* Nav Shadow */
-      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+      border: 2px solid #c4b1a3;
     }
 
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-family: Roobert, serif;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    &.active {
-      .match-avatar-intersection {
-        .avatar {
-        }
-      }
-    }
-
-    .match-avatar-intersection {
+    .avatar-and-unseen-messages-wrapper {
       display: flex;
       position: relative;
 
       .avatar {
-        width: 64px;
-        height: 64px;
-
-        &.lostfish {
-          background-size: 40px 40px;
-          background-color: #184d6d;
-        }
+        width: 48px;
+        height: 48px;
       }
 
       .unseen-messages-nr {
