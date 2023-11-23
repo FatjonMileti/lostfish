@@ -15,6 +15,7 @@ import { FileController } from './File/file.controller';
 import { MatchController } from './Match/match.controller';
 import { AdminController } from './Agent/admin.controller';
 import { SuggestionController } from './Suggestions/suggestion.controller';
+import { OfferController } from './Offer/offer.controller';
 
 /* SERVICES */
 import MatchService from './Match/match.service';
@@ -28,6 +29,8 @@ import config from '../config/index';
 import LocalFileService from './File/services/file.service';
 import AzureBlobService from './File/services/azure-blob.service';
 import { FileService } from './File/file.interface';
+import OfferService from './Offer/offer.service';
+import OfferModel from './Offer/offer.schema';
 
 const router: Router = Router();
 /**
@@ -67,6 +70,8 @@ export const fileService: FileService = config.useAzureStorage
   ? AzureBlobService.getInstance()
   : LocalFileService.getInstance();
 
+const offerService: OfferService = new OfferService(OfferModel);
+
 // Create controller instances
 const suggestionController = new SuggestionController(suggestionService);
 const adminController = new AdminController(adminService);
@@ -82,6 +87,7 @@ const notificationController = new NotificationController();
 const documentController = new DocumentController(fileService);
 const docusignController = new DocusignController();
 const fileController = new FileController(fileService);
+const offerController = new OfferController(offerService, matchService);
 
 router.use('/v1', protectedController.router);
 router.use('/suggestion', suggestionController.router);
@@ -97,5 +103,5 @@ router.use('/asset', assetController.router);
 router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/notification', authorize(), notificationController.router);
-
+router.use('/offer', authorize(), offerController.router);
 export default router;

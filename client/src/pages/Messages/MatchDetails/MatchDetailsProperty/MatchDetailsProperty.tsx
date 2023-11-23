@@ -12,7 +12,11 @@ import { Label } from '../../../../components/Label';
 import { Icon } from '../../../../components/Icon';
 
 import logoValpal from '../../../../assets/svg/logo-valpal.png';
-import { MakeAnOfferModal } from './MakeAnOfferModal';
+import { MakeAnOfferModal, OfferFormType } from './MakeAnOfferModal';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from '../../../../utils/axios';
+import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
+import { ApiOfferDocument, ReviewOfferModal } from './MatchDetailsproperty.ReviewOfferModal';
 interface MatchDetailsPropertyProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
 }
@@ -20,6 +24,8 @@ interface MatchDetailsPropertyProps extends HTMLAttributes<HTMLDivElement> {
 export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPropertyProps) => {
   const userStore = useUserStore();
   const [offerModalVisibility, setOfferModalVisibility] = React.useState(false);
+
+  const [reviewOfferModalVisibility, setReviewOfferModalVisibility] = React.useState(false);
 
   const avatarKey = room.property_match?.landlord.avatar;
 
@@ -29,9 +35,66 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
 
   const property = room.property;
 
+  const offerQuery = useQuery<ApiOfferDocument>({
+    queryKey: ['offer', room.tenant_match?._id],
+    queryFn: async () => {
+      try {
+        const { data } = await axios(userStore.auth.access_token).get(
+          `/api/offer/matches/${room.tenant_match?._id}/offer`
+        );
+        return data;
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          return null;
+        }
+
+        throw err;
+      }
+    },
+    refetchOnWindowFocus: false,
+    retry: false,
+    refetchIntervalInBackground: false
+  });
+
+  const makeOffer = useMutation<ApiOfferDocument, unknown, OfferFormType>({
+    mutationFn: async (data: OfferFormType) => {
+      const { data: offer } = await axios(userStore.auth.access_token).post<ApiOfferDocument>('/api/offer', {
+        offering_price: data.offeringPrice,
+        min_duration: data.minDuration,
+        warranty: data.warranty,
+        match: room?.tenant_match?._id
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return offer;
+    },
+    onSuccess: () => {
+      setOfferModalVisibility(false);
+      offerQuery.refetch();
+    }
+  });
+
+  const cancelOffer = useMutation<ApiOfferDocument, unknown, string>({
+    mutationFn: async (offerId: string) => {
+      const { data } = await axios(userStore.auth.access_token).patch<ApiOfferDocument>(
+        `/api/offer/${offerId}/canceled`
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return data;
+    },
+    onSuccess: () => {
+      setReviewOfferModalVisibility(false);
+      offerQuery.refetch();
+    }
+  });
+
   return (
     <>
-      <div className={classNames('match-details-property', className)}>
+      {offerQuery.isFetching && <ShowGlobalLoading />}
+
+      <div
+        className={classNames('match-details-property', className, {
+          'offer-sent': !!offerQuery.data
+        })}>
         <div
           className='property-details'
           style={{
@@ -112,9 +175,54 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
             </div>
           </div>
 
-          <Label className='make-an-offer-button' onClick={() => setOfferModalVisibility(true)}>
-            Make an offer
-          </Label>
+          {!offerQuery.isFetching && !offerQuery.data && (
+            <Label className='make-an-offer-button' onClick={() => setOfferModalVisibility(true)}>
+              Make an offer
+            </Label>
+          )}
+
+          {!offerQuery.isFetching && !!offerQuery.data && (
+            <>
+              {!offerQuery.data.refused && (
+                <div className='offer-sent-informative-text'>
+                  <Typography variant='body6' className='offer-sent-title'>
+                    <Icon icon='checked-o' />
+                    Your offer was sent to the landlord
+                  </Typography>
+                  <Typography variant='body6' className='offer-sent-description'>
+                    Any updates to your offer will appear here.
+                  </Typography>
+                </div>
+              )}
+
+              {offerQuery.data.refused && (
+                <>
+                  <div className='offer-rejected-informative-text'>
+                    <Icon icon='close-o' />
+                    <Typography variant='body6' className='offer-sent-title'>
+                      Your offer was rejected
+                    </Typography>
+                  </div>
+                  <Typography variant='body6'>
+                    Your initial offer was rejected by the landlord. You can still make another offer.
+                  </Typography>
+
+                  <Label className='make-an-offer-button' onClick={() => setOfferModalVisibility(true)}>
+                    Make another offer
+                  </Label>
+                </>
+              )}
+
+              {!!offerQuery.data && !offerQuery.data.refused && (
+                <Label
+                  variant='secondary'
+                  className='make-an-offer-button'
+                  onClick={() => setReviewOfferModalVisibility(true)}>
+                  Review offer
+                </Label>
+              )}
+            </>
+          )}
 
           <div className='divider' />
 
@@ -149,7 +257,17 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
         room={room}
         open={offerModalVisibility}
         onBackdropClick={() => setOfferModalVisibility(false)}
+        makeOffer={makeOffer}
       />
+      {!offerQuery.isFetching && !!offerQuery.data && (
+        <ReviewOfferModal
+          room={room}
+          open={reviewOfferModalVisibility}
+          onBackdropClick={() => setReviewOfferModalVisibility(false)}
+          offer={offerQuery.data}
+          cancelOffer={cancelOffer}
+        />
+      )}
     </>
   );
 })`
@@ -159,8 +277,11 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
     box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.12);
 
     display: grid;
-
     align-self: flex-start;
+
+    &.offer-sent {
+      box-shadow: 0px 16px 32px 0px rgba(64, 129, 64, 0.25);
+    }
 
     .property-details {
       display: grid;
@@ -175,6 +296,7 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
 
       box-shadow: 0 0.43687px 5.2424px 0 rgba(0, 0, 0, 0.04);
       background-size: cover;
+      background-position: center;
 
       .details {
         padding: 12px;
@@ -209,6 +331,52 @@ export const MatchDetailsProperty = styled(({ className, room }: MatchDetailsPro
       padding: 16px;
       row-gap: 16px;
       display: grid;
+
+      .offer-sent-informative-text {
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid #cfe0cf;
+        background: #e2ece2;
+        color: #408140;
+        display: grid;
+        row-gap: 4px;
+
+        .offer-sent-title {
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          column-gap: 4px;
+
+          .icon {
+            width: 16px !important;
+            height: 16px !important;
+          }
+        }
+
+        .offer-sent-description {
+          font-weight: 500;
+        }
+      }
+
+      .offer-rejected-informative-text {
+        display: flex;
+        column-gap: 4px;
+        align-items: center;
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid #ecc9ce;
+        background: #f4dee2;
+        color: #b4263b;
+
+        font-weight: 700;
+
+        .icon {
+          width: 16px !important;
+          height: 16px !important;
+        }
+      }
 
       .price-details {
         display: grid;

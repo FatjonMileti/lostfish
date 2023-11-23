@@ -78,14 +78,14 @@ function App() {
   return (
     <>
       <GlobalLoading />
-      <SessionMaintainer debug>
-        <SocketContext.Provider value={value}>
-          <UserProvider>
-            {userStore.auth && profileStore.hasCompletedInitialSetup && profileStore.role === Role.Tenant && (
-              <GlobalSetCriteria />
-            )}
+      <BrowserRouter>
+        <SessionMaintainer debug>
+          <SocketContext.Provider value={value}>
+            <UserProvider>
+              {userStore.auth &&
+                profileStore.hasCompletedInitialSetup &&
+                profileStore.role === Role.Tenant && <GlobalSetCriteria />}
 
-            <BrowserRouter>
               <Routes>
                 <Route path='/policy-agreement' element={<PolicyAgreement />} />
                 <Route path='/agreement/:id' element={<AgreementDetails />} />
@@ -114,10 +114,10 @@ function App() {
 
                 <Route path='*' element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </UserProvider>
-        </SocketContext.Provider>
-      </SessionMaintainer>
+            </UserProvider>
+          </SocketContext.Provider>
+        </SessionMaintainer>
+      </BrowserRouter>
       <CookieConsent />
     </>
   );

@@ -76,6 +76,11 @@ export const Conversation = styled(
       .avatar {
         width: 48px;
         height: 48px;
+
+        &.lostfish {
+          background-size: 32px 32px;
+          background-color: #184d6d;
+        }
       }
 
       .unseen-messages-nr {

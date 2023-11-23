@@ -65,7 +65,7 @@ export const Modal = styled(
               exit='closed'
               variants={backdropVariants}
               initial={{ opacity: 'blur(0px)' }}
-              onClick={onBackdropClick}
+              onMouseDown={onBackdropClick}
               style={{
                 position: 'fixed',
                 inset: 0,
@@ -78,7 +78,8 @@ export const Modal = styled(
                 initial={{ opacity: 0 }}
                 variants={modalVariants}
                 className={`modal ${className}`}
-                onClick={(e) => e.stopPropagation()}>
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}>
                 <div className='modal-container'>{children}</div>
               </motion.div>
             </motion.div>

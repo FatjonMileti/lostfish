@@ -10,21 +10,71 @@ import { Avatar } from '../../../../components/Avatar';
 import { getAvatarFormIndex } from '../../../HomeLoggedIn/avatars';
 import { Icon } from '../../../../components/Icon';
 import { AreaUnit } from '../../../Properties/NewProperty/property.constants';
+import { TextField } from '../../../../components/TextField';
+import { Select } from '../../../../components/Select/Select';
+import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import axios from '../../../../utils/axios';
+import { useUserStore } from '../../../../globalState/user';
+import { UseBaseMutationResult, useMutation, UseMutationResult } from '@tanstack/react-query';
+import { ApiOfferDocument } from './MatchDetailsproperty.ReviewOfferModal';
+import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
+
+export type OfferFormType = {
+  offeringPrice: number;
+  warranty: string;
+  minDuration: string;
+};
+
+enum Warranty {
+  '1 month' = '1 month',
+  '2 months' = '2 months',
+  '3 months' = '3 months'
+}
+
+enum Duration {
+  '1 year' = '1 year',
+  '2 years' = '2 years',
+  '3 years' = '3 years'
+}
+
+const offerFormSchema: Yup.ObjectSchema<OfferFormType> = Yup.object().shape({
+  offeringPrice: Yup.number()
+    .transform((value) => (isNaN(value) ? undefined : value))
+    .required('Offering price is required')
+    .positive('Offering price must be a positive number'),
+  warranty: Yup.string().required(),
+  minDuration: Yup.string().required()
+});
 
 interface MakeAnOfferModalProps extends ModalProps {
   room: IRoom;
+  makeOffer: UseBaseMutationResult<ApiOfferDocument, unknown, OfferFormType>;
 }
 
-export const MakeAnOfferModal = styled(({ className, room, ...rest }: MakeAnOfferModalProps) => {
+export const MakeAnOfferModal = styled(({ className, room, makeOffer, ...rest }: MakeAnOfferModalProps) => {
   const property = room.property;
   const landlord = room.property_match?.landlord;
 
   const avatarKey = landlord?.avatar;
-
   const avatar = getAvatarFormIndex(avatarKey);
+
+  const userStore = useUserStore();
+
+  const offerForm = useForm<OfferFormType>({
+    defaultValues: {
+      offeringPrice: undefined,
+      warranty: Warranty['1 month'],
+      minDuration: Duration['1 year']
+    },
+    resolver: yupResolver(offerFormSchema),
+    mode: 'all'
+  });
 
   return (
     <Modal className={classNames('make-an-offer-modal', className)} {...rest}>
+      {makeOffer.isLoading && <ShowGlobalLoading />}
       <div className='modal-header'>
         <Typography variant='body2' className='title'>
           Make an offer
@@ -127,13 +177,42 @@ export const MakeAnOfferModal = styled(({ className, room, ...rest }: MakeAnOffe
             </Typography>{' '}
             <div className='offer-line' />
           </div>
+
+          <div className='offer-form'>
+            <TextField
+              label='Offering price:'
+              type='number'
+              {...offerForm.register('offeringPrice')}
+              error={!!offerForm.formState.errors?.offeringPrice}
+              helperText={offerForm.formState.errors?.offeringPrice?.message}
+            />
+            <Select label='Warranty (advance):' {...offerForm.register('warranty')}>
+              {Object.values(Warranty).map((w, wIndex) => (
+                <option key={wIndex} value={w}>
+                  {w}
+                </option>
+              ))}
+            </Select>
+            <Select label='Min. duration:' {...offerForm.register('minDuration')}>
+              {Object.values(Duration).map((d, dIndex) => (
+                <option key={dIndex} value={d}>
+                  {d}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
         <div className='modal-footer'>
           <Typography variant='body6' className='description'>
             By submitting your offer you understand that the landlord can accept or reject your offer.
             Therefore we recommend you consider an appropriate negotiation margin when submitting your offer.
           </Typography>
-          <Label size='large'>Send offer</Label>
+          <Label
+            size='large'
+            onClick={offerForm.handleSubmit((data) => makeOffer.mutate(data))}
+            disabled={!offerForm.formState.isValid}>
+            Send offer
+          </Label>
         </div>
       </div>
     </Modal>
@@ -184,6 +263,7 @@ export const MakeAnOfferModal = styled(({ className, room, ...rest }: MakeAnOffe
               lightgray 50% / cover no-repeat;
 
             background-size: cover;
+            background-position: center;
           }
 
           .property-and-landlord-wrapper {
@@ -286,6 +366,34 @@ export const MakeAnOfferModal = styled(({ className, room, ...rest }: MakeAnOffe
           .offer-line {
             height: 1px;
             background: #e7e7e7;
+          }
+        }
+
+        .offer-form {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          column-gap: 16px;
+
+          .text-field,
+          .select {
+            label {
+              color: #6a6d6d;
+              font-family: Roobert, serif;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 20px;
+            }
+
+            input,
+            select {
+              color: #0d2a38;
+              font-family: Roobert, serif;
+              font-size: 20px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 24px;
+            }
           }
         }
       }

@@ -149,6 +149,7 @@ const Property = styled(
     background-image: url(${(props) => props.image});
     background-size: cover;
     box-sizing: border-box;
+    background-position: center;
     flex-shrink: 0;
   }
 `;

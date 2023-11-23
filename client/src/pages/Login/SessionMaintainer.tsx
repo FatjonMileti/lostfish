@@ -7,6 +7,7 @@ import { decodeJWT } from './LoginModal';
 import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
+import { useNavigate } from 'react-router-dom';
 
 export const refreshToken = async (debug = false) => {
   if (debug) console.log('Refreshing token...');
@@ -55,6 +56,8 @@ export const SessionMaintainer = ({
 
   const [refreshTimeoutId, setRefreshTimeoutId] = React.useState<NodeJS.Timeout | undefined>(undefined);
   const [resumingSession, setResumingSession] = React.useState<boolean>(true);
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (!user.auth) {
@@ -113,6 +116,7 @@ export const SessionMaintainer = ({
         .catch((err) => {
           if (debug) console.log('Error fetching user profile: ', err);
           setUser((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
+          navigate('/');
         })
         .finally(() => {
           setResumingSession(false);

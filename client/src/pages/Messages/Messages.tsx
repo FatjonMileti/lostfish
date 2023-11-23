@@ -184,7 +184,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     <>
       <div
         className={classNames('messages-page', className, {
-          'no-messages': !chatRooms.isLoading && chatRooms.data?.length === 0
+          'no-messages': !chatRooms.isFetching && chatRooms.data?.length === 0
         })}>
         <div className='header-and-content-wrapper'>
           <Header
@@ -196,8 +196,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             }
           />
 
-          {chatRooms.isLoading || (chatRooms.isFetching && <ShowGlobalLoading />)}
-          {!chatRooms.isLoading && chatRooms.data?.length === 0 && (
+          {chatRooms.isFetching && <ShowGlobalLoading />}
+          {!chatRooms.isFetching && chatRooms.data?.length === 0 && (
             <div className='no-messages-view'>
               <img src={noMessages} alt='no messages' />
               <Typography variant='body2' className='title'>
@@ -208,8 +208,8 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
               </Typography>
             </div>
           )}
-          {chatRooms.isLoading && <div />}
-          {!chatRooms.isLoading && chatRooms.data?.length !== 0 && (
+          {chatRooms.isFetching && <div />}
+          {!chatRooms.isFetching && chatRooms.data?.length !== 0 && (
             <div className='container'>
               <div className='chats'>
                 <div className='chats-header'>

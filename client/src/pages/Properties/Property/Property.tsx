@@ -13,6 +13,7 @@ import { Slider } from './Slider';
 import { AreaUnitType } from '../NewProperty/property.types';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { Skeleton } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   propertyId: string;
@@ -72,6 +73,8 @@ export const Property = styled(
       }
     });
 
+    const navigate = useNavigate();
+
     return (
       <div className={classNames('property', className)}>
         <Slider images={images} />
@@ -101,9 +104,11 @@ export const Property = styled(
                   potentialMatches?.data.slice(0, 3).map((st, stIndex) => {
                     return (
                       <div
+                        onClick={() => navigate('/')}
                         key={stIndex}
                         className='tenant-image '
-                        style={{ backgroundImage: `url(${getAvatarFormIndex(st.criteria.avatar)})` }}></div>
+                        style={{ backgroundImage: `url(${getAvatarFormIndex(st.criteria.avatar)})` }}
+                      />
                     );
                   })}
                 {!potentialMatches.isFetching && potentialMatches?.data?.length > 3 && (
@@ -262,6 +267,7 @@ export const Property = styled(
             border-radius: 50%;
             background-position: center;
             z-index: 1;
+            cursor: pointer;
 
             :not(:first-child) {
               margin-left: -8px;
