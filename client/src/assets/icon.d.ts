@@ -1,4 +1,7 @@
 export type IconNames = 
+  | "minus"
+  | "support"
+  | "checked-o"
   | "lostfish"
   | "eye-line"
   | "pound-coin"
@@ -40,7 +43,6 @@ export type IconNames =
   | "banknote"
   | "location"
   | "trash"
-  | "minus"
   | "plus-1"
   | "lost-fish-yang"
   | "lost-fish-yin"
