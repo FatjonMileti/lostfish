@@ -18,12 +18,12 @@ export const FaqComponent = styled(({ className, title, description }: FaqCompon
 
   return (
     <div className={`faq-component ${className}`}>
-      <div className='title-button'>
+      <div className='title-and-button-wrapper'>
         <Typography variant='body3' className='title'>
           {title}
         </Typography>
         <IconButton size='small' onClick={toggleDescription}>
-          <Icon icon={isDescriptionVisible ? 'minus' : 'plus'} size={20} />
+          <Icon icon={isDescriptionVisible ? 'minus' : 'plus'} size={24} />
         </IconButton>
       </div>
       {isDescriptionVisible && (
@@ -41,7 +41,7 @@ export const FaqComponent = styled(({ className, title, description }: FaqCompon
     gap: 24px;
     border-bottom: 1px solid #e7e7e7;
 
-    .title-button {
+    .title-and-button-wrapper {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -50,6 +50,11 @@ export const FaqComponent = styled(({ className, title, description }: FaqCompon
       .title {
         font-weight: 700;
         line-height: 32px;
+      }
+
+      .icon-button {
+        padding: 4px;
+        
       }
     }
 

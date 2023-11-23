@@ -35,7 +35,7 @@ const submenus: any[] = [
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
+  { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
   { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
@@ -45,7 +45,7 @@ const tenantSubmenu: any[] = [
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'chat', text: 'Help & Support', link: '/help-and-support' },
+  { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
   { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
@@ -116,7 +116,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                         <motion.div
                           whileTap={{ scale: 0.98 }}
                           className={`menu-item ${isActive ? 'active' : ''}`}>
-                          <Icon icon={icon} color='black' size={23} />
+                          <Icon icon={icon} color='black' size={24} />
                           <Typography variant='body4' className='text'>
                             {text}
                           </Typography>

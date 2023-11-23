@@ -59,9 +59,9 @@ export const DocumentsView = (props: IDocumentView) => {
               variant='secondary'
               startIcon={
                 selectedDocument?.key ? (
-                  <Icon icon='chevron-right' size={16} />
+                  <Icon icon='chevron-right' size={20} />
                 ) : (
-                  <Icon icon='plus' size={16} />
+                  <Icon icon='plus' size={20} />
                 )
               }
               onClick={() => handleAddDocumentClick(document.type)}>

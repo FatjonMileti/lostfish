@@ -1,14 +1,14 @@
 import { styled } from '@mui/system';
 import React from 'react';
 
-import LogoPlusTextBlack from '../../assets/images/LogoPlusTextBlack.svg';
 import { SocialAccountButton } from '../../components/SocialAccountButton';
 import { Label } from '../../components/Label';
+import {Icon} from "../../components/Icon";
 
 export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`footer-section ${className}`}>
-      <img className='logo' alt='logo' src={LogoPlusTextBlack} />
+        <Icon icon='lostfish' className='logo'/>
       <div className='links-row'>
         <Label variant='tertiary'>How Lostfish works</Label>
         <Label variant='tertiary'>Terms & Conditions</Label>
@@ -31,6 +31,8 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
 
     .logo {
       align-self: center;
+      width: 27px !important;
+      height: 40px !important;
     }
 
     .links-row {
