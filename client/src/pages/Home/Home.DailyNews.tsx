@@ -18,10 +18,10 @@ export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <Typography variant='body4'>DAILY NEWS</Typography>
             <div className='buttons'>
               <IconButton size='large'>
-                <Icon icon='share' size={20} />
+                <Icon icon='share' size={24} />
               </IconButton>
               <IconButton size='large'>
-                <Icon icon='label-vertical' size={20} />
+                <Icon icon='label-vertical' size={24} />
               </IconButton>
             </div>
           </div>
@@ -40,12 +40,12 @@ export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               </Label>
             </div>
           </div>
-          <div className='buttons'>
-            <IconButton size='large'>
-              <Icon icon='chevron-left' size={16} />
+          <div className='action-buttons'>
+            <IconButton>
+              <Icon icon='chevron-left' />
             </IconButton>
-            <IconButton size='large'>
-              <Icon icon='chevron-right' size={16} />
+            <IconButton>
+              <Icon icon='chevron-right' />
             </IconButton>
           </div>
         </div>
@@ -93,7 +93,6 @@ export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
 
             button {
               background: #fff;
-              padding: 20px;
               border: 2px solid #184d6d;
 
               &:hover {
@@ -119,7 +118,7 @@ export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             gap: 8px;
           }
         }
-        .buttons {
+        .action-buttons {
           display: flex;
           align-items: center;
           gap: 8px;
@@ -127,7 +126,7 @@ export const DailyNews = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           .icon-button {
             background: #fff;
             border: 2px solid #f3f4f5;
-            padding: 14px;
+            padding: 10px;
           }
 
           .icon-button:hover {

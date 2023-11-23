@@ -57,7 +57,7 @@ export const ImproveTrustScoreModal = styled(
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
-                    <Icon icon='checked' size={10} />
+                    <Icon icon='checked' size={16} />
                   </div>
                   <Typography variant='body4'>Completed</Typography>
                 </div>
@@ -108,7 +108,7 @@ export const ImproveTrustScoreModal = styled(
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
-                    <Icon icon='checked' size={10} />
+                    <Icon icon='checked' size={16} />
                   </div>
                   <Typography variant='body4'>Completed</Typography>
                 </div>
@@ -135,7 +135,7 @@ export const ImproveTrustScoreModal = styled(
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
-                    <Icon icon='checked' size={10} />
+                    <Icon icon='checked' size={16} />
                   </div>
                   <Typography variant='body4'>Completed</Typography>
                 </div>
@@ -161,7 +161,7 @@ export const ImproveTrustScoreModal = styled(
               ) : (
                 <div className='completed'>
                   <div className='completed-indicator'>
-                    <Icon icon='checked' size={10} />
+                    <Icon icon='checked' size={16} />
                   </div>
                   <Typography variant='body4'>Completed</Typography>
                 </div>

@@ -628,7 +628,7 @@ export const PropertyForm = styled(
                                 target: { value: value.filter((_: any, i: number) => i !== imageIndex) }
                               });
                             }}>
-                            <Icon icon='minus' size={11} />
+                            <Icon icon='minus' size={16} />
                           </IconButton>
                           <img alt='property image' src={`${image?.link}`} />
                         </div>
@@ -643,7 +643,7 @@ export const PropertyForm = styled(
                               onClick={() => {
                                 setNewImages(state.newImages.filter((_: any, i: number) => i !== imageIndex));
                               }}>
-                              <Icon icon='minus' size={11} />
+                              <Icon icon='minus' size={16} />
                             </IconButton>
                             <img alt='property image' src={URL.createObjectURL(image)} />
                           </div>
@@ -659,7 +659,7 @@ export const PropertyForm = styled(
                                   state.generatedImages.filter((_: any, i: number) => i !== imageIndex)
                                 );
                               }}>
-                              <Icon icon='minus' size={11} />
+                              <Icon icon='minus' size={16} />
                             </IconButton>
                             <img alt='property image' src={image.link} />
                           </div>
@@ -854,7 +854,7 @@ export const PropertyForm = styled(
                 position: absolute;
                 color: white;
                 background-color: #e5155a;
-                padding: 3px;
+                padding: 0;
                 right: 2px;
                 top: 2px;
               }
