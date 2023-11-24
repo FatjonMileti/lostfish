@@ -113,7 +113,7 @@ export const CreateAccountModal = styled(
             <Typography variant='body3' className='title'>
               Create account
             </Typography>
-            <CloseButton inverted={false} background={true} size='large' onClick={onBackdropClick} />
+            <CloseButton inverted={false} background={true} size='medium' onClick={onBackdropClick} />
           </div>
 
           <div className='container'>
