@@ -33,7 +33,7 @@ export const ImproveTrustScoreModal = styled(
                 {profileStore.trust_score}%
               </Typography>
             </div>
-            <CloseButton onClick={closeModal} />
+            <CloseButton onClick={closeModal} size='medium'/>
           </div>
 
           <div className='modal-body'>

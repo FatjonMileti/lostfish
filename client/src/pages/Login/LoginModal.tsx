@@ -170,7 +170,7 @@ export const LoginModal = styled(
             <CloseButton
               inverted={false}
               background={true}
-              size='large'
+              size='medium'
               onClick={otherProps.onBackdropClick}
             />
           </div>

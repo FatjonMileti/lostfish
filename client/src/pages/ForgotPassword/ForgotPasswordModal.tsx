@@ -76,7 +76,7 @@ export const ForgotPasswordModal = styled(
             <Typography variant='body3' className='title'>
               Reset your password
             </Typography>
-            <CloseButton inverted={false} background={true} size='large' onClick={onBackdropClick} />
+            <CloseButton inverted={false} background={true} size='medium' onClick={onBackdropClick} />
           </div>
 
           <div className='container'>
