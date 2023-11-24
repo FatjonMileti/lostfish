@@ -234,13 +234,15 @@ const PaginationPipeline: PaginationPipelineFunc = (
         property_match: {
           _id: 1,
           created_at: 1,
-          landlord: 1
+          landlord: 1,
+          unmatched: 1
         },
         tenant_match: {
           _id: 1,
           created_at: 1,
           tenant: 1,
-          criteria: 1
+          criteria: 1,
+          unmatched: 1
         },
         unseen_messages: 1
       }

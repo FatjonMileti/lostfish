@@ -18,6 +18,7 @@ interface ReviewOfferModalProps extends ModalProps {
   room: IRoom;
   offer: ApiOfferDocument;
   refuseOffer: UseMutationResult<ApiOfferDocument, unknown, string>;
+  acceptOffer: UseMutationResult<ApiOfferDocument, unknown, string>;
   viewProfile: () => any;
 }
 
@@ -30,7 +31,7 @@ export interface ApiOfferDocument {
 }
 
 export const ReviewOfferModal = styled(
-  ({ className, room, offer, refuseOffer, viewProfile, ...rest }: ReviewOfferModalProps) => {
+  ({ className, room, offer, refuseOffer, acceptOffer, viewProfile, ...rest }: ReviewOfferModalProps) => {
     const property = room.property;
 
     const tenant = room.tenant_match?.tenant;
@@ -42,7 +43,7 @@ export const ReviewOfferModal = styled(
 
     return (
       <Modal className={classNames('review-offer-modal', className)} {...rest}>
-        {refuseOffer.isLoading && <ShowGlobalLoading />}
+        {(refuseOffer.isLoading || acceptOffer.isLoading) && <ShowGlobalLoading />}
         <div className='modal-header'>
           <Typography variant='body2' className='title'>
             Review offer
@@ -161,7 +162,7 @@ export const ReviewOfferModal = styled(
                 <Icon icon='close' />
                 Refuse offer
               </Label>
-              <Label size='large' onClick={() => refuseOffer.mutate(offer._id)}>
+              <Label size='large' onClick={() => acceptOffer.mutate(offer._id)}>
                 <Icon icon='checked' />
                 Accept offer
               </Label>

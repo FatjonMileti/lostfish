@@ -7,52 +7,69 @@ import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import moment from 'moment';
 import { useUserStore } from '../../globalState/user';
 import classNames from 'classnames';
+import { Role } from '../../enums';
+import { useProfileStore } from '../../globalState/profile';
 
-export const Conversation = styled(
-  (props: {
-    joinRoom: (roomId: IRoom) => void;
-    fullName: string;
-    room: IRoom;
-    className?: string;
-    active?: boolean;
-  }) => {
-    const { joinRoom, fullName, room: room, className, active } = props;
+interface ConversationProps {
+  joinRoom: (roomId: IRoom) => void;
+  room: IRoom;
+  className?: string;
+  active?: boolean;
+}
 
-    const userStore = useUserStore();
+export const Conversation = styled(({ joinRoom, room: room, className, active }: ConversationProps) => {
+  const userStore = useUserStore();
+  const profileStore = useProfileStore();
 
-    const avatarKey =
-      userStore.userDetails?.user_id === room?.author?._id ? room?.participant?.avatar : room?.author?.avatar;
+  const avatarKey =
+    userStore.userDetails?.user_id === room?.author?._id ? room?.participant?.avatar : room?.author?.avatar;
 
-    const avatar = getAvatarFormIndex(avatarKey);
+  const avatar = getAvatarFormIndex(avatarKey);
 
-    return (
-      <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(room)}>
-        <div className='avatar-and-unseen-messages-wrapper'>
+  const fullName =
+    userStore.userDetails?.user_id === room?.author?._id
+      ? `${room.participant?.first_name} ${room.participant?.last_name}`
+      : `${room.author?.first_name} ${room.author?.last_name}`;
+
+  return (
+    <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(room)}>
+      <div className='avatar-and-unseen-messages-wrapper'>
+        {profileStore.role === Role.Tenant && room.property && (
+          <div className='property-image'>
+            <Avatar
+              image={avatar}
+              className={classNames({
+                lostfish: avatarKey === 'lostfish'
+              })}
+            />
+          </div>
+        )}
+
+        {(profileStore.role === Role.Landlord || !room.property) && (
           <Avatar
             image={avatar}
             className={classNames({
               lostfish: avatarKey === 'lostfish'
             })}
           />
+        )}
 
-          {room.unseen_messages !== undefined && room.unseen_messages > 0 && (
-            <span className='unseen-messages-nr'>{room.unseen_messages}</span>
-          )}
-        </div>
-
-        <div className='details'>
-          <Typography variant='body4' className='property'>
-            {fullName}
-          </Typography>
-          <Typography variant='body6'>
-            {room.last_message?.created_at &&
-              moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}
-          </Typography>
-        </div>
+        {room.unseen_messages !== undefined && room.unseen_messages > 0 && (
+          <span className='unseen-messages-nr'>{room.unseen_messages}</span>
+        )}
       </div>
-    );
-  }
-)`
+
+      <div className='details'>
+        <Typography variant='body4' className='property'>
+          {fullName}
+        </Typography>
+        <Typography variant='body6'>
+          {room.last_message?.created_at && moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}
+        </Typography>
+      </div>
+    </div>
+  );
+})`
   &.conversation {
     display: flex;
     column-gap: 16px;
@@ -80,6 +97,22 @@ export const Conversation = styled(
         &.lostfish {
           background-size: 32px 32px;
           background-color: #184d6d;
+        }
+      }
+
+      .property-image {
+        display: grid;
+        justify-content: flex-end;
+        height: 48px;
+        width: 48px;
+        background-image: url('${(props) => props.room.property.property_images?.[0]?.link}');
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+
+        .avatar {
+          width: 20px;
+          height: 20px;
         }
       }
 

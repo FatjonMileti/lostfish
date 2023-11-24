@@ -11,6 +11,10 @@ const OfferSchema = new Schema<OfferDocument>({
   created_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_for: { type: Schema.Types.ObjectId, ref: 'user' },
   refused: { type: Boolean, default: false },
+  accepted: {
+    accepted_date: { type: Date },
+    status: { type: Boolean, default: false }
+  },
   created_at: { type: Date, required: true, default: () => new Date() }
 });
 const OfferModel: Model<OfferDocument> = mongoose.model<OfferDocument>('offer', OfferSchema);

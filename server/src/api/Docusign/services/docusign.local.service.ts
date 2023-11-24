@@ -10,6 +10,7 @@ import userService from '../../User/user.service';
 import config from '../../../config/index';
 import envelopeService from './envelope.service';
 import { EnvelopeSummary } from 'docusign-esign';
+import propertyService from '../../Property/services/property.service';
 
 type SignUrl = string | undefined;
 
@@ -275,6 +276,9 @@ const successSignRedirect = async (req: Request, res: Response) => {
 
       if (existingEnvelope.signed_by_landlord && existingEnvelope.signed_by_tenant) {
         existingEnvelope.status = 'Signed';
+
+        //
+        await propertyService.markPropertyAsRented(existingEnvelope.property);
       }
 
       await existingEnvelope.save();

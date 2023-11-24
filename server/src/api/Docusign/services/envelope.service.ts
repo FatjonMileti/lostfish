@@ -17,6 +17,7 @@ import moment from 'moment/moment';
 import docusignLocalService from './docusign.local.service';
 import { IEnvelope } from '../schemas/envelope';
 import docusignService from './docusign.service';
+import { OfferDocument } from '../../Offer/offer.interface';
 
 const jwtConfig = config.docusign;
 
@@ -57,7 +58,8 @@ const createTransactionAgreementEnvelope = (user: UserDocument) => {
 const createContractEnvelope = (
   landlord: UserDocument,
   tenant: UserDocument,
-  property: PropertyDocument
+  property: PropertyDocument,
+  offer: OfferDocument | null
 ): EnvelopeDefinition => {
   // @ts-ignore
   const env: EnvelopeDefinition = new docusign.EnvelopeDefinition();
@@ -76,7 +78,7 @@ const createContractEnvelope = (
 
   const nrOfMonths: Text = {
     tabLabel: 'nr_of_months',
-    value: '12'
+    value: offer?.warranty
   };
 
   const startingFromDate: Text = {
@@ -86,7 +88,7 @@ const createContractEnvelope = (
 
   const rentingPrice: Text = {
     tabLabel: 'renting_price',
-    value: property.asset_rent.rental_amount.toString()
+    value: offer?.offering_price.toString() //|| property.asset_rent.rental_amount.toString()
   };
 
   const depositValue: Text = {

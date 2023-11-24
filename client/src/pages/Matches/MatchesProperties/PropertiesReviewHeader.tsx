@@ -11,7 +11,12 @@ import { Skeleton } from '@mui/material';
 interface PropertiesReviewHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const PropertiesReviewHeader = styled(({ className }: PropertiesReviewHeaderProps) => {
-  const suggestedProperties = useSuggestedProperties({ params: { chosen: false, disliked: false } });
+  const suggestedProperties = useSuggestedProperties({
+    params: { chosen: false, disliked: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
   const navigate = useNavigate();
 
   return (

@@ -17,11 +17,15 @@ import { ApiOfferDocument } from '../MatchDetailsProperty/MatchDetailsproperty.R
 import axios from '../../../../utils/axios';
 import { ReviewOfferModal } from './MatchDetailsTenant.ReviewOfferModal';
 
+import { Documents } from '../../Documents/Documents';
+import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
+
 interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
+  fetchChatRooms: () => any;
 }
 
-export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenantProps) => {
+export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: MatchDetailsTenantProps) => {
   const [tenantToView, setTenantToView] = React.useState<Partial<MatchedTenantType> | null>();
 
   const [reviewOfferModalVisibility, setReviewOfferModalVisibility] = React.useState(false);
@@ -70,23 +74,51 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
     }
   });
 
-  console.log('offerQuery: ', offerQuery);
+  const acceptOffer = useMutation<ApiOfferDocument, unknown, string>({
+    mutationFn: async (offerId: string) => {
+      const { data } = await axios(userStore.auth.access_token).patch<ApiOfferDocument>(
+        `/api/offer/${offerId}/accepted`
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return data;
+    },
+    onSuccess: () => {
+      setReviewOfferModalVisibility(false);
+      offerQuery.refetch();
+    }
+  });
 
   const viewProfile = () => {
     setTenantToView({
       criteria: mapCriteria({
         ...room.tenant_match?.criteria,
         created_by: room.tenant_match?.tenant
-      })
+      }),
+      matchId: room.tenant_match?._id
     });
   };
+
+  const unmatchTenant = useMutation({
+    mutationFn: (matchId: string) => {
+      return axios(userStore.auth.access_token).patch(`/api/match/${matchId}/unmatched`);
+    },
+    onSuccess: () => {
+      if (tenantToView) {
+        setTenantToView(null);
+      }
+      fetchChatRooms();
+    }
+  });
 
   return (
     <>
       <div
         className={classNames('match-details-tenant', className, {
-          'offer-refused': offerQuery?.data?.refused
+          'offer-refused': offerQuery?.data?.refused,
+          'offer-accepted': offerQuery?.data?.accepted?.status,
+          unmatched: room.tenant_match?.unmatched
         })}>
+        {unmatchTenant.isLoading && <ShowGlobalLoading />}
         <div className={`tenant-details ${className}`}>
           <Avatar image={avatar} />
 
@@ -101,99 +133,182 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
           </div>
         </div>
 
-        <Label variant='secondary' className='view-profile-button' onClick={viewProfile}>
-          View profile
-        </Label>
-
-        <div className='explanation'>
-          <Typography variant='body6' className='explanation-title'>
-            Offers
-          </Typography>
-          <Typography variant='body6' className='explanation-description'>
-            Any offers that this tenant sends you will appear here. You can{' '}
-            <span className='bold'>Accept, Reject</span> or
-            <span className='bold'> Reject and unmatch</span>
-          </Typography>
-        </div>
-
-        {offerQuery.data && (
+        {!room.tenant_match?.unmatched && !room.property_match?.unmatched && (
           <>
-            {offerQuery.data.refused && (
+            <Label variant='secondary' className='view-profile-button' onClick={viewProfile}>
+              View profile
+            </Label>
+            {tenantToView && (
+              <ViewProfile
+                criteria={tenantToView.criteria}
+                closeViewProfile={() => setTenantToView(null)}
+                dislikeTenant={() => {
+                  if (tenantToView?.matchId) {
+                    unmatchTenant.mutate(tenantToView?.matchId);
+                  }
+                }}
+                disableLikeTenant
+              />
+            )}
+
+            <div className='explanation'>
+              <Typography variant='body6' className='explanation-title'>
+                Offers
+              </Typography>
+              <Typography variant='body6' className='explanation-description'>
+                Any offers that this tenant sends you will appear here. You can{' '}
+                <span className='bold'>Accept, Reject</span> or
+                <span className='bold'> Reject and unmatch</span>
+              </Typography>
+            </div>
+
+            {offerQuery.data && (
               <>
-                <div className='offer-rejected-wrapper'>
-                  <div className='offer-rejected-informative-text'>
-                    <Icon icon='close-o' />
-                    <Typography variant='body6' className='offer-sent-title'>
-                      Your rejected the offer
-                    </Typography>
-                  </div>
-                  <Typography variant='body6'>
-                    You rejected this tenant’s offer. If you’re open to negotiate you can reach the tenant on
-                    chat or if you want, you can unmatch him and don’t receive an offer again.
-                  </Typography>
-                </div>
+                {offerQuery.data.refused && !offerQuery.data?.accepted?.status && (
+                  <>
+                    <div className='offer-rejected-wrapper'>
+                      <div className='offer-rejected-informative-text'>
+                        <Icon icon='close-o' />
+                        <Typography variant='body6' className='offer-sent-title'>
+                          Your rejected the offer
+                        </Typography>
+                      </div>
+                      <Typography variant='body6'>
+                        You rejected this tenant’s offer. If you’re open to negotiate you can reach the tenant
+                        on chat or if you want, you can unmatch him and don’t receive an offer again.
+                      </Typography>
+                    </div>
+                  </>
+                )}
+
+                {offerQuery.data?.accepted?.status && (
+                  <>
+                    <div className='offer-accepted-wrapper'>
+                      <div className='offer-accepted-informative-text'>
+                        <Icon icon='checked-o' />
+                        <Typography variant='body6' className='offer-sent-title'>
+                          You accepted the offer
+                        </Typography>
+                      </div>
+                      <Typography variant='body6'>
+                        In order to complete the transaction, you will need to provide us with some documents.
+                        Once you have all the documents uploaded you can complete the transaction.
+                      </Typography>
+                    </div>
+
+                    <Documents room={room} />
+                  </>
+                )}
+
+                {!offerQuery.data.refused && !offerQuery.data?.accepted?.status && (
+                  <>
+                    <ReviewOfferModal
+                      open={reviewOfferModalVisibility}
+                      onBackdropClick={() => setReviewOfferModalVisibility(false)}
+                      room={room}
+                      offer={offerQuery.data}
+                      refuseOffer={refuseOffer}
+                      acceptOffer={acceptOffer}
+                      viewProfile={viewProfile}
+                    />
+                    <div className='received-offer'>
+                      <div className='texts-wrapper'>
+                        <Typography variant='body6' className='received-offer-title'>
+                          You received an offer!
+                        </Typography>
+                        <Typography variant='body6' className='received-offer-description'>
+                          Review the offer before taking action.
+                        </Typography>
+                      </div>
+                      <Label
+                        className='review-offer-button'
+                        onClick={() => setReviewOfferModalVisibility(true)}>
+                        Review offer
+                      </Label>
+                    </div>
+                  </>
+                )}
               </>
             )}
 
-            {!offerQuery.data.refused && (
-              <>
-                <ReviewOfferModal
-                  open={reviewOfferModalVisibility}
-                  onBackdropClick={() => setReviewOfferModalVisibility(false)}
-                  room={room}
-                  offer={offerQuery.data}
-                  refuseOffer={refuseOffer}
-                  viewProfile={viewProfile}
-                />
-                <div className='received-offer'>
-                  <div className='texts-wrapper'>
-                    <Typography variant='body6' className='received-offer-title'>
-                      You received an offer!
-                    </Typography>
-                    <Typography variant='body6' className='received-offer-description'>
-                      Review the offer before taking action.
-                    </Typography>
-                  </div>
-                  <Label className='review-offer-button' onClick={() => setReviewOfferModalVisibility(true)}>
-                    Review offer
-                  </Label>
-                </div>
-              </>
-            )}
+            <div className='divider' />
+
+            <div className='explanation'>
+              <Typography variant='body6' className='explanation-title'>
+                Connection
+              </Typography>
+              <Typography variant='body6' className='explanation-dsecription'>
+                In order to complete the transaction, you will need to provide us with some documents. Once
+                you have all the documents uploaded you can complete the transaction.
+              </Typography>
+            </div>
+
+            <div className='action-buttons'>
+              <Label
+                special
+                variant='secondary'
+                onClick={() => {
+                  if (room.tenant_match?._id) {
+                    unmatchTenant.mutate(room.tenant_match?._id);
+                  }
+                }}>
+                <Icon icon='dislike' size={24} />
+                Unmatch
+              </Label>
+              <Label variant='secondary'>
+                <Icon icon='email' />
+                Report
+              </Label>
+            </div>
           </>
         )}
 
-        <div className='divider' />
+        {room.tenant_match?.unmatched && (
+          <>
+            <div className='tenant-unmatched-wrapper'>
+              <div className='texts-wrapper'>
+                <div className='offer-rejected-informative-text'>
+                  <Icon icon='close-o' />
+                  <Typography variant='body6' className='offer-sent-title'>
+                    You unmatched this tenant
+                  </Typography>
+                </div>
+                <Typography variant='body6'>
+                  You are no longer matched with this tenant. Your history conversation will remain visible
+                  for 90 days or you can delete it whenever you want.
+                </Typography>
+              </div>
 
-        <div className='explanation'>
-          <Typography variant='body6' className='explanation-title'>
-            Connection
-          </Typography>
-          <Typography variant='body6' className='explanation-dsecription'>
-            In order to complete the transaction, you will need to provide us with some documents. Once you
-            have all the documents uploaded you can complete the transaction.
-          </Typography>
-        </div>
+              <Label className='delete-conversation-button' variant='secondary'>
+                Delete conversation
+              </Label>
+            </div>
+          </>
+        )}
 
-        <div className='action-buttons'>
-          <Label special variant='secondary'>
-            <Icon icon='dislike' size={24} />
-            Unmatch
-          </Label>
-          <Label variant='secondary'>
-            <Icon icon='email' />
-            Report
-          </Label>
-        </div>
+        {room.property_match?.unmatched && (
+          <>
+            <div className='tenant-unmatched-wrapper'>
+              <div className='texts-wrapper'>
+                <div className='offer-rejected-informative-text'>
+                  <Icon icon='close-o' />
+                  <Typography variant='body6' className='offer-sent-title'>
+                    You have been unmatched
+                  </Typography>
+                </div>
+                <Typography variant='body6'>
+                  You are no longer matched with this tenant. Your history conversation will remain visible
+                  for 90 days or you can delete it whenever you want.
+                </Typography>
+              </div>
+
+              <Label className='delete-conversation-button' variant='secondary'>
+                Delete conversation
+              </Label>
+            </div>
+          </>
+        )}
       </div>
-      {tenantToView && (
-        <ViewProfile
-          criteria={tenantToView.criteria}
-          closeViewProfile={() => setTenantToView(null)}
-          dislikeTenant={() => {}}
-          disableLikeTenant
-        />
-      )}
     </>
   );
 })`
@@ -208,6 +323,14 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
     align-self: flex-start;
 
     &.offer-refused {
+      box-shadow: 0px 16px 32px 0px rgba(180, 38, 59, 0.25);
+    }
+
+    &.offer-accepted {
+      box-shadow: 0px 16px 32px 0px rgba(64, 129, 64, 0.25);
+    }
+
+    &.unmatched {
       box-shadow: 0px 16px 32px 0px rgba(180, 38, 59, 0.25);
     }
 
@@ -291,6 +414,62 @@ export const MatchDetailsTenant = styled(({ className, room }: MatchDetailsTenan
         border: 1px solid #ecc9ce;
         background: #f4dee2;
         color: #b4263b;
+
+        font-weight: 700;
+
+        .icon {
+          width: 16px !important;
+          height: 16px !important;
+        }
+      }
+    }
+
+    .tenant-unmatched-wrapper {
+      display: grid;
+      row-gap: 24px;
+      .texts-wrapper {
+        display: grid;
+        row-gap: 8px;
+
+        .offer-rejected-informative-text {
+          display: flex;
+          column-gap: 4px;
+          align-items: center;
+          padding: 12px;
+          box-sizing: border-box;
+          border-radius: 8px;
+          border: 1px solid #ecc9ce;
+          background: #f4dee2;
+          color: #b4263b;
+
+          font-weight: 700;
+
+          .icon {
+            width: 16px !important;
+            height: 16px !important;
+          }
+        }
+      }
+
+      .delete-conversation-button {
+        width: 100%;
+      }
+    }
+
+    .offer-accepted-wrapper {
+      display: grid;
+      row-gap: 8px;
+
+      .offer-accepted-informative-text {
+        display: flex;
+        column-gap: 4px;
+        align-items: center;
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid #cfe0cf;
+        background: #e2ece2;
+        color: #408140;
 
         font-weight: 700;
 

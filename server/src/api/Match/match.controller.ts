@@ -48,7 +48,25 @@ export class MatchController {
     router.post('/property', authorize(), this.createMatchTenant);
     router.put('/:id', authorize(), validateId, this.updateMatch);
     router.delete('/:id', authorize(), validateId, this.deleteMatch);
+
+    router.patch('/:id/unmatched', authorize(), validateId, this.markAsUnmatched);
   }
+
+  private markAsUnmatched = async (req: Request, res: Response) => {
+    const matchId: string = req.params.id;
+    const match = await this.matchService.getMatchByQuery({
+      _id: matchId,
+      created_by: res.locals.user_id
+    });
+
+    if (!match) {
+      throw createError(httpStatus.NOT_FOUND, { message: 'not_found' });
+    }
+
+    const unmatchedMatch = await this.matchService.markAsUnmatched(matchId);
+
+    res.status(201).send(unmatchedMatch);
+  };
 
   private countMatches = async (req: Request, res: Response) => {
     const { matched, disliked } = req.query;

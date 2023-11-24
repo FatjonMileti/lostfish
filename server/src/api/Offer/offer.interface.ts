@@ -13,5 +13,9 @@ export interface OfferDocument extends Document {
   created_by: ObjectIdField;
   created_for: ObjectIdField;
   refused: boolean;
+  accepted: {
+    accepted_date: Date;
+    status: boolean;
+  };
   created_at: Date;
 }

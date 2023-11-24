@@ -14,6 +14,7 @@ export interface MatchDocument extends Document {
   starred: boolean;
   matched: boolean;
   disliked: boolean;
+  unmatched: boolean;
   type: MatchingType;
   created_by?: ObjectIdField | string;
   edited_by?: ObjectIdField | string;

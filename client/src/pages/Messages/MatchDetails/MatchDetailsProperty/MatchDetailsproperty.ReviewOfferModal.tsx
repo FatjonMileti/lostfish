@@ -26,6 +26,10 @@ export interface ApiOfferDocument {
   warranty: string;
   min_duration: string;
   refused: boolean;
+  accepted: {
+    accepted_date: Date;
+    status: boolean;
+  };
 }
 
 export const ReviewOfferModal = styled(

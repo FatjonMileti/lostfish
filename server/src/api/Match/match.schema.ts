@@ -26,6 +26,11 @@ const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
       default: false
     },
 
+    unmatched: {
+      type: Boolean,
+      default: false
+    },
+
     disliked: {
       type: Boolean,
       default: false

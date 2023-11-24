@@ -44,6 +44,7 @@ export interface PropertyMatch {
   _id: string;
   created_at: string;
   landlord: Partial<ApiUserDocumentType>;
+  unmatched: boolean;
 }
 
 export interface TenantMatch {
@@ -51,4 +52,5 @@ export interface TenantMatch {
   created_at: string;
   criteria: ApiCriteriaDocumentType;
   tenant: Partial<ApiUserDocumentType>;
+  unmatched: boolean;
 }

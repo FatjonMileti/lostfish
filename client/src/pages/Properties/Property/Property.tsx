@@ -41,7 +41,8 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
 const propertyStatusMap: any = {
   Draft: 'Draft',
   Live: 'Published',
-  Completed: 'Rented'
+  Completed: 'Rented',
+  Let: 'Rented'
 };
 
 export const Property = styled(
@@ -81,7 +82,7 @@ export const Property = styled(
         <div className='details'>
           <div className='description-header'>
             <Typography variant='body6' className='status'>
-              {propertyStatusMap[status]}
+              {propertyStatusMap[status] || status}
             </Typography>
 
             <div className='potential-matches'>

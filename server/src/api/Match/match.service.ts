@@ -91,4 +91,16 @@ export default class MatchService {
   public async findMatchById(id: string): Promise<MatchDocument | null> {
     return this.matchModel.findById(id);
   }
+
+  public async markAsUnmatched(id: string) {
+    return this.matchModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          unmatched: true
+        }
+      },
+      { new: true }
+    );
+  }
 }

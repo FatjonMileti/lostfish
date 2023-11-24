@@ -20,6 +20,10 @@ import docusignLocalService from './docusign.local.service';
 import assetService from '../../Property/services/property.service';
 import moment from 'moment';
 import envelopeService from './envelope.service';
+import OfferService from '../../Offer/offer.service';
+import OfferModel from '../../Offer/offer.schema';
+
+const offerService: OfferService = new OfferService(OfferModel);
 
 const jwtConfig = config.docusign;
 
@@ -209,10 +213,19 @@ const createEnvelope = async (request: Request, response: Response) => {
   try {
     const envelopesApi: EnvelopesApi = await getEnvelopesApi();
 
-    const [landlord, tenantUser, property] = await Promise.all([
+    const [landlord, tenantUser, property, offer] = await Promise.all([
       userService.findOne({ _id: request.body.landlord }),
       userService.findOne({ _id: request.body.tenant }),
-      assetService.findById(property_id)
+      assetService.findById(property_id),
+      offerService.getOfferByQuery({
+        property: property_id,
+        created_by: request.body.tenant,
+        created_for: request.body.landlord,
+        refused: false,
+        accepted: {
+          status: true
+        }
+      })
     ]);
 
     if (!landlord || !tenantUser) {
@@ -226,7 +239,8 @@ const createEnvelope = async (request: Request, response: Response) => {
     const envelope: EnvelopeDefinition = envelopeService.createContractEnvelope(
       landlord,
       tenantUser,
-      property
+      property,
+      offer
     );
 
     const results: EnvelopeSummary = await envelopesApi.createEnvelope(jwtConfig.appAccountId, {

@@ -22,4 +22,19 @@ export default class OfferService {
   public async refuseOffer(offerId: string) {
     return this.offerModel.updateOne({ _id: offerId }, { $set: { refused: true } });
   }
+
+  public async acceptOffer(offerId: string) {
+    return this.offerModel.findByIdAndUpdate(
+      { _id: offerId },
+      {
+        $set: {
+          accepted: {
+            status: true,
+            accepted_date: new Date()
+          }
+        }
+      },
+      { new: true }
+    );
+  }
 }

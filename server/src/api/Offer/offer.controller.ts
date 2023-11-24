@@ -23,6 +23,7 @@ export class OfferController {
     this.router.get('/matches/:matchId/offer', this.getOfferByMatchId);
     this.router.patch('/:offerId/canceled', this.cancelOffer);
     this.router.delete('/:offerId', this.refuseOffer);
+    this.router.patch('/:offerId/accepted', this.acceptOffer);
   }
 
   public createOffer = async (req: Request, res: Response) => {
@@ -119,8 +120,30 @@ export class OfferController {
       throw createError(400, { message: 'offer_not_found' });
     }
 
-    const refusedOffer = this.offerService.refuseOffer(offerId);
+    const refusedOffer = await this.offerService.refuseOffer(offerId);
 
     res.status(201).send(refusedOffer);
+  };
+
+  public acceptOffer = async (req: Request, res: Response) => {
+    const { offerId } = req.params;
+
+    const offer = await this.offerService.getOfferByQuery({
+      _id: offerId,
+      created_for: res.locals.user_id,
+      canceled: false,
+      refused: false,
+      accepted: {
+        status: false
+      }
+    });
+
+    if (!offer) {
+      throw createError(400, { message: 'offer_not_found' });
+    }
+
+    const acceptedOffer = await this.offerService.acceptOffer(offerId);
+
+    res.status(201).send(acceptedOffer);
   };
 }

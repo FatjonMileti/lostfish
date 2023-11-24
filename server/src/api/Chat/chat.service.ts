@@ -171,6 +171,7 @@ const handleNewMessage = async (socket: Socket, data: any) => {
       socket.to(data.room_id).emit('receive_message', messagesData);
 
       const roomDetails = await roomService.findWithAggregate(data.room_id);
+
       socketApi.users[userToBeNotified]?.forEach((socketId: string) => {
         socket.to(socketId).emit('update_message_list', roomDetails);
       });

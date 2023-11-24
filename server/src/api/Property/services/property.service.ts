@@ -1,11 +1,17 @@
 import PropertyModel from '../schemas/property.schema';
-import { CurrencyCode, FloorSizeUnit, MasterAssetTypeSring, PropertyDocument } from '../property.interface';
+import {
+  CurrencyCode,
+  FloorSizeUnit,
+  MasterAssetTypeSring,
+  PropertyDocument,
+  RentStatusString
+} from '../property.interface';
 import createError from 'http-errors';
 import httpStatus from 'http-status';
 import { Request, Response } from 'express';
 import AssetInvitation, { InvitationDocument } from '../schemas/asset-invitation.schema';
 import sendInvitationTemplate from '../../../utils/templates/sendInvitationTemplate';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import {
   generateLinksForImages,
   generateLinksForOneAsset,
@@ -49,7 +55,7 @@ const findAll = async (req: Request, res: Response) => {
       filteredStatus = ['Draft'];
     }
     if (status === 'rented') {
-      filteredStatus = ['Completed'];
+      filteredStatus = ['Completed', RentStatusString.Let];
     }
 
     if (filteredStatus.length > 0) query.status_string = { $in: filteredStatus };
@@ -506,6 +512,17 @@ const getPropertyViewers = async (req: Request, res: Response) => {
   res.send(response);
 };
 
+const markPropertyAsRented = async (propertyId: ObjectId | string) => {
+  return PropertyModel.updateOne(
+    { _id: propertyId },
+    {
+      $set: {
+        status_string: RentStatusString.Let
+      }
+    }
+  );
+};
+
 export default {
   findAll,
   getById,
@@ -519,7 +536,8 @@ export default {
   findPropertyById,
   uploadAssetFiles,
   findLastAddedPropertyWithDetails,
-  getPropertyViewers
+  getPropertyViewers,
+  markPropertyAsRented
 };
 
 type PaginationOptions = {

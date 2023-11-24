@@ -10,7 +10,6 @@ import { Button } from '../../components/Button';
 import { Conversation } from './Conversation';
 import { ChatBox } from './ChatBox/ChatBox';
 import { Header } from '../HomeLoggedIn/Header';
-import { DocumentsTest } from './Documents/DocumentsTest';
 import { MessagesProperties } from './Messages.Properties';
 
 import axios from '../../utils/axios';
@@ -50,7 +49,18 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
   const reorderMessages = (data: any) => {
     const filteredRooms = conversations.filter((room: IRoom) => room._id.toString() !== data._id.toString());
-    setConversations([data, ...filteredRooms]);
+    const oldRoom = conversations.find((r) => r._id === data._id);
+
+    if (oldRoom) {
+      setConversations([
+        {
+          ...oldRoom,
+          unseen_messages: data.unseen_messages,
+          last_message: data.last_message
+        },
+        ...filteredRooms
+      ]);
+    }
   };
 
   // @ts-ignore
@@ -99,41 +109,24 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     }
   };
 
-  const getRoomWithUser = async (userId: string, propertyId: string): Promise<IRoom | false> => {
-    try {
-      const { data } = await axios(userStore.auth.access_token).get('/api/chat/room', {
-        params: { participant: userId, property: propertyId }
-      });
-      return data;
-    } catch (err) {
-      return false;
-    }
-  };
-
-  const createRoom = async (participantId: string, propertyId: string): Promise<IRoom | false> => {
-    try {
-      const { data } = await axios(userStore.auth.access_token).post('/api/chat/create', {
-        author: userStore.userDetails.user_id,
-        participant: participantId,
-        property: propertyId
-      });
-      return data;
-    } catch (err) {
-      return false;
-    }
-  };
-
   const chatRooms = useQuery<IRoom[]>(
     ['messages', filterByProperty],
     async (): Promise<any[]> => {
-      const response = await axios(userStore.auth.access_token).get('/api/chat', {
+      const { data } = await axios(userStore.auth.access_token).get<{ docs: IRoom[] }>('/api/chat', {
         params: {
           property: filterByProperty || undefined
         }
       });
 
-      setConversations(response.data.docs);
-      return response.data.docs;
+      setConversations(data.docs);
+
+      if (room) {
+        const updatedRoom = data.docs.find((r) => r._id);
+        if (updatedRoom) {
+          setRoom(updatedRoom);
+        }
+      }
+      return data.docs;
     },
     {
       refetchOnWindowFocus: false,
@@ -228,16 +221,10 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
                 <div className='conversations-list'>
                   {conversations.map((row: IRoom, rowIndex: number) => {
-                    const fullName =
-                      userStore.userDetails?.user_id === row?.author?._id
-                        ? `${row.participant?.first_name} ${row.participant?.last_name}`
-                        : `${row.author?.first_name} ${row.author?.last_name}`;
-
                     return (
                       <Conversation
                         key={rowIndex}
                         joinRoom={joinRoom}
-                        fullName={fullName}
                         room={row}
                         active={room?._id === row?._id}
                       />
@@ -278,7 +265,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
               )}
               {room?.property ? (
                 <>
-                  <MatchDetails room={room} />
+                  <MatchDetails room={room} fetchChatRooms={() => chatRooms.refetch()} />
                   {/*<DocumentsTest room={room} />*/}
                 </>
               ) : (

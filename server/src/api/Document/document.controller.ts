@@ -187,7 +187,6 @@ export class DocumentController {
     await doc.save();
 
     try {
-      file.originalName = file.originalname;
       const document = await DocumentModel.findByIdAndUpdate(
         documentId,
         { file },
@@ -198,6 +197,7 @@ export class DocumentController {
       }
       response.status(200).json(document);
     } catch (error: any) {
+      console.log(error);
       response.status(400).send(error);
     }
   };
