@@ -93,7 +93,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
         <FilterMatchesModal open={filterMatchesModal} onBackdropClick={onCloseFilterModal}>
           <div className='modal-header'>
             <Typography variant='body2'>Filter your matches</Typography>
-            <CloseButton onClick={onCloseFilterModal} />
+            <CloseButton onClick={onCloseFilterModal} size='medium'/>
           </div>
           <div className='modal-body'>
             <div className='matches-with-offers'>
@@ -278,11 +278,6 @@ const FilterMatchesModal = styled(Modal)`
       align-items: center;
       padding: 24px 24px 16px 24px;
       box-sizing: border-box;
-      .close-button {
-        width: 48px;
-        height: 48px;
-        padding: 12px;
-      }
     }
     .modal-body {
       display: grid;
