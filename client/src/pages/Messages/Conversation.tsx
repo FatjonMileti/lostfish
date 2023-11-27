@@ -35,7 +35,11 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
     <div className={`conversation ${className} ${active ? 'active' : ''}`} onClick={() => joinRoom(room)}>
       <div className='avatar-and-unseen-messages-wrapper'>
         {profileStore.role === Role.Tenant && room.property && (
-          <div className='property-image'>
+          <div
+            className='property-image'
+            style={{
+              backgroundImage: `url(${room.property.property_images?.[0]?.link})`
+            }}>
             <Avatar
               image={avatar}
               className={classNames({
@@ -105,7 +109,6 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
         justify-content: flex-end;
         height: 48px;
         width: 48px;
-        background-image: url('${(props) => props.room.property.property_images?.[0]?.link}');
         background-size: cover;
         background-position: center;
         border-radius: 50%;

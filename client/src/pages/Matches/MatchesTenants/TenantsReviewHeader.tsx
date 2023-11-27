@@ -87,7 +87,7 @@ export const TenantsReviewHeader = styled(({ className }: TenantsReviewHeaderPro
           border-radius: 50%;
           background-position: center;
 
-          :not(:first-child) {
+          :not(:first-of-type) {
             margin-left: -8px;
           }
 

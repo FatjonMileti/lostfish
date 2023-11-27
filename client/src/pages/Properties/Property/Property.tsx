@@ -270,7 +270,7 @@ export const Property = styled(
             z-index: 1;
             cursor: pointer;
 
-            :not(:first-child) {
+            :not(:first-of-type) {
               margin-left: -8px;
             }
 
