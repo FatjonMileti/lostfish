@@ -184,7 +184,7 @@ export const MatchDetailsProperty = styled(
                         Places like this usually go for:
                       </Typography>
                       <Typography variant='body4' className='price-detail-value'>
-                        £10,850.00 - £18,930.00
+                        £2,000 - £2,500
                       </Typography>
                       <div className='according-to-and-logo'>
                         <Typography variant='body6' className='according-to'>
