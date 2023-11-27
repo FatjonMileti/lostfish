@@ -161,7 +161,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
   &.my-account-page {
     position: relative;
     display: grid;
-    background-color: white;
+    background-color: #c0daff;
     grid-template-rows: auto min-content;
 
     .header-and-content-wrapper {
