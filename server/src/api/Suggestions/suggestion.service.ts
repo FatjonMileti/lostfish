@@ -17,6 +17,7 @@ import createError from 'http-errors';
 import assetService from '../Property/services/property.service';
 import { MatchDocument } from '../Match/match.interface';
 import { Role } from '../User/user.interface';
+import getDistance from 'geolib/es/getDistance';
 
 const toSquareMeters = (surface: number): number => {
   return surface * 0.092903;
@@ -348,7 +349,7 @@ export default class SuggestionService {
   }
 
   public calculateSimilarity(clientCriteria: CriteriaDocument, property: PropertyDocument): number {
-    let nrOfComparisons = 11;
+    let nrOfComparisons = 16;
 
     let matchingCriteria = 0;
 
@@ -361,7 +362,19 @@ export default class SuggestionService {
     }
 
     // Radius
-    // if (clientCriteria.radius >= property.radius) matchingCriteria++;
+    const distance =
+      getDistance(
+        {
+          latitude: clientCriteria.asset_address.latitude,
+          longitude: clientCriteria.asset_address.longitude
+        },
+        { latitude: property.asset_address.latitude, longitude: property.asset_address.longitude }
+      ) / 1000;
+    const radius_in_km = Number(clientCriteria.radius) * 1.60934;
+    if (radius_in_km >= distance) {
+      matchingCriteria += 5;
+      matchLog['radius'] = true;
+    }
 
     // property type
     if (clientCriteria.property_type.includes(property.property_type)) {
