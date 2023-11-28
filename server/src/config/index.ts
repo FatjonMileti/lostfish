@@ -57,6 +57,7 @@ const defaultConfig = {
   redisUrl: process.env.REDIS_URL,
   userEmail: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
+  hostName: process.env.EMAIL_HOST,
   logging: false
 };
 

@@ -49,7 +49,7 @@ export default class MailService {
   async createConnection() {
     try {
       this.transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: config.hostName,
         auth: {
           user: config.userEmail,
           pass: config.emailPass
