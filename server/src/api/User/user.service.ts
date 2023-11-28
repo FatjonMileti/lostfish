@@ -245,11 +245,13 @@ const createUser = async (req: Request, res: Response) => {
     );
 
     // @ts-ignore
-    await mailService.sendMail({
-      to: user.email,
-      subject: 'Test email',
-      html: emailTemplate.html
-    });
+    mailService
+      .sendMail({
+        to: user.email,
+        subject: 'Confirm your user',
+        html: emailTemplate.html
+      })
+      .then((response: any) => response);
 
     // send welcome message in chat
     const agentUser = await UserModel.findOne({ role: Role.Agent });

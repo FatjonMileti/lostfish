@@ -48,8 +48,10 @@ export default class MailService {
   //CREATE A CONNECTION FOR LIVE
   async createConnection() {
     try {
+      console.log(config.emailPass);
       this.transporter = nodemailer.createTransport({
-        service: config.hostName,
+        host: config.hostName,
+        port: config.smtpPort,
         secure: false,
         auth: {
           user: config.userEmail,
@@ -68,7 +70,7 @@ export default class MailService {
   async sendMail(options: MailInterface) {
     return await this.transporter
       .sendMail({
-        from: `${process.env.EMAIL_USER || options.from}`,
+        from: config.userEmail,
         to: options.to,
         cc: options.cc,
         bcc: options.bcc,

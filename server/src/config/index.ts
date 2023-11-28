@@ -58,6 +58,7 @@ const defaultConfig = {
   userEmail: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,
   hostName: process.env.EMAIL_HOST,
+  smtpPort: process.env.EMAIL_PORT,
   logging: false
 };
 
