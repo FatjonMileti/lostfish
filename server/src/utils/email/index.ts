@@ -50,9 +50,13 @@ export default class MailService {
     try {
       this.transporter = nodemailer.createTransport({
         service: config.hostName,
+        secure: false,
         auth: {
           user: config.userEmail,
           pass: config.emailPass
+        },
+        tls: {
+          ciphers: 'SSLv3'
         }
       });
     } catch (err: any) {
