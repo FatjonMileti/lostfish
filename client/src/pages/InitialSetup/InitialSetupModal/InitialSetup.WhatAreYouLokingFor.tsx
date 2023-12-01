@@ -57,7 +57,9 @@ export const WhatAreYouLookingFor = styled(
                 className={classNames('circle ')}
                 onClick={() => {
                   onLookingForChange(LookingFor.OwnAPlace);
-                }}></div>
+                }}>
+                <div className='intersection' onClick={e => e.stopPropagation()}></div>
+              </div>
               <div className='button-and-text-wrapper'>
                 <IconButton className='plus-button' inverted>
                   <Icon icon='checked' size={24} color='white' />
@@ -237,7 +239,7 @@ export const WhatAreYouLookingFor = styled(
                 background-position-y: -56%;
               }
 
-              &:before {
+              .intersection {
                 background-color: white;
                 width: 100%;
                 height: 100%;
@@ -245,6 +247,7 @@ export const WhatAreYouLookingFor = styled(
                 position: absolute;
                 border-radius: 50%;
                 clip-path: circle(50% at -37px 50%);
+                cursor: initial;
                 z-index: 1;
                 ${(props) => props.theme.breakpoints.down('laptop')} {
                   clip-path: circle(50% at 50% -13%);
