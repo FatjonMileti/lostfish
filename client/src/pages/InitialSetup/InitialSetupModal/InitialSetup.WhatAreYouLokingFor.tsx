@@ -33,32 +33,42 @@ export const WhatAreYouLookingFor = styled(
             <div
               className={classNames('circle-wrapper first', {
                 active: lookingFor === LookingFor.LookingForAPlace
-              })}>
+              })}
+              onClick={() => {
+                onLookingForChange(LookingFor.LookingForAPlace)
+              }}>
               <div className='button-and-text-wrapper'>
                 <Typography className='looking-for-text' variant='body4'>
                   I’m looking for a place to rent
                 </Typography>
-                <IconButton className='plus-button' inverted>
+                <IconButton className='plus-button' inverted >
                   <Icon icon='checked' size={24} color='white' />
                 </IconButton>
               </div>
               <div
                 className={classNames('circle')}
-                onClick={() => {
-                  onLookingForChange(LookingFor.LookingForAPlace);
-                }}></div>
+              >
+                <div className='intersection-first'></div>
+              </div>
             </div>
 
             <div
               className={classNames('circle-wrapper second', {
                 active: lookingFor === LookingFor.OwnAPlace
-              })}>
+              })}
+              onClick={() => {
+                onLookingForChange(LookingFor.OwnAPlace);
+              }}>
               <div
                 className={classNames('circle ')}
-                onClick={() => {
-                  onLookingForChange(LookingFor.OwnAPlace);
-                }}>
-                <div className='intersection' onClick={e => e.stopPropagation()}></div>
+                >
+                <div
+                  className='intersection'
+                  onClick={() => {
+                    lookingFor === 'I own a place'
+                      ? onLookingForChange(LookingFor.OwnAPlace)
+                      : onLookingForChange(LookingFor.LookingForAPlace);
+                  }}></div>
               </div>
               <div className='button-and-text-wrapper'>
                 <IconButton className='plus-button' inverted>
@@ -137,6 +147,7 @@ export const WhatAreYouLookingFor = styled(
               .looking-for-text {
                 color: #184d6d;
                 border-bottom: 1px solid #184d6d;
+                cursor: pointer;
               }
             }
           }
@@ -213,12 +224,25 @@ export const WhatAreYouLookingFor = styled(
               background-size: cover;
               position: relative;
               background-image: url(${imLookingForPlace});
+
+              .intersection-first {
+                background-color: white;
+                width: 100%;
+                height: 100%;
+                content: '';
+                position: absolute;
+                border-radius: 50%;
+                clip-path: circle(50% at calc(100% + 37px) 50%);
+              }
             }
             .button-and-text-wrapper {
               margin: 0 -24px 0 0;
               ${(props) => props.theme.breakpoints.down('laptop')} {
                 margin: 0 0 -24px 0;
               }
+            }
+            :hover {
+              z-index: 1;
             }
           }
 
@@ -247,8 +271,6 @@ export const WhatAreYouLookingFor = styled(
                 position: absolute;
                 border-radius: 50%;
                 clip-path: circle(50% at -37px 50%);
-                cursor: initial;
-                z-index: 1;
                 ${(props) => props.theme.breakpoints.down('laptop')} {
                   clip-path: circle(50% at 50% -13%);
                 }
