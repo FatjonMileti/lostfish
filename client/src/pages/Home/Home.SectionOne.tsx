@@ -5,7 +5,7 @@ import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
 import { Avatar } from '../../components/Avatar';
-import HomeImg from './property.jpg';
+import HomeImg from './house-inside-ringbox.png';
 import TenantImg from './tenant.jpg';
 import classNames from 'classnames';
 
@@ -19,6 +19,7 @@ export const SectionOne = styled(
     section2Ref?: React.RefObject<HTMLDivElement>;
     onStartMatchingClick: () => any;
   }) => {
+
     return (
       <div className={classNames('section-one', className)}>
         <div className='section-content'>
@@ -164,6 +165,7 @@ export const SectionOne = styled(
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
+            background-color: #a8a8a8;
           }
         }
 
