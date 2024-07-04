@@ -8,9 +8,7 @@ const axiosWithToken = (token: string | null | undefined) => {
 
   axiosInstance.defaults.baseURL = config.apiUrl;
 
-  axiosInstance.interceptors.response.use((response: any) => response);
-
-  axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + token ?? null;
+  axiosInstance.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : null;
   axiosInstance.defaults.headers.common['Content-Type'] = 'application/json';
   return axiosInstance;
 };
