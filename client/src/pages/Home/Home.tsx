@@ -63,7 +63,10 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
       <ResetPasswordModal />
       <div className={classNames('home-page', className)}>
         <div className='header-and-content-wrapper'>
-          <Header onSigInClick={onSigInClick} />
+          <Header
+            onSigInClick={onSigInClick}
+            onRegisterClick={onCreateAccountClick}
+          />
 
           <div className='container-home'>
             {showStartMatching && (
