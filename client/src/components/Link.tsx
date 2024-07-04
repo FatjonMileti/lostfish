@@ -1,18 +1,18 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { Typography } from './Typography';
-import { TypographyProps } from './Typography';
+import classNames from 'classnames';
 
 export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  variant?: TypographyProps['variant'];
   underline?: 'always' | 'hover' | 'none';
+  size?: 'small' | 'medium';
 }
 
 export const Link = styled(
-  ({ className, children, variant = 'menu', underline = 'hover', ...rest }: LinkProps) => {
+  ({ className, children, underline = 'hover', size = 'small', ...rest }: LinkProps) => {
     return (
-      <a className={`link ${className} underline-${underline}`} {...rest}>
-        <Typography variant={variant}>{children}</Typography>
+      <a className={classNames('link', className, `underline-${underline}`, size)} {...rest}>
+        <Typography variant='body5'>{children}</Typography>
       </a>
     );
   }
@@ -20,10 +20,33 @@ export const Link = styled(
   cursor: pointer;
 
   .typography {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+
     text-underline-offset: 8px;
     text-decoration-thickness: 1px;
     transition: text-decoration 2s;
-    color: #184d6d;
+  }
+
+  &.small {
+    padding: 4px 0;
+    .typography {
+      color: #0d2a38;
+    }
+  }
+
+  &.medium {
+    padding: 8px 0;
+    .typography {
+      font-weight: 700;
+      color: #184d6d;
+    }
+    &:hover {
+      .typography {
+        color: #0d2a38;
+      }
+    }
   }
 
   &.underline-none {

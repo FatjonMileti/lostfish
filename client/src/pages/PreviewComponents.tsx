@@ -27,7 +27,6 @@ import { ArrowButton } from '../components/ArrowButton';
 import { Label } from '../components/Label';
 import { Avatar } from '../components/Avatar';
 import { avatars } from './HomeLoggedIn/avatars';
-import { Select } from '../components/Select/Select';
 import { CloseButton } from '../components/CloseButton';
 import { SocialAccountButton } from '../components/SocialAccountButton';
 import { MatchButton } from '../components/MatchButton';
@@ -39,7 +38,6 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
   const [showModal, setShowModal] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const [selectValue, setSelectValue] = React.useState<string | undefined>(undefined);
   return (
     <div className={`preview-components ${className}`}>
       <LoadingMatch />
@@ -233,6 +231,12 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Typography variant='body5'> body5 14/20</Typography>
           <Typography variant='body6'> body6 12/16</Typography>
           <Typography variant='menu'> menu 16/20</Typography>
+        </div>
+
+        <div className='typoraphys'>
+          <Typography>Link</Typography>
+          <Link>Link</Link>
+          <Link size='medium'>Link medium</Link>
         </div>
 
         <div className='fields'>

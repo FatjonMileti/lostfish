@@ -1,38 +1,36 @@
 import { styled } from '@mui/system';
 import React from 'react';
 
-import { SocialAccountButton } from '../../components/SocialAccountButton';
-import { Label } from '../../components/Label';
-import {Icon} from "../../components/Icon";
+import { Typography } from '../../components/Typography.tsx';
 
-export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
+import { LostfishFullLogoBlack } from '../../components/LostfishLogo/LostfishLogo.ts';
+import { Link } from '../../components/Link.tsx';
+
+export const Footer = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={`footer-section ${className}`}>
-        <Icon icon='lostfish' className='logo'/>
+      <img className='logo' src={LostfishFullLogoBlack} alt='lostfish logo' />
+
       <div className='links-row'>
-        <Label variant='tertiary'>How Lostfish works</Label>
-        <Label variant='tertiary'>Terms & Conditions</Label>
-        <Label variant='tertiary'> Privacy Policy</Label>
+        <Link>How Lostfish works</Link>
+        <Link>Terms & Conditions</Link>
+        <Link> Privacy Policy</Link>
       </div>
-      <div className='social-networks'>
-        <SocialAccountButton icon='facebook-f' />
-        <SocialAccountButton icon='twitter' />
-        <SocialAccountButton icon='instagram' />
-        <SocialAccountButton icon='linkedin-in' />
-      </div>
+      <Typography variant='body5' className='copyright'>
+        2024 © Lostfish Limited. All rights reserved.
+      </Typography>
     </div>
   );
 })`
   &.footer-section {
-    padding: 36px;
-    background-color: #fff;
+    padding: 48px 36px;
+    background: #f3f4f5;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .logo {
-      align-self: center;
-      width: 27px !important;
-      height: 40px !important;
+      height: 34px;
     }
 
     .links-row {
@@ -41,10 +39,8 @@ export const Footer = styled(({ className = '' }: React.HTMLAttributes<HTMLDivEl
       align-items: center;
     }
 
-    .social-networks {
-      display: flex;
-      align-items: center;
-      column-gap: 8px;
+    .copyright {
+      line-height: 24px;
     }
   }
 `;
