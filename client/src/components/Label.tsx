@@ -170,12 +170,12 @@ export const Label = styled(
     }
 
     &.variant-secondary {
-      border: 2px solid #184d6d;
+      outline: 1px solid #184d6d;
       height: fit-content;
 
       &:hover {
         color: #0d2a38;
-        border: 2px solid #0d2a38;
+        outline: 2px solid #0d2a38;
         background-color: rgba(24, 77, 109, 0.1);
       }
 
@@ -200,7 +200,7 @@ export const Label = styled(
 
       &.size-medium {
         height: 48px;
-        padding: 12px 20px;
+        padding: 12px 24px;
         font-size: 16px;
         line-height: 24px;
       }
