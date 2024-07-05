@@ -15,7 +15,7 @@ export const SectionOne = styled(
     onStartMatchingClick
   }: HTMLAttributes<HTMLDivElement> & {
     section2Ref?: React.RefObject<HTMLDivElement>;
-    onStartMatchingClick: () => any;
+    onStartMatchingClick: () => void;
   }) => {
     return (
       <div className={classNames('section-one', className)}>
@@ -23,8 +23,8 @@ export const SectionOne = styled(
           <div className='welcome'>
             <Typography className='perfect-match'>Leveraging real estate through algorithms.</Typography>
             <Typography variant='body4' className='texts'>
-              We use the power of Artificial Intelligence to find landlords and tenants exactly what they <br/> are
-              looking for: The perfect match for their home or the perfect home for their match.
+              We use the power of Artificial Intelligence to find landlords and tenants exactly what they{' '}
+              <br /> are looking for: The perfect match for their home or the perfect home for their match.
             </Typography>
           </div>
 
@@ -56,10 +56,11 @@ export const SectionOne = styled(
     position: relative;
     min-height: calc(100vh - 112px);
     display: grid;
-    grid-template-columns: 0.39fr 0.36fr;
-    padding: 144px 36px 48px 36px;
+    grid-template-columns: 1fr 1fr;
+    padding: 48px 36px;
     justify-content: space-between;
     box-sizing: border-box;
+    column-gap: 56px;
 
     &::before {
       content: '';
@@ -131,8 +132,7 @@ export const SectionOne = styled(
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
-      width: 640px;
-      aspect-ratio: 1/1;
+      width: 100%;
     }
   }
 `;
