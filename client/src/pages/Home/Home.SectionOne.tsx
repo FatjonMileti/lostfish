@@ -54,7 +54,7 @@ export const SectionOne = styled(
 )`
   &.section-one {
     position: relative;
-    min-height: calc(100vh - 112px);
+    min-height: calc(100vh - 96px);
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 48px 36px;
@@ -69,7 +69,7 @@ export const SectionOne = styled(
       background: linear-gradient(to bottom, rgba(255, 251, 243, 0.9) 20%, rgba(255, 255, 255, 0.9) 100%)
         no-repeat;
       z-index: -1;
-      top: -112px;
+      top: -96px;
     }
 
     &::after {
@@ -81,7 +81,7 @@ export const SectionOne = styled(
       background-size: cover;
       opacity: 0.4;
       z-index: -2;
-      top: -112px;
+      top: -96px;
     }
 
     .left-content {
