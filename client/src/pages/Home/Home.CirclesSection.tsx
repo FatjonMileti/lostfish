@@ -43,16 +43,14 @@ const HomeCirclesSection = styled(({ className }: HTMLAttributes<HTMLDivElement>
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       max-width: 1440px;
-      padding: 48px 36px;
+      padding: 48px calc(36px + 24px);
       box-sizing: border-box;
       justify-content: center;
 
       .circle {
         aspect-ratio: 1 / 1;
         display: flex;
-        max-width: 376px;
         width: auto;
-        //height: 378px;
         padding: 64px;
         flex-direction: column;
         justify-content: center;
@@ -63,9 +61,9 @@ const HomeCirclesSection = styled(({ className }: HTMLAttributes<HTMLDivElement>
         border-radius: 50%;
         position: relative;
         overflow: clip;
+        margin-inline: -24px;
 
         &:not(:nth-of-type(1)) {
-          margin-left: -48px;
           &:after {
             position: absolute;
             content: '';
