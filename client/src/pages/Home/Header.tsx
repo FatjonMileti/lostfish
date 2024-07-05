@@ -7,30 +7,36 @@ import { Label } from '../../components/Label';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSigInClick?: () => void;
+  onRegisterClick?: () => void;
 }
 
-export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProps) => {
-  const navigate = useNavigate();
-  return (
-    <div className={`header ${className}`}>
-      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
+export const Header = styled(
+  ({ className, onSigInClick = () => {}, onRegisterClick = () => {} }: HeaderProps) => {
+    const navigate = useNavigate();
+    return (
+      <div className={`header ${className}`}>
+        <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
 
-      <div className='menu-desktop'></div>
+        <div className='menu-desktop'></div>
 
-      <div className='right'>
-        <Label variant='secondary' className='join-button' size='large' onClick={onSigInClick}>
-          Sign In
-        </Label>
+        <div className='right'>
+          <Label variant='secondary' className='join-button' size='medium' onClick={onSigInClick}>
+            Sign In
+          </Label>
+          <Label variant='primary' className='join-button' size='medium' onClick={onRegisterClick}>
+            Register
+          </Label>
+        </div>
       </div>
-    </div>
-  );
-})`
+    );
+  }
+)`
   &.header {
     width: 100%;
-    height: 112px;
+    height: 96px;
     align-items: center;
 
-    padding: 20px 36px;
+    padding: 0px 36px;
     box-sizing: border-box;
 
     display: grid;
@@ -62,6 +68,9 @@ export const Header = styled(({ className, onSigInClick = () => {} }: HeaderProp
     }
 
     .right {
+      display: flex;
+      gap: 16px;
+
       .join-button {
       }
     }
