@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "newspaper"
   | "close-o"
   | "minus"
   | "support"
