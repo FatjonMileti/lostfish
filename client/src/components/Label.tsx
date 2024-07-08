@@ -5,7 +5,7 @@ import classNames from 'classnames';
 export interface LabelProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   size?: 'small' | 'medium' | 'large';
-  variant?: 'primary' | 'secondary' | 'tertiary';
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'special';
   special?: boolean;
   inverted?: boolean;
   disabled?: boolean;
@@ -44,7 +44,6 @@ export const Label = styled(
     font-size: 16px;
     line-height: 24px;
     font-weight: 600;
-    border: 2px solid transparent;
     font-family: Roobert, serif;
     cursor: pointer;
     color: #184d6d;
@@ -61,66 +60,124 @@ export const Label = styled(
     transition: all 0.2s ease-in-out;
 
     &.variant-primary {
-      border: 1px solid #184d6d;
+      border: none;
       background: #184d6d;
       color: white;
 
       &:hover {
+        border: none;
         color: white;
-        border: 1px solid #0d2a38;
         background-color: #0d2a38;
       }
 
       &.disabled {
-        border: 1px solid #a7a7a7;
         background: #a7a7a7;
         color: white;
         cursor: not-allowed;
+        pointer-events: none;
       }
 
-      &.special {
-        color: white;
-        background: #e5155a;
-        border: 1px solid #e5155a;
-        &:hover {
-          color: white;
-          border: 1px solid #b4263b;
-          background: #b4263b;
+      &.inverted {
+        background: #fff;
+        color: #0d2a38;
+
+        :hover {
+          background: #fffbf3;
+          color: #0d2a38;
         }
 
         &.disabled {
-          border: 1px solid #a7a7a7;
           background: #a7a7a7;
           color: white;
           cursor: not-allowed;
         }
       }
 
-      &.inverted {
-        border: 1px solid #fff;
-        background: #fff;
-        color: #0d2a38;
-
-        :hover {
-          border: 1px solid #184d6d;
-          background: #184d6d;
-          color: #ffffff;
-        }
+      &.size-small {
+        padding: 8px 16px;
       }
 
       &.size-medium {
-        height: 48px;
-        padding: 12px 20px;
+        padding: 12px 24px;
         font-size: 16px;
         line-height: 24px;
       }
 
       &.size-large {
-        padding: 20px 32px;
-        height: 64px;
+        padding: 16px 32px;
         font-size: 18px;
         line-height: 24px;
         font-weight: 600;
+      }
+    }
+
+    &.variant-secondary {
+      outline: 1px solid #184d6d;
+      height: fit-content;
+
+      &:hover {
+        color: #0d2a38;
+        outline: 2px solid #0d2a38;
+      }
+
+      &.inverted {
+        outline: 1px solid white;
+        color: white;
+        &:hover {
+          color: #fffbf3;
+          outline: 2px solid #fffbf3;
+        }
+      }
+
+      &.disabled {
+        outline-color: #a7a7a7;
+        color: #a7a7a7;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      &.size-small {
+        padding: 8px 16px;
+      }
+
+      &.size-medium {
+        padding: 12px 24px;
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      &.size-large {
+        padding: 16px 33px;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+      }
+    }
+
+    &.variant-special {
+      color: white;
+      background: #e5155a;
+      font-weight: 700;
+      line-height: 24px;
+
+      &:hover {
+        background: #b4263b;
+      }
+
+      &.size-small {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      &.size-medium {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+
+      &.size-large {
+        padding: 16px 32px;
+        font-size: 16px;
       }
     }
 
@@ -169,56 +226,6 @@ export const Label = styled(
       }
     }
 
-    &.variant-secondary {
-      outline: 1px solid #184d6d;
-      height: fit-content;
-
-      &:hover {
-        color: #0d2a38;
-        outline: 2px solid #0d2a38;
-        background-color: rgba(24, 77, 109, 0.1);
-      }
-
-      &.inverted {
-        border: 2px solid white;
-        color: white;
-        &:hover {
-          color: #0d2a38;
-          border-bottom: 2px solid white;
-          background-color: white;
-        }
-      }
-
-      &.special {
-        border: 2px solid #e5155a;
-        color: #e5155a;
-        &:hover {
-          color: white;
-          background-color: #e5155a;
-        }
-      }
-
-      &.size-medium {
-        height: 48px;
-        padding: 12px 24px;
-        font-size: 16px;
-        line-height: 24px;
-      }
-
-      &.size-large {
-        height: 64px;
-        padding: 18px 30px;
-        font-size: 18px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 24px;
-      }
-    }
-
-    &:hover {
-      border: 2px solid #c0daff;
-      color: #0d2a38;
-    }
     &.active {
       background-color: #c0daff;
       color: #0d2a38;

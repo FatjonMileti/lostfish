@@ -125,38 +125,6 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Avatar image={avatars[1].image} style={{ width: '100px', height: '100px' }} />
         </div>
         <div>
-          <Label variant='primary' size='large' special>
-            Label
-          </Label>
-
-          <Label variant='primary' size='large' special disabled>
-            Label
-          </Label>
-
-          <Label>Label</Label>
-
-          <Label active>Label</Label>
-          <Label variant='tertiary'>tertiary</Label>
-          <Label variant='tertiary' size='small'>
-            tertiary small
-          </Label>
-
-          <Label size='medium' variant='primary'>
-            medium primary
-          </Label>
-
-          <Label size='medium' variant='secondary'>
-            medium secondary
-          </Label>
-
-          <Label inverted size='medium' variant='secondary'>
-            medium secondary inverted
-          </Label>
-          <Label variant='primary' size='medium' disabled>
-            medium primary disabled
-          </Label>
-        </div>
-        <div>
           <ArrowButton />
           <ArrowButton direction='right' />
           <ArrowButton inverted />
@@ -203,6 +171,231 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
           <Button variant='secondary' inverted size='large' startIcon={<Icon icon='checked' size={14} />}>
             Match
           </Button>
+        </div>
+
+        <div className='cta-labels'>
+          <Typography>CTA Labels</Typography>
+
+          {/* Primary Variants */}
+          <Label variant='primary' size='large'>
+            <Icon icon='chevron-down' />
+            Label Primary Large
+          </Label>
+          <Label variant='primary' size='medium'>
+            <Icon icon='chevron-down' />
+            Label Primary Medium
+          </Label>
+          <Label variant='primary' size='small'>
+            <Icon icon='chevron-down' />
+            Label Primary Small
+          </Label>
+
+          {/* Primary Variants Inverted*/}
+          <Label variant='primary' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Large Inverted
+          </Label>
+
+          <Label variant='primary' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Medium Inverted
+          </Label>
+
+          <Label variant='primary' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Small Inverted
+          </Label>
+
+          {/* Secondary Variants */}
+          <Label variant='secondary' size='large'>
+            <Icon icon='chevron-down' />
+            Label Secondary Large
+          </Label>
+
+          <Label variant='secondary' size='medium'>
+            <Icon icon='chevron-down' />
+            Label Secondary Medium
+          </Label>
+
+          <Label variant='secondary' size='small'>
+            <Icon icon='chevron-down' />
+            Label Secondary Small
+          </Label>
+
+          {/* Secondary Variants Inverted*/}
+          <Label variant='secondary' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Large Inverted
+          </Label>
+          <Label variant='secondary' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Medium Inverted
+          </Label>
+          <Label variant='secondary' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Small Inverted
+          </Label>
+
+          {/* Tertiary Variants */}
+          <Label variant='tertiary' size='large'>
+            <Icon icon='chevron-down' />
+            Label Tertiary Large
+          </Label>
+          <Label variant='tertiary' size='medium'>
+            <Icon icon='chevron-down' />
+            Label Tertiary Medium
+          </Label>
+          <Label variant='tertiary' size='small'>
+            <Icon icon='chevron-down' />
+            Label Tertiary Small
+          </Label>
+
+          {/* Special Variants */}
+          <Label variant='special' size='large'>
+            <Icon icon='chevron-down' />
+            Label Special Large
+          </Label>
+
+          <Label variant='special' size='medium'>
+            <Icon icon='chevron-down' />
+            Label Special Medium
+          </Label>
+
+          <Label variant='special' size='small'>
+            <Icon icon='chevron-down' />
+            Label Special Small
+          </Label>
+
+          {/**/}
+
+          <Label variant='special' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Special Large Inverted
+          </Label>
+
+          <Label variant='special' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Special Medium Inverted
+          </Label>
+
+          <Label variant='special' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Special Small Inverted
+          </Label>
+          {/**/}
+
+          <Label variant='primary' size='large' special>
+            <Icon icon='chevron-down' />
+            Label Primary Large Special
+          </Label>
+          <Label variant='primary' size='medium' special>
+            <Icon icon='chevron-down' />
+            Label Primary Medium Special
+          </Label>
+          <Label variant='primary' size='small' special>
+            <Icon icon='chevron-down' />
+            Label Primary Small Special
+          </Label>
+          <Label variant='secondary' size='large' special>
+            <Icon icon='chevron-down' />
+            Label Secondary Large Special
+          </Label>
+          <Label variant='secondary' size='medium' special>
+            <Icon icon='chevron-down' />
+            Label Secondary Medium Special
+          </Label>
+          <Label variant='secondary' size='small' special>
+            <Icon icon='chevron-down' />
+            Label Secondary Small Special
+          </Label>
+          <Label variant='tertiary' size='large' special>
+            <Icon icon='chevron-down' />
+            Label Tertiary Large Special
+          </Label>
+          <Label variant='tertiary' size='medium' special>
+            <Icon icon='chevron-down' />
+            Label Tertiary Medium Special
+          </Label>
+          <Label variant='tertiary' size='small' special>
+            <Icon icon='chevron-down' />
+            Label Tertiary Small Special
+          </Label>
+
+          {/* Inverted Variants */}
+          <Label variant='primary' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Large Inverted
+          </Label>
+          <Label variant='primary' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Medium Inverted
+          </Label>
+          <Label variant='primary' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Primary Small Inverted
+          </Label>
+          <Label variant='secondary' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Large Inverted
+          </Label>
+          <Label variant='secondary' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Medium Inverted
+          </Label>
+          <Label variant='secondary' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Secondary Small Inverted
+          </Label>
+          <Label variant='tertiary' size='large' inverted>
+            <Icon icon='chevron-down' />
+            Label Tertiary Large Inverted
+          </Label>
+          <Label variant='tertiary' size='medium' inverted>
+            <Icon icon='chevron-down' />
+            Label Tertiary Medium Inverted
+          </Label>
+          <Label variant='tertiary' size='small' inverted>
+            <Icon icon='chevron-down' />
+            Label Tertiary Small Inverted
+          </Label>
+
+          {/* Disabled Variants */}
+          <Label variant='primary' size='large' disabled>
+            <Icon icon='chevron-down' />
+            Label Primary Large Disabled
+          </Label>
+          <Label variant='primary' size='medium' disabled>
+            <Icon icon='chevron-down' />
+            Label Primary Medium Disabled
+          </Label>
+          <Label variant='primary' size='small' disabled>
+            <Icon icon='chevron-down' />
+            Label Primary Small Disabled
+          </Label>
+          <Label variant='secondary' size='large' disabled>
+            <Icon icon='chevron-down' />
+            Label Secondary Large Disabled
+          </Label>
+          <Label variant='secondary' size='medium' disabled>
+            <Icon icon='chevron-down' />
+            Label Secondary Medium Disabled
+          </Label>
+          <Label variant='secondary' size='small' disabled>
+            <Icon icon='chevron-down' />
+            Label Secondary Small Disabled
+          </Label>
+          <Label variant='tertiary' size='large' disabled>
+            <Icon icon='chevron-down' />
+            Label Tertiary Large Disabled
+          </Label>
+          <Label variant='tertiary' size='medium' disabled>
+            <Icon icon='chevron-down' />
+            Label Tertiary Medium Disabled
+          </Label>
+          <Label variant='tertiary' size='small' disabled>
+            <Icon icon='chevron-down' />
+            Label Tertiary Small Disabled
+          </Label>
         </div>
 
         <div className='toggles'>
@@ -409,7 +602,8 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
     .checkboxes,
     .fields,
     .typoraphys,
-    .icon-buttons {
+    .icon-buttons,
+    .cta-labels {
       display: flex;
       flex-direction: column;
       row-gap: 16px;
