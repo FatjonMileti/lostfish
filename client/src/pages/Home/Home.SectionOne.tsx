@@ -30,21 +30,20 @@ export const SectionOne = styled(
 
           <div className='refine-search'>
             <Label
-              variant='primary'
-              size='medium'
+              variant='special'
+              size='large'
               className='action-button'
               onClick={onStartMatchingClick}
-              special>
+              >
               Start matching
             </Label>
-            <Button
+            <Label
               variant='secondary'
-              size='medium'
+              size='large'
               className='action-button'
-              endIcon={<Icon icon='arrow-right' size={24} />}
               onClick={() => section2Ref?.current?.scrollIntoView({ behavior: 'smooth' })}>
-              Scroll down
-            </Button>
+              Scroll down <Icon icon='arrow-right' size={24} />
+            </Label>
           </div>
         </div>
         <div className='right-content'></div>
@@ -117,8 +116,8 @@ export const SectionOne = styled(
         border-radius: 25000px;
 
         .action-button {
-          padding: 16px 32px;
-          height: 56px;
+          //padding: 16px 32px;
+          //height: 56px;
 
           .icon {
             rotate: 90deg;
