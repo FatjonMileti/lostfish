@@ -9,8 +9,6 @@ import { ForgotPasswordModal } from '../ForgotPassword/ForgotPasswordModal';
 import { ResetPasswordModal } from '../ResetPassword/ResetPasswordModal';
 import { SectionOne } from './Home.SectionOne';
 import { SectionTwo } from './Home.SectionTwo';
-import { ColoredCards } from './Home.ColoredCards';
-import { DailyNews } from './Home.DailyNews';
 import { FaqSection } from './Home.FaqSection';
 import { Footer } from './Footer';
 import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
@@ -87,9 +85,9 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
                 <HomeCirclesSection />
                 <FaqSection />
                 <ValpalSection />
-                <ColoredCards onCreateAccountClick={onCreateAccountClick} />
+                {/*<ColoredCards onCreateAccountClick={onCreateAccountClick} />*/}
 
-                <DailyNews />
+                {/*<DailyNews />*/}
                 <DailyNewss />
               </>
             )}
