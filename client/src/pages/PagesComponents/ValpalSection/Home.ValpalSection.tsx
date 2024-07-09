@@ -1,13 +1,12 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import valpal from './valpal.png';
 import backgroundImage from './valpal-background.jpeg';
 import backgroundColor from './valpal-background-color.jpeg';
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon.tsx';
-import { Label } from '../../components/Label.tsx';
+import { Typography } from '../../../components/Typography.tsx';
+import { Icon } from '../../../components/Icon.tsx';
+import { Label } from '../../../components/Label.tsx';
 
 export const ValpalSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (

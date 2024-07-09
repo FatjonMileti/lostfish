@@ -15,7 +15,7 @@ import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
 
 import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccount';
 import HomeCirclesSection from './Home.CirclesSection.tsx';
-import { ValpalSection } from './Home.ValpalSection.tsx';
+import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showStartMatching, setShowStartMatching] = React.useState(false);
