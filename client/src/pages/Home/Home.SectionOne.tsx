@@ -29,12 +29,7 @@ export const SectionOne = styled(
           </div>
 
           <div className='refine-search'>
-            <Label
-              variant='special'
-              size='large'
-              className='action-button'
-              onClick={onStartMatchingClick}
-              >
+            <Label variant='special' size='large' className='action-button' onClick={onStartMatchingClick}>
               Start matching
             </Label>
             <Label
@@ -65,7 +60,7 @@ export const SectionOne = styled(
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(255, 251, 243, 0.9) 20%, rgba(255, 255, 255, 0.9) 100%)
+      background: linear-gradient(to bottom, rgba(255, 251, 243, 0.9) 20%, rgba(255, 255, 255, 1) 100%)
         no-repeat;
       z-index: -1;
       top: -96px;
