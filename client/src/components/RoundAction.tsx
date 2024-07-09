@@ -3,15 +3,15 @@ import classNames from 'classnames';
 import { HTMLAttributes } from 'react';
 import { Icon, IconPropsSpecific } from './Icon.tsx';
 
-interface RoundActionProps extends HTMLAttributes<HTMLDivElement> {
+interface RoundActionProps extends HTMLAttributes<HTMLButtonElement> {
   inverted?: boolean;
   icon?: IconPropsSpecific['icon'];
 }
 
 export const RoundAction = styled(
-  ({ className, inverted = false, icon = 'chevron-right' }: RoundActionProps) => {
+  ({ className, inverted = false, icon = 'chevron-right', ...rest }: RoundActionProps) => {
     return (
-      <button className={classNames('round-action', className, { inverted })}>
+      <button className={classNames('round-action', className, { inverted })} {...rest}>
         <Icon icon={icon} />
       </button>
     );

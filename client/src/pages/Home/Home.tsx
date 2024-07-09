@@ -13,6 +13,7 @@ import { ColoredCards } from './Home.ColoredCards';
 import { DailyNews } from './Home.DailyNews';
 import { FaqSection } from './Home.FaqSection';
 import { Footer } from './Footer';
+import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
 
 import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccount';
 import HomeCirclesSection from './Home.CirclesSection.tsx';
@@ -89,6 +90,7 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
                 <ColoredCards onCreateAccountClick={onCreateAccountClick} />
 
                 <DailyNews />
+                <DailyNewss />
               </>
             )}
           </div>

@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 import { IconNames } from '../assets/icon';
 
-interface IconPropsSpecific extends Omit<IconProps, 'icon'> {
+export interface IconPropsSpecific extends Omit<IconProps, 'icon'> {
   icon: IconNames;
 }
 
