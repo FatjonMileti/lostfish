@@ -116,9 +116,6 @@ export const SectionOne = styled(
         border-radius: 25000px;
 
         .action-button {
-          //padding: 16px 32px;
-          //height: 56px;
-
           .icon {
             rotate: 90deg;
           }

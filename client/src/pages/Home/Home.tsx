@@ -16,6 +16,7 @@ import { Footer } from './Footer';
 
 import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithoutAccount/StartMatchingWithoutAccount';
 import HomeCirclesSection from './Home.CirclesSection.tsx';
+import { ValpalSection } from './Home.ValpalSection.tsx';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showStartMatching, setShowStartMatching] = React.useState(false);
@@ -83,11 +84,11 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
 
                 <SectionTwo ref={section2Ref} />
                 <HomeCirclesSection />
-
+                <FaqSection />
+                <ValpalSection />
                 <ColoredCards onCreateAccountClick={onCreateAccountClick} />
 
                 <DailyNews />
-                <FaqSection />
               </>
             )}
           </div>

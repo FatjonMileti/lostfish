@@ -11,10 +11,21 @@ export const SectionTwo = styled(
   React.forwardRef<HTMLDivElement>(({ className }: HTMLAttributes<HTMLDivElement>, ref) => {
     return (
       <div className={classNames('home-section-two', className)} ref={ref}>
+        <div className='section-content'>
+          <div className='img'>
+            <div className='content'>
+              <div className='multimedia'>
+                {' '}
+                <div className='icon'></div>{' '}
+              </div>
+              <Typography variant='body3' className='video-title'>How Lostfish uses AI to find your perfect match</Typography>
+            </div>
+          </div>
+        </div>
         <div className='welcome'>
-          <Typography className='perfect-match'>
+          <Typography variant='body2' className='perfect-match'>
             We use <span className='perfect-match-red'>Artificial Intelligence </span>
-            to reimagine the real estate industry
+            to reimagine the real estate industry.
           </Typography>
           <Typography variant='body4' className='texts'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -24,45 +35,29 @@ export const SectionTwo = styled(
             consequat.
           </Typography>
         </div>
-        <div className='section-content'>
-          <div className='img'>
-            <div className='content'>
-              <div className='multimedia'>
-                {' '}
-                <div className='icon'></div>{' '}
-              </div>
-              <Typography variant='body2'>How Lostfish works</Typography>
-            </div>
-          </div>
-        </div>
       </div>
     );
   })
 )`
   &.home-section-two {
     display: grid;
-    padding: 88px 36px;
+    padding: 48px 36px;
     justify-content: center;
     align-items: center;
     gap: 48px;
     box-sizing: border-box;
-    background-color: #f3f4f5;
+    background-color: #fff;
     opacity: 1;
     position: relative;
     z-index: 1;
 
     .welcome {
-      width: 904px;
       display: grid;
       justify-self: center;
       gap: 24px;
 
       .perfect-match {
-        width: 672px;
-        justify-self: center;
-        text-align: center;
-        font-size: 40px;
-        font-weight: 400;
+        font-weight: 600;
         line-height: 48px;
 
         .perfect-match-red {
@@ -72,7 +67,7 @@ export const SectionTwo = styled(
 
       .texts {
         text-align: center;
-        font-weight: 400;
+        font-weight: 500;
       }
     }
     .section-content {
@@ -83,7 +78,7 @@ export const SectionTwo = styled(
 
       .img {
         border-radius: 16px;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 100%), url(${image});
+        background: linear-gradient(180deg, rgba(13, 42, 56, 0) 0%, rgba(13, 42, 56, 0.75) 100%), url(${image});
         margin: 0 auto;
 
         background-repeat: no-repeat;
@@ -93,44 +88,41 @@ export const SectionTwo = styled(
         align-content: end;
         overflow: hidden;
 
-        min-width: 1020px;
-        aspect-ratio: 1.6 / 1;
+        min-width: 1136px;
+        aspect-ratio: 1.77 / 1;
 
-        box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 4px 32px 0px rgba(13, 42, 56, 0.1);
 
         .content {
           display: flex;
+          flex-direction: column;
           width: 100%;
-          padding: 32px 24px;
-          gap: 24px;
+          height: 640px;
+          padding: 24px;
+          gap: 16px;
           box-sizing: border-box;
-          background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 43.75%);
+          justify-content: center;
+          align-items: center;
 
           .multimedia {
-            display: flex;
-            width: 5em;
-            height: 5em;
-            border-radius: 25000px;
-            border: 2px solid #fff;
-            padding: 24px;
+            border-radius: 50%;
+            border: 2px solid #E7E7E7;
+            padding: 10px;
             box-sizing: border-box;
             align-items: center;
 
             .icon {
-              width: 2em;
-              height: 2em;
+              width: 1.5em;
+              height: 1.5em;
               background-image: url(${multimedia});
               background-repeat: no-repeat;
               background-size: cover;
             }
           }
 
-          .typography {
-            display: flex;
+          .video-title {
             color: #fff;
-            font-weight: 700;
-            line-height: 48px;
-            align-items: center;
+            font-weight: 900;
           }
         }
       }
