@@ -12,22 +12,21 @@ export const SectionTwo = styled(
     return (
       <div className={classNames('home-section-two', className)} ref={ref}>
         <div className='section-content'>
-          <div className='img'>
-            <div className='content'>
-              <div className='multimedia'>
-                {' '}
-                <div className='icon'></div>{' '}
-              </div>
-              <Typography variant='body3' className='video-title'>How Lostfish uses AI to find your perfect match</Typography>
+          <div className='content'>
+            <div className='multimedia'>
+              <div className='icon'></div>
             </div>
+            <Typography variant='body3' className='video-title'>
+              How Lostfish uses AI to find your perfect match
+            </Typography>
           </div>
         </div>
-        <div className='welcome'>
+        <div className='title'>
           <Typography variant='body2' className='perfect-match'>
             We use <span className='perfect-match-red'>Artificial Intelligence </span>
             to reimagine the real estate industry.
           </Typography>
-          <Typography variant='body4' className='texts'>
+          <Typography variant='body4' className='description'>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
             labore et dolore magna aliqua.
             <br />
@@ -42,7 +41,7 @@ export const SectionTwo = styled(
   &.home-section-two {
     display: grid;
     padding: 48px 36px;
-    justify-content: center;
+    justify-items: center;
     align-items: center;
     gap: 48px;
     box-sizing: border-box;
@@ -51,7 +50,7 @@ export const SectionTwo = styled(
     position: relative;
     z-index: 1;
 
-    .welcome {
+    .title {
       display: grid;
       justify-self: center;
       gap: 24px;
@@ -65,7 +64,7 @@ export const SectionTwo = styled(
         }
       }
 
-      .texts {
+      .description {
         text-align: center;
         font-weight: 500;
       }
@@ -73,57 +72,46 @@ export const SectionTwo = styled(
     .section-content {
       display: grid;
       align-items: center;
-      justify-content: center;
       gap: 48px;
 
-      .img {
-        border-radius: 16px;
-        background: linear-gradient(180deg, rgba(13, 42, 56, 0) 0%, rgba(13, 42, 56, 0.75) 100%), url(${image});
-        margin: 0 auto;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(13, 42, 56, 0) 0%, rgba(13, 42, 56, 0.75) 100%), url(${image});
+      max-width: 1136px;
+      width: 100%;
+      background-repeat: no-repeat;
+      box-shadow: 0px 4px 32px 0px rgba(13, 42, 56, 0.1);
+      background-size: cover;
+      aspect-ratio: 1.77 / 1;
 
-        background-repeat: no-repeat;
-        background-size: cover;
+      .content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 24px;
+        gap: 16px;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
 
-        display: grid;
-        align-content: end;
-        overflow: hidden;
-
-        min-width: 1136px;
-        aspect-ratio: 1.77 / 1;
-
-        box-shadow: 0px 4px 32px 0px rgba(13, 42, 56, 0.1);
-
-        .content {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          height: 640px;
-          padding: 24px;
-          gap: 16px;
+        .multimedia {
+          border-radius: 50%;
+          border: 2px solid #e7e7e7;
+          padding: 10px;
           box-sizing: border-box;
-          justify-content: center;
           align-items: center;
 
-          .multimedia {
-            border-radius: 50%;
-            border: 2px solid #E7E7E7;
-            padding: 10px;
-            box-sizing: border-box;
-            align-items: center;
-
-            .icon {
-              width: 1.5em;
-              height: 1.5em;
-              background-image: url(${multimedia});
-              background-repeat: no-repeat;
-              background-size: cover;
-            }
+          .icon {
+            width: 1.5em;
+            height: 1.5em;
+            background-image: url(${multimedia});
+            background-repeat: no-repeat;
+            background-size: cover;
           }
+        }
 
-          .video-title {
-            color: #fff;
-            font-weight: 900;
-          }
+        .video-title {
+          color: #fff;
+          font-weight: 900;
         }
       }
     }
