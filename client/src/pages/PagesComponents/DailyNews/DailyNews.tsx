@@ -1,6 +1,7 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes, useRef } from 'react';
+
 import { RoundAction } from '../../../components/RoundAction.tsx';
 import { NewsCard } from './NewsCard.tsx';
 
@@ -28,10 +29,36 @@ const newsList: News[] = [
   },
   {
     image: news4
+  },
+  {
+    image: news1
+  },
+  {
+    image: news2
+  },
+  {
+    image: news3
+  },
+  {
+    image: news4
   }
 ];
 
 export const DailyNewss = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (ref.current) {
+      ref.current.scrollLeft -= ref.current.clientWidth;
+    }
+  };
+
+  const scrollRight = () => {
+    if (ref.current) {
+      ref.current.scrollLeft += ref.current.clientWidth;
+    }
+  };
+
   return (
     <div className={classNames('daily-news', className)}>
       <div className='section-header'>
@@ -42,11 +69,11 @@ export const DailyNewss = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           </Typography>
         </div>
         <div className='arrow-buttons'>
-          <RoundAction icon='chevron-left' />
-          <RoundAction />
+          <RoundAction icon='chevron-left' onClick={scrollLeft} />
+          <RoundAction onClick={scrollRight} />
         </div>
       </div>
-      <div className='section-body'>
+      <div className='section-body' ref={ref}>
         {newsList.map((news, newsKey) => (
           <NewsCard key={newsKey} news={news} />
         ))}
@@ -59,10 +86,8 @@ export const DailyNewss = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     row-gap: 24px;
     padding: 24px 36px 48px 36px;
     background: #fff;
-
-    width: 100%;
-    overflow-x: auto;
     box-sizing: border-box;
+    width: 100%;
 
     .section-header {
       display: flex;
@@ -92,7 +117,14 @@ export const DailyNewss = styled(({ className }: HTMLAttributes<HTMLDivElement>)
 
       width: 100%;
       overflow-x: auto;
-      box-sizing: border-box;
+      scroll-behavior: smooth;
+
+      padding: 24px 36px 48px 36px;
+      margin: -24px -36px -48px -36px;
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 `;
