@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { DialogHTMLAttributes } from 'react';
+import { DialogHTMLAttributes } from 'react';
 import { ScrollLock } from './ScrollLock';
 import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -48,7 +48,7 @@ export const Modal = styled(
   ({
     children,
     open,
-    onClose = () => {},
+    // onClose = () => {},
     className,
     onBackdropClick = () => {},
     disableScrollLock = false,

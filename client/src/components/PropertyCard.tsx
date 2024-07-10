@@ -5,7 +5,6 @@ import { Typography } from './Typography';
 import { Avatar } from './Avatar';
 import { Icon } from './Icon';
 import { Label } from './Label';
-import React from 'react';
 import { avatars } from '../pages/HomeLoggedIn/avatars';
 
 export interface PropertyCardProps extends HTMLMotionProps<'div'> {

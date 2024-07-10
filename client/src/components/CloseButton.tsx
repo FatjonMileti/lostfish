@@ -1,4 +1,3 @@
-import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import { IconButton, IconButtonProps } from './IconButton';
 import { Icon } from './Icon';
