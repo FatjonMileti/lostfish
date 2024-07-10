@@ -1,4 +1,6 @@
 export type IconNames = 
+  | "copy-document"
+  | "add-mail"
   | "newspaper"
   | "close-o"
   | "minus"
