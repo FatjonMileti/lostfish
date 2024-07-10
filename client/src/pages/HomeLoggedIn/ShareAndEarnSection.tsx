@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../components/Icon.tsx';
@@ -104,6 +104,7 @@ export const ShareAndEarnSection = styled(({ className }: HTMLAttributes<HTMLDiv
         background-color: #fff;
 
         .code {
+          color: #0d2a38;
           font-weight: 700;
         }
       }
