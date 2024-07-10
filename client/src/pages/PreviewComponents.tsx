@@ -1,36 +1,37 @@
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
-import { Logo } from '../components/Logo';
-import { Link } from '../components/Link';
-import { Button } from '../components/Button';
-import { Typography } from '../components/Typography';
-import { IconButton } from '../components/IconButton';
+import { Logo } from '../components';
+import { Link } from '../components';
+import { Button } from '../components';
+import { Typography } from '../components';
+import { IconButton } from '../components';
 
-import { Icon } from '../components/Icon';
+import { Icon } from '../components';
 
 import { iconList } from 'react-icomoon';
 
 import iconSet from '../assets/selection.json';
 import React from 'react';
 
-import { Switch } from '../components/Switch';
+import { Switch } from '../components';
 
-import { Modal } from '../components/Modal';
-import { Checkbox } from '../components/Checkbox';
-import { TextField } from '../components/TextField';
+import { Modal } from '../components';
+import { Checkbox } from '../components';
+import { TextField } from '../components';
 
-import { LoadingMatch } from '../components/LoadingMatch';
+import { LoadingMatch } from '../components';
 
-import { Tabs, Tab } from '../components/Tab';
-import { ArrowButton } from '../components/ArrowButton';
-import { Label } from '../components/Label';
-import { Avatar } from '../components/Avatar';
+import { Tabs, Tab } from '../components';
+import { ArrowButton } from '../components';
+import { Label } from '../components';
+import { Avatar } from '../components';
 import { avatars } from './HomeLoggedIn/avatars';
-import { CloseButton } from '../components/CloseButton';
-import { SocialAccountButton } from '../components/SocialAccountButton';
-import { MatchButton } from '../components/MatchButton';
-import { UnMatchButton } from '../components/UnMatchButton';
+import { CloseButton } from '../components';
+import { SocialAccountButton } from '../components';
+import { MatchButton } from '../components';
+import { UnMatchButton } from '../components';
+import { AccountItem, MenuCounter } from '../components';
 
 export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) => {
   const navigate = useNavigate();
@@ -396,6 +397,17 @@ export const PreviewComponents = styled(({ className }: React.HTMLProps<any>) =>
             <Icon icon='chevron-down' />
             Label Tertiary Small Disabled
           </Label>
+        </div>
+
+        <div className='cta-labels'>
+          <Typography>Account item</Typography>
+          <AccountItem icon='sign-out' label='Sign Out' />
+          <AccountItem active icon='sign-out' label='Sign Out active' />
+          <AccountItem active icon='sign-out' label='Sign Out counter' counter={5} />
+        </div>
+        <div className='cta-labels'>
+          <Typography>Menu counter</Typography>
+          <MenuCounter counter={5} />
         </div>
 
         <div className='toggles'>

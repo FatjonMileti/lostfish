@@ -1,9 +1,9 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 
-import { Icon } from '../../components/Icon';
+// import { Icon } from '../../components/Icon';
 import { Typography } from '../../components/Typography';
 
 import { Dashboard } from './Dashboard/Dashboard';
@@ -28,6 +28,7 @@ import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
+import { AccountItem } from '../../components/AccountItem.tsx';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
@@ -112,28 +113,37 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
                   ({ icon, text, link }, menuItemIndex) => (
                     <NavLink end to={`/my-account${link}`} key={menuItemIndex}>
-                      {({ isActive }) => (
-                        <motion.div
-                          whileTap={{ scale: 0.98 }}
-                          className={`menu-item ${isActive ? 'active' : ''}`}>
-                          <Icon icon={icon} color='black' size={24} />
-                          <Typography variant='body4' className='text'>
-                            {text}
-                          </Typography>
-                        </motion.div>
-                      )}
+                      {({ isActive }) => <AccountItem active={isActive} label={text} icon={icon} />}
                     </NavLink>
                   )
                 )}
+                {/*{(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(*/}
+                {/*  ({ icon, text, link }, menuItemIndex) => (*/}
+                {/*    <NavLink end to={`/my-account${link}`} key={menuItemIndex}>*/}
+                {/*      {({ isActive }) => (*/}
+                {/*        <motion.div*/}
+                {/*          whileTap={{ scale: 0.98 }}*/}
+                {/*          className={`menu-item ${isActive ? 'active' : ''}`}>*/}
+                {/*          <Icon icon={icon} color='black' size={24} />*/}
+                {/*          <Typography variant='body4' className='text'>*/}
+                {/*            {text}*/}
+                {/*          </Typography>*/}
+                {/*        </motion.div>*/}
+                {/*      )}*/}
+                {/*    </NavLink>*/}
+                {/*  )*/}
+                {/*)}*/}
               </div>
 
               <div className='menu-footer'>
-                <motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>
-                  <Icon icon='sign-out' color='black' size={23} />
-                  <Typography variant='body4' className='text'>
-                    Sign out
-                  </Typography>
-                </motion.div>
+                <AccountItem className='sign-out' label='Sign out' icon='sign-out' onClick={logOut} />
+
+                {/*<motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>*/}
+                {/*  <Icon icon='sign-out' color='black' size={23} />*/}
+                {/*  <Typography variant='body4' className='text'>*/}
+                {/*    Sign out*/}
+                {/*  </Typography>*/}
+                {/*</motion.div>*/}
               </div>
             </div>
             <div className='line'></div>
@@ -161,7 +171,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
   &.my-account-page {
     position: relative;
     display: grid;
-    background-color: #c0daff;
     grid-template-rows: auto min-content;
 
     .header-and-content-wrapper {
@@ -184,6 +193,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           row-gap: 32px;
 
           padding-right: 69px;
+          background: white;
 
           .menu-header {
             display: flex;
@@ -234,53 +244,57 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               color: black;
             }
 
-            .menu-item {
-              display: grid;
-              grid-template-columns: min-content auto min-content;
-              align-items: center;
-              padding: 12px 14px;
-              .text {
-                margin-left: 10px;
-              }
-              .arrow {
-                margin-left: 16px;
-              }
-
-              &.active,
-              :hover {
-                background-color: #f7f1e7;
-                border-radius: 8px;
-                .text {
-                  font-weight: 600;
-                }
-              }
-            }
+            //.menu-item {
+            //  display: grid;
+            //  grid-template-columns: min-content auto min-content;
+            //  align-items: center;
+            //  padding: 12px 14px;
+            //  .text {
+            //    margin-left: 10px;
+            //  }
+            //  .arrow {
+            //    margin-left: 16px;
+            //  }
+            //
+            //  &.active,
+            //  :hover {
+            //    background-color: #f7f1e7;
+            //    border-radius: 8px;
+            //    .text {
+            //      font-weight: 600;
+            //    }
+            //  }
+            //}
           }
 
           .menu-footer {
-            .menu-item {
+            .sign-out {
               color: #b4263b;
-              display: grid;
-              grid-template-columns: min-content auto;
-              align-items: center;
-              padding: 12px 14px;
-              .text {
-                margin-left: 10px;
-              }
-
-              .icon {
-                color: #b4263b;
-              }
-
-              :hover {
-                background-color: #f7f1e7;
-                border-radius: 8px;
-                cursor: pointer;
-                .text {
-                  font-weight: 600;
-                }
-              }
             }
+
+            //.menu-item {
+            //  color: #b4263b;
+            //  display: grid;
+            //  grid-template-columns: min-content auto;
+            //  align-items: center;
+            //  padding: 12px 14px;
+            //  .text {
+            //    margin-left: 10px;
+            //  }
+            //
+            //  .icon {
+            //    color: #b4263b;
+            //  }
+            //
+            //  :hover {
+            //    background-color: #f7f1e7;
+            //    border-radius: 8px;
+            //    cursor: pointer;
+            //    .text {
+            //      font-weight: 600;
+            //    }
+            //  }
+            //}
           }
 
           .log-out-button {
