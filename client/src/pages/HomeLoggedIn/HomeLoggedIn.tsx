@@ -9,12 +9,13 @@ import { ColoredCards } from '../Home/Home.ColoredCards';
 import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
 
 import { Suggestions } from '../Suggestions/Suggestions';
-import { FaqSection } from '../Home/Home.FaqSection';
-
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { Role } from '../../enums';
 import { useProfileStore } from '../../globalState/profile';
+import { ShareAndEarnSection } from './ShareAndEarnSection.tsx';
+import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
+import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -35,10 +36,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
       <div className='container'>
         <Suggestions />
-        <HomeLoggedOutSectionTwo />
-        <ColoredCards />
-        <DailyNews />
-        <FaqSection />
+        {/*<HomeLoggedOutSectionTwo />*/}
+        <ValpalSection />
+        <DailyNewss />
+        <ShareAndEarnSection />
       </div>
 
       <Footer />
