@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import React from 'react';
 import { HTMLMotionProps, motion } from 'framer-motion';
 import classNames from 'classnames';
 import { Avatar } from './Avatar';
