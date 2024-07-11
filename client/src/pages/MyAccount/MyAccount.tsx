@@ -159,6 +159,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='right-content'>
               <Routes>
                 <Route path='/' element={<Dashboard />} />
+                <Route path='/account-details' element={<AccountDetails />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
