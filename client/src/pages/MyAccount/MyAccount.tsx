@@ -29,10 +29,14 @@ import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 import { AccountItem } from '../../components/AccountItem.tsx';
+import { AccountDetails } from './AccountDetails.tsx';
+import { PlanAndPayment } from './PlanAndPayment.tsx';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
+  { icon: 'settings', text: 'Account details', link: '/account-details' },
+  { icon: 'settings', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -42,6 +46,8 @@ const submenus: any[] = [
 
 const tenantSubmenu: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
+  { icon: 'settings', text: 'Account details', link: '/account-details' },
+  { icon: 'settings', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -150,6 +156,8 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='right-content'>
               <Routes>
                 <Route path='/' element={<Dashboard />} />
+                <Route path='/account-details' element={<AccountDetails />} />
+                <Route path='/plan-and-payment' element={<PlanAndPayment />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
@@ -308,7 +316,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
         }
 
         .right-content {
-          padding-left: 69px;
+          padding: 24px 0px 24px 24px;
           z-index: 0;
           position: relative;
         }

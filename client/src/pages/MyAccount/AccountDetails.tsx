@@ -1,0 +1,329 @@
+import { styled } from '@mui/system';
+import React, { HTMLAttributes } from 'react';
+import { ShowGlobalLoading } from '../../components/ShowGlobalLoading.tsx';
+import { useProfileStore } from '../../globalState/profile.tsx';
+import { useUserStore } from '../../globalState/user.tsx';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import axios from '../../utils/axios.ts';
+import { Typography } from '../../components/Typography.tsx';
+import { Button } from '../../components/Button.tsx';
+import { TextField } from '../../components/TextField.tsx';
+import { Textarea } from '../../components/Textarea.tsx';
+import { avatars } from '../HomeLoggedIn/avatars.tsx';
+import { Avatar } from '../../components/Avatar.tsx';
+import { Icon } from '../../components/Icon.tsx';
+import { InfoCard } from './components/InfoCard.tsx';
+
+const userSchema = yup.object().shape({
+  first_name: yup.string().required('First name is required'),
+  last_name: yup.string().required('Last name is required'),
+  email: yup.string().required('Email is required'),
+  phone: yup.string(),
+  description: yup.string().transform((value) => value || undefined),
+  avatar: yup.string()
+});
+
+interface AccountDetails {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  description?: string;
+  avatar?: string;
+}
+
+export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const [loading, setLoading] = React.useState(false);
+
+  const profileStore = useProfileStore();
+
+  const { userDetails, auth } = useUserStore();
+
+  const accountDetailsForm = useForm<AccountDetails>({
+    resolver: yupResolver(userSchema),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      description: '',
+      avatar: profileStore.avatar || undefined
+    },
+    mode: 'all'
+  });
+
+  React.useEffect(() => {
+    accountDetailsForm.watch();
+    loadProfile();
+  }, []);
+
+  React.useEffect(() => {
+    accountDetailsForm.setValue('first_name', profileStore.first_name);
+    accountDetailsForm.setValue('last_name', profileStore.last_name);
+    accountDetailsForm.setValue('email', profileStore.email);
+    accountDetailsForm.setValue('phone', profileStore.phone);
+    accountDetailsForm.setValue('description', profileStore.description);
+    accountDetailsForm.setValue('avatar', profileStore.avatar || '');
+  }, [profileStore]);
+
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      await profileStore.fetchProfile(auth.access_token);
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+
+    data.have_pets = data.have_pets === 'Yes';
+    try {
+      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
+      await loadProfile();
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={accountDetailsForm.handleSubmit(onSubmit)} className={`account-details ${className}`}>
+        {loading && <ShowGlobalLoading />}
+        <div className='account-details-header'>
+          <Typography variant='body2' className='section-title'>
+            Account details
+          </Typography>
+          <Button
+            type='submit'
+            size='medium'
+            className='submit-button'
+            disabled={!accountDetailsForm.formState.isValid}>
+            Save changes
+          </Button>
+        </div>
+        <div className='profile-details-wrapper'>
+          <div className='personal-details'>
+            <Typography variant='body3' className='title'>
+              Personal details
+            </Typography>
+            <div className='personal-details-form'>
+              <div className='contact-information'>
+                <TextField
+                  label='First Name'
+                  {...accountDetailsForm.register('first_name')}
+                  error={!!accountDetailsForm.formState.errors?.first_name}
+                  helperText={accountDetailsForm.formState.errors?.first_name?.message}
+                  required
+                />
+                <TextField
+                  label='Last Name'
+                  {...accountDetailsForm.register('last_name')}
+                  error={!!accountDetailsForm.formState.errors?.last_name}
+                  helperText={accountDetailsForm.formState.errors?.last_name?.message}
+                  required
+                />
+                <TextField
+                  label='Email'
+                  {...accountDetailsForm.register('email')}
+                  error={!!accountDetailsForm.formState.errors?.email}
+                  helperText={accountDetailsForm.formState.errors?.email?.message}
+                  required
+                />
+                <TextField
+                  label='Phone number'
+                  {...accountDetailsForm.register('phone')}
+                  startAdornment={
+                    <span
+                      style={{ marginLeft: '12px', fontSize: '14px', lineHeight: '24px', color: '#A7A7A7' }}>
+                      +44
+                    </span>
+                  }
+                />
+              </div>
+              <Textarea
+                rows={7}
+                label='About yourself.'
+                placeholder='Say something about yourself...'
+                {...accountDetailsForm.register('description')}
+                defaultValue=''></Textarea>
+              <div className='avatar-section'>
+                <div>
+                  <Typography className='avatar-section-title' variant='body6'>
+                    Avatar
+                  </Typography>
+                  <Typography className='avatar-section-description' variant='body6'>
+                    Select the avatar that will be displayed on your account. All avatars are AI generated and
+                    you can not use personal photos or upload them.
+                  </Typography>
+                </div>
+                <Controller
+                  name='avatar'
+                  control={accountDetailsForm.control}
+                  render={({ field }) => (
+                    <div className='setup-avatar'>
+                      {avatars.map(({ image }, avatarIndex) => {
+                        const active = avatarIndex === Number(field.value || '');
+                        return (
+                          <Avatar
+                            image={image}
+                            onClick={() => field.onChange({ target: { value: avatarIndex.toString() } })}
+                            key={avatarIndex}
+                            className={`${active ? 'active' : ''}`}>
+                            <Icon icon='checked' color='white' size={16} />
+                          </Avatar>
+                        );
+                      })}
+                    </div>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+          <div className='right-part'>
+            <InfoCard
+              icon='add-mail'
+              title='Why and how we use your information?'
+              description='Your information is used only to find relevant matches and to complete the legal documents needed when the transaction goes through.'
+            />
+            <InfoCard
+              icon='add-mail'
+              title='How secure is your information?'
+              description='Your personal details are used only by Lostfish and are not shared with any third parties or other companies outside Lostfish.'
+            />
+            <InfoCard
+              icon='add-mail'
+              title='How does account completion work?'
+              description='Having a 100% account completion actually help you find perfect matches as it provides more information to your potential matches.'
+            />
+          </div>
+        </div>
+      </form>
+    </>
+  );
+})`
+  &.account-details {
+    display: grid;
+    gap: 40px;
+
+    .account-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .section-title {
+        color: #0d2a38;
+        font-weight: 600;
+        line-height: 48px;
+      }
+
+      .submit-button {
+        padding: 12px 24px;
+      }
+    }
+
+    .profile-details-wrapper {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      justify-content: space-between;
+      column-gap: 32px;
+
+      .personal-details {
+        display: grid;
+        gap: 16px;
+        max-width: 556px;
+
+        .title {
+          color: #0d2a38;
+          font-weight: 900;
+        }
+
+        .personal-details-form {
+          display: grid;
+          gap: 24px;
+
+          .contact-information {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+          }
+          .avatar-section {
+            display: grid;
+            gap: 16px;
+
+            .avatar-section-title {
+              color: #646464;
+              font-weight: 700;
+              line-height: 20px;
+            }
+
+            .avatar-section-description {
+              color: #646464;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .setup-avatar {
+              display: flex;
+              flex-wrap: wrap;
+              column-gap: 8px;
+
+              .avatar {
+                position: relative;
+                cursor: pointer;
+                height: 68px;
+                width: 68px;
+                box-sizing: border-box;
+                display: flex;
+
+                .icon {
+                  display: none !important;
+                }
+
+                &.active {
+                  outline: 2px solid #184d6d;
+
+                  :before {
+                    content: '';
+                    z-index: 1;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    border-radius: 50%;
+                    position: absolute;
+                  }
+
+                  .icon {
+                    display: initial !important;
+                    position: absolute;
+                    z-index: 4;
+                    bottom: -8px;
+                    background: #184d6d;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border-radius: 50%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .right-part {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  }
+`;
