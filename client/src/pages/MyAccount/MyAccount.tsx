@@ -30,7 +30,6 @@ import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHead
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 import { AccountItem } from '../../components/AccountItem.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
-import { PlanAndPayment } from './PlanAndPayment.tsx';
 
 const submenus: any[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
@@ -157,7 +156,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               <Routes>
                 <Route path='/' element={<Dashboard />} />
                 <Route path='/account-details' element={<AccountDetails />} />
-                <Route path='/plan-and-payment' element={<PlanAndPayment />} />
+
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
