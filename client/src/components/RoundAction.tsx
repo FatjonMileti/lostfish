@@ -1,11 +1,11 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { HTMLAttributes } from 'react';
-import { Icon, IconPropsSpecific } from './Icon.tsx';
+import { Icon, IconProps } from './Icon.tsx';
 
 interface RoundActionProps extends HTMLAttributes<HTMLButtonElement> {
   inverted?: boolean;
-  icon?: IconPropsSpecific['icon'];
+  icon?: IconProps['icon'];
 }
 
 export const RoundAction = styled(

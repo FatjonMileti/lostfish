@@ -8,6 +8,10 @@ body {
   height: 6px;
 }
 
+/** {*/
+/*  scrollbar-gutter: auto;*/
+/*}*/
+
 ::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;

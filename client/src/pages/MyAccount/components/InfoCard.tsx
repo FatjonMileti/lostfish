@@ -1,12 +1,13 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
-import { Icon } from '../../../components/Icon';
-import { Typography } from '../../../components/Typography.tsx';
+import { Icon } from '../../../components';
+import { Typography } from '../../../components';
+import { IconProps } from '../../../components/Icon.tsx';
 
 interface InfoCardProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   description: string;
-  icon: string;
+  icon: IconProps['icon'];
 }
 
 export const InfoCard = styled(({ className, icon, title, description }: InfoCardProps) => {

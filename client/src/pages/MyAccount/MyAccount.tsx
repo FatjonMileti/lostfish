@@ -26,11 +26,11 @@ import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 import { AccountItem } from '../../components';
-import { IconPropsSpecific } from '../../components/Icon.tsx';
+import { IconProps } from '../../components/Icon.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
 
 interface SubMenuItem {
-  icon: IconPropsSpecific['icon'];
+  icon: IconProps['icon'];
   text: string;
   link: string;
 }
@@ -38,8 +38,8 @@ interface SubMenuItem {
 export const submenus: SubMenuItem[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
-  { icon: 'settings', text: 'Account details', link: '/account-details' },
-  { icon: 'settings', text: 'Plan and payment', link: '/plan-and-payment' },
+  { icon: 'account', text: 'Account details', link: '/account-details' },
+  { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -49,8 +49,8 @@ export const submenus: SubMenuItem[] = [
 
 export const tenantSubmenu: SubMenuItem[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'settings', text: 'Account details', link: '/account-details' },
-  { icon: 'settings', text: 'Plan and payment', link: '/plan-and-payment' },
+  { icon: 'account', text: 'Account details', link: '/account-details' },
+  { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -126,36 +126,13 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                     </NavLink>
                   )
                 )}
-                {/*{(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(*/}
-                {/*  ({ icon, text, link }, menuItemIndex) => (*/}
-                {/*    <NavLink end to={`/my-account${link}`} key={menuItemIndex}>*/}
-                {/*      {({ isActive }) => (*/}
-                {/*        <motion.div*/}
-                {/*          whileTap={{ scale: 0.98 }}*/}
-                {/*          className={`menu-item ${isActive ? 'active' : ''}`}>*/}
-                {/*          <Icon icon={icon} color='black' size={24} />*/}
-                {/*          <Typography variant='body4' className='text'>*/}
-                {/*            {text}*/}
-                {/*          </Typography>*/}
-                {/*        </motion.div>*/}
-                {/*      )}*/}
-                {/*    </NavLink>*/}
-                {/*  )*/}
-                {/*)}*/}
               </div>
 
               <div className='menu-footer'>
                 <AccountItem className='sign-out' label='Sign out' icon='sign-out' onClick={logOut} />
-
-                {/*<motion.div whileTap={{ scale: 0.98 }} className='menu-item' onClick={logOut}>*/}
-                {/*  <Icon icon='sign-out' color='black' size={23} />*/}
-                {/*  <Typography variant='body4' className='text'>*/}
-                {/*    Sign out*/}
-                {/*  </Typography>*/}
-                {/*</motion.div>*/}
               </div>
             </div>
-            <div className='line'></div>
+            {/*<div className='line'></div>*/}
             <div className='right-content'>
               <Routes>
                 <Route path='/' element={<Dashboard />} />
@@ -191,19 +168,21 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       .container-account {
         display: grid;
         //column-gap: 69px;
-        padding: 24px 36px 36px 36px;
+        //padding: 24px 36px 36px 36px;
         min-height: calc(100vh - 112px);
         box-sizing: border-box;
 
-        grid-template-columns: 1fr min-content 2.79fr;
+        grid-template-columns: 1fr 3fr;
 
         .left-menu {
           display: grid;
           grid-template-rows: min-content auto min-content;
           row-gap: 32px;
+          padding: 32px;
 
-          padding-right: 69px;
+          //padding-right: 69px;
           background: white;
+          border-right: 1px solid #f3f4f5;
 
           .menu-header {
             display: flex;
@@ -253,58 +232,12 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               text-decoration: none;
               color: black;
             }
-
-            //.menu-item {
-            //  display: grid;
-            //  grid-template-columns: min-content auto min-content;
-            //  align-items: center;
-            //  padding: 12px 14px;
-            //  .text {
-            //    margin-left: 10px;
-            //  }
-            //  .arrow {
-            //    margin-left: 16px;
-            //  }
-            //
-            //  &.active,
-            //  :hover {
-            //    background-color: #f7f1e7;
-            //    border-radius: 8px;
-            //    .text {
-            //      font-weight: 600;
-            //    }
-            //  }
-            //}
           }
 
           .menu-footer {
             .sign-out {
               color: #b4263b;
             }
-
-            //.menu-item {
-            //  color: #b4263b;
-            //  display: grid;
-            //  grid-template-columns: min-content auto;
-            //  align-items: center;
-            //  padding: 12px 14px;
-            //  .text {
-            //    margin-left: 10px;
-            //  }
-            //
-            //  .icon {
-            //    color: #b4263b;
-            //  }
-            //
-            //  :hover {
-            //    background-color: #f7f1e7;
-            //    border-radius: 8px;
-            //    cursor: pointer;
-            //    .text {
-            //      font-weight: 600;
-            //    }
-            //  }
-            //}
           }
 
           .log-out-button {
@@ -312,13 +245,13 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           }
         }
 
-        .line {
-          width: 2px;
-          background-color: #f3f4f5;
-        }
+        //.line {
+        //  width: 2px;
+        //  background-color: #f3f4f5;
+        //}
 
         .right-content {
-          padding: 24px 0px 24px 24px;
+          padding: 24px 36px 24px 24px;
           z-index: 0;
           position: relative;
         }

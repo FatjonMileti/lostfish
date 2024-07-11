@@ -7,13 +7,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from '../../utils/axios.ts';
-import { Typography } from '../../components/Typography.tsx';
-import { Button } from '../../components/Button.tsx';
-import { TextField } from '../../components/TextField.tsx';
+import { Typography } from '../../components';
+import { Button } from '../../components';
+import { TextField } from '../../components';
 import { Textarea } from '../../components/Textarea.tsx';
 import { avatars } from '../HomeLoggedIn/avatars.tsx';
-import { Avatar } from '../../components/Avatar.tsx';
-import { Icon } from '../../components/Icon.tsx';
+import { Avatar } from '../../components';
+import { Icon } from '../../components';
 import { InfoCard } from './components/InfoCard.tsx';
 
 const userSchema = yup.object().shape({
@@ -189,17 +189,17 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
           </div>
           <div className='right-part'>
             <InfoCard
-              icon='add-mail'
+              icon='performance-inquiry'
               title='Why and how we use your information?'
               description='Your information is used only to find relevant matches and to complete the legal documents needed when the transaction goes through.'
             />
             <InfoCard
-              icon='add-mail'
+              icon='lock'
               title='How secure is your information?'
               description='Your personal details are used only by Lostfish and are not shared with any third parties or other companies outside Lostfish.'
             />
             <InfoCard
-              icon='add-mail'
+              icon='achievement'
               title='How does account completion work?'
               description='Having a 100% account completion actually help you find perfect matches as it provides more information to your potential matches.'
             />

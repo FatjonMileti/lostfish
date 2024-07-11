@@ -1,12 +1,12 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { Icon, IconPropsSpecific } from './Icon.tsx';
+import { Icon, IconProps } from './Icon.tsx';
 import { Typography } from './Typography.tsx';
 import { MenuCounter } from './MenuCounter.tsx';
 
 export interface AccountItemProps extends HTMLAttributes<HTMLDivElement> {
-  icon: IconPropsSpecific['icon'];
+  icon: IconProps['icon'];
   label: string;
   active?: boolean;
   counter?: number;

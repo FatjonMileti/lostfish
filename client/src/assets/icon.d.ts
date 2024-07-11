@@ -1,4 +1,12 @@
 export type IconNames = 
+  | "info"
+  | "withdraw"
+  | "task"
+  | "achievement"
+  | "lock"
+  | "performance-inquiry"
+  | "wallet"
+  | "account"
   | "copy-document"
   | "add-mail"
   | "newspaper"
