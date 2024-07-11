@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { useId } from 'react';
 import { Typography } from './Typography';
@@ -8,23 +8,32 @@ import { Icon } from './Icon';
 export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   variant?: 'filled' | 'outlined' | 'standard';
   label?: string;
+  hint?: ReactNode;
   required?: boolean;
   helperText?: string;
   error?: boolean;
 }
 
 export const Textarea = styled(
+  // eslint-disable-next-line react/display-name
   React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
-    ({ className, id, label, required = false, helperText, error, variant = 'outlined', ...rest }, ref) => {
+    (
+      { hint, className, id, label, required = false, helperText, error, variant = 'outlined', ...rest },
+      ref
+    ) => {
       const elementId = id || useId();
       return (
         <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
-          {(label || required) && (
-            <label htmlFor={elementId}>
-              {label}
-              {required && <span className='required-asterisk'> *</span>}
-            </label>
-          )}
+          <div>
+            {(label || required) && (
+              <label htmlFor={elementId}>
+                <>{label}</>
+                {required && <span className='required-asterisk'> *</span>}
+              </label>
+            )}
+
+            {hint && <p className='hint'>{hint}</p>}
+          </div>
 
           <div className='input-wrapper'>
             <textarea id={elementId} {...rest} ref={ref} />
@@ -63,6 +72,17 @@ export const Textarea = styled(
       }
     }
 
+    .hint {
+      color: #646464;
+      font-family: Roobert, serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 20px;
+
+      margin: 0;
+    }
+
     .helper-text {
       color: #b4263b;
       display: flex;
@@ -87,7 +107,7 @@ export const Textarea = styled(
       display: flex;
       align-items: center;
 
-      border: 1px solid #a7a7a7;
+      border: 1px solid #e7e7e7;
       border-radius: 8px;
       background-color: inherit;
 

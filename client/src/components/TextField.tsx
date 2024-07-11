@@ -8,6 +8,7 @@ import { Icon } from './Icon';
 export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'filled' | 'outlined' | 'standard';
   label?: ReactNode;
+  hint?: ReactNode;
   required?: boolean;
   endAdornment?: ReactElement;
   startAdornment?: ReactElement;
@@ -16,12 +17,14 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
 }
 
 export const TextField = styled(
+  // eslint-disable-next-line react/display-name
   React.forwardRef<HTMLInputElement, TextFieldProps>(
     (
       {
         className,
         id,
         label,
+        hint,
         type = 'text',
         required = false,
         endAdornment,
@@ -36,12 +39,16 @@ export const TextField = styled(
       const elementId = id || useId();
       return (
         <div className={`text-field ${className} ${error ? 'error' : ''} variant-${variant}`}>
-          {(label || required) && (
-            <label htmlFor={elementId}>
-              <>{label}</>
-              {required && <span className='required-asterisk'> *</span>}
-            </label>
-          )}
+          <div>
+            {(label || required) && (
+              <label htmlFor={elementId}>
+                <>{label}</>
+                {required && <span className='required-asterisk'> *</span>}
+              </label>
+            )}
+
+            {hint && <p className='hint'>{hint}</p>}
+          </div>
 
           <div className='input-wrapper'>
             {startAdornment || null}
@@ -69,10 +76,10 @@ export const TextField = styled(
     font-family: 'Roobert', serif;
 
     label {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 12px;
-      line-height: 16px;
-      color: #0d2a38;
+      line-height: 20px;
+      color: #646464;
 
       .required-asterisk {
         color: #b4263b;
@@ -80,6 +87,17 @@ export const TextField = styled(
         font-size: 12px;
         line-height: 16px;
       }
+    }
+
+    .hint {
+      color: #646464;
+      font-family: Roobert, serif;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 20px;
+
+      margin: 0;
     }
 
     .helper-text {
@@ -106,7 +124,7 @@ export const TextField = styled(
       display: flex;
       align-items: center;
 
-      border: 1px solid #a7a7a7;
+      border: 1px solid #e7e7e7;
       border-radius: 8px;
       background-color: inherit;
 
@@ -126,9 +144,10 @@ export const TextField = styled(
         outline: none;
         background-color: inherit;
 
-        font-weight: 400;
+        font-weight: 700;
         font-size: 14px;
         line-height: 24px;
+        color: #0d2a38;
 
         flex-grow: 1;
         &[type='password']:not(:placeholder-shown) {

@@ -149,6 +149,9 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                 />
               </div>
               <Textarea
+                hint={
+                  'The bio section will help your matches find out more about and can exponentially increase your chances of getting a perfect match. You can describe yourself using maximum 240 characters.'
+                }
                 rows={7}
                 label='About yourself.'
                 placeholder='Say something about yourself...'
