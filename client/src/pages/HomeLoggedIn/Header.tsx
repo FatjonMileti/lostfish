@@ -6,10 +6,9 @@ import { useProfileStore } from '../../globalState/profile';
 import { useNotificationsStore } from '../../globalState/notifications';
 
 import { MenuButton } from '../../components/MenuButton';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../components';
 import { MatchesIcon } from '../../components/MatchesIcon';
 import { MessagesIcon } from '../../components/MessagesIcon';
-import { AccountIcon } from '../../components/AccountIcon';
 import { MatchScore } from '../../components/MatchScore';
 
 import { getAvatarFormIndex } from './avatars';
@@ -17,6 +16,7 @@ import { getAvatarFormIndex } from './avatars';
 import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
 import { Role } from '../../enums';
 import { useMatchesCount } from '../Matches/useMatchesCount';
+import { AccountWidget } from '../../components/AccountWidget/AccountWidget.tsx';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   middleContent?: ReactElement;
@@ -79,10 +79,7 @@ export const Header = styled(({ className, middleContent }: HeaderProps) => {
             <MatchScore>{profileStore.trust_score}%</MatchScore>
           </div>
 
-          <AccountIcon
-            image={getAvatarFormIndex(profileStore.avatar) || undefined}
-            onClick={() => navigate('/my-account')}
-          />
+          <AccountWidget avatar={getAvatarFormIndex(profileStore.avatar)} />
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import avatar3 from '../MyAccount/images/fancy-avatar-3.jpg';
 import avatar4 from '../MyAccount/images/fancy-avatar-4.jpg';
 import avatar5 from '../MyAccount/images/fancy-avatar-5.jpg';
 import lostfishLogoColored from '../../assets/svg/lostfish-white.svg';
-import { Icon } from '../../components/Icon';
 
 export type AvatarType = { image: string; backgroundColor: string };
 

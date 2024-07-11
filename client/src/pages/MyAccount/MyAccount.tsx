@@ -1,10 +1,7 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-// import { motion } from 'framer-motion';
-
-// import { Icon } from '../../components/Icon';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../components';
 
 import { Dashboard } from './Dashboard/Dashboard';
 import { ProfileDetails } from './ProfileDetails';
@@ -19,7 +16,7 @@ import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 
-import { Avatar } from '../../components/Avatar';
+import { Avatar } from '../../components';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
@@ -28,10 +25,17 @@ import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
 import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
-import { AccountItem } from '../../components/AccountItem.tsx';
+import { AccountItem } from '../../components';
+import { IconPropsSpecific } from '../../components/Icon.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
 
-const submenus: any[] = [
+interface SubMenuItem {
+  icon: IconPropsSpecific['icon'];
+  text: string;
+  link: string;
+}
+
+export const submenus: SubMenuItem[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
   { icon: 'settings', text: 'Account details', link: '/account-details' },
@@ -43,7 +47,7 @@ const submenus: any[] = [
   { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
-const tenantSubmenu: any[] = [
+export const tenantSubmenu: SubMenuItem[] = [
   { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'settings', text: 'Account details', link: '/account-details' },
   { icon: 'settings', text: 'Plan and payment', link: '/plan-and-payment' },
@@ -155,8 +159,6 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='right-content'>
               <Routes>
                 <Route path='/' element={<Dashboard />} />
-                <Route path='/account-details' element={<AccountDetails />} />
-
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />

@@ -1,17 +1,17 @@
 import { styled } from '@mui/system';
 import { HTMLMotionProps, motion } from 'framer-motion';
 import { Icon } from './Icon';
-import {ReactNode} from "react";
+import { ReactNode } from 'react';
 
 export interface AvatarProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   image?: string;
-  children?: ReactNode
+  children?: ReactNode;
 }
 export const Avatar = styled(({ className, children, ...rest }: AvatarProps) => {
   return (
     <motion.div className={`avatar ${className}`} {...rest}>
       {children}
-      {!rest.image && <Icon icon='user' className='user-icon'/>}
+      {!rest.image && <Icon icon='user' className='user-icon' />}
     </motion.div>
   );
 })`
