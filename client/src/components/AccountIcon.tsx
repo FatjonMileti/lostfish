@@ -20,8 +20,8 @@ export const AccountIcon = styled(({ image, className, ...rest }: AccountIconPro
   );
 })`
   &.account-icon {
-    height: 56px;
-    width: 56px;
+    height: 48px;
+    width: 48px;
     border-radius: 50%;
     position: relative;
     overflow: hidden;
@@ -36,9 +36,8 @@ export const AccountIcon = styled(({ image, className, ...rest }: AccountIconPro
     }
 
     .avatar {
-      height: 56px;
-      width: 56px;
-      border: 2px solid #c4b1a3;
+      height: 48px;
+      width: 48px;
       box-sizing: border-box;
       cursor: pointer;
 
@@ -52,18 +51,16 @@ export const AccountIcon = styled(({ image, className, ...rest }: AccountIconPro
     }
 
     .account-button {
-      height: 56px;
-      width: 56px;
+      height: 48px;
+      width: 48px;
       position: absolute;
       top: 0;
-      left: 56px;
+      left: 48px;
       bottom: 0;
       background-color: #eee0d3;
       transition: left 0.2s ease-in-out;
 
       .icon {
-        width: 24px !important;
-        height: 24px !important;
       }
     }
   }

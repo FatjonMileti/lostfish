@@ -2,11 +2,11 @@ import React from 'react';
 import { styled } from '@mui/system';
 
 import { Header } from './Header';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
+// import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Footer } from '../Home/Footer';
-import { DailyNews } from '../Home/Home.DailyNews';
-import { ColoredCards } from '../Home/Home.ColoredCards';
-import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
+// import { DailyNews } from '../Home/Home.DailyNews';
+// import { ColoredCards } from '../Home/Home.ColoredCards';
+// import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
 
 import { Suggestions } from '../Suggestions/Suggestions';
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
@@ -18,7 +18,7 @@ import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
 import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  // const [loading, setLoading] = React.useState<boolean>(false);
   const profileStore = useProfileStore();
 
   return (
@@ -32,7 +32,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
         }
       />
 
-      {loading && <ShowGlobalLoading />}
+      {/*{loading && <ShowGlobalLoading />}*/}
 
       <div className='container'>
         <Suggestions />
