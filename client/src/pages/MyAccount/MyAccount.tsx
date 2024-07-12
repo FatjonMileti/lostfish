@@ -28,6 +28,7 @@ import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesR
 import { AccountItem } from '../../components';
 import { IconProps } from '../../components/Icon.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
+import { PlanAndPayment } from './PlanAndPayment.tsx';
 
 interface SubMenuItem {
   icon: IconProps['icon'];
@@ -137,6 +138,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
               <Routes>
                 <Route path='/' element={<Dashboard />} />
                 <Route path='/account-details' element={<AccountDetails />} />
+                <Route path='/plan-and-payment' element={<PlanAndPayment />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />

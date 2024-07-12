@@ -153,7 +153,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                   'The bio section will help your matches find out more about and can exponentially increase your chances of getting a perfect match. You can describe yourself using maximum 240 characters.'
                 }
                 rows={7}
-                label='About yourself.'
+                label='About yourself'
                 placeholder='Say something about yourself...'
                 {...accountDetailsForm.register('description')}
                 defaultValue=''></Textarea>
@@ -324,7 +324,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       .right-part {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-end;
         gap: 8px;
       }
     }

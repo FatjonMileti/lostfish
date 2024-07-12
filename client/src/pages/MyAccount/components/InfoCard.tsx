@@ -29,8 +29,10 @@ export const InfoCard = styled(({ className, icon, title, description }: InfoCar
     display: grid;
     padding: 24px;
     gap: 8px;
+    max-width: 324px;
     height: min-content;
     border-radius: 16px;
+    box-sizing: border-box;
     background-color: #f3f4f5;
 
     .content {
