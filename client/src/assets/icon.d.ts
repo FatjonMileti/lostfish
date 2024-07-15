@@ -1,4 +1,8 @@
 export type IconNames = 
+  | "completed-badge"
+  | "computer"
+  | "mobile"
+  | "lock-key"
   | "info"
   | "withdraw"
   | "task"
