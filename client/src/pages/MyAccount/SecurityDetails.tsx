@@ -315,6 +315,8 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
             gap: 16px;
 
             .logo {
+              width: 24px;
+              height: 24px;
               padding: 12px;
               border-radius: 4px;
               background: #f3f4f5;
