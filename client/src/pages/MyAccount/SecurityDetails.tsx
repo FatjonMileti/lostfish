@@ -128,7 +128,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
             <div className='content'>
               <div className='backup-with'>
                 <div className='connected-account'>
-                  <img src={Apple} alt='apple' />
+                  <img src={Apple} alt='apple' className='logo' />
                   <div>
                     <Typography variant='body4' className='device'>
                       Apple
@@ -144,7 +144,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
               </div>
               <div className='backup-with'>
                 <div className='connected-account'>
-                  <img src={Google} alt='google' />
+                  <img src={Google} alt='google' className='logo' />
                   <div>
                     <Typography variant='body4' className='device'>
                       Google
@@ -313,6 +313,12 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
           .connected-account {
             display: flex;
             gap: 16px;
+
+            .logo {
+              padding: 12px;
+              border-radius: 4px;
+              background: #f3f4f5;
+            }
 
             .device {
               color: #0d2a38;
