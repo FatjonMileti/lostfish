@@ -148,6 +148,7 @@ export const TextField = styled(
         font-size: 14px;
         line-height: 24px;
         color: #0d2a38;
+        font-family: Roobert, serif;
 
         flex-grow: 1;
         &[type='password']:not(:placeholder-shown) {
