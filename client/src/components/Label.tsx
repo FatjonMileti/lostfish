@@ -43,7 +43,7 @@ export const Label = styled(
     border-radius: 250px;
     font-size: 16px;
     line-height: 24px;
-    font-weight: 600;
+    font-weight: 700;
     font-family: Roobert, serif;
     cursor: pointer;
     color: #184d6d;
@@ -95,6 +95,7 @@ export const Label = styled(
 
       &.size-small {
         padding: 8px 16px;
+        font-size: 14px;
       }
 
       &.size-medium {
@@ -138,6 +139,7 @@ export const Label = styled(
 
       &.size-small {
         padding: 8px 16px;
+        font-size: 14px;
       }
 
       &.size-medium {
