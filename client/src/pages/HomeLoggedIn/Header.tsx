@@ -88,7 +88,8 @@ export const Header = styled(({ className, middleContent }: HeaderProps) => {
   &.header {
     align-items: center;
 
-    padding: 24px 36px;
+    padding: 0 36px;
+    height: 96px;
 
     display: grid;
     grid-template-columns: auto auto auto;

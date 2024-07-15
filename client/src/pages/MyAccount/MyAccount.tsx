@@ -174,11 +174,16 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       display: grid;
       grid-template-rows: min-content auto;
 
+      .header {
+        border-bottom: 1px solid #f3f4f5;
+        box-sizing: border-box;
+      }
+
       .container-account {
         display: grid;
         //column-gap: 69px;
         //padding: 24px 36px 36px 36px;
-        min-height: calc(100vh - 112px);
+        min-height: calc(100vh - 96px);
         box-sizing: border-box;
 
         grid-template-columns: 1fr 3fr;
