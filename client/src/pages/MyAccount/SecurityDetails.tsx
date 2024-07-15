@@ -1,26 +1,38 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, useRef } from 'react';
+import React, { Fragment, HTMLAttributes, useRef } from 'react';
 import { Typography } from '../../components';
 import { Icon, Label } from '../../components';
 import Apple from './Apple_logo_black 1.svg';
 import Google from './Google.svg';
 import axios from '../../utils/axios.ts';
 import { useUserStore } from '../../globalState/user.tsx';
+import { IconProps } from '../../components/Icon.tsx';
+
+interface DeviceHistory {
+  deviceType: 'mobile' | 'desktop';
+  deviceName: string;
+  browser: string;
+}
+
+const deviceIcon: { [key: string]: IconProps['icon'] } = {
+  mobile: 'mobile',
+  desktop: 'computer'
+};
 
 export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { auth } = useUserStore();
 
-  const device_history = [
+  const device_history: DeviceHistory[] = [
     {
-      device_icon: 'info',
-      device_name: 'iOS 16.1',
+      deviceType: 'mobile',
+      deviceName: 'iOS 16.1',
       browser: 'Chrome • 04 May 2024 @ 11:30'
     },
     {
-      device_icon: 'info',
-      device_name: 'OS X 10.15.7',
+      deviceType: 'desktop',
+      deviceName: 'OS X 10.15.7',
       browser: 'Chrome • 04 May 2024 @ 11:30'
     }
   ];
@@ -55,8 +67,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
         <div className='login-backup-wrapper'>
           <div className='id-details'>
             <div className='government-id-details'>
-              {/* TODO: change icon*/}
-              <Icon icon='checked' size={48} />
+              <Icon icon='completed-badge' size={48} />
               <div>
                 <Typography variant='body4' className='government-id'>
                   Government ID
@@ -155,15 +166,14 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
             Device history
           </Typography>
           <div className='device-list'>
-            {device_history.map((device, index) => (
-              <>
-                <div key={device.device_name} className='device'>
+            {device_history.map((device, deviceIndex) => (
+              <Fragment key={deviceIndex}>
+                <div className='device'>
                   <div className='device-info'>
-                    {/* TODO: change icon*/}
-                    <Icon icon={device.device_icon} size={32} />
+                    <Icon icon={deviceIcon[device.deviceType]} size={32} />
                     <div>
                       <Typography variant='body5' className='device-name'>
-                        {device.device_name}
+                        {device.deviceName}
                       </Typography>
                       <Typography variant='body6' className='browser'>
                         {device.browser}
@@ -174,8 +184,8 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
                     Forget
                   </Label>
                 </div>
-                {index + 1 < device_history.length && <div className='line'></div>}
-              </>
+                {deviceIndex + 1 < device_history.length && <div className='line'></div>}
+              </Fragment>
             ))}
           </div>
         </div>
@@ -211,6 +221,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
           grid-template-columns: auto min-content;
           padding: 24px;
           gap: 16px;
+          align-items: center;
 
           border-radius: 8px;
           background: linear-gradient(180deg, #c0daff 0%, #d9e9ff 100%);
