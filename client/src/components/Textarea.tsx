@@ -59,10 +59,10 @@ export const Textarea = styled(
     font-family: 'Roobert', serif;
 
     label {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 12px;
-      line-height: 16px;
-      color: #0d2a38;
+      line-height: 20px;
+      color: #646464;
 
       .required-asterisk {
         color: #b4263b;
@@ -126,10 +126,20 @@ export const Textarea = styled(
         outline: none;
         background-color: inherit;
 
-        font-weight: 400;
+        font-family: Roobert, serif;
+        font-weight: 700;
         font-size: 14px;
         line-height: 24px;
+        color: #0d2a38;
         flex-grow: 1;
+
+        &::placeholder {
+          font-size: 14px;
+          line-height: 24px;
+          font-weight: 500;
+          color: #a7a7a7;
+          font-family: Roobert, serif;
+        }
       }
     }
 

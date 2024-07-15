@@ -73,6 +73,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
     try {
       await profileStore.fetchProfile(auth.access_token);
     } catch (err) {
+      console.log(err);
       throw err;
     } finally {
       setLoading(false);
@@ -87,6 +88,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
       await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
       await loadProfile();
     } catch (err) {
+      console.log(err);
       throw err;
     } finally {
       setLoading(false);
@@ -277,22 +279,23 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             .setup-avatar {
               display: flex;
               flex-wrap: wrap;
-              column-gap: 8px;
+              gap: 8px;
 
               .avatar {
                 position: relative;
                 cursor: pointer;
-                height: 68px;
-                width: 68px;
+                height: 64px;
+                width: 64px;
                 box-sizing: border-box;
                 display: flex;
 
                 .icon {
                   display: none !important;
                 }
+                transition: outline-width 0.2s;
 
                 &.active {
-                  outline: 2px solid #184d6d;
+                  outline: 1px solid #184d6d;
 
                   :before {
                     content: '';
@@ -309,11 +312,11 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                     display: initial !important;
                     position: absolute;
                     z-index: 4;
-                    bottom: -8px;
+                    top: 0;
+                    right: 0;
                     background: #184d6d;
-                    left: 50%;
-                    transform: translateX(-50%);
                     border-radius: 50%;
+                    padding: 2px;
                   }
                 }
               }
