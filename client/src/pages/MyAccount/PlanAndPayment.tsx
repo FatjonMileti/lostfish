@@ -1,7 +1,7 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
-import { Typography } from '../../components/Typography.tsx';
-import { Button } from '../../components/Button.tsx';
+import { Typography } from '../../components';
+import { Button } from '../../components';
 import { InfoCard } from './components/InfoCard.tsx';
 import { Icon, Label } from '../../components';
 import visa from './Visa.svg';
