@@ -96,10 +96,11 @@ const schema: Schema<UserDocument> = new Schema<UserDocument>({
     is_twitter_verified: { type: Boolean, default: false }
   },
   notification: {
-    email_me_when_i_get_a_match: { type: Boolean, default: false },
-    text_when_i_get_a_match: { type: Boolean, default: false },
-    email_when_someone_accept_my_match: { type: Boolean, default: false },
-    text_when_someone_accept_my_match: { type: Boolean, default: false }
+    email_updates: { type: Boolean, default: false },
+    sms_updates: { type: Boolean, default: false },
+    desktop_notification: { type: Boolean, default: false },
+    offers_updates: { type: Boolean, default: false },
+    news_updates: { type: Boolean, default: false }
   },
   documents: [Object],
   description: String,

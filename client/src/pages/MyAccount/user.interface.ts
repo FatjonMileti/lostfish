@@ -74,10 +74,11 @@ export interface ApiUserDocumentType {
   description: string;
   avatar: string;
   notification: {
-    email_me_when_i_get_a_match: boolean;
-    text_when_i_get_a_match: boolean;
-    email_when_someone_accept_my_match: boolean;
-    text_when_someone_accept_my_match: boolean;
+    email_updates: boolean;
+    sms_updates: boolean;
+    desktop_notification: boolean;
+    offers_updates: boolean;
+    news_updates: boolean;
   };
   documents: any[];
   confirmation_token?: string;

@@ -30,6 +30,8 @@ import { IconProps } from '../../components/Icon.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
 import { PlanAndPayment } from './PlanAndPayment.tsx';
 import { SecurityDetails } from './SecurityDetails.tsx';
+import { CommunicationSettings } from './CommunicationSettings.tsx';
+import { PrivacyAndSharing } from './PrivacyAndSharing.tsx';
 
 interface SubMenuItem {
   icon: IconProps['icon'];
@@ -44,6 +46,7 @@ export const submenus: SubMenuItem[] = [
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
+  { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -57,6 +60,7 @@ export const tenantSubmenu: SubMenuItem[] = [
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
+  { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -145,7 +149,8 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                 <Route path='/account-details' element={<AccountDetails />} />
                 <Route path='/plan-and-payment' element={<PlanAndPayment />} />
                 <Route path='/security-details' element={<SecurityDetails />} />
-                <Route path='/communication-settings' element={null} />
+                <Route path='/communication-settings' element={<CommunicationSettings />} />
+                <Route path='/privacy-and-sharing/' element={<PrivacyAndSharing />} />
                 <Route path='/account-settings' element={<ProfileDetails />} />
                 {profileStore.role === 'Tenant' && (
                   <Route path='/refine-your-search' element={<SetCriteria />} />
