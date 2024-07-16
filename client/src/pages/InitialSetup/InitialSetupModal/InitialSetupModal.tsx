@@ -60,9 +60,11 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
         transaction_type_string: Transaction.Rent
       });
 
-      profileStore.set((profile) => ({ ...profile, avatar: state.avatar }));
+      profileStore.setAvatar(state.avatar);
+
       setStep((step) => step + 1);
     } catch (err) {
+      console.log(err);
       throw err;
     } finally {
       setLoading(false);

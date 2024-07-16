@@ -1,5 +1,5 @@
 export default {
-  apiUrl: process.env.REACT_APP_BACK_END_URL,
+  apiUrl: process.env.REACT_APP_BACK_END_URL as string,
   googleRedirectUrl: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
   google: {
     google_app_id: process.env.REACT_APP_GG_APP_ID,

@@ -22,3 +22,4 @@ export { AccountItem } from './AccountItem';
 export { MenuCounter } from './MenuCounter';
 
 export * from './Popover.tsx';
+export * from './ShowGlobalLoading.tsx';

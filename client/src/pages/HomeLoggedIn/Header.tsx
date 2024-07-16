@@ -41,7 +41,7 @@ export const Header = styled(({ className, middleContent }: HeaderProps) => {
 
       <div className='middle-part'>
         {middleContent || null}
-        {!middleContent && profileStore.hasCompletedInitialSetup && (
+        {!middleContent && profileStore.has_completed_initial_setup && (
           <div className='menu'>
             <NavLink to='/matches'>
               {({ isActive }) => <MenuButton active={isActive}>Matches</MenuButton>}

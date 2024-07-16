@@ -20,7 +20,7 @@ import { useProfileStore } from '../../globalState/profile';
 import { AccountSettings } from './AccountSettings';
 import { Select } from '../../components/Select/Select';
 import { Label } from '../../components/Label';
-import { NotificationSettings } from './NotificationSettings';
+// import { NotificationSettings } from './NotificationSettings';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
@@ -273,7 +273,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             </>
           )}
           {activeComponent === 'Security' && <AccountSettings />}
-          {activeComponent === 'Notifications' && <NotificationSettings />}
+          {/*{activeComponent === 'Notifications' && <NotificationSettings />}*/}
         </div>
       </form>
     </>

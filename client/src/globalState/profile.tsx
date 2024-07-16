@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import axios from '../utils/axios';
-import { IUser_Documents } from '../pages/MyAccount/user.interface';
+import { IUser_Documents, UserNotifications } from '../pages/MyAccount/user.interface';
 
-export interface ProfileStoreType {
+interface ProfileBase {
   id: string;
   avatar?: string;
   first_name: string;
@@ -22,19 +22,17 @@ export interface ProfileStoreType {
   transaction_agreement_link: string | undefined;
   documents: IUser_Documents[];
   trust_score: number;
-  hasCompletedInitialSetup: boolean;
-  set: (
-    partial:
-      | ProfileStoreType
-      | Partial<ProfileStoreType>
-      | ((state: ProfileStoreType) => ProfileStoreType | Partial<ProfileStoreType>),
-    replace?: boolean | undefined
-  ) => void;
+  has_completed_initial_setup: boolean;
+  notification: UserNotifications;
+}
+
+export interface ProfileStore extends ProfileBase {
   fetchProfile: (access_token: string) => Promise<void>;
+  setAvatar: (avatar: ProfileBase['avatar']) => void;
   reset: () => void;
 }
 
-const profileInitialState = {
+const profileInitialState: ProfileBase = {
   id: '',
   avatar: undefined,
   first_name: '',
@@ -53,17 +51,30 @@ const profileInitialState = {
   address: '',
   martial_status: '',
   have_pets: '',
-  hasCompletedInitialSetup: false
+  has_completed_initial_setup: false,
+
+  notification: {
+    email_updates: false,
+    sms_updates: false,
+    desktop_notification: false,
+    offers_updates: false,
+    news_updates: false
+  }
 };
 
-export const useProfileStore = create<ProfileStoreType>()(
+export const useProfileStore = create<ProfileStore>()(
   devtools(
     persist(
-      (set) => ({
-        ...profileInitialState,
-        set,
-        reset: () => set((profile) => ({ ...profileInitialState })),
-        fetchProfile: async (access_token: string) => {
+      (set) => {
+        const reset = () => {
+          set(() => ({ ...profileInitialState }));
+        };
+
+        const setAvatar = (avatar: ProfileBase['avatar']) => {
+          set((state) => ({ ...state, avatar }));
+        };
+
+        const fetchProfile = async (access_token: string) => {
           try {
             const { data } = await axios(access_token).get('/api/account/me');
 
@@ -88,16 +99,24 @@ export const useProfileStore = create<ProfileStoreType>()(
               address: data.address,
               martial_status: data.martial_status,
               have_pets: data.have_pets ? 'Yes' : 'No',
-              hasCompletedInitialSetup: data?.has_completed_initial_setup
+              has_completed_initial_setup: data?.has_completed_initial_setup,
+              notification: data.notification
             }));
           } catch (err: any) {
             if (err.response.code === 404) {
-              set((profile) => ({ ...profileInitialState }));
+              set(() => ({ ...profileInitialState }));
             }
             throw err;
           }
-        }
-      }),
+        };
+
+        return {
+          ...profileInitialState,
+          setAvatar,
+          reset,
+          fetchProfile
+        };
+      },
       { name: 'profile' }
     ),
     {

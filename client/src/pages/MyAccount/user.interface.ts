@@ -43,6 +43,14 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
   }
 ];
 
+export interface UserNotifications {
+  email_updates: boolean;
+  sms_updates: boolean;
+  desktop_notification: boolean;
+  offers_updates: boolean;
+  news_updates: boolean;
+}
+
 export interface ApiUserDocumentType {
   _id: string;
   user_id: number;
@@ -73,13 +81,7 @@ export interface ApiUserDocumentType {
   phone: string;
   description: string;
   avatar: string;
-  notification: {
-    email_updates: boolean;
-    sms_updates: boolean;
-    desktop_notification: boolean;
-    offers_updates: boolean;
-    news_updates: boolean;
-  };
+  notification: UserNotifications;
   documents: any[];
   confirmation_token?: string;
   last_login: Date;

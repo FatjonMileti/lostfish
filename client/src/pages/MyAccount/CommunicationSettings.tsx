@@ -1,15 +1,16 @@
-import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { Switch, Typography } from '../../components';
-import { Button } from '../../components';
-import { InfoCard } from './components/InfoCard.tsx';
+import { styled } from '@mui/system';
+import * as yup from 'yup';
+import { useMutation } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from '../../utils/axios';
 
+import { Switch, Typography, Button, ShowGlobalLoading } from '../../components';
+import { InfoCard } from './components/InfoCard.tsx';
+import axios from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
-import { useUser } from '../../context/UserProvider.tsx';
-import * as yup from 'yup';
+import { UserNotifications } from './user.interface.ts';
+import { useProfileStore } from '../../globalState/profile.tsx';
 
 const userNotificationSchema = yup.object().shape({
   email_updates: yup.boolean(),
@@ -19,203 +20,164 @@ const userNotificationSchema = yup.object().shape({
   news_updates: yup.boolean()
 });
 
-interface FormData {
-  email_updates: boolean;
-  sms_updates: boolean;
-  desktop_notification: boolean;
-  offers_updates: boolean;
-  news_updates: boolean;
-}
-
-type CheckBoxName =
-  | 'email_updates'
-  | 'sms_updates'
-  | 'desktop_notification'
-  | 'offers_updates'
-  | 'news_updates';
-
 export const CommunicationSettings = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const { user, getOne } = useUser();
   const { userDetails, auth } = useUserStore();
+  const profileStore = useProfileStore();
 
-  const { control, handleSubmit, setValue } = useForm<FormData>({
+  const notificationForm = useForm<UserNotifications>({
     resolver: yupResolver(userNotificationSchema),
-    defaultValues: {
-      email_updates: false,
-      sms_updates: false,
-      desktop_notification: false,
-      offers_updates: false,
-      news_updates: false
-    }
+    defaultValues: profileStore.notification
   });
 
   React.useEffect(() => {
-    getNotifications();
-  }, [user]);
+    notificationForm.reset(profileStore.notification);
+  }, [profileStore.notification]);
 
-  const getNotifications = () => {
-    if (user) {
-      const { notification } = user;
-      if (notification) {
-        const { email_updates, sms_updates, desktop_notification, offers_updates, news_updates } =
-          notification;
-
-        setValue('email_updates', email_updates);
-        setValue('sms_updates', sms_updates);
-        setValue('desktop_notification', desktop_notification);
-        setValue('offers_updates', offers_updates);
-        setValue('news_updates', news_updates);
+  const settingsMutation = useMutation(
+    async (data: UserNotifications) => {
+      return await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
+        notification: data
+      });
+    },
+    {
+      onSuccess: () => {
+        profileStore.fetchProfile(auth.access_token);
       }
     }
-  };
-
-  const onSubmit = async (data: any) => {
-    const response = await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
-      notification: data
-    });
-    if (response.status === 200) {
-      getOne();
-    }
-  };
-
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.name as CheckBoxName, e.target.checked);
-  };
+  );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={`communication-settings ${className}`}>
-      <div className='communication-settings-header'>
-        <Typography variant='body2' className='section-title'>
-          Communication settings
-        </Typography>
-        <Button type='submit' size='medium' className='submit-button'>
-          Save changes
-        </Button>
-      </div>
-      <div className='section-wrapper'>
-        <div className='communication-settings-wrapper'>
-          <div className='section'>
-            <Typography variant='body3' className='title'>
-              Account notifications
-            </Typography>
-            <div className='notification-list'>
-              <div className='notification'>
-                <div className='texts'>
-                  <Typography variant='body4' className='notification-title'>
-                    Email updates
-                  </Typography>
-                  <Typography variant='body6' className='notification-description'>
-                    Receive email updates about the status of your matches, messages received as well as
-                    updates on legal documents upload.
-                  </Typography>
+    <>
+      {settingsMutation.isLoading && <ShowGlobalLoading />}
+      <form
+        onSubmit={notificationForm.handleSubmit((data) => settingsMutation.mutate(data))}
+        className={`communication-settings ${className}`}>
+        <div className='communication-settings-header'>
+          <Typography variant='body2' className='section-title'>
+            Communication settings
+          </Typography>
+          <Button
+            type='submit'
+            size='medium'
+            className='submit-button'
+            disabled={!notificationForm.formState.isDirty}>
+            Save changes
+          </Button>
+        </div>
+        <div className='section-wrapper'>
+          <div className='communication-settings-wrapper'>
+            <div className='section'>
+              <Typography variant='body3' className='title'>
+                Account notifications
+              </Typography>
+              <div className='notification-list'>
+                <div className='notification'>
+                  <div className='texts'>
+                    <Typography variant='body4' className='notification-title'>
+                      Email updates
+                    </Typography>
+                    <Typography variant='body6' className='notification-description'>
+                      Receive email updates about the status of your matches, messages received as well as
+                      updates on legal documents upload.
+                    </Typography>
+                  </div>
+                  <Controller
+                    name='email_updates'
+                    control={notificationForm.control}
+                    render={({ field }) => {
+                      return <Switch size='medium' checked={field.value} onChange={field.onChange} />;
+                    }}
+                  />
                 </div>
-                <Controller
-                  name='email_updates'
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Switch {...field} size='medium' checked={field.value} onChange={handleOnChange} />
-                    );
-                  }}
-                />
+                <div className='notification'>
+                  <div className='texts'>
+                    <Typography variant='body4' className='notification-title'>
+                      SMS updates
+                    </Typography>
+                    <Typography variant='body6' className='notification-description'>
+                      Receive SMS updates about the status of your matches, messages received as well as
+                      updates on legal documents upload.
+                    </Typography>
+                  </div>
+                  <Controller
+                    name='sms_updates'
+                    control={notificationForm.control}
+                    render={({ field }) => {
+                      return <Switch size='medium' checked={field.value} onChange={field.onChange} />;
+                    }}
+                  />
+                </div>
+                <div className='notification'>
+                  <div className='texts'>
+                    <Typography variant='body4' className='notification-title'>
+                      Desktop notifications
+                    </Typography>
+                    <Typography variant='body6' className='notification-description'>
+                      Turn on notifications to get notified of new responses on your device.
+                    </Typography>
+                  </div>
+                  <Controller
+                    name='desktop_notification'
+                    control={notificationForm.control}
+                    render={({ field }) => {
+                      return <Switch size='medium' checked={field.value} onChange={field.onChange} />;
+                    }}
+                  />
+                </div>
               </div>
-              <div className='notification'>
-                <div className='texts'>
-                  <Typography variant='body4' className='notification-title'>
-                    SMS updates
-                  </Typography>
-                  <Typography variant='body6' className='notification-description'>
-                    Receive SMS updates about the status of your matches, messages received as well as updates
-                    on legal documents upload.
-                  </Typography>
+            </div>
+            <div className='section'>
+              <Typography variant='body3' className='title'>
+                Marketing notifications
+              </Typography>
+              <div className='notification-list'>
+                <div className='notification'>
+                  <div className='texts'>
+                    <Typography variant='body4' className='notification-title'>
+                      Offers updates
+                    </Typography>
+                    <Typography variant='body6' className='notification-description'>
+                      Receive email updates about special offers and discounts.
+                    </Typography>
+                  </div>
+                  <Controller
+                    name='offers_updates'
+                    control={notificationForm.control}
+                    render={({ field }) => {
+                      return <Switch size='medium' checked={field.value} onChange={field.onChange} />;
+                    }}
+                  />
                 </div>
-                <Controller
-                  name='sms_updates'
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Switch {...field} size='medium' checked={field.value} onChange={handleOnChange} />
-                    );
-                  }}
-                />
-              </div>
-              <div className='notification'>
-                <div className='texts'>
-                  <Typography variant='body4' className='notification-title'>
-                    Desktop notifications
-                  </Typography>
-                  <Typography variant='body6' className='notification-description'>
-                    Turn on notifications to get notified of new responses on your device.
-                  </Typography>
+                <div className='notification'>
+                  <div className='texts'>
+                    <Typography variant='body4' className='notification-title'>
+                      News updates
+                    </Typography>
+                    <Typography variant='body6' className='notification-description'>
+                      Receive email updates about new articles published.
+                    </Typography>
+                  </div>
+                  <Controller
+                    name='news_updates'
+                    control={notificationForm.control}
+                    render={({ field }) => {
+                      return <Switch size='medium' checked={field.value} onChange={field.onChange} />;
+                    }}
+                  />
                 </div>
-                <Controller
-                  name='desktop_notification'
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Switch {...field} size='medium' checked={field.value} onChange={handleOnChange} />
-                    );
-                  }}
-                />
               </div>
             </div>
           </div>
-          <div className='section'>
-            <Typography variant='body3' className='title'>
-              Marketing notifications
-            </Typography>
-            <div className='notification-list'>
-              <div className='notification'>
-                <div className='texts'>
-                  <Typography variant='body4' className='notification-title'>
-                    Offers updates
-                  </Typography>
-                  <Typography variant='body6' className='notification-description'>
-                    Receive email updates about special offers and discounts.
-                  </Typography>
-                </div>
-                <Controller
-                  name='offers_updates'
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Switch {...field} size='medium' checked={field.value} onChange={handleOnChange} />
-                    );
-                  }}
-                />
-              </div>
-              <div className='notification'>
-                <div className='texts'>
-                  <Typography variant='body4' className='notification-title'>
-                    News updates
-                  </Typography>
-                  <Typography variant='body6' className='notification-description'>
-                    Receive email updates about new articles published.
-                  </Typography>
-                </div>
-                <Controller
-                  name='news_updates'
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Switch {...field} size='medium' checked={field.value} onChange={handleOnChange} />
-                    );
-                  }}
-                />
-              </div>
-            </div>
+          <div className='right-part'>
+            <InfoCard
+              icon='remind'
+              title='Why enable desktop notifications?'
+              description='With desktop notifications enabled you will get notified instantly once you have a match, you receive a message or Lostfish updates directly from your account.'
+            />
           </div>
         </div>
-        <div className='right-part'>
-          {/*TODO: change icon*/}
-          <InfoCard
-            icon='info'
-            title='Why enable desktop notifications?'
-            description='With desktop notifications enabled you will get notified instantly once you have a match, you receive a message or Lostfish updates directly from your account.'
-          />
-        </div>
-      </div>
-    </form>
+      </form>
+    </>
   );
 })`
   &.communication-settings {

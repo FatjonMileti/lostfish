@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "remind"
   | "completed-badge"
   | "computer"
   | "mobile"

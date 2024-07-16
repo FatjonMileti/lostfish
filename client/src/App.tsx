@@ -27,7 +27,7 @@ import { useNotificationsStore } from './globalState/notifications';
 
 import { CookieConsent } from './components/CookieConsent';
 import { MyMatches } from './pages/Matches/MyMatches';
-import { GlobalLoading } from './components/ShowGlobalLoading';
+import { GlobalLoading } from './components';
 import { GlobalSetCriteria } from './pages/SetCriteria/GlobalSetCriteria';
 import { Role } from './enums';
 
@@ -52,14 +52,6 @@ function App() {
 
   React.useEffect(() => {
     if (userStore.auth) {
-      const socketOpt = {
-        ...(process.env.REACT_APP_NODE_ENV !== 'development' && { transports: ['websocket'] }),
-        auth: {
-          token: userStore.auth.access_token
-        }
-      };
-      // console.log(socketOpt);
-      // @ts-ignore
       const newSocket = io(config.apiUrl, {
         ...(process.env.REACT_APP_NODE_ENV !== 'development' && { transports: ['websocket'] }),
         auth: {
@@ -83,7 +75,7 @@ function App() {
           <SocketContext.Provider value={value}>
             <UserProvider>
               {userStore.auth &&
-                profileStore.hasCompletedInitialSetup &&
+                profileStore.has_completed_initial_setup &&
                 profileStore.role === Role.Tenant && <GlobalSetCriteria />}
 
               <Routes>
@@ -97,8 +89,10 @@ function App() {
                 <Route
                   path=''
                   element={
-                    !!userStore.auth ? (
-                      <>{profileStore.hasCompletedInitialSetup ? <HomeLoggedIn /> : <InitialSetupModal />}</>
+                    userStore.auth ? (
+                      <>
+                        {profileStore.has_completed_initial_setup ? <HomeLoggedIn /> : <InitialSetupModal />}
+                      </>
                     ) : (
                       <Home />
                     )
@@ -107,10 +101,10 @@ function App() {
 
                 <Route path='/agreement' element={<Agreement />} />
 
-                <Route path='/my-matches' element={!!userStore.auth ? <MyMatches /> : <Home />} />
-                <Route path='/messages' element={!!userStore.auth ? <Messages /> : <Home />} />
-                <Route path='/my-account/*' element={!!userStore.auth ? <MyAccount /> : <Home />} />
-                <Route path='/dashboard/*' element={!!userStore.auth ? <MyDashboard /> : <Home />} />
+                <Route path='/my-matches' element={userStore.auth ? <MyMatches /> : <Home />} />
+                <Route path='/messages' element={userStore.auth ? <Messages /> : <Home />} />
+                <Route path='/my-account/*' element={userStore.auth ? <MyAccount /> : <Home />} />
+                <Route path='/dashboard/*' element={userStore.auth ? <MyDashboard /> : <Home />} />
 
                 <Route path='*' element={<NotFound />} />
               </Routes>
