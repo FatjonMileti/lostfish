@@ -1,14 +1,9 @@
-import React from 'react';
-import { Card, Grid, CardContent, Box, Typography } from '@mui/material';
+import { Card, CardContent, Box, Typography } from '@mui/material';
 import config from '../../../config';
 import { useUserStore } from '../../../globalState/user';
-import axios from '../../../utils/axios';
-import { useParams } from 'react-router-dom';
-
-type IDocumentType = 'Rent Contract' | 'Lostfish transaction agreement' | 'Lostfish privacy agreement';
 
 export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
-  const { auth, userDetails } = useUserStore();
+  const { userDetails } = useUserStore();
 
   const {
     envelope_id,
@@ -26,8 +21,6 @@ export const EnvelopeCard = ({ envelope }: { envelope: any }) => {
 
   const isLandlord = userDetails.user_id.toString() === land_lord?._id?.toString();
   const isTenant = userDetails.user_id.toString() === tenant?._id?.toString();
-
-  const params = useParams<{ id: string }>();
 
   return (
     <Box display='flex' justifyContent='center'>

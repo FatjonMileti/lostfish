@@ -1,8 +1,7 @@
-import React from 'react';
 import { styled } from '@mui/system';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../components';
 import { IRoom } from './messages.interface';
-import { Avatar } from '../../components/Avatar';
+import { Avatar } from '../../components';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars';
 import moment from 'moment';
 import { useUserStore } from '../../globalState/user';

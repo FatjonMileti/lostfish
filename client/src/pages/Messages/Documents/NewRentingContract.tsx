@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { Button } from '../../../components/Button';
 import { useForm } from 'react-hook-form';
@@ -30,12 +30,7 @@ export const NewRentingContract = (props: INewRentingContract) => {
 
   const { auth } = useUserStore();
 
-  const {
-    handleSubmit,
-    setError,
-    formState: { errors },
-    setValue
-  } = useForm({
+  const { handleSubmit, setError, setValue } = useForm({
     defaultValues: {
       tenant: '',
       landlord: '',
@@ -44,22 +39,6 @@ export const NewRentingContract = (props: INewRentingContract) => {
     resolver: yupResolver(schema),
     mode: 'all'
   });
-
-  React.useEffect(() => {
-    getProperties();
-  }, []);
-
-  const getProperties = async () => {
-    try {
-      const { data } = await axios(auth.access_token).get('/api/asset', {
-        params: {
-          pageSize: 100
-        }
-      });
-    } catch (error: AxiosError | any) {
-      //handle error
-    }
-  };
 
   React.useEffect(() => {
     if (profileStore) {

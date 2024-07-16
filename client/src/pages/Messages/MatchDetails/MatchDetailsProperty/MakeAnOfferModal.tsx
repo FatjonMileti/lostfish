@@ -1,25 +1,22 @@
 import { styled } from '@mui/system';
 import { Modal, ModalProps } from '../../../../components/Modal';
-import { Typography } from '../../../../components/Typography';
-import { CloseButton } from '../../../../components/CloseButton';
-import React from 'react';
+import { Typography } from '../../../../components';
+import { CloseButton } from '../../../../components';
 import classNames from 'classnames';
-import { Label } from '../../../../components/Label';
+import { Label } from '../../../../components';
 import { IRoom } from '../../messages.interface';
-import { Avatar } from '../../../../components/Avatar';
+import { Avatar } from '../../../../components';
 import { getAvatarFormIndex } from '../../../HomeLoggedIn/avatars';
-import { Icon } from '../../../../components/Icon';
+import { Icon } from '../../../../components';
 import { AreaUnit } from '../../../Properties/NewProperty/property.constants';
-import { TextField } from '../../../../components/TextField';
+import { TextField } from '../../../../components';
 import { Select } from '../../../../components/Select/Select';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios from '../../../../utils/axios';
-import { useUserStore } from '../../../../globalState/user';
-import { UseBaseMutationResult, useMutation, UseMutationResult } from '@tanstack/react-query';
+import { UseBaseMutationResult } from '@tanstack/react-query';
 import { ApiOfferDocument } from './MatchDetailsproperty.ReviewOfferModal';
-import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../../../components';
 
 export type OfferFormType = {
   offeringPrice: number;
@@ -59,8 +56,6 @@ export const MakeAnOfferModal = styled(({ className, room, makeOffer, ...rest }:
 
   const avatarKey = landlord?.avatar;
   const avatar = getAvatarFormIndex(avatarKey);
-
-  const userStore = useUserStore();
 
   const offerForm = useForm<OfferFormType>({
     defaultValues: {

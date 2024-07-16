@@ -20,12 +20,10 @@ import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteria
 
 export interface SetCriteriaProps extends HTMLMotionProps<'div'> {
   onNext: () => void;
-  onBack: () => void | any;
+  onBack: () => void;
 }
 
-export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaProps) => {
-  const [showModal, setShowModal] = React.useState(true);
-
+export const SetCriteria = styled(({ onNext, onBack }: SetCriteriaProps) => {
   const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
 
   const criteriaForm = useCriteriaForm();
@@ -196,11 +194,11 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
         moving_time: criteriaForm.getValues('whenDoYouWantToMove') || undefined,
 
         property_type: Object.entries(criteriaForm.getValues('propertyType'))
-          .filter(([key, value]) => value)
-          .map(([key, value]) => key) as ApiCriteriaDocumentType['property_type'],
+          .filter(([, value]) => value)
+          .map(([key]) => key) as ApiCriteriaDocumentType['property_type'],
         house_details: {
           house_type: Object.entries(criteriaForm.getValues('houseDetails.houseType') || {})
-            .filter(([key, value]) => !!value)
+            .filter(([, value]) => !!value)
             .map(([key]) => key) as HouseType[],
           home_style: criteriaForm.getValues('houseDetails.homeStyle') || undefined,
           preferred_size: criteriaForm.getValues('houseDetails.preferredSize'),
@@ -217,8 +215,8 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
           condition: criteriaForm.getValues('flatDetails.condition') || undefined,
 
           outside_space: Object.entries(criteriaForm.getValues('flatDetails.outsideSpace'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key) as OutsideSpaceType[],
+            .filter(([, value]) => value)
+            .map(([key]) => key) as OutsideSpaceType[],
           preferred_size: criteriaForm.getValues('flatDetails.preferredSize'),
           number_of_bedrooms: criteriaForm.getValues('flatDetails.nrOfBedrooms'),
           number_of_bathrooms: criteriaForm.getValues('flatDetails.nrOfBathrooms'),
@@ -254,8 +252,8 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
           number_of_bathrooms: criteriaForm.getValues('nrOfBathrooms').join('-')
         },
         specific_property_features: Object.entries(criteriaForm.getValues('specificPropertyFeatures'))
-          .filter(([key, value]) => value)
-          .map(([key, value]) => key),
+          .filter(([, value]) => value)
+          .map(([key]) => key),
 
         distance_from_underground: criteriaForm.getValues('distanceFromUnderground'),
         distance_from_schools: criteriaForm.getValues('distanceFromSchools'),
@@ -269,8 +267,8 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
         deposit_amount: criteriaForm.getValues('depositAmount'),
         credit_score_requirements: criteriaForm.getValues('creditScore'),
         contract_details: Object.entries(criteriaForm.getValues('contractDetails'))
-          .filter(([key, value]) => value)
-          .map(([key, value]) => key)
+          .filter(([, value]) => value)
+          .map(([key]) => key)
       };
 
       await axios(userStore.auth.access_token).patch(`/api/criteria`, payload);
@@ -278,13 +276,14 @@ export const SetCriteria = styled(({ className, onNext, onBack }: SetCriteriaPro
       await onNext();
       profileStore.fetchProfile(userStore.auth.access_token);
     } catch (err) {
+      console.log(err);
       throw err;
     }
   };
 
   return (
     <SetCriteriaModal
-      open={showModal}
+      open={true}
       onBack={onBack}
       onBackdropClick={onBack}
       form={criteriaForm}

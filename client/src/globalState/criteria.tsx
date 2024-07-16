@@ -29,7 +29,7 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
           }));
         },
         reset: () =>
-          setState((profile) => ({
+          setState(() => ({
             criteria: {}
           })),
 
@@ -37,14 +37,14 @@ export const useCriteriaStore = create<CriteriaStoreType>()(
           try {
             const { data } = await axios(access_token).get<ApiCriteriaDocumentType>('/api/criteria');
 
-            setState((prevCriteria) => ({
+            setState(() => ({
               criteria: {
                 ...data
               }
             }));
           } catch (err: any) {
             if (err.response.status === 404) {
-              setState((criteria) => ({
+              setState(() => ({
                 criteria: {}
               }));
             } else {

@@ -13,16 +13,16 @@ import { SetCriteriaLocation } from './SetCriteria.Location';
 import { SetCriteriaHouseType } from './SetCriteria.HouseType';
 import { SetCriteriaBudget } from './SetCriteria.Budged';
 
-import { Typography } from '../../../components/Typography';
-import { Button } from '../../../components/Button';
-import { Label } from '../../../components/Label';
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
+import { Typography } from '../../../components';
+import { Button } from '../../../components';
+import { Label } from '../../../components';
+import { ShowGlobalLoading } from '../../../components';
 
 import { Parking } from '../../Properties/NewProperty/property.constants';
 import { useProfileStore } from '../../../globalState/profile';
 
 import { OutsideSpaceType } from '../../Properties/NewProperty/property.types';
-import { CloseButton } from '../../../components/CloseButton';
+import { CloseButton } from '../../../components';
 import { useCriteriaForm } from '../useCriteriaForm';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details'];
@@ -32,7 +32,7 @@ interface SetCriteriaProps extends HTMLAttributes<HTMLDivElement> {
   onClose?: () => void;
 }
 export const SetCriteria = styled(
-  ({ className, afterRefineSearch = () => {}, onClose, ...otherProps }: SetCriteriaProps) => {
+  ({ className, afterRefineSearch = () => {}, onClose }: SetCriteriaProps) => {
     const [selectedTab, setSelectedTab] = React.useState(0);
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -207,6 +207,7 @@ export const SetCriteria = styled(
           mainForm.setValue('distanceFromGym', data.distance_from_gym);
         }
       } catch (err) {
+        console.log(err);
         throw err;
       } finally {
         setLoading(false);
@@ -224,11 +225,11 @@ export const SetCriteria = styled(
           moving_time: mainForm.getValues('whenDoYouWantToMove') || undefined,
 
           property_type: Object.entries(mainForm.getValues('propertyType'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key) as ApiCriteriaDocumentType['property_type'],
+            .filter(([, value]) => value)
+            .map(([key]) => key) as ApiCriteriaDocumentType['property_type'],
           house_details: {
             house_type: Object.entries(mainForm.getValues('houseDetails.houseType') || {})
-              .filter(([key, value]) => !!value)
+              .filter(([, value]) => !!value)
               .map(([key]) => key) as HouseType[],
             home_style: mainForm.getValues('houseDetails.homeStyle') || undefined,
             preferred_size: mainForm.getValues('houseDetails.preferredSize'),
@@ -245,8 +246,8 @@ export const SetCriteria = styled(
             condition: mainForm.getValues('flatDetails.condition') || undefined,
 
             outside_space: Object.entries(mainForm.getValues('flatDetails.outsideSpace'))
-              .filter(([key, value]) => value)
-              .map(([key, value]) => key) as OutsideSpaceType[],
+              .filter(([, value]) => value)
+              .map(([key]) => key) as OutsideSpaceType[],
             preferred_size: mainForm.getValues('flatDetails.preferredSize'),
             number_of_bedrooms: mainForm.getValues('flatDetails.nrOfBedrooms'),
             number_of_bathrooms: mainForm.getValues('flatDetails.nrOfBathrooms'),
@@ -278,8 +279,8 @@ export const SetCriteria = styled(
             number_of_bathrooms: mainForm.getValues('nrOfBathrooms').join('-')
           },
           specific_property_features: Object.entries(mainForm.getValues('specificPropertyFeatures'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key),
+            .filter(([, value]) => value)
+            .map(([key]) => key),
 
           // parking_details: [
           //   mainForm.getValues('parkingType')[Parking.Garage] ? [Parking.Garage] : [],
@@ -299,8 +300,8 @@ export const SetCriteria = styled(
           deposit_amount: mainForm.getValues('depositAmount'),
           credit_score_requirements: mainForm.getValues('creditScore'),
           contract_details: Object.entries(mainForm.getValues('contractDetails'))
-            .filter(([key, value]) => value)
-            .map(([key, value]) => key)
+            .filter(([, value]) => value)
+            .map(([key]) => key)
         };
 
         await axios(auth.access_token).patch(`/api/criteria`, payload);
@@ -310,6 +311,7 @@ export const SetCriteria = styled(
         afterRefineSearch();
         profileStore.fetchProfile(auth.access_token);
       } catch (err) {
+        console.log(err);
         throw err;
       } finally {
         setLoading(false);

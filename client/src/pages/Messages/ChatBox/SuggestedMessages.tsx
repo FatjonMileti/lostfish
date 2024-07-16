@@ -1,10 +1,8 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
-
-import { Label } from '../../../components/Label';
-
+import { Label } from '../../../components';
 import { useProfileStore } from '../../../globalState/profile';
 
 import { Role } from '../../../enums';

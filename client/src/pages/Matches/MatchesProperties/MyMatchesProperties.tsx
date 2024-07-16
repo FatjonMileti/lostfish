@@ -3,16 +3,16 @@ import { Header } from '../../HomeLoggedIn/Header';
 import classNames from 'classnames';
 import { useMutation } from '@tanstack/react-query';
 
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../../components';
 import React, { HTMLAttributes } from 'react';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 import { Footer } from '../../Home/Footer';
 import { useNavigate } from 'react-router-dom';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
-import { Label } from '../../../components/Label';
+import { Typography } from '../../../components';
+import { Icon } from '../../../components';
+import { Label } from '../../../components';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
@@ -23,11 +23,11 @@ import { useMatchesCount } from '../useMatchesCount';
 import { PropertiesReviewHeader } from './PropertiesReviewHeader';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { SuggestedPropertyType } from '../matches.type';
-import { CloseButton } from '../../../components/CloseButton';
-import { Radio } from '../../../components/Radio';
+import { CloseButton } from '../../../components';
+import { Radio } from '../../../components';
 import { Select } from '../../../components/Select/Select';
-import { Button } from '../../../components/Button';
-import { Modal } from '../../../components/Modal';
+import { Button } from '../../../components';
+import { Modal } from '../../../components';
 
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
@@ -61,12 +61,6 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
   const matchesCount = useMatchesCount({
     params: { chosen: true, disliked: false }
   });
-
-  const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
-    try {
-      navigate(`/messages?userId=${userId}`, { state: { propertyId } });
-    } catch (err) {}
-  };
 
   const newChatWith = async ({ matchId }: { matchId: string }) => {
     console.log('executed new chat with');

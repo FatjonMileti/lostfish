@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import Can from '../../components/Can';
-import { Button } from '../../components/Button';
+import { Button } from '../../components';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -14,8 +14,6 @@ import { useProfileStore } from '../../globalState/profile';
 import { useUserStore } from '../../globalState/user';
 import { Envelopes } from './scenes/Envelopes';
 import { CASLAction } from '../../utils/ability.util';
-import { useAbility } from '@casl/react';
-import { AbilityContext } from '../../context/AbilityContext';
 import FormLabel from '@mui/material/FormLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -42,7 +40,7 @@ const ItemContent = styled(Paper)(({ theme }) => ({
 
 export const Agreement = styled((props: IAgreement) => {
   const { className } = props;
-  const [loading, setLoading] = React.useState(false);
+  const [, setLoading] = React.useState(false);
 
   const [state, setState] = useState<{ tenants: any[]; landlords: any[]; properties: any[] }>({
     tenants: [],
@@ -53,8 +51,6 @@ export const Agreement = styled((props: IAgreement) => {
   const profileStore = useProfileStore();
 
   const { auth } = useUserStore();
-
-  const ability = useAbility(AbilityContext);
 
   const {
     register,
@@ -117,13 +113,15 @@ export const Agreement = styled((props: IAgreement) => {
         landlord,
         property_id
       });
-    } catch (err: AxiosError | any) {
-      const message = err?.response?.data?.message;
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const message = err?.response?.data?.message;
 
-      if (!message) throw err;
+        if (!message) throw err;
 
-      if (message === 'tenant dont exist') {
-        return setError('tenant', { message: 'tenant is not verified!', type: 'server' });
+        if (message === 'tenant dont exist') {
+          return setError('tenant', { message: 'tenant is not verified!', type: 'server' });
+        }
       }
 
       throw err;

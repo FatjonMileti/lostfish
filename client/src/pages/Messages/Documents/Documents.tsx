@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import { Icon } from '../../../components/Icon';
-import { Typography } from '../../../components/Typography';
 import { Label } from '../../../components/Label';
 import { Modal } from '../../../components/Modal';
 import { IconButton } from '../../../components/IconButton';

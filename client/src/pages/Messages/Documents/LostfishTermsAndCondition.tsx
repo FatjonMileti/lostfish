@@ -1,17 +1,16 @@
-import { Typography } from '../../../components/Typography';
-import React, { HTMLAttributes } from 'react';
+import { Typography } from '../../../components';
+import React, { Fragment, HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
-import { Grid } from '@mui/material';
-import { Button } from '../../../components/Button';
+import { Button } from '../../../components';
 import { Role } from '../../../utils/ability.util';
 import { useProfileStore } from '../../../globalState/profile';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { Icon } from '../../../components/Icon';
-import { Checkbox } from '../../../components/Checkbox';
-import { Label } from '../../../components/Label';
+import { Icon } from '../../../components';
+import { Checkbox } from '../../../components';
+import { Label } from '../../../components';
 import { useNavigate } from 'react-router-dom';
 
 enum DocumentType {
@@ -96,14 +95,18 @@ export const LostfishTermsAndCondition = styled(({ className }: HTMLAttributes<H
       <div className='documents-list'>
         {list.rows.length > 0 &&
           list.rows.map((item: any, index) => {
-            return item.document_type === DocumentType.PRIVACY_AGREEMENT ? (
-              <SignedDocumentAgreementPolicy item={item} handleSign={handlePolicyAccept} />
-            ) : (
-              <SignedDocumentAgreement
-                item={item}
-                handleSign={handleSign}
-                downloadContract={downloadContract}
-              />
+            return (
+              <Fragment key={index}>
+                {item.document_type === DocumentType.PRIVACY_AGREEMENT ? (
+                  <SignedDocumentAgreementPolicy item={item} handleSign={handlePolicyAccept} />
+                ) : (
+                  <SignedDocumentAgreement
+                    item={item}
+                    handleSign={handleSign}
+                    downloadContract={downloadContract}
+                  />
+                )}
+              </Fragment>
             );
           })}
         {list.rows.length === 0 && (

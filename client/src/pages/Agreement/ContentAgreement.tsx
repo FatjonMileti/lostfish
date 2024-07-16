@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
-import { Typography } from '../../components/Typography';
-import config from '../../config';
+import { Typography } from '../../components';
 
 export const ContentAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (

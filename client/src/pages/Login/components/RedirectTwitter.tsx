@@ -7,7 +7,7 @@ import { decodeJWT } from '../LoginModal';
 import { useUserStore } from '../../../globalState/user';
 
 export const RedirectUriTwitterPage = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
+  const [cookies, , removeCookie] = useCookies(['oauth2_token', 'username', 'acceptCookies']);
 
   const navigate = useNavigate();
 
