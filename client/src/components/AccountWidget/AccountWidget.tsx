@@ -27,7 +27,7 @@ export const AccountWidget = styled(({ className, avatar }: AccountWidgetProps) 
 
   return (
     <div className={classNames('account-widget', className, { opened })}>
-      <NavLink to={'/my-account'}>
+      <NavLink to={'/my-account/account-details'}>
         <Avatar className='profile-button' image={avatar} />
       </NavLink>
       <Icon

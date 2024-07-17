@@ -16,8 +16,6 @@ import request from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 
-import { Avatar } from '../../components';
-import { avatars } from '../HomeLoggedIn/avatars';
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Properties } from '../Properties/Properties';
@@ -32,6 +30,8 @@ import { PlanAndPayment } from './PlanAndPayment.tsx';
 import { SecurityDetails } from './SecurityDetails.tsx';
 import { CommunicationSettings } from './CommunicationSettings.tsx';
 import { PrivacyAndSharing } from './PrivacyAndSharing.tsx';
+import { LinearProgress } from '../../components/LinearProgress.tsx';
+import verified from './images/verified.svg';
 
 interface SubMenuItem {
   icon: IconProps['icon'];
@@ -40,13 +40,14 @@ interface SubMenuItem {
 }
 
 export const submenus: SubMenuItem[] = [
-  { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'building', text: 'My Properties', link: '/properties' },
   { icon: 'account', text: 'Account details', link: '/account-details' },
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
   { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
+
+  { icon: 'layer', text: 'Dashboard', link: '' },
+  { icon: 'building', text: 'My Properties', link: '/properties' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
   { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
@@ -55,12 +56,13 @@ export const submenus: SubMenuItem[] = [
 ];
 
 export const tenantSubmenu: SubMenuItem[] = [
-  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'account', text: 'Account details', link: '/account-details' },
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
   { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
+
+  { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
   { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
@@ -81,6 +83,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
         refresh_token: userStore.auth.refresh_token
       });
     } catch (err) {
+      console.log(err);
     } finally {
       userStore.set((user: any) => ({ ...user, auth: null, userDetails: null, ability: null }));
       profileStore.reset();
@@ -107,17 +110,17 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           <div className='container-account'>
             <div className='left-menu'>
               <div className='menu-header'>
-                <Avatar
-                  image={profileStore.avatar ? avatars[parseInt(profileStore.avatar)]?.image : undefined}
-                />
-
-                <div>
+                <div className='name-and-status-wrapper'>
                   <Typography variant='body3' className='name'>
                     {`${profileStore.first_name} ${profileStore.last_name}`}
                   </Typography>
+                  <img className='verified-indicator' src={verified} alt='Verified indicator' />
+                </div>
+
+                <div className='completion-wrapper'>
                   <div className='trust-score'>
-                    <Typography variant='body4' className='trust-score-title'>
-                      Match score:
+                    <Typography variant='body5' className='trust-score-title'>
+                      Account completion:
                     </Typography>
                     <Typography
                       variant='body4'
@@ -126,8 +129,14 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
                       {profileStore.trust_score}%
                     </Typography>
                   </div>
+                  <LinearProgress
+                    className='completion-linear-progress'
+                    variant='determinate'
+                    value={profileStore.trust_score}
+                  />
                 </div>
               </div>
+
               <div className='menu-body'>
                 {(profileStore.role === 'Tenant' ? tenantSubmenu : submenus).map(
                   ({ icon, text, link }, menuItemIndex) => (
@@ -198,48 +207,67 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
           grid-template-rows: min-content auto min-content;
           row-gap: 32px;
           padding: 32px;
-
-          //padding-right: 69px;
           background: white;
           border-right: 1px solid #f3f4f5;
 
           .menu-header {
             display: flex;
-            column-gap: 16px;
-            align-items: center;
-            .avatar {
-              height: 65px;
-              width: 65px;
-            }
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            align-self: stretch;
 
-            .name {
-              font-weight: 700;
-              font-size: 20px;
-              color: #0d2a38;
-            }
-
-            .trust-score {
+            .name-and-status-wrapper {
               display: flex;
-              column-gap: 4px;
-              .trust-score-title {
-                color: #646464;
+              align-items: center;
+              gap: 4px;
+              align-self: stretch;
+              .name {
+                color: #0d2a38;
+                font-weight: 900;
               }
 
-              .trust-score-percentage {
-                color: #e5155a;
-                font-weight: 700;
+              .verified-indicator {
+                width: 16px;
+                height: 16px;
+                padding: 4px;
+              }
+            }
 
-                :hover {
-                  cursor: pointer;
+            .completion-wrapper {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 4px;
+              align-self: stretch;
+
+              .trust-score {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                align-self: stretch;
+                .trust-score-title {
+                  color: #646464;
+                  font-weight: 500;
+                  line-height: 24px;
+                }
+
+                .trust-score-percentage {
+                  color: #e5155a;
+                  font-weight: 700;
+
+                  :hover {
+                    cursor: pointer;
+                  }
                 }
               }
-            }
 
-            .details-button {
-              padding: 12px 16px;
-              gap: 8px;
-              border: 2px solid #184d6d;
-              color: #184d6d;
+              .completion-linear-progress {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                align-self: stretch;
+              }
             }
           }
 

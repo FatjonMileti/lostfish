@@ -1,10 +1,8 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-import { Label } from '../../../components/Label';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
+import { Label, Typography, Icon } from '../../../components';
 
 import { useCriteriaStore } from '../../../globalState/criteria';
 

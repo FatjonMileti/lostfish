@@ -21,7 +21,6 @@ import { AgreementDetails } from './pages/Agreement/scenes/AgreementDetails';
 import { MyDashboard } from './pages/AgentDashboard/MyDashboard';
 import { Agreement } from './pages/Agreement/Agreement';
 import { PolicyAgreement } from './pages/Agreement/PolicyAgreement';
-import { InitialSetupModal } from './pages/InitialSetup/InitialSetupModal/InitialSetupModal';
 import { useProfileStore } from './globalState/profile';
 import { useNotificationsStore } from './globalState/notifications';
 
@@ -86,18 +85,7 @@ function App() {
                 <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
                 <Route path='/activate-account/:token' element={<VerifyAccount />} />
 
-                <Route
-                  path=''
-                  element={
-                    userStore.auth ? (
-                      <>
-                        {profileStore.has_completed_initial_setup ? <HomeLoggedIn /> : <InitialSetupModal />}
-                      </>
-                    ) : (
-                      <Home />
-                    )
-                  }
-                />
+                <Route path='' element={userStore.auth ? <HomeLoggedIn /> : <Home />} />
 
                 <Route path='/agreement' element={<Agreement />} />
 

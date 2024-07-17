@@ -1,12 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/system';
-
 import { Header } from './Header';
-// import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
 import { Footer } from '../Home/Footer';
-// import { DailyNews } from '../Home/Home.DailyNews';
-// import { ColoredCards } from '../Home/Home.ColoredCards';
-// import { SectionTwo as HomeLoggedOutSectionTwo } from '../Home/Home.SectionTwo';
 
 import { Suggestions } from '../Suggestions/Suggestions';
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
@@ -16,10 +11,19 @@ import { useProfileStore } from '../../globalState/profile';
 import { ShareAndEarnSection } from './ShareAndEarnSection.tsx';
 import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
 import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
+import { InitialSetupModal } from '../InitialSetup/InitialSetupModal/InitialSetupModal.tsx';
+import { MyDashboard } from '../AgentDashboard/MyDashboard.tsx';
 
 export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
-  // const [loading, setLoading] = React.useState<boolean>(false);
   const profileStore = useProfileStore();
+
+  if (profileStore.role === Role.Agent) {
+    return <MyDashboard />;
+  }
+
+  if (!profileStore.has_completed_initial_setup) {
+    return <InitialSetupModal />;
+  }
 
   return (
     <div className={`home-logged-in-page ${className}`}>

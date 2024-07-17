@@ -1,9 +1,8 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
+import { Typography, Button } from '../../components';
 
 import { useUserStore } from '../../globalState/user';
 
