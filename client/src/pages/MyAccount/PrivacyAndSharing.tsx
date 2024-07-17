@@ -1,9 +1,10 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { Button, CloseButton, Label, Modal, Typography } from '../../components';
+import { Button, CloseButton, Label, Modal, ShowGlobalLoading, Typography } from '../../components';
 import request from '../../utils/axios.ts';
 import { useUserStore } from '../../globalState/user.tsx';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
 export const PrivacyAndSharing = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [deleteAccountModalVisibility, setDeleteAccountModalVisibility] = React.useState(false);
@@ -11,16 +12,16 @@ export const PrivacyAndSharing = styled(({ className }: HTMLAttributes<HTMLDivEl
   const userStore = useUserStore();
   const navigate = useNavigate();
 
-  const onCloseAccount = async () => {
-    try {
-      const response = await request(userStore.auth.access_token).delete('/api/user');
-      if (response.status === 204) {
+  const closeAccountMutation = useMutation(
+    async () => {
+      return await request(userStore.auth.access_token).delete('/api/user');
+    },
+    {
+      onSuccess: () => {
         logOut();
       }
-    } catch (error: any) {
-      console.log(error);
     }
-  };
+  );
 
   const logOut = async () => {
     try {
@@ -35,66 +36,69 @@ export const PrivacyAndSharing = styled(({ className }: HTMLAttributes<HTMLDivEl
   };
 
   return (
-    <div className={`privacy-and-sharing-section ${className}`}>
-      <Typography variant='body2' className='privacy-and-sharing'>
-        Privacy and sharing
-      </Typography>
-      <div className='section-wrapper'>
-        <Typography variant='body3' className='section-title'>
-          Data management
+    <>
+      {closeAccountMutation.isLoading && <ShowGlobalLoading />}
+      <div className={`privacy-and-sharing-section ${className}`}>
+        <Typography variant='body2' className='privacy-and-sharing'>
+          Privacy and sharing
         </Typography>
-        <div className='section'>
-          <div className='texts'>
-            <Typography variant='body4' className='title'>
-              Request your personal data
-            </Typography>
-            <Typography variant='body6' className='description'>
-              We’ll create a file copy for you to download your personal data.
-            </Typography>
+        <div className='section-wrapper'>
+          <Typography variant='body3' className='section-title'>
+            Data management
+          </Typography>
+          <div className='section'>
+            <div className='texts'>
+              <Typography variant='body4' className='title'>
+                Request your personal data
+              </Typography>
+              <Typography variant='body6' className='description'>
+                We’ll create a file copy for you to download your personal data.
+              </Typography>
+            </div>
+            <Label variant='secondary' size='small'>
+              Request file
+            </Label>
           </div>
-          <Label variant='secondary' size='small'>
-            Request file
-          </Label>
-        </div>
-        <Typography variant='body3' className='section-title'>
-          Account deletion
-        </Typography>
-        <div className='section'>
-          <div className='texts'>
-            <Typography variant='body4' className='title'>
+          <Typography variant='body3' className='section-title'>
+            Account deletion
+          </Typography>
+          <div className='section'>
+            <div className='texts'>
+              <Typography variant='body4' className='title'>
+                Delete account
+              </Typography>
+              <Typography variant='body6' className='description'>
+                This will permanently delete your account and your data, in accordance with applicable law.
+              </Typography>
+            </div>
+            <Label variant='secondary' size='small' onClick={() => setDeleteAccountModalVisibility(true)}>
               Delete account
-            </Typography>
-            <Typography variant='body6' className='description'>
-              This will permanently delete your account and your data, in accordance with applicable law.
-            </Typography>
+            </Label>
           </div>
-          <Label variant='secondary' size='small' onClick={() => setDeleteAccountModalVisibility(true)}>
-            Delete account
-          </Label>
         </div>
+        <ConfirmationModal
+          open={deleteAccountModalVisibility}
+          onBackdropClick={() => setDeleteAccountModalVisibility(false)}>
+          <div className='modal-header'>
+            <CloseButton onClick={() => setDeleteAccountModalVisibility(false)} />
+          </div>
+          <Typography variant='body2' className='title'>
+            Are you sure you want to delete the account?
+          </Typography>
+          <Typography variant='body4' className='description'>
+            The action can't be reverted anymore. Do you want to delete the account?
+          </Typography>
+          <div className='actions'>
+            <Button size='large' variant='secondary' onClick={() => setDeleteAccountModalVisibility(false)}>
+              Cancel
+            </Button>
+            <Button size='large' onClick={() => closeAccountMutation.mutate()}>
+              Delete
+            </Button>
+          </div>
+        </ConfirmationModal>
       </div>
-      <ConfirmationModal
-        open={deleteAccountModalVisibility}
-        onBackdropClick={() => setDeleteAccountModalVisibility(false)}>
-        <div className='modal-header'>
-          <CloseButton onClick={() => setDeleteAccountModalVisibility(false)} />
-        </div>
-        <Typography variant='body2' className='title'>
-          Are you sure you want to delete the account?
-        </Typography>
-        <Typography variant='body4' className='description'>
-          The action can't be reverted anymore. Do you want to delete the account?
-        </Typography>
-        <div className='actions'>
-          <Button size='large' variant='secondary' onClick={() => setDeleteAccountModalVisibility(false)}>
-            Cancel
-          </Button>
-          <Button size='large' onClick={onCloseAccount}>
-            Delete
-          </Button>
-        </div>
-      </ConfirmationModal>
-    </div>
+    </>
   );
 })`
   &.privacy-and-sharing-section {
@@ -152,12 +156,15 @@ const ConfirmationModal = styled(Modal)`
     .modal-container {
       padding: 0;
     }
+
     padding: 24px;
     max-width: 440px;
+
     .modal-header {
       display: flex;
       justify-content: flex-end;
     }
+
     .title {
       margin-top: 24px;
       text-align: center;
@@ -167,10 +174,12 @@ const ConfirmationModal = styled(Modal)`
       margin-top: 16px;
       text-align: center;
     }
+
     .actions {
       margin-top: 48px;
       display: flex;
       column-gap: 16px;
+
       .button {
         flex-grow: 1;
       }
