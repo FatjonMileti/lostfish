@@ -5,7 +5,11 @@ export enum ContactType {
   Unknown = 'Unknown'
 }
 
-export type DocumentType = 'Employer reference' | 'Landlord reference' | 'Proof of ID';
+export enum DocumentType {
+  'Employer reference' = 'Employer reference',
+  'Landlord reference' = 'Landlord reference',
+  'Proof of ID' = 'Proof of ID'
+}
 
 export interface IUser_Documents {
   type: DocumentType;
@@ -18,7 +22,7 @@ export interface IUser_Documents {
 
 export const DOCUMENT_TYPES: IUser_Documents[] = [
   {
-    type: 'Proof of ID',
+    type: DocumentType['Proof of ID'],
     key: '',
     link: '',
     approved: false,
@@ -26,7 +30,7 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
     originalName: ''
   },
   {
-    type: 'Employer reference',
+    type: DocumentType['Employer reference'],
     key: '',
     link: '',
     approved: false,
@@ -34,7 +38,7 @@ export const DOCUMENT_TYPES: IUser_Documents[] = [
     originalName: ''
   },
   {
-    type: 'Landlord reference',
+    type: DocumentType['Landlord reference'],
     key: '',
     link: '',
     approved: false,

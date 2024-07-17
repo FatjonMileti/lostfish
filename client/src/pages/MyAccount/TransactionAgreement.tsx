@@ -1,13 +1,13 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
+import { Typography } from '../../components';
+import { Button } from '../../components';
 import axios from '../../utils/axios';
 import { DOCUMENT_TYPES, DocumentType, IUser_Documents } from './user.interface';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../components';
 import { DocumentsView } from './components/DocumentsView';
 import { useAgreement } from './useAgreement';
 
@@ -31,7 +31,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
       setDocuments(
         DOCUMENT_TYPES.map((doc) => {
           const exitingDocument = documents.find((item) => item.type === doc.type && item.key && item.link);
-          return exitingDocument ? exitingDocument : doc;
+          return exitingDocument || doc;
         })
       );
     }
@@ -42,6 +42,7 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
       setLoading(true);
 
       const selectedFile = event.target.files && event.target.files[0];
+
       if (selectedFile) {
         // Handle the selected file
         const formData = new FormData();

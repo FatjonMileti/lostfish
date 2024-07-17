@@ -1,12 +1,15 @@
 import { styled } from '@mui/system';
 import React, { Fragment, HTMLAttributes, useRef } from 'react';
-import { Typography } from '../../components';
+import { ShowGlobalLoading, Typography } from '../../components';
 import { Icon, Label } from '../../components';
 import Apple from './Apple_logo_black 1.svg';
 import Google from './Google.svg';
 import axios from '../../utils/axios.ts';
 import { useUserStore } from '../../globalState/user.tsx';
 import { IconProps } from '../../components/Icon.tsx';
+import { DocumentType, IUser_Documents } from './user.interface.ts';
+import { useProfileStore } from '../../globalState/profile.tsx';
+import { useMutation } from '@tanstack/react-query';
 
 interface DeviceHistory {
   deviceType: 'mobile' | 'desktop';
@@ -19,37 +22,70 @@ const deviceIcon: { [key: string]: IconProps['icon'] } = {
   desktop: 'computer'
 };
 
+const device_history: DeviceHistory[] = [
+  {
+    deviceType: 'mobile',
+    deviceName: 'iOS 16.1',
+    browser: 'Chrome • 04 May 2024 @ 11:30'
+  },
+  {
+    deviceType: 'desktop',
+    deviceName: 'OS X 10.15.7',
+    browser: 'Chrome • 04 May 2024 @ 11:30'
+  }
+];
+
 export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
+  const profileStore = useProfileStore();
+
+  const isIdCardUploaded = profileStore.documents?.find((d) => d.type === DocumentType['Proof of ID']);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { auth } = useUserStore();
+  const { auth, userDetails } = useUserStore();
 
-  const device_history: DeviceHistory[] = [
-    {
-      deviceType: 'mobile',
-      deviceName: 'iOS 16.1',
-      browser: 'Chrome • 04 May 2024 @ 11:30'
+  const idCardMutation = useMutation(
+    async (idCard: File) => {
+      const formData = new FormData();
+      formData.append('files', idCard);
+
+      const response = await axios(auth.access_token).post<Omit<IUser_Documents, 'type'>[]>(
+        '/api/document/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      const uploadedFile = response.data[0];
+
+      const updatedDocuments = [
+        ...profileStore.documents.filter((d) => d.type !== DocumentType['Proof of ID']),
+        {
+          ...uploadedFile,
+          type: DocumentType['Proof of ID']
+        }
+      ].map(({ type, key, mimetype, originalName, link }) => ({ type, key, mimetype, originalName, link }));
+
+      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, {
+        documents: updatedDocuments
+      });
     },
     {
-      deviceType: 'desktop',
-      deviceName: 'OS X 10.15.7',
-      browser: 'Chrome • 04 May 2024 @ 11:30'
+      onSuccess: () => {
+        profileStore.fetchProfile(auth.access_token);
+      }
     }
-  ];
+  );
 
-  const handleIDUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onIdCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
-
-    if (selectedFile) {
-      const formData = new FormData();
-
-      formData.append('files', selectedFile);
-      await axios(auth.access_token).post('/api/document/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    if (!selectedFile) {
+      return;
     }
+    idCardMutation.mutate(selectedFile);
   };
 
   const handleClick = () => {
@@ -59,138 +95,142 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
   };
 
   return (
-    <div className={`security-details ${className}`}>
-      <Typography variant='body2' className='section-title'>
-        Security details
-      </Typography>
-      <div className='section-wrapper'>
-        <div className='login-backup-wrapper'>
-          <div className='id-details'>
-            <div className='government-id-details'>
-              <Icon icon='completed-badge' size={48} />
-              <div>
-                <Typography variant='body4' className='government-id'>
-                  Government ID
-                </Typography>
-                <Typography variant='body5' className='verified-on'>
-                  Verified on: 6 May 2024
-                </Typography>
-              </div>
-            </div>
-            <input
-              type='file'
-              accept='image/*, application/pdf'
-              ref={inputRef}
-              style={{ display: 'none' }}
-              onChange={handleIDUpload}
-            />
-            <Label variant='secondary' size='small' onClick={handleClick}>
-              Update ID details
-            </Label>
-          </div>
-          <div className='login section'>
-            <Typography variant='body3' className='title'>
-              Login
-            </Typography>
-            <div className='content'>
-              <div className='update-password'>
+    <>
+      {idCardMutation.isLoading && <ShowGlobalLoading />}
+      <div className={`security-details ${className}`}>
+        <Typography variant='body2' className='section-title'>
+          Security details
+        </Typography>
+        <div className='section-wrapper'>
+          <div className='login-backup-wrapper'>
+            <div className='id-details'>
+              <div className='government-id-details'>
+                {isIdCardUploaded && <Icon icon='completed-badge' size={48} />}
+
                 <div>
-                  <Typography variant='body4' className='password'>
-                    Password
+                  <Typography variant='body4' className='government-id'>
+                    Government ID
                   </Typography>
-                  <Typography variant='body5' className='last-updated'>
-                    Last updated: 6 May 2024
+                  <Typography variant='body5' className='verified-on'>
+                    Verified on: 6 May 2024
                   </Typography>
                 </div>
-                <Label variant='secondary' size='small'>
-                  Update password
-                </Label>
               </div>
-              <div className='two-factor-authentication'>
-                <div>
-                  <Typography variant='body4' className='authentication'>
-                    Two-factor authentication
-                  </Typography>
-                  <Typography variant='body5' className='enabled'>
-                    Not enabled
-                  </Typography>
-                </div>
-                <Label variant='primary' size='small'>
-                  Setup two-factor
-                </Label>
-              </div>
+              <input
+                type='file'
+                accept='image/*, application/pdf'
+                ref={inputRef}
+                style={{ display: 'none' }}
+                onChange={onIdCardChange}
+              />
+              <Label variant='secondary' size='small' onClick={handleClick}>
+                Update ID details
+              </Label>
             </div>
-          </div>
-          <div className='backup section'>
-            <Typography variant='body3' className='title'>
-              Backup accounts
-            </Typography>
-            <div className='content'>
-              <div className='backup-with'>
-                <div className='connected-account'>
-                  <img src={Apple} alt='apple' className='logo' />
+            <div className='login section'>
+              <Typography variant='body3' className='title'>
+                Login
+              </Typography>
+              <div className='content'>
+                <div className='update-password'>
                   <div>
-                    <Typography variant='body4' className='device'>
-                      Apple
+                    <Typography variant='body4' className='password'>
+                      Password
                     </Typography>
-                    <Typography variant='body5' className='connected'>
-                      Not connected
+                    <Typography variant='body5' className='last-updated'>
+                      Last updated: 6 May 2024
                     </Typography>
                   </div>
+                  <Label variant='secondary' size='small'>
+                    Update password
+                  </Label>
                 </div>
-                <Label variant='primary' size='small'>
-                  Connect
-                </Label>
-              </div>
-              <div className='backup-with'>
-                <div className='connected-account'>
-                  <img src={Google} alt='google' className='logo' />
+                <div className='two-factor-authentication'>
                   <div>
-                    <Typography variant='body4' className='device'>
-                      Google
+                    <Typography variant='body4' className='authentication'>
+                      Two-factor authentication
                     </Typography>
-                    <Typography variant='body5' className='connected'>
-                      Not connected
+                    <Typography variant='body5' className='enabled'>
+                      Not enabled
                     </Typography>
                   </div>
+                  <Label variant='primary' size='small'>
+                    Setup two-factor
+                  </Label>
                 </div>
-                <Label variant='primary' size='small'>
-                  Connect
-                </Label>
               </div>
             </div>
-          </div>
-        </div>
-        <div className='right-part'>
-          <Typography variant='body3' className='device-history'>
-            Device history
-          </Typography>
-          <div className='device-list'>
-            {device_history.map((device, deviceIndex) => (
-              <Fragment key={deviceIndex}>
-                <div className='device'>
-                  <div className='device-info'>
-                    <Icon icon={deviceIcon[device.deviceType]} size={32} />
+            <div className='backup section'>
+              <Typography variant='body3' className='title'>
+                Backup accounts
+              </Typography>
+              <div className='content'>
+                <div className='backup-with'>
+                  <div className='connected-account'>
+                    <img src={Apple} alt='apple' className='logo' />
                     <div>
-                      <Typography variant='body5' className='device-name'>
-                        {device.deviceName}
+                      <Typography variant='body4' className='device'>
+                        Apple
                       </Typography>
-                      <Typography variant='body6' className='browser'>
-                        {device.browser}
+                      <Typography variant='body5' className='connected'>
+                        Not connected
                       </Typography>
                     </div>
                   </div>
-                  <Label variant='secondary' size='small'>
-                    Forget
+                  <Label variant='primary' size='small'>
+                    Connect
                   </Label>
                 </div>
-                {deviceIndex + 1 < device_history.length && <div className='line'></div>}
-              </Fragment>
-            ))}
+                <div className='backup-with'>
+                  <div className='connected-account'>
+                    <img src={Google} alt='google' className='logo' />
+                    <div>
+                      <Typography variant='body4' className='device'>
+                        Google
+                      </Typography>
+                      <Typography variant='body5' className='connected'>
+                        Not connected
+                      </Typography>
+                    </div>
+                  </div>
+                  <Label variant='primary' size='small'>
+                    Connect
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='right-part'>
+            <Typography variant='body3' className='device-history'>
+              Device history
+            </Typography>
+            <div className='device-list'>
+              {device_history.map((device, deviceIndex) => (
+                <Fragment key={deviceIndex}>
+                  <div className='device'>
+                    <div className='device-info'>
+                      <Icon icon={deviceIcon[device.deviceType]} size={32} />
+                      <div>
+                        <Typography variant='body5' className='device-name'>
+                          {device.deviceName}
+                        </Typography>
+                        <Typography variant='body6' className='browser'>
+                          {device.browser}
+                        </Typography>
+                      </div>
+                    </div>
+                    <Label variant='secondary' size='small'>
+                      Forget
+                    </Label>
+                  </div>
+                  {deviceIndex + 1 < device_history.length && <div className='line'></div>}
+                </Fragment>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 })`
   &.security-details {

@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { IUser_Documents, DOCUMENT_TYPES, DocumentType } from '../user.interface';
-import { Typography } from '../../../components/Typography';
-import { Button } from '../../../components/Button';
-import { Icon } from '../../../components/Icon';
+import { Typography } from '../../../components';
+import { Button } from '../../../components';
+import { Icon } from '../../../components';
 
 const getDescription = (type: DocumentType) => {
   let description: string = '';
