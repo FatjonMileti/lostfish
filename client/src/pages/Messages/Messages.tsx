@@ -9,7 +9,7 @@ import { Button } from '../../components/Button';
 
 import { Conversation } from './Conversation';
 import { ChatBox } from './ChatBox/ChatBox';
-import { Header } from '../HomeLoggedIn/Header';
+import { HeaderLoggedIn } from '../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import { MessagesProperties } from './Messages.Properties';
 
 import axios from '../../utils/axios';
@@ -28,6 +28,7 @@ import { useProfileStore } from '../../globalState/profile';
 import { Footer } from '../Home/Footer';
 import classNames from 'classnames';
 import { MatchDetails } from './MatchDetails/MatchDetails';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -180,7 +181,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           'no-messages': !chatRooms.isFetching && chatRooms.data?.length === 0
         })}>
         <div className='header-and-content-wrapper'>
-          <Header
+          <HeaderLoggedIn
             middleContent={
               <>
                 {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
@@ -190,17 +191,28 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           />
 
           {chatRooms.isFetching && <ShowGlobalLoading />}
-          {!chatRooms.isFetching && chatRooms.data?.length === 0 && (
-            <div className='no-messages-view'>
-              <img src={noMessages} alt='no messages' />
-              <Typography variant='body2' className='title'>
-                You don’t have any messages at the moment.
-              </Typography>
-              <Typography variant='body5' className='description'>
-                Once you perfectly match with someone, you can start a conversation and it will appear here.
-              </Typography>
-            </div>
-          )}
+          <AnimatePresence>
+            {!chatRooms.isFetching && chatRooms.data?.length === 0 && (
+              <motion.div
+                className='no-messages-view'
+                {...{
+                  initial: { opacity: 0 },
+                  animate: { opacity: 1 },
+                  transition: {
+                    duration: 1
+                  }
+                }}>
+                <img src={noMessages} alt='no messages' />
+                <Typography variant='body2' className='title'>
+                  You don’t have any messages at the moment.
+                </Typography>
+                <Typography variant='body5' className='description'>
+                  Once you perfectly match with someone, you can start a conversation and it will appear here.
+                </Typography>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {chatRooms.isFetching && <div />}
           {!chatRooms.isFetching && chatRooms.data?.length !== 0 && (
             <div className='container'>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { Header } from './Header';
+import { HeaderLoggedIn } from '../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import { Footer } from '../Home/Footer';
 
-import { Suggestions } from '../Suggestions/Suggestions';
+// import { Suggestions } from '../Suggestions/Suggestions';
 import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
 import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { Role } from '../../enums';
@@ -14,7 +14,7 @@ import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSecti
 import { InitialSetupModal } from '../InitialSetup/InitialSetupModal/InitialSetupModal.tsx';
 import { MyDashboard } from '../AgentDashboard/MyDashboard.tsx';
 
-export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
+export const HomeLoggedIn = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();
 
   if (profileStore.role === Role.Agent) {
@@ -27,7 +27,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
 
   return (
     <div className={`home-logged-in-page ${className}`}>
-      <Header
+      <HeaderLoggedIn
         middleContent={
           <>
             {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
@@ -39,7 +39,7 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
       {/*{loading && <ShowGlobalLoading />}*/}
 
       <div className='container'>
-        <Suggestions />
+        {/*<Suggestions />*/}
         {/*<HomeLoggedOutSectionTwo />*/}
         <ValpalSection />
         <DailyNewss />
@@ -55,6 +55,10 @@ export const HomeLoggedIn = styled(({ className = '' }: React.HTMLAttributes<HTM
     min-height: 100vh;
     grid-template-rows: min-content auto min-content;
     box-sizing: border-box;
+
+    .header-logged-in {
+      border: 1px solid #eee0d3;
+    }
 
     .container {
       display: grid;

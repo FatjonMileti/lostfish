@@ -19,9 +19,17 @@ import forestBackgroundImage from '../../Home/forest.jpeg';
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 import { SuggestedTenantType } from '../../Matches/matches.type';
 import { useMutation } from '@tanstack/react-query';
+import { SegmentControl } from '../../../components/SegmentControl.tsx';
+import { Icon, Label } from '../../../components';
+
+enum ActiveTab {
+  Perfect = 'Perfect',
+  Potential = 'Potential'
+}
 
 interface MatchesTenantsProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) => {
+  const [activeTab, setActiveTab] = React.useState(ActiveTab.Potential);
   const suggestedTenants = useSuggestedTenants({
     params: { chosen: false, disliked: false },
     options: {
@@ -93,28 +101,28 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       )}
       <div className={classNames('suggestions-tenants', className)}>
         <div className='section-header'>
-          <Typography className='matching-with'>
-            Matching with{' '}
-            <span className='address'>
-              renters in{' '}
-              <span
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  setPropertyToEdit(matchedProperty._id);
-                }}>
-                {matchedProperty?.area_of_interest ?? ''}
-              </span>
-            </span>
-          </Typography>
-          {suggestedTenants.data.length === 0 ? (
-            <Typography variant='body5' className='sub-title'>
-              No matches. Enter more details to refine your search.
-            </Typography>
-          ) : (
-            <Typography variant='body5' className='sub-title'>
-              Displaying {suggestedTenants.data.length} matches. Enter more details to refine your search.
-            </Typography>
-          )}
+          <div className='header-left-content'>
+            <Typography>My matches</Typography>
+          </div>
+
+          <div className='tabs-wrapper'>
+            <SegmentControl
+              label='Potential matches'
+              active={activeTab === ActiveTab.Potential}
+              onClick={() => setActiveTab(ActiveTab.Potential)}
+            />
+            <SegmentControl
+              label='Perfect matches'
+              active={activeTab === ActiveTab.Perfect}
+              onClick={() => setActiveTab(ActiveTab.Perfect)}
+              counter={5}
+            />
+          </div>
+
+          <Label variant='special' size='large' className='filters-button'>
+            <Icon icon='filter' />
+            Match options (12)
+          </Label>
         </div>
 
         <motion.div className='slides-wrapper'>
@@ -221,7 +229,6 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     grid-template-rows: min-content auto;
     align-content: space-between;
     row-gap: 32px;
-    padding: 36px;
     box-sizing: border-box;
     justify-items: center;
     overflow-x: clip;
@@ -249,24 +256,17 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     }
 
     .section-header {
-      display: grid;
-      row-gap: 8px;
+      display: flex;
+      padding: 24px 36px;
+      justify-content: space-between;
       align-items: center;
-      justify-self: center;
-      justify-items: center;
+      width: 100%;
+      box-sizing: border-box;
 
-      .matching-with {
-        font-family: Roobert, serif;
-        font-size: 18px;
-        line-height: 24px;
-        font-weight: 700;
-        .address {
-          color: #184d6d;
-        }
-      }
-
-      .sub-title {
-        margin-top: 8px;
+      .tabs-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
       }
     }
 
@@ -285,6 +285,8 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
     }
 
     .matches-slider-footer {
+      width: 100%;
+      padding: 24px 36px;
       display: flex;
       justify-content: center;
       align-items: center;

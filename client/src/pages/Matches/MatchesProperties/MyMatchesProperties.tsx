@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { Header } from '../../HomeLoggedIn/Header';
+import { HeaderLoggedIn } from '../../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import classNames from 'classnames';
 import { useMutation } from '@tanstack/react-query';
 
@@ -141,7 +141,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           </div>
         </FilterMatchesModal>
         <div className='header-and-content-wrapper'>
-          <Header
+          <HeaderLoggedIn
             middleContent={
               <>
                 <PropertiesReviewHeader />

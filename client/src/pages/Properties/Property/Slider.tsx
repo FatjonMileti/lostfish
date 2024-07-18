@@ -1,10 +1,12 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { HTMLMotionProps, motion } from 'framer-motion';
-import { Icon } from '../../../components/Icon';
+import { Icon } from '../../../components';
 
 interface SliderProps extends HTMLAttributes<HTMLDivElement> {
-  images?: any[];
+  images?: {
+    link: string;
+  }[];
 }
 export const Slider = styled(({ className, images = [] }: SliderProps) => {
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
@@ -94,7 +96,6 @@ export const Slider = styled(({ className, images = [] }: SliderProps) => {
       .image-holder {
         height: 100%;
         aspect-ratio: 1.36/1;
-        width: 100%;
       }
     }
 
