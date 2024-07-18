@@ -18,7 +18,7 @@ import axios from '../../../../utils/axios';
 import { ReviewOfferModal } from './MatchDetailsTenant.ReviewOfferModal';
 
 import { Documents } from '../../Documents/Documents';
-import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../../../components';
 
 interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -27,6 +27,7 @@ interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
 
 export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: MatchDetailsTenantProps) => {
   const [tenantToView, setTenantToView] = React.useState<Partial<MatchedTenantType> | null>();
+  const [matchRate, setMatchRate] = React.useState<number | undefined>(undefined);
 
   const [reviewOfferModalVisibility, setReviewOfferModalVisibility] = React.useState(false);
 
@@ -110,6 +111,18 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
     }
   });
 
+  const getMatchById = async (id: any) => {
+    return await axios(userStore.auth.access_token).get<{ number: number }>(`/api/match/${id}`);
+  };
+
+  React.useEffect(() => {
+    if (tenantToView?.matchId) {
+      getMatchById(tenantToView.matchId).then((response) => {
+        setMatchRate(response?.data?.property?.percentage);
+      });
+    }
+  }, [tenantToView]);
+
   return (
     <>
       <div
@@ -148,6 +161,8 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
                   }
                 }}
                 disableLikeTenant
+                matchRate={matchRate}
+                matched={true}
               />
             )}
 

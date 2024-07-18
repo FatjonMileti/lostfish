@@ -544,8 +544,19 @@ export class MatchController {
       if (!match) {
         return res.status(404).json({ error: 'Match not found.' });
       }
+
+      const currentMatch: any = match;
+      const criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
+
+      const percentage = this.suggestionService.calculateSimilarity(
+        criteria,
+        currentMatch.property
+      );
+
+      currentMatch.property.percentage = parseInt(percentage.toFixed(0), 10);
+
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, ref: matchId, info: match });
-      return res.status(200).json(match);
+      return res.status(200).json(currentMatch);
     } catch (error) {
       return res.status(500).json({ error: 'Unable to fetch the match.' });
     }

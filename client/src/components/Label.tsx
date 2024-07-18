@@ -149,10 +149,10 @@ export const Label = styled(
       }
 
       &.size-large {
-        padding: 16px 33px;
-        font-size: 18px;
+        padding: 16px 32px;
+        font-size: 16px;
         font-style: normal;
-        font-weight: 600;
+        font-weight: 700;
         line-height: 24px;
       }
     }
