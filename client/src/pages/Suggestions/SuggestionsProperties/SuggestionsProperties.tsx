@@ -2,16 +2,18 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
-
 import { useMutation } from '@tanstack/react-query';
-import { Icon } from '../../../components/Icon';
-import { Label } from '../../../components/Label';
-import { PropertyCard } from '../../../components/PropertyCard';
-import { Typography } from '../../../components/Typography';
-import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchButton } from '../../../components/MatchButton';
-import { UnMatchButton } from '../../../components/UnMatchButton';
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
+
+import {
+  Icon,
+  Label,
+  PropertyCard,
+  Typography,
+  ArrowButton,
+  MatchButton,
+  UnMatchButton,
+  ShowGlobalLoading
+} from '../../../components';
 
 import { useSuggestedProperties } from './useSuggestedProperties';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
@@ -25,9 +27,17 @@ import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
 import { SuggestedPropertyType } from '../../Matches/matches.type';
+import { SegmentControl } from '../../../components/SegmentControl.tsx';
+
+enum ActiveTab {
+  Perfect = 'Perfect',
+  Potential = 'Potential'
+}
 
 interface SuggestionsPropertiesProps extends HTMLAttributes<HTMLDivElement> {}
 export const SuggestionsProperties = styled(({ className }: SuggestionsPropertiesProps) => {
+  const [activeTab, setActiveTab] = React.useState(ActiveTab.Potential);
+
   const suggestedProperties = useSuggestedProperties({
     params: { disliked: false, chosen: false },
     options: {
@@ -42,8 +52,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const userStore = useUserStore();
 
   const suggestedProperty: SuggestedPropertyType = suggestedProperties.data[activeSlide];
-
-  const matchedProperty = suggestedProperty?.property;
 
   const matchesCount = useMatchesCount({
     params: { chosen: false, disliked: false }
@@ -100,19 +108,28 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
       )}
       <div className={classNames('suggestions-properties', className)}>
         <div className='section-header'>
-          <Typography className='matching-with'>
-            Matching with{' '}
-            <span className='address'>properties in {matchedProperty?.area_of_interest ?? ''}</span>
-          </Typography>
-          {suggestedProperties.data.length === 0 ? (
-            <Typography variant='body5' className='sub-title'>
-              No matches. Enter more details to refine your search.
-            </Typography>
-          ) : (
-            <Typography variant='body5' className='sub-title'>
-              Displaying {suggestedProperties.data.length} matches. Enter more details to refine your search.
-            </Typography>
-          )}
+          <div className='header-left-content'>
+            <Typography>My matches</Typography>
+          </div>
+
+          <div className='tabs-wrapper'>
+            <SegmentControl
+              label='Potential matches'
+              active={activeTab === ActiveTab.Potential}
+              onClick={() => setActiveTab(ActiveTab.Potential)}
+            />
+            <SegmentControl
+              label='Perfect matches'
+              active={activeTab === ActiveTab.Perfect}
+              onClick={() => setActiveTab(ActiveTab.Perfect)}
+              counter={5}
+            />
+          </div>
+
+          <Label variant='special' size='large' className='filters-button'>
+            <Icon icon='filter' />
+            Match options (12)
+          </Label>
         </div>
 
         <motion.div className='slides-wrapper'>
@@ -228,7 +245,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     grid-template-rows: min-content auto;
     align-content: space-between;
     row-gap: 32px;
-    padding: 36px;
     box-sizing: border-box;
     justify-items: center;
     overflow-x: clip;
@@ -256,24 +272,17 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     }
 
     .section-header {
-      display: grid;
-      row-gap: 8px;
+      display: flex;
+      padding: 24px 36px;
+      justify-content: space-between;
       align-items: center;
-      justify-self: center;
-      justify-items: center;
+      width: 100%;
+      box-sizing: border-box;
 
-      .matching-with {
-        font-family: Roobert, serif;
-        font-size: 18px;
-        line-height: 24px;
-        font-weight: 700;
-        .address {
-          color: #184d6d;
-        }
-      }
-
-      .sub-title {
-        margin-top: 8px;
+      .tabs-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
       }
     }
 
@@ -294,8 +303,8 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
         justify-items: center;
         row-gap: 48px;
 
-        border: 2px solid var(--primary-brand-sand, #eee0d3);
-        background: var(--primary-brand-light-sand, #f7f1e7);
+        border: 2px solid #eee0d3;
+        background: #f7f1e7;
         /* Nav Shadow */
         box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
 
@@ -335,6 +344,8 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     }
 
     .matches-slider-footer {
+      width: 100%;
+      padding: 24px 36px;
       display: flex;
       justify-content: center;
       align-items: center;

@@ -29,6 +29,8 @@ import { MyMatches } from './pages/Matches/MyMatches';
 import { GlobalLoading } from './components';
 import { GlobalSetCriteria } from './pages/SetCriteria/GlobalSetCriteria';
 import { Role } from './enums';
+import { Properties } from './pages/Properties/Properties.tsx';
+import { Matches } from './pages/Matches/Matches.tsx';
 
 function App() {
   const userStore = useUserStore();
@@ -90,9 +92,11 @@ function App() {
                 <Route path='/agreement' element={<Agreement />} />
 
                 <Route path='/my-matches' element={userStore.auth ? <MyMatches /> : <Home />} />
+                <Route path='/matches' element={userStore.auth ? <Matches /> : <Home />} />
                 <Route path='/messages' element={userStore.auth ? <Messages /> : <Home />} />
                 <Route path='/my-account/*' element={userStore.auth ? <MyAccount /> : <Home />} />
                 <Route path='/dashboard/*' element={userStore.auth ? <MyDashboard /> : <Home />} />
+                <Route path='my-properties' element={userStore.auth ? <Properties /> : <Home />} />
 
                 <Route path='*' element={<NotFound />} />
               </Routes>

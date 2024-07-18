@@ -23,3 +23,5 @@ export { MenuCounter } from './MenuCounter';
 
 export * from './Popover.tsx';
 export * from './ShowGlobalLoading.tsx';
+export * from './NotificationsIcon.tsx';
+export * from './PropertyCard.tsx';

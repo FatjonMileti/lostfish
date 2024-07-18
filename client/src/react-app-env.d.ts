@@ -1,5 +1,16 @@
 /// <reference types="react-scripts" />
 
+interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}
+
+interface SortingParams {
+  sort?: string;
+  asc?: boolean;
+}
+
+interface PaginationAndSortParams extends PaginationParams, SortingParams {}
 
 interface IGridState {
   loading: boolean;

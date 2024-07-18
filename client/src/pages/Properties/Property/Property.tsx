@@ -1,13 +1,10 @@
 import { styled } from '@mui/system';
-import React, { HTMLProps, MouseEventHandler } from 'react';
+import { HTMLProps, MouseEventHandler } from 'react';
 import classNames from 'classnames';
 
-import { Typography } from '../../../components/Typography';
-import { Button } from '../../../components/Button';
-import { Icon } from '../../../components/Icon';
-import { Avatar } from '../../../components/Avatar';
+import { Typography, Button, Icon } from '../../../components';
 
-import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 
 import { AreaUnitType } from '../NewProperty/property.types';

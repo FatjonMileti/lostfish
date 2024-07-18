@@ -1,6 +1,6 @@
 import { useUserStore } from '../../globalState/user';
 import axios from '../../utils/axios';
-import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 const getMatchesCount = async ({
   access_token,

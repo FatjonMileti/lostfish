@@ -2,16 +2,16 @@ import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../components';
 
 import { FaqComponent } from './FaqComponent';
-
-import backgroundImg from './home-background.png';
 
 export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={classNames('faq-section', className)}>
-      <Typography variant='body2' className='section-title'>Frequently asked questions</Typography>
+      <Typography variant='body2' className='section-title'>
+        Frequently asked questions
+      </Typography>
       <div className='section-content'>
         <FaqComponent
           title='What information is needed to find a match?'
@@ -79,7 +79,7 @@ export const FaqSection = styled(({ className }: HTMLAttributes<HTMLDivElement>)
     box-sizing: border-box;
     justify-items: center;
     gap: 48px;
-    background-color: #F3F4F5;
+    background-color: #f3f4f5;
 
     .section-title {
       font-weight: 600;

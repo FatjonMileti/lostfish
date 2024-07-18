@@ -8,7 +8,7 @@ import { ProfileDetails } from './ProfileDetails';
 import { TransactionAgreement } from './TransactionAgreement';
 import { TermsAndConditions } from './TermsAndConditions';
 import { HelpAndSupport } from './HelpAndSupport';
-import { Header } from '../HomeLoggedIn/Header';
+import { HeaderLoggedIn } from '../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import { Footer } from '../Home/Footer';
 
 import request from '../../utils/axios';
@@ -18,7 +18,7 @@ import { useProfileStore } from '../../globalState/profile';
 
 import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModal';
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
-import { Properties } from '../Properties/Properties';
+import { Properties } from './Properties/Properties.tsx';
 import { Solicitors } from './Solicitors';
 import { Role } from '../../enums';
 import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
@@ -46,13 +46,13 @@ export const submenus: SubMenuItem[] = [
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
   { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
 
-  { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'building', text: 'My Properties', link: '/properties' },
-  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
-  { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
-  { icon: 'user', text: 'Solicitors', link: '/solicitors' }
+  // { icon: 'layer', text: 'Dashboard', link: '' },
+  { icon: 'building', text: 'My Properties', link: '/properties' }
+  // { icon: 'settings', text: 'Account settings', link: '/account-settings' },
+  // { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
+  // { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
+  // { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
+  // { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
 export const tenantSubmenu: SubMenuItem[] = [
@@ -60,15 +60,15 @@ export const tenantSubmenu: SubMenuItem[] = [
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
-  { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
+  { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' }
 
-  { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-  { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
-  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
-  { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
-  { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
-  { icon: 'user', text: 'Solicitors', link: '/solicitors' }
+  // { icon: 'layer', text: 'Dashboard', link: '' },
+  // { icon: 'settings', text: 'Account settings', link: '/account-settings' },
+  // { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
+  // { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
+  // { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
+  // { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
+  // { icon: 'user', text: 'Solicitors', link: '/solicitors' }
 ];
 
 export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
@@ -99,7 +99,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       />
       <div className={`my-account-page ${className}`}>
         <div className='header-and-content-wrapper'>
-          <Header
+          <HeaderLoggedIn
             middleContent={
               <>
                 {profileStore.role === Role.Landlord && <TenantsReviewHeader />}

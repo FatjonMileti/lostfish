@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { Header } from '../../HomeLoggedIn/Header';
+import { HeaderLoggedIn } from '../../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import classNames from 'classnames';
 import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import React, { HTMLAttributes } from 'react';
@@ -48,7 +48,6 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
   const navigate = useNavigate();
   const userStore = useUserStore();
 
-
   const matchesCount = useMatchesCount({
     params: { chosen: true, disliked: false }
   });
@@ -56,11 +55,6 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
   const suggestedTenants = useSuggestedTenants({
     params: { chosen: false, disliked: false }
   });
-  const chatWith = ({ userId, propertyId }: { userId: string; propertyId: string }) => {
-    try {
-      navigate(`/messages?userId=${userId}`, { state: { propertyId } });
-    } catch (err) {}
-  };
 
   const newChatWith = async ({ matchId }: { matchId: string }) => {
     console.log('executed new chat with');
@@ -93,7 +87,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
         <FilterMatchesModal open={filterMatchesModal} onBackdropClick={onCloseFilterModal}>
           <div className='modal-header'>
             <Typography variant='body2'>Filter your matches</Typography>
-            <CloseButton onClick={onCloseFilterModal} size='medium'/>
+            <CloseButton onClick={onCloseFilterModal} size='medium' />
           </div>
           <div className='modal-body'>
             <div className='matches-with-offers'>
@@ -123,8 +117,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                 size='large'
                 variant='secondary'
                 onClick={() => {
-                  setDraftFilter({ matchRate: 20,  withOffers: false });
-                  setFilter({  matchRate: 20,  withOffers: false })
+                  setDraftFilter({ matchRate: 20, withOffers: false });
+                  setFilter({ matchRate: 20, withOffers: false });
                   onCloseFilterModal();
                 }}>
                 Reset filters
@@ -141,7 +135,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
           </div>
         </FilterMatchesModal>
         <div className='header-and-content-wrapper'>
-          <Header
+          <HeaderLoggedIn
             middleContent={
               <>
                 <TenantsReviewHeader />
