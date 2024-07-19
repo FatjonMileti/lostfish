@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { buildAbilityFor } from '../../../utils/ability.util';
-import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from '../LoginModal';
 import { useUserStore } from '../../../globalState/user';
 
@@ -18,7 +16,6 @@ export const RedirectUriTwitterPage = () => {
     if (cookies && cookies.oauth2_token) {
       const auth = cookies.oauth2_token;
       const userDetails = decodeJWT(auth.access_token);
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(auth.rules));
       setUser((user: any) => ({
         ...user,
         auth: {
@@ -26,8 +23,7 @@ export const RedirectUriTwitterPage = () => {
           expirationTime: Date.now() + auth.expires_in * 1000,
           refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
         },
-        userDetails,
-        ability
+        userDetails
       }));
       if (cookies.oauth2_token) {
         removeCookie('oauth2_token');

@@ -10,8 +10,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from '../../../utils/axios';
 import config from '../../../config';
 import { useUserStore } from '../../../globalState/user';
-import { Modal } from '../../../components/Modal';
-import { Typography } from '../../../components/Typography';
+import { Modal } from '../../../components';
+import { Typography } from '../../../components';
 
 export const PropertyLogs = () => {
   const { list, setList, clearFilters } = useLogs({ url: 'property' });

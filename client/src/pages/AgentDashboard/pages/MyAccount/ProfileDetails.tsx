@@ -4,17 +4,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { Typography } from '../../../../components/Typography';
-import { Button } from '../../../../components/Button';
-import { TextField } from '../../../../components/TextField';
+import { Typography } from '../../../../components';
+import { Button } from '../../../../components';
+import { TextField } from '../../../../components';
 import { Textarea } from '../../../../components/Textarea';
-import { Icon } from '../../../../components/Icon';
-import Can from '../../../../components/Can';
-import { ShowGlobalLoading } from '../../../../components/ShowGlobalLoading';
-import { Avatar } from '../../../../components/Avatar';
+import { Icon } from '../../../../components';
+import { ShowGlobalLoading } from '../../../../components';
+import { Avatar } from '../../../../components';
 
 import axios from '../../../../utils/axios';
-import { CASLAction } from '../../../../utils/ability.util';
 import { avatars } from '../../../HomeLoggedIn/avatars';
 import { useUserStore } from '../../../../globalState/user';
 import { useProfileStore } from '../../../../globalState/profile';
@@ -146,12 +144,12 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
               Setup avatar
             </Typography>
             <div className='setup-avatar'>
-              {avatars.map(({ image, backgroundColor }, avatarIndex) => {
+              {avatars.map(({ image }, avatarIndex) => {
                 const active = avatarIndex === parseInt(profileDetailsForm.getValues('avatar') || '');
 
                 return (
                   <Avatar
-                    image={avatars[avatarIndex].image}
+                    image={image}
                     onClick={() => handleSelectedAvatar(avatarIndex)}
                     key={avatarIndex}
                     className={`${active ? 'active' : ''}`}>
@@ -163,9 +161,7 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
           </div>
         </div>
         <div className='right-part'>
-          <Can do={CASLAction.Update} on='User'>
-            <Button type='submit'>Save changes</Button>
-          </Can>
+          <Button type='submit'>Save changes</Button>
         </div>
       </form>
     </>

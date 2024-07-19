@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
-import Can from '../../components/Can';
 import { Button } from '../../components';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,7 +12,6 @@ import { Box, Paper } from '@mui/material';
 import { useProfileStore } from '../../globalState/profile';
 import { useUserStore } from '../../globalState/user';
 import { Envelopes } from './scenes/Envelopes';
-import { CASLAction } from '../../utils/ability.util';
 import FormLabel from '@mui/material/FormLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -138,78 +136,77 @@ export const Agreement = styled((props: IAgreement) => {
           <Box ml='5rem'>
             <ItemContent>
               <Grid container spacing={2}>
-                <Can do={CASLAction.Manage} on='SignGenerator'>
-                  <Grid item xs={5}>
-                    <form className='content' onSubmit={handleSubmit(onSubmit)}>
-                      <div className='form-fields'>
-                        <FormControl fullWidth>
-                          <FormLabel id='demo-simple-select-label'>Choose Landlord</FormLabel>
-                          <Select
-                            labelId='demo-simple-select-label'
-                            id='demo-simple-select'
-                            {...register('landlord')}
-                            error={!!errors.landlord}
-                            size='small'>
-                            {state.landlords.map((user: any) => {
-                              return (
-                                <MenuItem value={user._id} key={user._id}>
-                                  {`${user.first_name} ${user.last_name}`}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                          <FormHelperText>{errors.landlord?.message?.toString()}</FormHelperText>
-                        </FormControl>
+                <Grid item xs={5}>
+                  <form className='content' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='form-fields'>
+                      <FormControl fullWidth>
+                        <FormLabel id='demo-simple-select-label'>Choose Landlord</FormLabel>
+                        <Select
+                          labelId='demo-simple-select-label'
+                          id='demo-simple-select'
+                          {...register('landlord')}
+                          error={!!errors.landlord}
+                          size='small'>
+                          {state.landlords.map((user: any) => {
+                            return (
+                              <MenuItem value={user._id} key={user._id}>
+                                {`${user.first_name} ${user.last_name}`}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                        <FormHelperText>{errors.landlord?.message?.toString()}</FormHelperText>
+                      </FormControl>
 
-                        <FormControl fullWidth>
-                          <FormLabel id='demo-simple-select-label-tenant'>Choose Tenant</FormLabel>
-                          <Select
-                            labelId='demo-simple-select-label-tenant'
-                            id='demo-simple-select-tenant'
-                            {...register('tenant')}
-                            error={!!errors.tenant}
-                            size='small'>
-                            {state.tenants.map((user: any) => {
-                              return (
-                                <MenuItem value={user._id} key={user._id}>
-                                  {`${user.first_name} ${user.last_name}`}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                          <FormHelperText>{errors.tenant?.message?.toString()}</FormHelperText>
-                        </FormControl>
+                      <FormControl fullWidth>
+                        <FormLabel id='demo-simple-select-label-tenant'>Choose Tenant</FormLabel>
+                        <Select
+                          labelId='demo-simple-select-label-tenant'
+                          id='demo-simple-select-tenant'
+                          {...register('tenant')}
+                          error={!!errors.tenant}
+                          size='small'>
+                          {state.tenants.map((user: any) => {
+                            return (
+                              <MenuItem value={user._id} key={user._id}>
+                                {`${user.first_name} ${user.last_name}`}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                        <FormHelperText>{errors.tenant?.message?.toString()}</FormHelperText>
+                      </FormControl>
 
-                        <FormControl fullWidth>
-                          <FormLabel id='demo-simple-select-label-property'>Choose Property</FormLabel>
-                          <Select
-                            labelId='demo-simple-select-label-property'
-                            id='demo-simple-select-property'
-                            {...register('property_id')}
-                            error={!!errors.property_id}
-                            size='small'>
-                            {state.properties.map((property: any) => {
-                              return (
-                                <MenuItem value={property._id} key={property._id}>
-                                  {`${property.area_of_interest}`}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                          <FormHelperText>{errors.property_id?.message?.toString()}</FormHelperText>
-                        </FormControl>
-                      </div>
-                      <Button
-                        className='login-button'
-                        type='submit'
-                        disabled={!isValid}
-                        size='large'
-                        style={{ marginTop: '2rem' }}>
-                        Generate contract
-                      </Button>
-                    </form>
-                  </Grid>
-                </Can>
+                      <FormControl fullWidth>
+                        <FormLabel id='demo-simple-select-label-property'>Choose Property</FormLabel>
+                        <Select
+                          labelId='demo-simple-select-label-property'
+                          id='demo-simple-select-property'
+                          {...register('property_id')}
+                          error={!!errors.property_id}
+                          size='small'>
+                          {state.properties.map((property: any) => {
+                            return (
+                              <MenuItem value={property._id} key={property._id}>
+                                {`${property.area_of_interest}`}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                        <FormHelperText>{errors.property_id?.message?.toString()}</FormHelperText>
+                      </FormControl>
+                    </div>
+                    <Button
+                      className='login-button'
+                      type='submit'
+                      disabled={!isValid}
+                      size='large'
+                      style={{ marginTop: '2rem' }}>
+                      Generate contract
+                    </Button>
+                  </form>
+                </Grid>
+
                 <Grid item xs={7}>
                   <Envelopes />
                 </Grid>

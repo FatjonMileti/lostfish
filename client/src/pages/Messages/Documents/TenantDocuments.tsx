@@ -1,18 +1,15 @@
 import React, { HTMLAttributes } from 'react';
 import { useUserStore } from '../../../globalState/user';
 import { useDocuments } from './useDocuments.hook';
-import { Typography } from '../../../components/Typography';
+import { Typography } from '../../../components';
 import { UploadComponent } from './UploadComponent';
-import { Button } from '../../../components/Button';
+import { Button } from '../../../components';
 import { IRoom } from '../messages.interface';
-import { useAbility } from '@casl/react';
-import { AbilityContext } from '../../../context/AbilityContext';
-import { CASLAction } from '../../../utils/ability.util';
 import { DocumentType, IUser_Documents } from '../../MyAccount/user.interface';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { Icon } from '../../../components/Icon';
-import { Label } from '../../../components/Label';
+import { Icon } from '../../../components';
+import { Label } from '../../../components';
 
 interface TenantDocumentsProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -27,11 +24,6 @@ export const TenantDocuments = styled((props: TenantDocumentsProps) => {
     useDocuments({
       participant
     });
-
-  const ability = useAbility(AbilityContext);
-
-  const canManageDocs = ability.can(CASLAction.Manage, 'Documents');
-  const canApproveDocuments = ability.can(CASLAction.Update, 'Documents', 'file.approved');
 
   return (
     <div className={classNames(props.className, 'tenant-documents')}>
@@ -53,23 +45,21 @@ export const TenantDocuments = styled((props: TenantDocumentsProps) => {
                   {document.type}
                 </Typography>
               </div>
-              {canManageDocs && (
-                <TenantDocumentItem
-                  document={document}
-                  userDocument={userDocument}
-                  key={index}
-                  selectedFile={selectedFile}
-                  setSelectedFile={setSelectedFile}
-                  useMyDocument={useMyDocument}
-                  handleDocument={handleDocument}
-                />
-              )}
-              {canApproveDocuments && (
-                <LandlordDocumentItem
-                  document={document}
-                  approveOrDisapproveDocument={approveOrDisapproveDocument}
-                />
-              )}
+
+              <TenantDocumentItem
+                document={document}
+                userDocument={userDocument}
+                key={index}
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+                useMyDocument={useMyDocument}
+                handleDocument={handleDocument}
+              />
+
+              <LandlordDocumentItem
+                document={document}
+                approveOrDisapproveDocument={approveOrDisapproveDocument}
+              />
             </div>
           );
         })}

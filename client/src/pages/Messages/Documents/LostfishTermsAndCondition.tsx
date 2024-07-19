@@ -4,7 +4,6 @@ import { useUserStore } from '../../../globalState/user';
 import axios from '../../../utils/axios';
 import config from '../../../config';
 import { Button } from '../../../components';
-import { Role } from '../../../utils/ability.util';
 import { useProfileStore } from '../../../globalState/profile';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
@@ -12,6 +11,7 @@ import { Icon } from '../../../components';
 import { Checkbox } from '../../../components';
 import { Label } from '../../../components';
 import { useNavigate } from 'react-router-dom';
+import { Role } from '../../../enums.ts';
 
 enum DocumentType {
   PRIVACY_AGREEMENT = 'Lostfish privacy agreement',

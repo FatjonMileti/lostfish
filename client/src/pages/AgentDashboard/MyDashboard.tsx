@@ -3,7 +3,6 @@ import { AgentDashboard } from './AgentDashboard';
 import { Agreement } from '../Agreement/Agreement';
 import { AllProperties } from './AllProperties';
 import { Matches as SystemMatches } from './Matches';
-import React from 'react';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { AgreementDetails } from '../Agreement/scenes/AgreementDetails';
 

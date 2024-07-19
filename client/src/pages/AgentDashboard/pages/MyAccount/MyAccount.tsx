@@ -1,10 +1,10 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { Icon } from '../../../../components/Icon';
-import { Typography } from '../../../../components/Typography';
+import { Icon } from '../../../../components';
+import { Typography } from '../../../../components';
 import { Dashboard } from './Dashboard';
 import { ProfileDetails } from './ProfileDetails';
 import { AccountSettings } from './AccountSettings';
@@ -12,7 +12,7 @@ import { DashboardHeader } from '../../components/DashboardHeader';
 import request from '../../../../utils/axios';
 import { useUserStore } from '../../../../globalState/user';
 import { useProfileStore } from '../../../../globalState/profile';
-import { Avatar } from '../../../../components/Avatar';
+import { Avatar } from '../../../../components';
 import { avatars } from '../../../HomeLoggedIn/avatars';
 
 const submenus: any[] = [

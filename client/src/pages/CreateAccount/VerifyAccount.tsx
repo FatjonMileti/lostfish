@@ -4,9 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import config from '../../config';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
-import { buildAbilityFor } from '../../utils/ability.util';
-import { unpackRules } from '@casl/ability/extra';
+import { ShowGlobalLoading } from '../../components';
 import { decodeJWT } from '../Login/LoginModal';
 import { useUserStore } from '../../globalState/user';
 export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HTMLDivElement>) => {
@@ -40,7 +38,6 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
     try {
       const userDetails = decodeJWT(response.data.access_token);
 
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
       setUser((user: any) => ({
         ...user,
         auth: {
@@ -48,8 +45,7 @@ export const VerifyAccount = styled(({ className = '' }: React.HTMLAttributes<HT
           expirationTime: Date.now() + auth.expires_in * 1000,
           refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
         },
-        userDetails,
-        ability
+        userDetails
       }));
     } catch (err: AxiosError | any) {
       const message = err?.response?.data?.message;
