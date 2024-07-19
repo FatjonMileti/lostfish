@@ -9,10 +9,8 @@ import {
   Label,
   PropertyCard,
   Typography,
-  ArrowButton,
-  MatchButton,
-  UnMatchButton,
-  ShowGlobalLoading
+  ShowGlobalLoading,
+  SegmentControl
 } from '../../../components';
 
 import { useSuggestedProperties } from './useSuggestedProperties';
@@ -27,7 +25,6 @@ import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
 import { SuggestedPropertyType } from '../../Matches/matches.type';
-import { SegmentControl } from '../../../components/SegmentControl.tsx';
 
 enum ActiveTab {
   Perfect = 'Perfect',
@@ -169,10 +166,12 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
             return (
               <PropertyCard
                 key={tenantIndex}
-                animate={{
-                  x: `calc(${-100 * activeSlide}% - ${activeSlide * 24}px)`
+                {...{
+                  animate: {
+                    x: `calc(${-760 * activeSlide}px - ${activeSlide * 24}px)`
+                  },
+                  transition: { duration: 0.4 }
                 }}
-                transition={{ duration: 0.4 }}
                 name={`${property.created_by?.first_name} ${property.created_by?.last_name}`}
                 avatar={getAvatarFormIndex(property.created_by?.avatar)}
                 inView={tenantIndex === activeSlide}
@@ -189,38 +188,19 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
         <div
           className='matches-slider-footer'
           style={{ visibility: !suggestedProperties.data.length ? 'hidden' : 'initial' }}>
-          <ArrowButton
-            direction='left'
-            onClick={previous}
-            style={{ visibility: activeSlide === 0 ? 'hidden' : 'inherit' }}
+          <Label variant='secondary' size='large' onClick={previous} disabled={activeSlide === 0}>
+            <Icon icon='chevron-left' />
+            Previous
+          </Label>
+
+          <Label
+            variant='secondary'
             size='large'
-          />
-          <div className='match-actions'>
-            <UnMatchButton
-              size='large'
-              onClick={() => {
-                dislikeProperty.mutate({
-                  propertyId: suggestedProperty.property._id
-                });
-              }}
-            />
-            <MatchButton
-              size='large'
-              onClick={() => {
-                likeProperty.mutate({
-                  propertyId: suggestedProperty.property._id
-                });
-              }}
-            />
-          </div>
-          <ArrowButton
-            direction='right'
             onClick={next}
-            size='large'
-            style={{
-              visibility: activeSlide === suggestedProperties.data.length - 1 ? 'hidden' : 'inherit'
-            }}
-          />
+            disabled={activeSlide === suggestedProperties.data.length - 1}>
+            Next
+            <Icon icon='chevron-right' />
+          </Label>
         </div>
       </div>
 
@@ -289,8 +269,10 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     .slides-wrapper {
       display: flex;
       column-gap: 24px;
-      width: 672px;
+      width: 800px;
+      height: 540px;
       box-sizing: border-box;
+      align-items: center;
 
       .no-matches-card {
         padding: 64px;
@@ -349,64 +331,11 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
       display: flex;
       justify-content: center;
       align-items: center;
-      column-gap: 84px;
+      column-gap: 24px;
       user-select: none;
 
-      .match-actions {
-        display: flex;
-        column-gap: 48px;
-        align-items: center;
-
-        .star-button {
-          padding: 16px;
-          border: 2px solid #0d2a38;
-
-          &.active {
-            border: 2px solid #184d6d;
-            background: #184d6d;
-            color: white;
-
-            :hover {
-              border: 2px solid #0d2a38;
-              background: #0d2a38;
-            }
-          }
-
-          :hover {
-            border: 2px solid white;
-            background-color: white;
-          }
-        }
-
-        .remove-button {
-          padding: 16px;
-          border: 2px solid #b4263b;
-          color: #b4263b;
-
-          :hover {
-            border: 2px solid white;
-            background-color: white;
-          }
-
-          &:disabled {
-            border: 2px solid #a7a7a7;
-            color: #a7a7a7;
-          }
-        }
-
-        .check-button {
-          padding: 30px;
-          border: 2px solid #184d6d;
-          :hover {
-            background-color: #0d2a38;
-            color: white;
-          }
-
-          &.active {
-            border: 2px solid #408140;
-            background: #408140;
-          }
-        }
+      .label {
+        width: 164px;
       }
     }
   }

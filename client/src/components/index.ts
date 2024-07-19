@@ -25,3 +25,5 @@ export * from './Popover.tsx';
 export * from './ShowGlobalLoading.tsx';
 export * from './NotificationsIcon.tsx';
 export * from './PropertyCard.tsx';
+export * from './TenantCard.tsx';
+export * from './SegmentControl.tsx';

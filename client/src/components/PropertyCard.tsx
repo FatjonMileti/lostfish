@@ -142,10 +142,11 @@ export const PropertyCard = styled(
               <div className='action-buttons'>
                 <Label
                   className='view-property-button'
-                  variant='secondary'
+                  size='large'
+                  variant='primary'
                   inverted
                   onClick={onViewPropertyClick}>
-                  View property
+                  Property details
                 </Label>
 
                 {matched && (
@@ -168,8 +169,8 @@ export const PropertyCard = styled(
   }
 )`
   &.property-card {
-    width: 672px;
-    height: 452px;
+    width: 760px;
+    height: 513px;
 
     flex-shrink: 0;
 
@@ -186,9 +187,13 @@ export const PropertyCard = styled(
     position: relative;
     opacity: 0.2;
 
-    transition: box-shadow 0.2s ease-in-out;
+    transition: box-shadow 0.2s ease-in-out, opacity 0.2s ease-in-out, width 0.2s ease-in-out,
+      height 0.2s ease-in-out;
 
     &.inView {
+      width: 800px;
+      height: 540px;
+
       opacity: 1;
       /* Card Shadow */
       box-shadow: 0 7.72px 23.16px 0 rgba(0, 0, 0, 0.25);
@@ -199,7 +204,7 @@ export const PropertyCard = styled(
     }
 
     &.matched {
-      border: 2px solid var(--accent-match-pink, #e5155a);
+      border: 2px solid #e5155a;
       /* Match Shadow */
       box-shadow: 0px 16px 32px 0px rgba(229, 21, 90, 0.25);
     }
@@ -328,7 +333,7 @@ export const PropertyCard = styled(
           flex-wrap: wrap;
 
           .dot {
-            color: var(--neutral-grey, #a7a7a7);
+            color: #a7a7a7;
           }
 
           .detail {
@@ -347,13 +352,6 @@ export const PropertyCard = styled(
       .action-buttons {
         display: flex;
         column-gap: 16px;
-
-        .view-property-button {
-          flex-shrink: 0;
-          padding: 14px 18px;
-          height: 56px;
-          font-size: 14px;
-        }
       }
     }
   }
