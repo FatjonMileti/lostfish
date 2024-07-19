@@ -1,26 +1,21 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { Typography } from '../../../components/Typography';
-import { useSuggestedTenants } from './useSuggestedTenants';
+import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+
+import { Typography, TenantCard, ShowGlobalLoading, SegmentControl, Icon, Label } from '../../../components';
+
+import { useSuggestedTenants } from './useSuggestedTenants';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
-import { ArrowButton } from '../../../components/ArrowButton';
-import { MatchButton } from '../../../components/MatchButton';
-import { UnMatchButton } from '../../../components/UnMatchButton';
-import { TenantCard } from '../../../components/TenantCard';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { useMatchesCount } from '../../Matches/useMatchesCount';
+import { SuggestedTenantType } from '../../Matches/matches.type';
+import { ViewProfile } from '../../Matches/MatchesTenants/ViewProfile';
+import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 
 import forestBackgroundImage from '../../Home/forest.jpeg';
-import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
-import { SuggestedTenantType } from '../../Matches/matches.type';
-import { useMutation } from '@tanstack/react-query';
-import { SegmentControl } from '../../../components/SegmentControl.tsx';
-import { Icon, Label } from '../../../components';
 
 enum ActiveTab {
   Perfect = 'Perfect',
@@ -149,40 +144,19 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
 
         {suggestedTenants.data.length > 0 && (
           <div className='matches-slider-footer'>
-            <ArrowButton
-              direction='left'
-              onClick={previous}
-              style={{ visibility: activeSlide === 0 ? 'hidden' : 'initial' }}
+            <Label variant='secondary' size='large' onClick={previous} disabled={activeSlide === 0}>
+              <Icon icon='chevron-left' />
+              Previous
+            </Label>
+
+            <Label
+              variant='secondary'
               size='large'
-            />
-            <div className='match-actions'>
-              <UnMatchButton
-                size='large'
-                onClick={() => {
-                  dislikeTenant.mutate({
-                    propertyId: suggestedTenant.property._id,
-                    tenantId: suggestedTenant.criteria.tenantId
-                  });
-                }}
-              />
-              <MatchButton
-                size='large'
-                onClick={() => {
-                  likeTenant.mutate({
-                    propertyId: suggestedTenant.property._id,
-                    tenantId: suggestedTenant.criteria.tenantId
-                  });
-                }}
-              />
-            </div>
-            <ArrowButton
-              direction='right'
               onClick={next}
-              size='large'
-              style={{
-                visibility: activeSlide === suggestedTenants.data.length - 1 ? 'hidden' : 'initial'
-              }}
-            />
+              disabled={activeSlide === suggestedTenants.data.length - 1}>
+              Next
+              <Icon icon='chevron-right' />
+            </Label>
           </div>
         )}
       </div>
@@ -289,64 +263,11 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       display: flex;
       justify-content: center;
       align-items: center;
-      column-gap: 84px;
+      column-gap: 24px;
       user-select: none;
 
-      .match-actions {
-        display: flex;
-        column-gap: 48px;
-        align-items: center;
-
-        .star-button {
-          padding: 16px;
-          border: 2px solid #0d2a38;
-
-          &.active {
-            border: 2px solid #184d6d;
-            background: #184d6d;
-            color: white;
-
-            :hover {
-              border: 2px solid #0d2a38;
-              background: #0d2a38;
-            }
-          }
-
-          :hover {
-            border: 2px solid white;
-            background-color: white;
-          }
-        }
-
-        .remove-button {
-          padding: 16px;
-          border: 2px solid #b4263b;
-          color: #b4263b;
-
-          :hover {
-            border: 2px solid white;
-            background-color: white;
-          }
-
-          &:disabled {
-            border: 2px solid #a7a7a7;
-            color: #a7a7a7;
-          }
-        }
-
-        .check-button {
-          padding: 30px;
-          border: 2px solid #184d6d;
-          :hover {
-            background-color: #0d2a38;
-            color: white;
-          }
-
-          &.active {
-            border: 2px solid #408140;
-            background: #408140;
-          }
-        }
+      .label {
+        width: 164px;
       }
     }
   }
