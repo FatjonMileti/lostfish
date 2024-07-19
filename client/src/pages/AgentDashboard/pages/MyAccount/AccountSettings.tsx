@@ -1,8 +1,8 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes, useState } from 'react';
-import { Typography } from '../../../../components/Typography';
-import { Button } from '../../../../components/Button';
-import { Link } from '../../../../components/Link';
+import { HTMLAttributes } from 'react';
+import { Typography } from '../../../../components';
+import { Button } from '../../../../components';
+import { Link } from '../../../../components';
 import request from '../../../../utils/axios';
 import { useUserStore } from '../../../../globalState/user';
 import { useNavigate } from 'react-router-dom';

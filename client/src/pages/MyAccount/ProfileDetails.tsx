@@ -4,22 +4,20 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import { TextField } from '../../components/TextField';
+import { Typography } from '../../components';
+import { Button } from '../../components';
+import { TextField } from '../../components';
 import { Textarea } from '../../components/Textarea';
-import { Icon } from '../../components/Icon';
-import Can from '../../components/Can';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
-import { Avatar } from '../../components/Avatar';
+import { Icon } from '../../components';
+import { ShowGlobalLoading } from '../../components';
+import { Avatar } from '../../components';
 import axios from '../../utils/axios';
-import { CASLAction } from '../../utils/ability.util';
 import { avatars } from '../HomeLoggedIn/avatars';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { AccountSettings } from './AccountSettings';
 import { Select } from '../../components/Select/Select';
-import { Label } from '../../components/Label';
+import { Label } from '../../components';
 // import { NotificationSettings } from './NotificationSettings';
 
 const userSchema = yup.object().shape({
@@ -265,11 +263,9 @@ export const ProfileDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                     defaultValue=''></Textarea>
                 </div>
               </div>
-              <Can do={CASLAction.Update} on='User'>
-                <Button type='submit' size='large' disabled={!profileDetailsForm.formState.isValid}>
-                  Save changes
-                </Button>
-              </Can>
+              <Button type='submit' size='large' disabled={!profileDetailsForm.formState.isValid}>
+                Save changes
+              </Button>
             </>
           )}
           {activeComponent === 'Security' && <AccountSettings />}

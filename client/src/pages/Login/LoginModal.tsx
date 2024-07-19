@@ -2,30 +2,28 @@ import { styled } from '@mui/system';
 import React from 'react';
 import * as yup from 'yup';
 import classNames from 'classnames';
-import { unpackRules } from '@casl/ability/extra';
 import axios, { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 
 import { Modal, ModalProps } from '../../components/Modal';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
-import { Typography } from '../../components/Typography';
-import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
+import { ShowGlobalLoading } from '../../components';
+import { Typography } from '../../components';
+import { Button } from '../../components';
+import { Icon } from '../../components';
 import { LoginWithFacebook } from './components/LoginWithFacebook';
-import { TextField } from '../../components/TextField';
-import { IconButton } from '../../components/IconButton';
-import { CloseButton } from '../../components/CloseButton';
-import { Label } from '../../components/Label';
-import { SocialAccountButton } from '../../components/SocialAccountButton';
+import { TextField } from '../../components';
+import { IconButton } from '../../components';
+import { CloseButton } from '../../components';
+import { Label } from '../../components';
+import { SocialAccountButton } from '../../components';
 
 import { LoginWithTwitter } from './components/LoginWithTwitter';
 import { LoginWithGoogle } from './components/LoginWithGoogle';
 
 import config from '../../config';
 import { useUserStore } from '../../globalState/user';
-import { buildAbilityFor } from '../../utils/ability.util';
 import axiosWithToken from '../../utils/axios';
 import { Role } from '../../enums';
 
@@ -67,8 +65,6 @@ export const LoginModal = styled(
         const userDetails = decodeJWT(response.data.access_token);
         userDetails.rules = response.data.rules;
 
-        const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-
         const auth = response.data;
 
         userStore.set((user: any) => ({
@@ -78,8 +74,7 @@ export const LoginModal = styled(
             expirationTime: Date.now() + auth.expires_in * 1000,
             refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
           },
-          userDetails,
-          ability
+          userDetails
         }));
       } catch (err: AxiosError | any) {
         const message = err?.response?.data?.message;
@@ -109,8 +104,6 @@ export const LoginModal = styled(
       const userDetails = decodeJWT(response.data.access_token);
       userDetails.rules = response.data.rules;
 
-      const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-
       const auth = response.data;
 
       userStore.set((user: any) => ({
@@ -120,8 +113,7 @@ export const LoginModal = styled(
           expirationTime: Date.now() + auth.expires_in * 1000,
           refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
         },
-        userDetails,
-        ability
+        userDetails
       }));
     };
 
@@ -133,7 +125,6 @@ export const LoginModal = styled(
             '/api/account/get-access-tokens'
           );
 
-          const ability = buildAbilityFor(userDetails!.role, unpackRules(getAuthData.data.rules));
           const auth = getAuthData.data;
 
           userStore.set((user: any) => ({
@@ -143,8 +134,7 @@ export const LoginModal = styled(
               expirationTime: Date.now() + auth.expires_in * 1000,
               refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
             },
-            userDetails,
-            ability
+            userDetails
           }));
         }
       } catch (err) {

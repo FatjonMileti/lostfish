@@ -1,10 +1,10 @@
 import { useProfileStore } from '../../globalState/profile';
 import React from 'react';
 import { useUserStore } from '../../globalState/user';
-import { Role } from '../../utils/ability.util';
 import axiosWithToken from '../../utils/axios';
 import axios from '../../utils/axios';
 import config from '../../config';
+import { Role } from '../../enums.ts';
 
 export const useAgreement = () => {
   const { signed_transaction_agreement, has_transaction_agreement, transaction_agreement_link } =

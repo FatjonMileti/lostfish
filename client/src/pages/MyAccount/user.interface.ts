@@ -1,9 +1,4 @@
-export enum ContactType {
-  Client = 'Client',
-  Solicitor = 'Solicitor',
-  Agent = 'Agent',
-  Unknown = 'Unknown'
-}
+import { Role } from '../../enums.ts';
 
 export enum DocumentType {
   'Employer reference' = 'Employer reference',
@@ -59,10 +54,7 @@ export interface ApiUserDocumentType {
   _id: string;
   user_id: number;
   hash: string;
-  role: {
-    type: Role;
-    default: Role.User;
-  };
+  role: Role;
   email: string;
   first_name: string;
   last_name: string;
@@ -89,10 +81,4 @@ export interface ApiUserDocumentType {
   documents: any[];
   confirmation_token?: string;
   last_login: Date;
-}
-
-export enum Role {
-  Admin = 'Admin',
-  Guest = 'Guest',
-  User = 'User'
 }

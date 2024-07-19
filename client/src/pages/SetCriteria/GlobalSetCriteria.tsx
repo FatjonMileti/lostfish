@@ -14,7 +14,7 @@ import { Parking } from '../Properties/NewProperty/property.constants';
 
 import { create } from 'zustand';
 import request from '../../utils/axios';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../components';
 
 interface GlobalSetCriteriaStoreType {
   visibility: boolean;

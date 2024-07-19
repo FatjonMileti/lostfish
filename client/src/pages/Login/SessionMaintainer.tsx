@@ -1,10 +1,8 @@
 import React from 'react';
 import axios from '../../utils/axios';
 import config from '../../config';
-import { buildAbilityFor } from '../../utils/ability.util';
-import { unpackRules } from '@casl/ability/extra';
 import { decodeJWT } from './LoginModal';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../components';
 import { useUserStore } from '../../globalState/user';
 import { useProfileStore } from '../../globalState/profile';
 import { useNavigate } from 'react-router-dom';
@@ -23,8 +21,6 @@ export const refreshToken = async (debug = false) => {
 
     userDetails.rules = response.data.rules;
 
-    const ability = buildAbilityFor(userDetails!.role, unpackRules(response.data.rules));
-
     const auth = response.data;
 
     userStore.set((user: any) => ({
@@ -34,8 +30,7 @@ export const refreshToken = async (debug = false) => {
         expirationTime: Date.now() + auth.expires_in * 1000,
         refreshExpirationTime: Date.now() + auth.refresh_expires_in * 1000
       },
-      userDetails,
-      ability
+      userDetails
     }));
   } catch (error) {
     if (debug) console.log('Error refreshing token', error);

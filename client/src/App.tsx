@@ -11,7 +11,6 @@ import config from './config';
 import SocketContext from './context/SocketContext';
 import { MyAccount } from './pages/MyAccount/MyAccount';
 import { RedirectUriPage } from './pages/Login/components/Redirect';
-import { UserProvider } from './context/UserProvider';
 import { SessionMaintainer } from './pages/Login/SessionMaintainer';
 import { RedirectUriTwitterPage } from './pages/Login/components/RedirectTwitter';
 import { useUserStore } from './globalState/user';
@@ -74,33 +73,31 @@ function App() {
       <BrowserRouter>
         <SessionMaintainer debug>
           <SocketContext.Provider value={value}>
-            <UserProvider>
-              {userStore.auth &&
-                profileStore.has_completed_initial_setup &&
-                profileStore.role === Role.Tenant && <GlobalSetCriteria />}
+            {userStore.auth &&
+              profileStore.has_completed_initial_setup &&
+              profileStore.role === Role.Tenant && <GlobalSetCriteria />}
 
-              <Routes>
-                <Route path='/policy-agreement' element={<PolicyAgreement />} />
-                <Route path='/agreement/:id' element={<AgreementDetails />} />
-                <Route path='/components' element={<PreviewComponents />} />
-                <Route path='/google/redirect' element={<RedirectUriPage />} />
-                <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
-                <Route path='/activate-account/:token' element={<VerifyAccount />} />
+            <Routes>
+              <Route path='/policy-agreement' element={<PolicyAgreement />} />
+              <Route path='/agreement/:id' element={<AgreementDetails />} />
+              <Route path='/components' element={<PreviewComponents />} />
+              <Route path='/google/redirect' element={<RedirectUriPage />} />
+              <Route path='/twitter/redirect' element={<RedirectUriTwitterPage />} />
+              <Route path='/activate-account/:token' element={<VerifyAccount />} />
 
-                <Route path='' element={userStore.auth ? <HomeLoggedIn /> : <Home />} />
+              <Route path='' element={userStore.auth ? <HomeLoggedIn /> : <Home />} />
 
-                <Route path='/agreement' element={<Agreement />} />
+              <Route path='/agreement' element={<Agreement />} />
 
-                <Route path='/my-matches' element={userStore.auth ? <MyMatches /> : <Home />} />
-                <Route path='/matches' element={userStore.auth ? <Matches /> : <Home />} />
-                <Route path='/messages' element={userStore.auth ? <Messages /> : <Home />} />
-                <Route path='/my-account/*' element={userStore.auth ? <MyAccount /> : <Home />} />
-                <Route path='/dashboard/*' element={userStore.auth ? <MyDashboard /> : <Home />} />
-                <Route path='my-properties' element={userStore.auth ? <Properties /> : <Home />} />
+              <Route path='/my-matches' element={userStore.auth ? <MyMatches /> : <Home />} />
+              <Route path='/matches' element={userStore.auth ? <Matches /> : <Home />} />
+              <Route path='/messages' element={userStore.auth ? <Messages /> : <Home />} />
+              <Route path='/my-account/*' element={userStore.auth ? <MyAccount /> : <Home />} />
+              <Route path='/dashboard/*' element={userStore.auth ? <MyDashboard /> : <Home />} />
+              <Route path='my-properties' element={userStore.auth ? <Properties /> : <Home />} />
 
-                <Route path='*' element={<NotFound />} />
-              </Routes>
-            </UserProvider>
+              <Route path='*' element={<NotFound />} />
+            </Routes>
           </SocketContext.Provider>
         </SessionMaintainer>
       </BrowserRouter>

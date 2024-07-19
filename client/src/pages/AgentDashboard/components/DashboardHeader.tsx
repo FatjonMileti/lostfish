@@ -1,7 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate } from 'react-router-dom';
-import Can from '../../../components/Can';
 import { Button } from '../../../components/Button';
 import { Typography } from '../../../components/Typography';
 import { Icon } from '../../../components/Icon';
@@ -9,7 +8,6 @@ import { Avatar } from '../../../components/Avatar';
 
 import { avatars } from '../../HomeLoggedIn/avatars';
 import { useProfileStore } from '../../../globalState/profile';
-import { CASLAction } from '../../../utils/ability.util';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -25,38 +23,36 @@ export const DashboardHeader = styled(({ className }: HeaderProps) => {
       </div>
 
       <div className='middle-part'>
-        <Can do={CASLAction.Read} on='AdminMenu'>
-          <div className='menu'>
-            <NavLink to='/dashboard' end>
-              {({ isActive }) => (
-                <Button active={isActive} inverted>
-                  Sessions
-                </Button>
-              )}
-            </NavLink>
-            <NavLink to='/dashboard/agent-matches' end>
-              {({ isActive }) => (
-                <Button active={isActive} inverted>
-                  Matches
-                </Button>
-              )}
-            </NavLink>
-            <NavLink to='/dashboard/agent-property' end>
-              {({ isActive }) => (
-                <Button active={isActive} inverted>
-                  Properties
-                </Button>
-              )}
-            </NavLink>
-            <NavLink to='/dashboard/contracts' end>
-              {({ isActive }) => (
-                <Button active={isActive} inverted>
-                  Contract
-                </Button>
-              )}
-            </NavLink>
-          </div>
-        </Can>
+        <div className='menu'>
+          <NavLink to='/dashboard' end>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Sessions
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/dashboard/agent-matches' end>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Matches
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/dashboard/agent-property' end>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Properties
+              </Button>
+            )}
+          </NavLink>
+          <NavLink to='/dashboard/contracts' end>
+            {({ isActive }) => (
+              <Button active={isActive} inverted>
+                Contract
+              </Button>
+            )}
+          </NavLink>
+        </div>
       </div>
 
       <div className='right-part'>

@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { Icon } from '../../../components/Icon';
-import { Label } from '../../../components/Label';
-import { Modal } from '../../../components/Modal';
-import { IconButton } from '../../../components/IconButton';
-import { Tab, Tabs } from '../../../components/Tab';
+import { Icon } from '../../../components';
+import { Label } from '../../../components';
+import { Modal } from '../../../components';
+import { IconButton } from '../../../components';
+import { Tab, Tabs } from '../../../components';
 import { IRoom } from '../messages.interface';
 import { TenantDocuments } from './TenantDocuments';
 import { SignedDocuments } from './SignedDocuments';
 import { LostfishTermsAndCondition } from './LostfishTermsAndCondition';
-import Can from '../../../components/Can';
 import { useUserStore } from '../../../globalState/user';
 import { NewRentingContract } from './NewRentingContract';
-import { CASLAction } from '../../../utils/ability.util';
 import request from '../../../utils/axios';
 
 interface DocumentsTestProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -78,14 +76,12 @@ export const Documents = styled(({ room, className }: DocumentsTestProps) => {
         </Label>
 
         {!documentState.isContractCreated && (
-          <Can do={CASLAction.Create} on='SignGenerator'>
-            <NewRentingContract
-              tenant={tenant._id}
-              property={room.property}
-              onFinish={onFinish}
-              canCreate={documentState.areDocumentsApproved}
-            />
-          </Can>
+          <NewRentingContract
+            tenant={tenant._id}
+            property={room.property}
+            onFinish={onFinish}
+            canCreate={documentState.areDocumentsApproved}
+          />
         )}
 
         {documentState.isContractCreated && (

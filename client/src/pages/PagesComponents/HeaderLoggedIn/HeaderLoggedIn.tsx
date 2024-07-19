@@ -53,7 +53,14 @@ export const HeaderLoggedIn = styled(
             </NavLink>
 
             <NavLink to='/messages'>
-              {({ isActive }) => <MenuItem label='Messages' icon='email' active={isActive} />}
+              {({ isActive }) => (
+                <MenuItem
+                  label='Messages'
+                  icon='email'
+                  active={isActive}
+                  counter={notificationsStore.unreadMessages}
+                />
+              )}
             </NavLink>
 
             {profileStore.role === Role.Landlord && (

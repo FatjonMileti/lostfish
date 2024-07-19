@@ -8,6 +8,10 @@ export interface IconProps extends Omit<ReactIconProps, 'icon'> {
   icon: IconNames;
 }
 
-export const Icon = styled(({ size = 24, className = '', ...props }: IconProps) => {
+export const Icon = styled(({ size = 24, className, ...props }: IconProps) => {
   return <IcoMoon className={`icon ${className}`} iconSet={iconSet} size={size} {...props} />;
-})``;
+})`
+  &.icon {
+    flex-shrink: 0;
+  }
+`;

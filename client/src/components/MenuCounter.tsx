@@ -24,6 +24,7 @@ export const MenuCounter = styled(({ className, counter }: MenuCounterProps) => 
     height: 20px;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
 
     .menu-counter-number {
       color: #fff;

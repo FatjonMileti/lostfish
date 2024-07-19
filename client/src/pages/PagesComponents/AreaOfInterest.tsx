@@ -1,7 +1,6 @@
 import { TextField, TextFieldProps } from '../../components/TextField';
 import React from 'react';
 import axios from 'axios';
-import { useUserStore } from '../../globalState/user';
 import config from '../../config';
 
 export interface AreaOfInterestProps extends TextFieldProps {
@@ -12,10 +11,8 @@ export interface AreaOfInterestProps extends TextFieldProps {
   }) => void;
 }
 
-export const AreaOfInterest = ({ className, areaOfInterest, onAreaChange, ...rest }: AreaOfInterestProps) => {
+export const AreaOfInterest = ({ areaOfInterest, onAreaChange, ...rest }: AreaOfInterestProps) => {
   const [searchValue, setSearchValue] = React.useState('');
-
-  const { auth } = useUserStore();
 
   const debounceRef = React.useRef<number | undefined>(undefined);
 

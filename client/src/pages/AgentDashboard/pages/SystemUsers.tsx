@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import { Modal } from '../../../components/Modal';
+import { Modal } from '../../../components';
 import { LogsTable } from '../components/LogsTable';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Typography } from '../../../components/Typography';
+import { Typography } from '../../../components';
 import axios from '../../../utils/axios';
 import config from '../../../config';
 import { useUserStore } from '../../../globalState/user';
