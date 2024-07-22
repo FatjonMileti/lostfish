@@ -94,12 +94,11 @@ export const ShareAndEarnSection = styled(({ className }: HTMLAttributes<HTMLDiv
       .text-and-button-wrapper {
         display: grid;
         grid-template-columns: max-content auto;
-        width: min-content;
         padding: 8px 8px 8px 32px;
         align-items: center;
         justify-content: space-between;
         gap: 32px;
-        border-radius: 250px;
+        border-radius: 36px;
         box-sizing: border-box;
         background-color: #fff;
 

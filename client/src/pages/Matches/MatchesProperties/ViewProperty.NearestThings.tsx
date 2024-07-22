@@ -114,9 +114,9 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
             {stations.slice(0, 3).map((station, stationsIndex) => (
               <div key={stationsIndex} className='location'>
                 <Icon icon='bus' />
-                <Typography variant='body4'>
+                <Typography variant='body4' className='place'>
                   {station.place.name}
-                  <span className='separator'> | </span>
+                  <span className='separator'> - </span>
                   <span className='distance'>{station?.distance?.text}</span>
                 </Typography>
               </div>
@@ -126,9 +126,9 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
           <>
             {schools.slice(0, 3).map((station, schoolIndex) => (
               <div key={schoolIndex} className='location'>
-                <Typography variant='body4'>
+                <Typography variant='body4' className='place'>
                   {station.place.name}
-                  <span className='separator'> | </span>
+                  <span className='separator'> - </span>
                   <span className='distance'>{station?.distance?.text}</span>
                 </Typography>
               </div>
@@ -138,9 +138,9 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
           <>
             {importantPlaces.slice(0, 3).map((station, stationIndex) => (
               <div key={stationIndex} className='location'>
-                <Typography variant='body4'>
+                <Typography variant='body4' className='place'>
                   {station.place.name}
-                  <span className='separator'> | </span>
+                  <span className='separator'> - </span>
                   <span className='distance'>{station?.distance?.text}</span>
                 </Typography>
               </div>
@@ -155,7 +155,7 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    row-gap: 24px;
+    row-gap: 16px;
 
     .buttons-wrapper {
       display: flex;
@@ -189,13 +189,16 @@ export const NearestThings = styled(({ className, location }: NearestThingsProps
       gap: 16px;
 
       .location {
-        font-weight: 700;
-
         display: flex;
-        column-gap: 8px;
+        column-gap: 4px;
+
+        .place {
+          color: #0d2a38;
+          font-weight: 700;
+        }
 
         .separator {
-          color: #a7a7a7;
+          color: #e7e7e7;
         }
 
         .distance {

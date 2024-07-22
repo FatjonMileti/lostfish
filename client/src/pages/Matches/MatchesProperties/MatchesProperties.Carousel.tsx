@@ -3,6 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowButton } from '../../../components/ArrowButton';
 import { Icon } from '../../../components/Icon';
+import { RoundAction } from '../../../components/RoundAction.tsx';
 
 export interface CarouselProps extends HTMLAttributes<HTMLDivElement> {
   indexStore?: [number, (i: number) => void];
@@ -42,15 +43,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       </div>
 
       <div className='slider-footer'>
-        {images.length >= 2 && (
-          <ArrowButton
-            hero
-            direction='left'
-            size='large'
-            className='arrow-button previous-button'
-            onClick={handlePrevClick}></ArrowButton>
-        )}
-
+        {images.length >= 2 && <RoundAction icon='chevron-left' onClick={handlePrevClick} inverted />}
         <div className='dots-wrapper'>
           {images.map((image: any, imageIndex: number) => (
             <motion.img
@@ -63,14 +56,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
             />
           ))}
         </div>
-        {images.length >= 2 && (
-          <ArrowButton
-            hero
-            direction='right'
-            size='large'
-            className='arrow-button next-button'
-            onClick={handleNextClick}></ArrowButton>
-        )}
+        {images.length >= 2 && <RoundAction icon='chevron-right' onClick={handleNextClick} inverted />}
       </div>
     </div>
   );
@@ -82,6 +68,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
 
     display: grid;
     justify-items: center;
+    box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.25);
 
     .slider-footer {
       display: flex;
@@ -92,26 +79,14 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       position: absolute;
       bottom: 0;
 
-      padding: 32px;
+      padding: 24px;
       box-sizing: border-box;
       align-items: center;
       z-index: 1;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
 
-      background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0%, rgba(38, 38, 38, 0.7) 100%);
-
-      .arrow-button {
-        flex-shrink: 0;
-        z-index: 1;
-        .icon {
-          color: white;
-        }
-        :hover {
-          background-color: white;
-          .icon {
-            color: initial;
-          }
-        }
-      }
+      background: linear-gradient(180deg, rgba(13, 42, 56, 0) 0%, #0d2a38 100%);
 
       .dots-wrapper {
         display: flex;
@@ -128,12 +103,12 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
           box-sizing: border-box;
 
           &.active {
-            border: 2px solid #f7f1e7;
+            border: 2px solid #184d6d;
             opacity: 1;
           }
 
           :hover {
-            border: 2px solid #f7f1e7;
+            border: 2px solid #184d6d;
             opacity: 1;
             z-index: 1;
           }
@@ -147,7 +122,8 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       overflow: hidden;
       position: relative;
       max-width: 100%;
-      max-height: 640px;
+      max-height: 602px;
+      border-radius: 16px;
 
       :before {
         content: '';
@@ -168,8 +144,8 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
       .slide-item {
         flex-shrink: 0;
         width: 100%;
-        aspect-ratio: 9 / 4;
-        object-fit: contain;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
       }
     }
   }

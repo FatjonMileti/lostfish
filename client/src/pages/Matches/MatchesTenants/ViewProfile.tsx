@@ -58,7 +58,7 @@ export const ViewProfile = styled(
         <div>
           {(awaitingMatch || matched) && (
             <div className='match-request'>
-              <Icon icon={awaitingMatch ? 'info' : 'like'} size={24} />
+              <Icon icon={awaitingMatch ? 'watch' : 'like'} size={24} />
               <Typography variant='body5' className='message'>
                 {awaitingMatch ? 'Match request sent' : 'You are perfectly matched with this tenant'}
               </Typography>
