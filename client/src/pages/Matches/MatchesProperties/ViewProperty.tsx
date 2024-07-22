@@ -250,7 +250,7 @@ export const ViewProperty = styled(
                   Asking price (per month):
                 </Typography>
                 <Typography variant='body2' className='price'>
-                  £3,500.00
+                  {parsedProperty.rentingPrice}
                 </Typography>
               </div>
               <div className='section-details'>
