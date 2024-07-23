@@ -443,7 +443,6 @@ const findPublishedProperties = async (req: Request, res: Response) => {
           ...item.toObject()
         },
         chosen: matchProperty?.chosen ?? false,
-        starred: matchProperty?.starred ?? false,
         matchId: matchProperty?._id ?? undefined,
         percentage: faker.number.int({ min: 30, max: 100 })
       };

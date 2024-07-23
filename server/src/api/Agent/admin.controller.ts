@@ -180,7 +180,6 @@ export class AdminController {
  * @apiExample {json} Example request body:
  *    {
  *       "chosen": false,
- *       "starred": false,
  *       "tenant": "6145f7433c2f33aabc9de4cc"
  *    }
  */
@@ -190,7 +189,6 @@ export class AdminController {
  * @apiExample {json} Example request body:
  *    {
  *       "chosen": false,
- *       "starred": false,
  *       "property": "6145f7433c2f33aabc9de4cc"
  *    }
  */

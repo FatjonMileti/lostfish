@@ -34,7 +34,6 @@ function defineAbilitiesFor(user: UserDocument | IUserAbilityData): PureAbility<
     can(CASLAction.Manage, 'Chat');
     can(CASLAction.Manage, 'Client');
     can(CASLAction.Read, 'SignGenerator');
-    can(CASLAction.Manage, 'StarredProperties');
     can(CASLAction.Read, 'SignURL');
     can(CASLAction.Manage, 'Criteria');
     can(CASLAction.Read, 'Matches');
@@ -44,7 +43,6 @@ function defineAbilitiesFor(user: UserDocument | IUserAbilityData): PureAbility<
     can(CASLAction.Manage, 'User', user._id.toString());
     can(CASLAction.Manage, 'Property');
     can(CASLAction.Manage, 'SignGenerator');
-    can(CASLAction.Manage, 'StarredTenants');
     can(CASLAction.Read, 'SignURL');
     can(CASLAction.Read, 'Matches');
     can(CASLAction.Update, 'Documents', 'file.approved');

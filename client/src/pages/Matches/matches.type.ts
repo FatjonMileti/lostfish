@@ -8,7 +8,6 @@ export interface SuggestedPropertyType {
   };
   matchId?: string;
   chosen: boolean;
-  starred: boolean;
   matched: boolean;
 }
 
@@ -17,7 +16,6 @@ export interface SuggestedTenantType {
   criteria: any;
   property: ApiPropertyDocumentType | any;
   chosen: boolean;
-  starred: boolean;
   matched: boolean;
   unread_messages: number;
   matchId?: string;
@@ -34,7 +32,6 @@ export interface MatchedPropertyType {
     _id: string;
   };
   chosen: boolean;
-  starred: boolean;
   matched: boolean;
   unread_messages: number;
   matchId?: string;
@@ -46,7 +43,6 @@ export interface MatchedTenantType {
   criteria: any;
   property: ApiPropertyDocumentType | any;
   chosen: boolean;
-  starred: boolean;
   matched: boolean;
   unread_messages: number;
   matchId?: string;

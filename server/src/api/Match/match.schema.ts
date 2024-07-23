@@ -5,7 +5,6 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 export interface IMatchQueryParams {
   _id?: ObjectId | string;
   chosen?: boolean;
-  starred?: boolean;
   type?: MatchingType;
   created_by?: ObjectId | string;
   property?: string;
@@ -19,7 +18,6 @@ const schema: Schema<MatchDocument> = new Schema<MatchDocument>(
     landlord: { type: Schema.Types.ObjectId, ref: 'user' },
 
     chosen: { type: Boolean, default: false },
-    starred: { type: Boolean, default: false },
 
     matched: {
       type: Boolean,

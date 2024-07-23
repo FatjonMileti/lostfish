@@ -178,7 +178,6 @@ export default class SuggestionService {
             ...item
           },
           chosen: matchProperty?.chosen ?? false,
-          starred: matchProperty?.starred ?? false,
           matchId: matchProperty?._id ?? undefined
         };
       });
@@ -336,7 +335,6 @@ export default class SuggestionService {
       criteria: item,
       property: propertyWithPercentage,
       chosen: matchTenant?.chosen ?? false,
-      starred: matchTenant?.starred ?? false,
       disliked: matchTenant?.disliked ?? false,
       matchId: matchTenant?._id ?? undefined
     };

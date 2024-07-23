@@ -15,8 +15,6 @@ export type AppSubjects =
   | 'Client'
   | 'SignGenerator'
   | 'SignURL'
-  | 'StarredProperties'
-  | 'StarredTenants'
   | 'Criteria'
   | 'Matches'
   | 'Documents';

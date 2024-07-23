@@ -4,7 +4,6 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 const schema = new Schema<PropertyDetailDocument>({
   property: { type: Schema.Types.ObjectId, ref: 'property' },
   views: { type: Number, default: () => 0 },
-  starred: { type: Number, default: () => 0 },
   matches: { type: Number, default: () => 0 },
   property_score: { type: Number, default: () => 0 },
   created_at: { type: Date, required: true, default: () => new Date() },
@@ -20,7 +19,6 @@ export default model<PropertyDetailDocument, PaginateModel<PropertyDetailDocumen
 export interface PropertyDetailDocument extends Document {
   property: string | Schema.Types.ObjectId;
   views: number;
-  starred: number;
   matches: number;
   property_score: number;
   created_at: Date;

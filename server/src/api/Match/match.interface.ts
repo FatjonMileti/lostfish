@@ -11,7 +11,6 @@ export interface MatchDocument extends Document {
   tenant: ObjectIdField;
   landlord: ObjectIdField;
   chosen: boolean;
-  starred: boolean;
   matched: boolean;
   disliked: boolean;
   unmatched: boolean;

@@ -31,7 +31,6 @@ const createPropertyDetail = async (
     property: propertyId,
     views: 0,
     matches: 0,
-    starred: 0,
     property_score: propertyScore ?? 0
   });
 

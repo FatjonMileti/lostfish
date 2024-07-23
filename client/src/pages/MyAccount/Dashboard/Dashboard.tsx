@@ -47,7 +47,6 @@ export const Dashboard = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       {profileStore.role === 'Tenant' && (
         <>
           <div />
-          {/*<SummaryStarredProperties />*/}
         </>
       )}
     </div>

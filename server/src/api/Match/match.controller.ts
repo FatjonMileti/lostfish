@@ -146,10 +146,7 @@ export class MatchController {
         created_by: res.locals.user_id
       });
 
-      await propertyDetailService.findAndIncrementById(
-        property._id,
-        matchData.chosen ? { matches: 1 } : { starred: 1 }
-      );
+      await propertyDetailService.findAndIncrementById(property._id, { matches: 1 });
 
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
@@ -181,10 +178,7 @@ export class MatchController {
         created_by: res.locals.user_id
       });
 
-      await propertyDetailService.findAndIncrementById(
-        property._id,
-        matchData.chosen ? { matches: 1 } : { starred: 1 }
-      );
+      await propertyDetailService.findAndIncrementById(property._id, { matches: 1 });
 
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
@@ -226,7 +220,6 @@ export class MatchController {
    * @apiGroup Matches
    * @apiSampleRequest /api/match/tenant
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
-   * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} tenant Tenant Id
    * @apiBody {String} property Property Id
    * @apiUse CreateMatchLandlord
@@ -237,7 +230,6 @@ export class MatchController {
    *       "_id": "6145f7433c2f33aabc9de4aa",
    *       "tenant": "6145f7433c2f33aabc9de4bb",
    *       "chosen": false,
-   *       "starred": false,
    *       "type": "Property",
    *       "property": "6145f7433c2f33aabc9de4cc",
    *       "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -275,7 +267,6 @@ export class MatchController {
    * @apiGroup Matches
    * @apiSampleRequest /api/match/property
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
-   * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} property Property Id
    * @apiUse CreateMatchTenant
    * @apiSuccess {Object} match Created match object
@@ -285,7 +276,6 @@ export class MatchController {
    *       "_id": "6145f7433c2f33aabc9de4aa",
    *       "tenant": "6145f7433c2f33aabc9de4bb",
    *       "chosen": false,
-   *       "starred": false,
    *       "type": "Property",
    *       "property": "6145f7433c2f33aabc9de4cc",
    *       "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -314,10 +304,7 @@ export class MatchController {
         tenant: res.locals.user_id,
         created_by: res.locals.user_id
       });
-      await propertyDetailService.findAndIncrementById(
-        property._id,
-        matchData.chosen ? { matches: 1 } : { starred: 1 }
-      );
+      await propertyDetailService.findAndIncrementById(property._id, { matches: 1 });
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Create, info: matchData });
       return res.status(201).json(match);
     } catch (error) {
@@ -339,7 +326,6 @@ export class MatchController {
    *         "_id": "6145f7433c2f33aabc9de4aa",
    *         "tenant": "6145f7433c2f33aabc9de4bb",
    *         "chosen": false,
-   *         "starred": false,
    *         "type": "type1",
    *         "property": "6145f7433c2f33aabc9de4cc",
    *         "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -349,23 +335,18 @@ export class MatchController {
    *       },
    *       // Other match objects...
    *     ]
-   * @apiQuery {string} [starred] Starred
    * @apiQuery {string} [chosen] Choosed
    * @apiPermission authorize
    * @apiUse bearer
    * @apiUse paging
    */
   private getAllMatches = async (req: Request, res: Response) => {
-    const { starred, chosen, matchRate, propertyId } = req.query;
+    const { chosen, matchRate, propertyId } = req.query;
 
     const query: IMatchQueryParams = {};
     if ([Role.Landlord, Role.Client].includes(res.locals.role)) {
       query.created_by = res.locals.user_id;
       query.type = res.locals.role === Role.Landlord ? MatchingType.USER : MatchingType.PROPERTY;
-    }
-
-    if (starred) {
-      query.starred = starred === 'true';
     }
 
     if (chosen) {
@@ -449,21 +430,16 @@ export class MatchController {
    * @apiSampleRequest /api/match/property
    * @apiUse bearer
    * @apiSuccess {Object[]} matches List of match objects
-   * @apiQuery {string} [starred] Starred
    * @apiQuery {string} [chosen] Choosed
    * @apiPermission authorize
    * @apiUse bearer
    * @apiUse paging
    */
   private getAllPropertyMatches = async (req: Request, res: Response) => {
-    const { starred, chosen, propertyId } = req.query;
+    const { chosen, propertyId } = req.query;
     const query: any = {
       created_by: { $ne: res.locals.user_id }
     };
-
-    if (starred) {
-      query.starred = starred === 'true';
-    }
 
     if (chosen) {
       query.chosen = chosen === 'true';
@@ -521,7 +497,6 @@ export class MatchController {
    *       "_id": "6145f7433c2f33aabc9de4aa",
    *       "tenant": "6145f7433c2f33aabc9de4bb",
    *       "chosen": false,
-   *       "starred": false,
    *       "type": "Property",
    *       "property": "6145f7433c2f33aabc9de4cc",
    *       "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -558,7 +533,6 @@ export class MatchController {
    * @apiSampleRequest /api/match/:id
    * @apiUse bearer
    * @apiBody {Boolean} [chosen=false] Whether the match is chosen
-   * @apiBody {Boolean} [starred=false] Whether the match is starred
    * @apiBody {String} type Matching type (enum: 'Property', 'User')
    * @apiBody {String} property Property ID associated with the match
    * @apiBody {String} tenant TenantID associated with the match
@@ -569,7 +543,6 @@ export class MatchController {
    *       "_id": "6145f7433c2f33aabc9de4aa",
    *       "tenant": "6145f7433c2f33aabc9de4bb",
    *       "chosen": false,
-   *       "starred": false,
    *       "type": "type1",
    *       "property": "6145f7433c2f33aabc9de4cc",
    *       "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -594,15 +567,11 @@ export class MatchController {
         data = { matches: -1 };
       } else if (!existingMatch.chosen && updatedMatch?.chosen) {
         data = { matches: +1 };
-      } else if (existingMatch.starred && !updatedMatch?.starred) {
-        data = { ...data, starred: -1 };
-      } else if (!existingMatch.starred && updatedMatch?.starred) {
-        data = { ...data, starred: +1 };
       }
 
       await propertyDetailService.findAndIncrementById(<string>existingMatch.property, { ...data });
 
-      if (updatedMatch && !updatedMatch.chosen && !updatedMatch.starred) {
+      if (updatedMatch && !updatedMatch.chosen) {
         const deletedMatch = await this.matchService.deleteMatch(matchId);
         return res.status(204).send(deletedMatch);
       }
@@ -633,7 +602,6 @@ export class MatchController {
    *       "_id": "6145f7433c2f33aabc9de4aa",
    *       "tenant": "6145f7433c2f33aabc9de4bb",
    *       "chosen": false,
-   *       "starred": false,
    *       "type": "Property",
    *       "property": "6145f7433c2f33aabc9de4cc",
    *       "edited_by": "6145f7433c2f33aabc9de4dd",
@@ -681,7 +649,6 @@ export class MatchController {
  * @apiExample {json} Example request body:
  *    {
  *       "chosen": false,
- *       "starred": false,
  *       "tenant": "6145f7433c2f33aabc9de4cc"
  *    }
  */
@@ -691,7 +658,6 @@ export class MatchController {
  * @apiExample {json} Example request body:
  *    {
  *       "chosen": false,
- *       "starred": false,
  *       "property": "6145f7433c2f33aabc9de4cc"
  *    }
  */

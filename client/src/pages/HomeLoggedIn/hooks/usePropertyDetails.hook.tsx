@@ -6,7 +6,6 @@ import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.t
 export type TPropertyDetails = {
   property: string;
   views: number;
-  starred: number;
   matches: number;
   property_score: number;
   tenants: any[];

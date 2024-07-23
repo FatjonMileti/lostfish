@@ -61,7 +61,6 @@ export const ViewProperty = styled(
     };
     parsedProperty.houseType = property?.house_details?.house_type;
     parsedProperty.propertyType = property?.property_type;
-    parsedProperty.isPropertyStarred = propertyToView.starred;
 
     return (
       <Modal className={classNames('view-property-modal', className)} {...rest}>
