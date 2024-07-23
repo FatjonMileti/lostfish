@@ -58,7 +58,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   }, []);
 
   const propertiesQuery = useQuery({
-    queryKey: ['properties', activeTab, paginationAndSort],
+    queryKey: ['properties', activeTab],
     queryFn: async () => {
       const { data } = await axios(auth.access_token).get<PropertiesApiResponse>('/api/asset', {
         params: {
