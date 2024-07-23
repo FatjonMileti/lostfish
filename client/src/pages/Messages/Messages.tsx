@@ -2,10 +2,10 @@ import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { Typography } from '../../components/Typography';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading';
-import { Button } from '../../components/Button';
+import { Typography, ShowGlobalLoading, Button } from '../../components';
 
 import { Conversation } from './Conversation';
 import { ChatBox } from './ChatBox/ChatBox';
@@ -21,19 +21,13 @@ import { useNotificationsStore } from '../../globalState/notifications';
 import { IMessageItem, IRoom } from './messages.interface';
 
 import noMessages from './noMessages.png';
-import { Role } from '../../enums';
-import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
-import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
-import { useProfileStore } from '../../globalState/profile';
 import { Footer } from '../Home/Footer';
-import classNames from 'classnames';
+
 import { MatchDetails } from './MatchDetails/MatchDetails';
-import { AnimatePresence, motion } from 'framer-motion';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
   const notificationsStore = useNotificationsStore();
-  const profileStore = useProfileStore();
 
   const { socket } = React.useContext(SocketContext);
 
@@ -94,7 +88,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             }
           });
         }
-        navigate(`/messages`);
+        navigate('/messages');
       }
     } catch (err) {
       throw err;
@@ -181,14 +175,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
           'no-messages': !chatRooms.isFetching && chatRooms.data?.length === 0
         })}>
         <div className='header-and-content-wrapper'>
-          <HeaderLoggedIn
-            middleContent={
-              <>
-                {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
-                {profileStore.role === Role.Tenant && <PropertiesReviewHeader />}
-              </>
-            }
-          />
+          <HeaderLoggedIn />
 
           {chatRooms.isFetching && <ShowGlobalLoading />}
           <AnimatePresence>

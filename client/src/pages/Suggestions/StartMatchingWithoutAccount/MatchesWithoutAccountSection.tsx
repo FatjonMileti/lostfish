@@ -1,13 +1,13 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
 
-import { Typography } from '../../../components/Typography';
-import { Label } from '../../../components/Label';
-import { Icon } from '../../../components/Icon';
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
-import { PropertyCard } from '../../../components/PropertyCard';
+import { Typography } from '../../../components';
+import { Label } from '../../../components';
+import { Icon } from '../../../components';
+import { ShowGlobalLoading } from '../../../components';
+import { PropertyCard } from '../../../components';
 
 import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
@@ -156,8 +156,8 @@ export const MatchesWithoutAccountSection = styled(
         row-gap: 24px;
         justify-items: center;
 
-        border: 2px solid var(--primary-brand-sand, #eee0d3);
-        background: var(--primary-brand-light-sand, #f7f1e7);
+        border: 2px solid #eee0d3;
+        background: #f7f1e7;
         /* Nav Shadow */
         box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
 

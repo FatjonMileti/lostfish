@@ -36,11 +36,13 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const [activeTab, setActiveTab] = React.useState(ActiveTab.Potential);
 
   const suggestedProperties = useSuggestedProperties({
-    params: { disliked: false, chosen: false },
+    params: {},
     options: {
       refetchOnMount: true
     }
   });
+
+  console.log('suggestedProperties: ', suggestedProperties);
   const criteriaStore = useCriteriaStore();
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
@@ -51,7 +53,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const suggestedProperty: SuggestedPropertyType = suggestedProperties.data[activeSlide];
 
   const matchesCount = useMatchesCount({
-    params: { chosen: false, disliked: false }
+    params: { chosen: true, disliked: false }
   });
 
   const globalSetCriteria = useGlobalSetCriteria();
@@ -98,6 +100,15 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     }
   });
 
+  const onMatchOptionsClick = () => {
+    globalSetCriteria.openSetCriteria({
+      afterSetCriteria: () => {
+        suggestedProperties.refetch();
+        matchesCount.refetch();
+      }
+    });
+  };
+
   return (
     <>
       {(suggestedProperties.isFetching || likeProperty.isLoading || dislikeProperty.isLoading) && (
@@ -123,9 +134,9 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
             />
           </div>
 
-          <Label variant='special' size='large' className='filters-button'>
+          <Label variant='special' size='large' className='filters-button' onClick={onMatchOptionsClick}>
             <Icon icon='filter' />
-            Match options (12)
+            Match options ({suggestedProperties.data?.length})
           </Label>
         </div>
 

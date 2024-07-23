@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import React from 'react';
 
 import { ArrowButton } from '../../../components/ArrowButton';
 import { Typography } from '../../../components/Typography';
@@ -44,7 +43,7 @@ export const SelectAvatar = styled(
           </div>
 
           <div className='avatars-list'>
-            {avatars.map(({ image, backgroundColor }, avatarIndex) => {
+            {avatars.map(({ image }, avatarIndex) => {
               const active = avatarIndex === avatar;
               return (
                 <Avatar

@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Modal, ModalProps } from '../../components/Modal';
@@ -33,7 +32,7 @@ export const ImproveTrustScoreModal = styled(
                 {profileStore.trust_score}%
               </Typography>
             </div>
-            <CloseButton onClick={closeModal} size='medium'/>
+            <CloseButton onClick={closeModal} size='medium' />
           </div>
 
           <div className='modal-body'>

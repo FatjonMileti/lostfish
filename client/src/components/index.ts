@@ -1,7 +1,6 @@
 export { Logo } from './Logo';
 export { Link } from './Link';
 export { Button } from './Button';
-export { Typography } from './Typography';
 export { IconButton } from './IconButton';
 export { Icon } from './Icon';
 export { Switch } from './Switch';
@@ -27,3 +26,4 @@ export * from './NotificationsIcon.tsx';
 export * from './PropertyCard.tsx';
 export * from './TenantCard.tsx';
 export * from './SegmentControl.tsx';
+export * from './Typography.tsx';

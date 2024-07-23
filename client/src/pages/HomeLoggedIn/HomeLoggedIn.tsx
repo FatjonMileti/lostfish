@@ -2,17 +2,14 @@ import React from 'react';
 import { styled } from '@mui/system';
 import { HeaderLoggedIn } from '../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import { Footer } from '../Home/Footer';
-
-// import { Suggestions } from '../Suggestions/Suggestions';
-import { PropertiesMatchingHeader } from '../Matches/MatchesProperties/PropertiesMatchingHeader';
-import { TenantsMatchingHeader } from '../Matches/MatchesTenants/TenantsMatchingHeader';
 import { Role } from '../../enums';
 import { useProfileStore } from '../../globalState/profile';
-import { ShareAndEarnSection } from './ShareAndEarnSection.tsx';
+import { ShareAndEarnSection } from './ShareAndEarnSection/ShareAndEarnSection.tsx';
 import { DailyNewss } from '../PagesComponents/DailyNews/DailyNews.tsx';
 import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
 import { InitialSetupModal } from '../InitialSetup/InitialSetupModal/InitialSetupModal.tsx';
 import { MyDashboard } from '../AgentDashboard/MyDashboard.tsx';
+import { OverViewSection } from './OverViewSection/OverViewSection.tsx';
 
 export const HomeLoggedIn = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const profileStore = useProfileStore();
@@ -27,20 +24,10 @@ export const HomeLoggedIn = styled(({ className }: React.HTMLAttributes<HTMLDivE
 
   return (
     <div className={`home-logged-in-page ${className}`}>
-      <HeaderLoggedIn
-        middleContent={
-          <>
-            {profileStore.role === Role.Landlord && <TenantsMatchingHeader />}
-            {profileStore.role === Role.Tenant && <PropertiesMatchingHeader />}
-          </>
-        }
-      />
-
-      {/*{loading && <ShowGlobalLoading />}*/}
+      <HeaderLoggedIn />
 
       <div className='container'>
-        {/*<Suggestions />*/}
-        {/*<HomeLoggedOutSectionTwo />*/}
+        <OverViewSection />
         <ValpalSection />
         <DailyNewss />
         <ShareAndEarnSection />

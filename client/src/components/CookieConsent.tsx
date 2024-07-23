@@ -25,14 +25,11 @@ export const CookieConsent = styled(({ className = '' }: React.HTMLAttributes<HT
     window.location.href = location;
   };
 
-  if (
-    Object(cookies).hasOwnProperty('acceptCookies') &&
-    (cookies.acceptCookies === 'true' || cookies.acceptCookies === '')
-  ) {
+  if (cookies?.acceptCookies === 'true' || cookies?.acceptCookies === '') {
     return null;
   }
 
-  if (Object(cookies).hasOwnProperty('acceptCookies') && cookies.acceptCookies === 'false') {
+  if (cookies?.acceptCookies === 'false') {
     return (
       <div>
         <div className={`consent ${className}`}>
@@ -55,9 +52,7 @@ export const CookieConsent = styled(({ className = '' }: React.HTMLAttributes<HT
             This website uses cookies to ensure you get the best experience. By using our site, you
             acknowledge that you have read and understand our
           </Typography>
-          <Link variant='body4' onClick={() => gotTo('/policy-agreement')}>
-            Privacy Policy
-          </Link>
+          <Link onClick={() => gotTo('/policy-agreement')}>Privacy Policy</Link>
         </div>
 
         <div className='buttons'>

@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { Icon } from '../../components/Icon.tsx';
-import { Typography } from '../../components/Typography.tsx';
-import { Label } from '../../components/Label.tsx';
+import { Icon } from '../../../components/Icon.tsx';
+import { Typography } from '../../../components/Typography.tsx';
+import { Label } from '../../../components/Label.tsx';
 import backgroundImage from './share-and-earn.jpeg';
 
 export const ShareAndEarnSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {

@@ -27,6 +27,12 @@ export interface MatchedPropertyType {
   id: string;
   criteria: any;
   property: ApiPropertyDocumentType | any;
+  landlord: {
+    avatar: string;
+    first_name: string;
+    last_name: string;
+    _id: string;
+  };
   chosen: boolean;
   starred: boolean;
   matched: boolean;
