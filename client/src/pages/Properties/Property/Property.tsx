@@ -2,15 +2,17 @@ import { styled } from '@mui/system';
 import { HTMLProps, MouseEventHandler } from 'react';
 import classNames from 'classnames';
 
-import { Typography, Button, Icon } from '../../../components';
+import { Typography, Button, Icon, Label } from '../../../components';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { Slider } from './Slider';
 
-import { AreaUnitType } from '../NewProperty/property.types';
+import { ApiPropertyDocumentType, AreaUnitType } from '../NewProperty/property.types';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { Skeleton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../../utils/axios.ts';
+import { useUserStore } from '../../../globalState/user.tsx';
 
 export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   propertyId: string;
@@ -18,10 +20,7 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
   status: string;
   viewDetails: MouseEventHandler;
   images: any[];
-  description: string;
   location: string;
-  area: number;
-  areaUnit: AreaUnitType;
   budget: {
     min_budget: number;
     max_budget: number;
@@ -30,9 +29,7 @@ export interface PropertyProps extends HTMLProps<HTMLDivElement> {
     number_of_bedrooms: number;
     number_of_bathrooms: number;
   };
-  propertyType: string;
-  parkingSpot: number;
-  epcRating: string;
+  afterPublish: any;
 }
 
 const propertyStatusMap: any = {
@@ -49,178 +46,119 @@ export const Property = styled(
     status,
     viewDetails,
     images,
-    description,
     location,
-    area,
-    areaUnit,
     budget,
     roomsDetails,
-    propertyType,
-    parkingSpot,
-    epcRating,
-    propertyId
+    propertyId,
+    afterPublish
   }: PropertyProps) => {
-    const potentialMatches = useSuggestedTenants({
-      params: {
-        disliked: false,
-        chosen: false,
-        propertyId
-      },
-      options: {
-        refetchOnMount: true
-      }
-    });
+    const { auth } = useUserStore();
 
-    const navigate = useNavigate();
+    const startMatching = async () => {
+      try {
+        const payload: { status_string: string } = {
+          status_string: 'Live'
+        };
+        await axios(auth.access_token).patch(`/api/asset/${propertyId}`, payload);
+      } catch (err) {
+        throw err;
+      }
+    };
+
+    const onPublishPropertyClick = async () => {
+      await startMatching();
+      afterPublish();
+    };
 
     return (
       <div className={classNames('property', className)}>
-        <Slider images={images} />
-        <div className='details'>
-          <div className='description-header'>
-            <Typography variant='body6' className='status'>
-              {propertyStatusMap[status] || status}
-            </Typography>
-
-            <div className='potential-matches'>
-              {!(!potentialMatches.isFetching && potentialMatches?.data?.length === 0) && (
-                <Typography className='title' variant='body5'>
-                  Potential matches
-                </Typography>
-              )}
-
-              <div className='potential-matches-list'>
-                {potentialMatches.isFetching && (
-                  <>
-                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
-                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
-                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
-                    <Skeleton variant='circular' width={40} height={40} className='tenant-image' />
-                  </>
-                )}
-                {!potentialMatches.isFetching &&
-                  potentialMatches?.data.slice(0, 3).map((st, stIndex) => {
-                    return (
-                      <div
-                        onClick={() => navigate('/')}
-                        key={stIndex}
-                        className='tenant-image '
-                        style={{ backgroundImage: `url(${getAvatarFormIndex(st.criteria.avatar)})` }}
-                      />
-                    );
-                  })}
-                {!potentialMatches.isFetching && potentialMatches?.data?.length > 3 && (
-                  <div className='tenant-image last'>
-                    <Typography variant='body6'>+{potentialMatches?.data?.length - 3}</Typography>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className='content'>
-            <div className='title-property-details'>
-              {name && (
-                <Typography className='property-title' variant='body4'>
-                  {name}
-                </Typography>
-              )}
-              <div className='property-details'>
-                {location && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='location' /> <Typography variant='body5'>{location}</Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-
-                {budget && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='banknote' />{' '}
-                      <Typography variant='body5'>
-                        £ {budget.min_budget} / {budget.max_budget} PCM
-                      </Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-
-                {area && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='ruler' />{' '}
-                      <Typography variant='body5'>
-                        {area} {areaUnit}{' '}
-                      </Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-                {roomsDetails?.number_of_bedrooms && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='double-bed' />
-                      <Typography variant='body5'>{roomsDetails.number_of_bedrooms}</Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-                {roomsDetails?.number_of_bathrooms && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='bathtub' />{' '}
-                      <Typography variant='body5'>{roomsDetails.number_of_bathrooms}</Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-                {propertyType && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='building' /> <Typography variant='body5'>{propertyType}</Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-                {parkingSpot && (
-                  <>
-                    <div className='detail'>
-                      <Icon icon='car' /> <Typography variant='body5'>{parkingSpot} Parking Spot</Typography>
-                    </div>
-                    <Typography variant='body4' className='dot'>
-                      •
-                    </Typography>
-                  </>
-                )}
-                {epcRating && (
+        <div className='property-image'>
+          <Typography
+            variant='body5'
+            className={classNames('status', (propertyStatusMap[status] as string).toLowerCase())}>
+            {propertyStatusMap[status] || status}
+          </Typography>
+        </div>
+        <div className='content'>
+          <div className='details-wrapper'>
+            {name && (
+              <Typography className='property-title' variant='body4'>
+                {name}
+              </Typography>
+            )}
+            <div className='details'>
+              {location && (
+                <>
                   <div className='detail'>
-                    <Icon icon='temperature' />{' '}
-                    <Typography variant='body5'>EPC Rating: {epcRating}*</Typography>
+                    <Icon icon='location' size={20} />
+                    <Typography variant='body5' className='detail-value'>
+                      {location}
+                    </Typography>
                   </div>
-                )}
-              </div>
+                  <Typography variant='body4' className='dot'>
+                    •
+                  </Typography>
+                </>
+              )}
+              {budget && (
+                <>
+                  <div className='detail'>
+                    <Typography variant='body5' className='detail-value'>
+                      £ {budget.min_budget} / {budget.max_budget} PCM
+                    </Typography>
+                  </div>
+                  <Typography variant='body4' className='dot'>
+                    •
+                  </Typography>
+                </>
+              )}
+              {roomsDetails?.number_of_bedrooms && (
+                <>
+                  <div className='detail'>
+                    <Icon icon='double-bed' />
+                    <Typography variant='body5' className='detail-value'>
+                      {roomsDetails.number_of_bedrooms}
+                    </Typography>
+                  </div>
+                  <Typography variant='body4' className='dot'>
+                    •
+                  </Typography>
+                </>
+              )}
+              {roomsDetails?.number_of_bathrooms && (
+                <div className='detail'>
+                  <Icon icon='bathtub' />{' '}
+                  <Typography variant='body5' className='detail-value'>
+                    {roomsDetails.number_of_bathrooms}
+                  </Typography>
+                </div>
+              )}
             </div>
-
-            {description && <Typography variant='body4'>{description}</Typography>}
           </div>
-
-          <Button size='large' variant='secondary' onClick={viewDetails}>
-            Edit property
-          </Button>
+          {propertyStatusMap[status] === 'Published' && (
+            <div className='footer'>
+              <Typography variant='body5' className='published'>
+                Published on 16/06/2024
+              </Typography>
+              <Label variant='secondary' size='medium' onClick={viewDetails}>
+                Property details
+              </Label>
+            </div>
+          )}
+          {propertyStatusMap[status] === 'Draft' && (
+            <div className='action-buttons'>
+              <Label variant='secondary' size='medium' onClick={viewDetails}>
+                Edit property
+              </Label>
+              <Label
+                variant='special'
+                size='medium'
+                className='publish-button'
+                onClick={onPublishPropertyClick}>
+                Publish property
+              </Label>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -228,109 +166,105 @@ export const Property = styled(
 )`
   &.property {
     display: grid;
-    grid-template-columns: min-content auto;
-    column-gap: 24px;
     position: relative;
+    align-items: flex-start;
+    border-radius: 16px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 32px 0 rgba(13, 42, 56, 0.1);
 
-    .slider {
-      min-width: 440px;
+    .property-image {
+      background-image: url(${(props) => props.images?.[0].link});
+      background-size: cover;
+      background-repeat: no-repeat;
+      aspect-ratio: 1.48 / 1;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      padding: 24px;
+
+      .status {
+        width: min-content;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 700;
+        line-height: 24px;
+
+        &.published {
+          background-color: #408140;
+          color: #fff;
+        }
+
+        &.draft {
+          background-color: #e7e7e7;
+          color: #646464;
+        }
+
+        &.rented {
+          background-color: #c0daff;
+          color: #0d2a38;
+        }
+      }
     }
 
-    .details {
+    .content {
       display: grid;
-      grid-template-rows: min-content auto min-content;
       align-items: flex-start;
+      padding: 24px;
       row-gap: 24px;
 
-      .description-header {
-        display: flex;
-        justify-content: space-between;
-        align-content: center;
-        gap: 24px;
+      .details-wrapper {
+        display: grid;
+        gap: 8px;
 
-        .status {
-          padding: 12px;
-          background-color: #408140;
-          border-radius: 20px;
-          color: white;
+        .property-title {
+          color: #0d2a38;
+          font-size: 20px;
           font-weight: 700;
-        }
-        .potential-matches-list {
-          display: flex;
-
-          .tenant-image {
-            width: 40px;
-            height: 40px;
-            background-size: cover;
-            border-radius: 50%;
-            background-position: center;
-            z-index: 1;
-            cursor: pointer;
-
-            :not(:first-of-type) {
-              margin-left: -8px;
-            }
-
-            &.last {
-              color: #0d2a38;
-              display: grid;
-              align-items: center;
-              justify-content: center;
-              font-weight: 700;
-              background-color: #f7f1e7;
-              z-index: 0;
-            }
-          }
+          line-height: 28px;
         }
 
-        .potential-matches {
+        .details {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 8px;
 
-          .title {
-            color: #646464;
-            line-height: 16px;
-            font-weight: 500;
+          .detail {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            .detail-value {
+              color: #0d2a38;
+              font-weight: 700;
+              line-height: 24px;
+            }
+          }
+          .dot {
+            color: #c4b1a3;
+            font-weight: 700;
           }
         }
       }
-
-      .content {
+      .footer {
         display: grid;
-        row-gap: 16px;
+        grid-template-columns: auto min-content;
+        justify-content: space-between;
+        align-items: center;
 
-        .title-property-details {
-          display: grid;
-          row-gap: 8px;
+        .published {
+          color: #646464;
+          font-weight: 500;
+          line-height: 24px;
+        }
+      }
 
-          .property-title {
-            font-size: 20px;
-            line-height: 28px;
-            font-weight: 700;
-          }
+      .action-buttons {
+        display: grid;
+        grid-template-columns: min-content auto;
+        align-items: center;
+        gap: 16px;
 
-          .property-details {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-
-            .dot {
-              color: #a7a7a7;
-              font-weight: 700;
-              opacity: 0.4;
-            }
-
-            .detail {
-              display: flex;
-              column-gap: 4px;
-              align-items: center;
-              color: #646464;
-              .typography {
-                font-weight: 700;
-              }
-            }
-          }
+        .publish-button {
+          width: 100%;
         }
       }
     }
