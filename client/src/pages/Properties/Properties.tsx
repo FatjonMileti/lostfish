@@ -2,45 +2,43 @@ import React from 'react';
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
-import { SegmentControl, Typography } from '../../components';
-import { Button } from '../../components';
-import { Icon } from '../../components';
-import { ShowGlobalLoading } from '../../components';
-import { Label } from '../../components';
-
+import { SegmentControl, Typography, ShowGlobalLoading, Icon, Label } from '../../components';
 import axios from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
-
 import { Property } from './Property/Property';
-
 import { EditPropertyModal } from './NewProperty/EditPropertyModal';
 import { AddPropertyModal } from './NewProperty/AddPropertyModal';
 import { HeaderLoggedIn } from '../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import { Footer } from '../Home/Footer.tsx';
+import { ApiPropertyDocumentType } from './NewProperty/property.types.ts';
 
 enum ActiveTab {
   Published = 'published',
   Draft = 'draft'
 }
 
-const state: IGridState = {
-  loading: true,
-  rows: [],
-  totalRows: 0,
-  rowsPerPageOptions: [10, 20, 50],
-  pageSize: 20,
-  page: 1,
-  rowCount: 0,
-  sort: 'updated_at',
-  asc: false,
-  selectedIds: [],
-  search: '',
-  totalDocsUnfiltered: 0
-};
+interface PropertiesApiResponse {
+  docs: ApiPropertyDocumentType[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number;
+  page: number;
+  pagingCounter: number;
+  prevPage: number;
+  totalDocs: number;
+  totalDocsUnfiltered: number;
+  totalPages: number;
+}
+
 export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [list, setList] = React.useState<IGridState>({
-    ...state
+  const [paginationAndSort, setPaginationAndSort] = React.useState<PaginationAndSortParams>({
+    page: 1,
+    pageSize: 25,
+    sort: 'updated_at',
+    asc: false
   });
 
   const [showNewPropertyModal, setShowNewPropertyModal] = React.useState<boolean>(false);
@@ -54,72 +52,39 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setList((list) => ({
-      ...list,
-      search: activeTab
-    }));
-  }, [activeTab]);
-
-  React.useEffect(() => {
-    getAssets();
     if (queryParams.get('newProperty')) {
       setShowNewPropertyModal(true);
     }
-  }, [list.search]);
+  }, []);
 
-  const getAssets = async () => {
-    setList((prevList: any) => ({
-      ...prevList,
-      loading: true
-    }));
-    try {
-      const { search, asc, sort, pageSize, page } = list;
-
-      const { data } = await axios(auth.access_token).get('/api/asset', {
+  const propertiesQuery = useQuery({
+    queryKey: ['properties', activeTab, paginationAndSort],
+    queryFn: async () => {
+      const { data } = await axios(auth.access_token).get<PropertiesApiResponse>('/api/asset', {
         params: {
-          page: page || undefined,
-          pageSize: pageSize,
-          sort: sort || undefined,
-          asc: asc.toString() || undefined,
-          status: search || undefined
+          ...paginationAndSort,
+          status: activeTab
         }
       });
-
-      setList((prevList: any) => ({
-        ...prevList,
-        rows: data.docs,
-        totalRows: data.totalDocs,
-        loading: false,
-        totalDocsUnfiltered: data.totalDocsUnfiltered
+      return data;
+    },
+    onSuccess: (data) => {
+      setPaginationAndSort((paginationAndSort) => ({
+        ...paginationAndSort,
+        page: data.page,
+        pageSize: data.limit
       }));
-    } catch (err) {
-      throw err;
     }
-  };
+  });
 
   return (
     <div className={`properties-page ${className}`}>
-      {list.loading && <ShowGlobalLoading />}
+      {propertiesQuery.isFetching && <ShowGlobalLoading />}
 
       <div className='header-and-content-wrapper'>
         <HeaderLoggedIn />
 
-        {!list.loading && list.rows.length === 0 && list.totalDocsUnfiltered === 0 && (
-          <div className='no-properties'>
-            <Typography variant='body2'>You currently have no properties in your portfolio</Typography>
-            <Button
-              size='large'
-              className='add-property-button'
-              startIcon={<Icon icon='plus' size={16} />}
-              onClick={() => {
-                setShowNewPropertyModal(true);
-              }}>
-              Add Property
-            </Button>
-          </div>
-        )}
-
-        {!list.loading && list?.totalDocsUnfiltered !== 0 && (
+        {propertiesQuery.isFetched && propertiesQuery?.data?.totalDocsUnfiltered !== 0 && (
           <div className='page-body-wrapper'>
             <div className='properties-header'>
               <Typography variant='body1' className='page-title'>
@@ -148,7 +113,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
             </div>
 
             <div className='properties-list'>
-              {list.rows.map((p, pIndex: number) => (
+              {propertiesQuery?.data?.docs.map((p, pIndex: number) => (
                 <Property
                   propertyId={p._id}
                   key={pIndex}
@@ -161,7 +126,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
                     setEditPropertyId(p._id);
                   }}
                   afterPublish={() => {
-                    navigate('/');
+                    setActiveTab(ActiveTab.Published);
                   }}
                   images={p.property_images || []}
                 />
@@ -177,9 +142,9 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           propertyId={editPropertyId}
           afterSaveAsDraft={() => {
             setEditPropertyId(undefined);
-            getAssets();
+            propertiesQuery.refetch();
           }}
-          afterDelete={() => getAssets()}
+          afterDelete={() => propertiesQuery.refetch()}
           onBack={() => setEditPropertyId(undefined)}
           afterStartMatching={() => {
             setEditPropertyId(undefined);
@@ -192,7 +157,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         showStore={[showNewPropertyModal, setShowNewPropertyModal]}
         afterSave={() => {
           setShowNewPropertyModal(false);
-          getAssets();
+          propertiesQuery.refetch();
         }}
         onBack={() => setEditPropertyId(undefined)}
       />

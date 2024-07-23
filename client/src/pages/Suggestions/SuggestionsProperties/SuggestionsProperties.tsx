@@ -36,7 +36,7 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
   const [activeTab, setActiveTab] = React.useState(ActiveTab.Potential);
 
   const suggestedProperties = useSuggestedProperties({
-    params: {},
+    params: { chosen: false },
     options: {
       refetchOnMount: true
     }

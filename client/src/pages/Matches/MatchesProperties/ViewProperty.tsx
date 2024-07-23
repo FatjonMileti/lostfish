@@ -3,7 +3,7 @@ import { Typography } from '../../../components';
 import { Modal, ModalProps } from '../../../components/Modal';
 
 import { Icon } from '../../../components';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Map } from '../../../components/Map';
 import classNames from 'classnames';
 import { Carousel } from './MatchesProperties.Carousel';
