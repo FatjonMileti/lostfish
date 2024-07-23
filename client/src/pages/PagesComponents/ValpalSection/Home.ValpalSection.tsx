@@ -105,6 +105,8 @@ export const ValpalSection = styled(({ className }: HTMLAttributes<HTMLDivElemen
       .buttons {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        gap: 16px;
       }
     }
   }

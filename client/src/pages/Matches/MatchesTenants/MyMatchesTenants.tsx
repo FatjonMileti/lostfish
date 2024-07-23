@@ -8,9 +8,9 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from './ViewProfile';
 import { Footer } from '../../Home/Footer';
 import { useNavigate } from 'react-router-dom';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
-import { Label } from '../../../components/Label';
+import { Typography } from '../../../components';
+import { Icon } from '../../../components';
+import { Label } from '../../../components';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useMatchesCount } from '../useMatchesCount';
@@ -19,11 +19,11 @@ import { TenantsReviewHeader } from './TenantsReviewHeader';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { SuggestedTenantType } from '../matches.type';
 import { useMutation } from '@tanstack/react-query';
-import { Modal } from '../../../components/Modal';
-import { CloseButton } from '../../../components/CloseButton';
-import { Radio } from '../../../components/Radio';
+import { Modal } from '../../../components';
+import { CloseButton } from '../../../components';
+import { Radio } from '../../../components';
 import { Select } from '../../../components/Select/Select';
-import { Button } from '../../../components/Button';
+import { Button } from '../../../components';
 
 interface MyMatchesTenants extends HTMLAttributes<HTMLDivElement> {}
 
@@ -36,6 +36,9 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     withOffers: false,
     matchRate: 20
   });
+
+  const [matchRate, setMatchRate] = React.useState(0);
+  const [awaitingMatch, setAwaitingMatch] = React.useState(false);
 
   const matchedTenants = useMatchedTenants({
     params: { chosen: true, matchRate: filter.matchRate },
@@ -172,7 +175,11 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     avatar={getAvatarFormIndex(tenantCriteria.avatar)}
                     inView={true}
                     percentage={tenantMatch?.property.percentage}
-                    onViewProfileClick={() => setTenantToView(tenantMatch)}
+                    onViewProfileClick={() => {
+                      setMatchRate(tenantMatch?.property.percentage);
+                      setAwaitingMatch(tenantMatch.chosen && !tenantMatch.matched);
+                      setTenantToView(tenantMatch);
+                    }}
                     matched={tenantMatch.matched}
                     awaitingMatch={tenantMatch.chosen && !tenantMatch.matched}
                     chatWith={() => {
@@ -195,6 +202,8 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
       {tenantToView && (
         <ViewProfile
           criteria={tenantToView.criteria}
+          matchRate={matchRate}
+          awaitingMatch={awaitingMatch}
           closeViewProfile={() => setTenantToView(null)}
           dislikeTenant={() => dislikeTenant.mutate({ matchId: tenantToView?.matchId || '' })}
           disableLikeTenant
@@ -209,7 +218,9 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     grid-template-rows: auto min-content;
     width: 100%;
 
-    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
+    background:
+      linear-gradient(180deg, #fffbf3 18.95%, #fff 100%),
+      lightgray 50% / cover no-repeat;
 
     .header-and-content-wrapper {
       min-height: 100vh;

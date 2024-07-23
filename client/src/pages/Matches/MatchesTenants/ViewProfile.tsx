@@ -1,22 +1,25 @@
 import React, { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 
-import { Modal } from '../../../components/Modal';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
+import { Avatar, Label, Modal } from '../../../components';
+import { Typography } from '../../../components';
+import { Icon } from '../../../components';
 
 import verified from '../../MyAccount/images/verified.svg';
-import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import { CloseButton } from '../../../components/CloseButton';
-import { MatchButton } from '../../../components/MatchButton';
-import { UnMatchButton } from '../../../components/UnMatchButton';
+import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import { CloseButton } from '../../../components';
+
 interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
   closeViewProfile: () => void;
   criteria: any;
+  matchRate?: number;
+  awaitingMatch?: boolean;
+  matched?: boolean;
   likeTenant?: () => void;
   dislikeTenant?: () => void;
   disableLikeTenant?: boolean;
 }
+
 export const ViewProfile = styled(
   ({
     className,
@@ -24,7 +27,10 @@ export const ViewProfile = styled(
     likeTenant = () => {},
     dislikeTenant = () => {},
     disableLikeTenant = false,
-    criteria
+    criteria,
+    matchRate,
+    awaitingMatch = false,
+    matched = false
   }: ViewProfileProps) => {
     const {
       propertyType,
@@ -32,7 +38,6 @@ export const ViewProfile = styled(
       areaOfInterest,
       radius,
       moveIn,
-      budget,
       nrOfBedrooms,
       nrOfBathrooms,
       specificPropertyFeatures,
@@ -45,340 +50,379 @@ export const ViewProfile = styled(
     return (
       <Modal className={`view-profile-modal ${className}`} open={true} onBackdropClick={closeViewProfile}>
         <div className='modal-header'>
-          <Typography variant='body2'>Profile details</Typography>
-          <div className='modal-header-right-content'>
-            <div className='action-buttons'>
-              <UnMatchButton onClick={dislikeTenant} />
-              <MatchButton onClick={likeTenant} disabled={disableLikeTenant} />
-            </div>
-            <CloseButton onClick={closeViewProfile} />
-          </div>
+          <Typography variant='body2' className='modal-title'>
+            Match details
+          </Typography>
+          <CloseButton size='medium' onClick={closeViewProfile} />
         </div>
-
+        <div>
+          {(awaitingMatch || matched) && (
+            <div className='match-request'>
+              <Icon icon={awaitingMatch ? 'watch' : 'like'} size={24} />
+              <Typography variant='body5' className='message'>
+                {awaitingMatch ? 'Match request sent' : 'You are perfectly matched with this tenant'}
+              </Typography>
+            </div>
+          )}
+        </div>
         <div className='modal-content'>
+          <div
+            className='avatar-side'
+            style={{ backgroundImage: `url(${getAvatarFormIndex(avatar)})` }}></div>
           <div className='details-side'>
-            <div>
-              <div className='header'>
-                <div className='header-left'>
+            <div className='header'>
+              <div className='header-left'>
+                <Avatar image={avatars[avatar].image} />
+                <div className='tenant-name-wrapper'>
                   <Typography variant='body3' className='tenant-name'>
                     {`${firstName} ${lastName}`}
                   </Typography>
-
                   <img src={verified} alt='Verified indicator' />
                 </div>
-
-                <Typography variant='body3' className='match-rate'>
-                  34% Match rate
+              </div>
+              <div>
+                <Typography variant='body6' className='match-rate'>
+                  Match rate
+                </Typography>
+                <Typography variant='body4' className='percentage'>
+                  {matchRate}%
                 </Typography>
               </div>
-
-              <div className='sections'>
-                <div className='section'>
-                  <Typography variant='body4' className='section-title'>
-                    About
-                  </Typography>
-                  <Typography variant='body5'>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.{' '}
-                  </Typography>
+            </div>
+            <div className='about-section'>
+              <Typography variant='body4' className='title'>
+                About tenant
+              </Typography>
+              <Typography variant='body4' className='description'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                laboris nisi ut aliquip ex ea commodo consequat.
+              </Typography>
+            </div>
+            <div className='line'></div>
+            <div className='looking-for-section'>
+              <Typography variant='body4' className='looking-for'>
+                Looking for
+              </Typography>
+              <div className='looking-for-content'>
+                <div className='details'>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Property type
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {propertyType}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Property class:
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {propertyPreferences}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Location
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {areaOfInterest}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Radius
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {radius}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Moving in:
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {moveIn}
+                    </Typography>
+                  </div>
                 </div>
-                <div className='section looking-for-section'>
-                  <Typography variant='body4' className='section-title'>
-                    Looking for
-                  </Typography>
-                  <div className='looking-for-content'>
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Property type
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {propertyType}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        budget
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {`£${budget?.min?.toLocaleString()} - £${budget?.max?.toLocaleString()}`}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Property class
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {propertyPreferences}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Deposit
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {depositAmount}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Location
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {areaOfInterest}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Bedrooms
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {nrOfBedrooms}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Radius
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {radius}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Bathrooms
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {nrOfBathrooms}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Move in
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {moveIn}
-                      </Typography>
-                    </div>
-
-                    <div className='detail'>
-                      <Typography variant='body5' className='detail-name'>
-                        Parking needed
-                      </Typography>
-                      <Typography variant='body5' className='detail-value'>
-                        {specificPropertyFeatures.includes('Parking spot') ? 'Yes' : 'No'}
-                      </Typography>
-                    </div>
+                <div className='details'>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Deposit
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {depositAmount}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Bedrooms
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {nrOfBedrooms}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Bathrooms
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {nrOfBathrooms}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Parking spots:
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {specificPropertyFeatures.includes('Parking spot') ? 'Yes' : 'No'}
+                    </Typography>
+                  </div>
+                  <div className='detail'>
+                    <Typography variant='body4' className='detail-name'>
+                      Pets:
+                    </Typography>
+                    <Typography variant='body4' className='detail-value'>
+                      {specificPropertyFeatures.includes('Allows pets') ? 'Yes' : 'No'}
+                    </Typography>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className='social-networks-sections'>
-              <Typography variant='body4' className='social-media-accounts-text'>
-                Social media accounts
-              </Typography>
-
-              <div className='social-networks-links'>
-                <Icon icon='twitter' size={16} />
-                <Icon icon='instagram' size={16} />
+            <div className='line'></div>
+            {!awaitingMatch && (
+              <div className='action-buttons'>
+                <Label variant='secondary' size='large' onClick={dislikeTenant}>
+                  <Icon icon='dislike' size={24} />
+                  {matched ? 'Unmatch' : 'Dismiss'}
+                </Label>
+                {matched ? (
+                  <Label variant='special' size='large' className='message-button' onClick={closeViewProfile}>
+                    <Icon icon='email' size={24} />
+                    Message
+                  </Label>
+                ) : (
+                  <Label
+                    variant='special'
+                    size='large'
+                    className='match-button'
+                    onClick={likeTenant}
+                    disabled={disableLikeTenant}>
+                    <Icon icon='like' size={24} />
+                    Match
+                  </Label>
+                )}
               </div>
-            </div>
+            )}
+            {awaitingMatch && (
+              <Label variant='secondary' className='cancel-request' onClick={dislikeTenant} size='large'>
+                <Icon icon='close' size={24} />
+                Cancel match request
+              </Label>
+            )}
           </div>
-
-          <div
-            className='avatar-side'
-            style={{ backgroundImage: `url(${getAvatarFormIndex(avatar)})` }}></div>
         </div>
       </Modal>
     );
   }
 )`
   &.view-profile-modal {
+    display: grid;
     width: 100vw;
     height: 100vh;
-
     position: relative;
-    overflow: hidden;
     overflow-y: auto;
-    max-height: 100vh;
     max-width: 100vw;
+    max-height: 100vh;
 
     border-radius: 0;
 
     .modal-container {
+      position: relative;
       padding: 0 !important;
       display: grid;
-      grid-template-rows: max-content auto;
+      grid-template-rows: min-content min-content auto;
 
       .modal-header {
-        padding: 20px 36px;
+        padding: 24px 36px;
         display: flex;
         justify-content: space-between;
         align-items: center;
 
-        border-bottom: 2px solid #f3f4f5;
-        /* Nav Shadow */
-        box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid #f3f4f5;
 
-        .modal-header-right-content {
-          display: flex;
-          column-gap: 32px;
-          .action-buttons {
-            display: flex;
-            column-gap: 16px;
-            justify-self: flex-end;
-          }
+        .modal-title {
+          color: #0d2a38;
+          font-weight: 600;
+          line-height: 48px;
+        }
+      }
 
-          .close-button {
-            height: 56px;
-            width: 56px;
-          }
+      .match-request {
+        display: flex;
+        padding: 8px;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        color: ${(props) => (props.awaitingMatch ? '#646464' : '#408140')};
+        background-color: ${(props) => (props.awaitingMatch ? '#f3f4f5' : '#ECF2EC')};
+
+        .message {
+          font-weight: 700;
+          line-height: 24px;
         }
       }
 
       .modal-content {
         display: grid;
-        grid-template-columns: 1fr 0.7fr;
-        height: 100%;
-        overflow-y: auto;
+        padding: 24px 36px 48px 36px;
+        grid-template-columns: 1fr 0.49fr;
+        gap: 24px;
 
         ${(props) => props.theme.breakpoints.down('laptop')} {
           grid-template-columns: 1fr;
         }
 
+        .avatar-side {
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.25);
+
+          ${(props) => props.theme.breakpoints.down('laptop')} {
+            order: 0;
+            height: 732px;
+          }
+        }
+
         .details-side {
           display: grid;
-          align-content: space-between;
-          row-gap: 32px;
+          padding: 24px;
+          align-content: flex-start;
+          row-gap: 24px;
+          background-color: #f3f4f5;
+          border-radius: 16px;
 
           ${(props) => props.theme.breakpoints.down('laptop')} {
             order: 1;
           }
-
-          padding: 32px 56px 32px 32px;
-
           .header {
             display: flex;
             justify-content: space-between;
+            gap: 24px;
 
             .header-left {
               display: flex;
-              column-gap: 8px;
+              column-gap: 16px;
               align-items: center;
-              .tenant-name {
-                font-family: At Gambit, serif;
+
+              .avatar {
+                width: 48px;
+                height: 48px;
               }
-              img {
-                width: 27px;
-                height: 27px;
-                padding: 7px;
+
+              .tenant-name-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                .tenant-name {
+                  font-weight: 900;
+                }
+
+                img {
+                  width: 24px;
+                  height: 24px;
+                }
               }
             }
 
             .match-rate {
-              color: #c4b1a3;
-              font-family: Roobert, serif;
+              color: #646464;
+              font-weight: 500;
+              line-height: 20px;
+            }
+
+            .percentage {
+              display: grid;
+              justify-items: flex-end;
+              color: #e5155a;
+              font-size: 18px;
+              font-weight: 900;
+            }
+          }
+
+          .about-section {
+            display: grid;
+            gap: 8px;
+
+            .title {
+              color: #0d2a38;
+              font-size: 18px;
+              font-weight: 900;
+            }
+
+            .description {
+              color: #0d2a38;
+              font-weight: 500;
+            }
+          }
+          .line {
+            background-color: #e7e7e7;
+            height: 1px;
+          }
+          .looking-for-section {
+            display: grid;
+            gap: 16px;
+
+            .looking-for {
+              color: #0d2a38;
               font-weight: 700;
             }
-          }
 
-          .sections {
-            display: grid;
-            row-gap: 40px;
-            margin-top: 32px;
-
-            .section {
+            .looking-for-content {
               display: grid;
-              row-gap: 16px;
-
-              .section-title {
-                color: #a7a7a7;
-              }
-
-              &.looking-for-section {
-                .looking-for-content {
-                  display: grid;
-                  grid-template-columns: auto auto;
-                  column-gap: 64px;
-                  row-gap: 8px;
-
-                  ${(props) => props.theme.breakpoints.down('laptop')} {
-                    grid-template-columns: auto;
-                  }
-
-                  .detail {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 8px 0;
-                    column-gap: 16px;
-                    border-bottom: 1px solid #f3f4f5;
-                    .detail-name {
-                      flex-shrink: 0;
-                    }
-
-                    .detail-value {
-                      font-weight: 700;
-                      text-align: end;
-                      flex-wrap: wrap;
-                    }
-                  }
-                }
-              }
-
-              &.social-networks-sections {
-                .social-networks-content {
-                  display: flex;
-                  column-gap: 16px;
-
-                  .icon {
-                    color: #184d6d;
-                    cursor: pointer;
-                  }
-                }
-              }
-            }
-          }
-
-          .social-networks-sections {
-            display: grid;
-            grid-template-rows: max-content max-content;
-            row-gap: 16px;
-
-            .social-media-accounts-text {
-              color: #a7a7a7;
-            }
-
-            .social-networks-links {
-              display: flex;
+              grid-template-columns: 1fr 1fr;
               column-gap: 16px;
 
-              .icon {
-                color: #184d6d;
-                padding: 8px;
-                cursor: pointer;
+              .details {
+                display: grid;
+                gap: 8px;
+
+                .detail {
+                  .detail-name {
+                    color: #a7a7a7;
+                    font-weight: 500;
+                  }
+                  .detail-value {
+                    color: #0d2a38;
+                    font-weight: 700;
+                  }
+                }
               }
             }
           }
-        }
+          .action-buttons {
+            display: grid;
+            grid-template-columns: min-content auto;
+            justify-items: flex-end;
+            gap: 16px;
+            box-sizing: border-box;
 
-        .avatar-side {
-          padding: 32px;
-          background-size: cover;
-          background-repeat: no-repeat;
-          background-position: center;
+            .match-button {
+              width: 100%;
+            }
 
-          ${(props) => props.theme.breakpoints.down('laptop')} {
-            order: 0;
-            height: 275px;
+            .message-button {
+              width: 100%;
+            }
+          }
+
+          .cancel-request {
+            width: 100%;
           }
         }
       }

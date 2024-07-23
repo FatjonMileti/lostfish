@@ -42,6 +42,9 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     withOffers: false,
     matchRate: 20
   });
+  const [awaitingMatch, setAwaitingMatch] = React.useState(false);
+  const [matched, setMatched] = React.useState(false);
+  const [matchId, setMatchId] = React.useState('');
   const navigate = useNavigate();
   const userStore = useUserStore();
 
@@ -178,7 +181,12 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     inView={true}
                     matched={propertyMatch.matched}
                     percentage={property.percentage}
-                    onViewPropertyClick={() => setPropertyToView(propertyMatch)}
+                    onViewPropertyClick={() => {
+                      setAwaitingMatch(propertyMatch.chosen && !propertyMatch.matched);
+                      setMatched(propertyMatch.matched);
+                      setMatchId(propertyMatch._id);
+                      setPropertyToView(propertyMatch);
+                    }}
                     image={`${property?.property_images?.[0]?.link || ''}`}
                     size='large'
                     property={property}
@@ -204,12 +212,18 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
       {propertyToView && (
         <ViewProperty
           open={true}
-          starProperty={() => {}}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
+          awaitingMatch={awaitingMatch}
+          matched={matched}
           propertyToView={propertyToView}
           disableLikeProperty
           dislikeProperty={() => dislikeProperty.mutate({ matchId: propertyToView?.matchId || '' })}
+          chatWith={() => {
+            newChatWith({
+              matchId
+            });
+          }}
         />
       )}
     </>

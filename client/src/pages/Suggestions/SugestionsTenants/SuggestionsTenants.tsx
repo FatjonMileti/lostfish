@@ -164,6 +164,7 @@ export const SuggestionsTenants = styled(({ className }: MatchesTenantsProps) =>
       {tenantToView && (
         <ViewProfile
           criteria={tenantToView.criteria}
+          matchRate={matchedProperty.percentage}
           closeViewProfile={() => setTenantToView(null)}
           likeTenant={() => {
             likeTenant.mutate({
