@@ -106,9 +106,9 @@ export const Label = styled(
 
       &.size-large {
         padding: 16px 32px;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 24px;
-        font-weight: 600;
+        font-weight: 700;
       }
     }
 
@@ -180,6 +180,8 @@ export const Label = styled(
       &.size-large {
         padding: 16px 32px;
         font-size: 16px;
+        font-weight: 700;
+        line-height: 24px;
       }
     }
 
