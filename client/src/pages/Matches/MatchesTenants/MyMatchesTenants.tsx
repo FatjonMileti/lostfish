@@ -1,9 +1,9 @@
 import { styled } from '@mui/system';
 import { HeaderLoggedIn } from '../../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
 import classNames from 'classnames';
-import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
+import { ShowGlobalLoading } from '../../../components';
 import React, { HTMLAttributes } from 'react';
-import { TenantCard } from '../../../components/TenantCard';
+import { TenantCard } from '../../../components';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { ViewProfile } from './ViewProfile';
 import { Footer } from '../../Home/Footer';
@@ -17,7 +17,7 @@ import { useMatchesCount } from '../useMatchesCount';
 import { useMatchedTenants } from './useMatchedTenants';
 import { TenantsReviewHeader } from './TenantsReviewHeader';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
-import { SuggestedTenantType } from '../matches.type';
+import { MatchedTenantType } from '../matches.type';
 import { useMutation } from '@tanstack/react-query';
 import { Modal } from '../../../components';
 import { CloseButton } from '../../../components';
@@ -37,9 +37,6 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     matchRate: 20
   });
 
-  const [matchRate, setMatchRate] = React.useState(0);
-  const [awaitingMatch, setAwaitingMatch] = React.useState(false);
-
   const matchedTenants = useMatchedTenants({
     params: { chosen: true, matchRate: filter.matchRate },
     options: {
@@ -47,7 +44,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     }
   });
   const [filterMatchesModal, setFilterMatchesModal] = React.useState(false);
-  const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
+  const [tenantToView, setTenantToView] = React.useState<MatchedTenantType | null>(null);
   const navigate = useNavigate();
   const userStore = useUserStore();
 
@@ -59,14 +56,12 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     params: { chosen: false, disliked: false }
   });
 
-  const newChatWith = async ({ matchId }: { matchId: string }) => {
-    console.log('executed new chat with');
-
+  const newChatWith = async (matchId: string) => {
     navigate(`/messages?matchId=${matchId}`);
   };
 
   const dislikeTenant = useMutation({
-    mutationFn: ({ matchId }: { matchId: string }) => {
+    mutationFn: (matchId: string) => {
       return axios(userStore.auth.access_token).delete(`/api/match/${matchId}`);
     },
     onSuccess: () => {
@@ -176,16 +171,12 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                     inView={true}
                     percentage={tenantMatch?.property.percentage}
                     onViewProfileClick={() => {
-                      setMatchRate(tenantMatch?.property.percentage);
-                      setAwaitingMatch(tenantMatch.chosen && !tenantMatch.matched);
                       setTenantToView(tenantMatch);
                     }}
                     matched={tenantMatch.matched}
                     awaitingMatch={tenantMatch.chosen && !tenantMatch.matched}
                     chatWith={() => {
-                      newChatWith({
-                        matchId: tenantMatch._id
-                      });
+                      newChatWith(tenantMatch._id);
                     }}
                   />
                 );
@@ -197,11 +188,9 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
       </div>
       {tenantToView && (
         <ViewProfile
-          criteria={tenantToView.criteria}
-          matchRate={matchRate}
-          awaitingMatch={awaitingMatch}
+          tenantMatch={tenantToView}
           closeViewProfile={() => setTenantToView(null)}
-          dislikeTenant={() => dislikeTenant.mutate({ matchId: tenantToView?.matchId || '' })}
+          dislikeTenant={() => dislikeTenant.mutate(tenantToView.matchId)}
           disableLikeTenant
         />
       )}

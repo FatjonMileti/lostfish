@@ -55,7 +55,7 @@ export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordPro
 
       setState(States.Default);
     }
-  }, [matchedTenants.isFetched, profileStore.signed_transaction_agreement]);
+  }, [matchedTenants.isFetched, suggestedTenants.isFetched, profileStore.signed_transaction_agreement]);
 
   return (
     <>

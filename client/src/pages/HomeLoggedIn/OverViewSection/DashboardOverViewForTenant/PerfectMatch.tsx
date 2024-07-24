@@ -142,7 +142,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
           open={true}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
-          propertyToView={propertyToView}
+          propertyMatch={propertyToView}
           dislikeProperty={() => dislikeProperty.mutate(propertyToView?.property._id)}
           likeProperty={() => likeProperty.mutate(propertyToView?.property._id)}
         />

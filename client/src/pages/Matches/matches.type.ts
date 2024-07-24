@@ -34,7 +34,7 @@ export interface MatchedPropertyType {
   chosen: boolean;
   matched: boolean;
   unread_messages: number;
-  matchId?: string;
+  matchId: string;
   _id: string;
 }
 
@@ -45,7 +45,7 @@ export interface MatchedTenantType {
   chosen: boolean;
   matched: boolean;
   unread_messages: number;
-  matchId?: string;
+  matchId: string;
   _id: string;
   tenant: {
     avatar: string;

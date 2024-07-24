@@ -169,7 +169,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
           open={true}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
-          propertyToView={propertyToView}
+          propertyMatch={propertyToView}
           dislikeProperty={() => dislikeProperty.mutate({ propertyId: propertyToView?.property._id })}
           likeProperty={() => likeProperty.mutate({ propertyId: propertyToView?.property._id })}
         />

@@ -17,22 +17,18 @@ import { Avatar, Label } from '../../../components';
 import verified from '../../MyAccount/images/verified.svg';
 
 interface ViewPropertyModalProps extends ModalProps {
-  propertyToView: SuggestedPropertyType;
+  propertyMatch: SuggestedPropertyType;
   likeProperty?: () => void;
   dislikeProperty?: () => void;
   disableLikeProperty?: boolean;
-  matched?: boolean;
   chatWith?: () => void;
-  awaitingMatch?: boolean;
 }
 
 export const ViewProperty = styled(
   ({
     className,
     closeModal,
-    propertyToView,
-    matched = false,
-    awaitingMatch = false,
+    propertyMatch,
     chatWith = () => {},
     likeProperty = () => {},
     dislikeProperty = () => {},
@@ -40,8 +36,13 @@ export const ViewProperty = styled(
     ...rest
   }: ViewPropertyModalProps) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const property = propertyToView.property;
+
+    const property = propertyMatch.property;
+
+    const awaitingMatch = propertyMatch.chosen && !propertyMatch.matched;
+
     const parsedProperty: any = {};
+
     parsedProperty.images = property?.property_images.map(({ link }) => link) || [];
     parsedProperty.avatar = !isNaN(parseInt(property.created_by.avatar || ''))
       ? avatars[parseInt(property.created_by.avatar || '')]?.image
@@ -65,10 +66,10 @@ export const ViewProperty = styled(
     };
     parsedProperty.houseType = property?.house_details?.house_type;
     parsedProperty.propertyType = property?.property_type;
-    parsedProperty.percentage = propertyToView?.property.percentage;
+    parsedProperty.percentage = propertyMatch?.property.percentage;
 
     return (
-      <Modal className={classNames('view-property-modal', className)} {...rest}>
+      <Modal className={classNames('view-property-modal', className, { awaitingMatch })} {...rest}>
         <div className='modal-header'>
           <Typography variant='body2' className='modal-title'>
             Match details
@@ -76,11 +77,19 @@ export const ViewProperty = styled(
           <CloseButton size='medium' onClick={closeModal} />
         </div>
         <div>
-          {(awaitingMatch || matched) && (
-            <div className='match-request'>
-              <Icon icon={awaitingMatch ? 'watch' : 'like'} size={24} />
+          {awaitingMatch && (
+            <div className='match-request awaiting'>
+              <Icon icon='watch' size={24} />
               <Typography variant='body5' className='message'>
-                {awaitingMatch ? 'Match request sent' : 'You are perfectly matched with this tenant'}
+                Match request sent
+              </Typography>
+            </div>
+          )}
+          {propertyMatch.matched && (
+            <div className='match-request accepted'>
+              <Icon icon={'like'} size={24} />
+              <Typography variant='body5' className='message'>
+                You are perfectly matched with this tenant
               </Typography>
             </div>
           )}
@@ -287,9 +296,9 @@ export const ViewProperty = styled(
               <div className='action-buttons'>
                 <Label variant='secondary' size='large' onClick={dislikeProperty}>
                   <Icon icon='dislike' size={24} />
-                  {matched ? 'Unmatch' : 'Dismiss'}
+                  {propertyMatch.matched ? 'Unmatch' : 'Dismiss'}
                 </Label>
-                {matched ? (
+                {propertyMatch.matched ? (
                   <Label variant='special' size='large' className='message-button' onClick={chatWith}>
                     <Icon icon='email' size={24} />
                     Message
@@ -359,12 +368,20 @@ export const ViewProperty = styled(
         justify-content: center;
         align-items: center;
         gap: 8px;
-        color: ${(props) => (props.awaitingMatch ? '#646464' : '#408140')};
-        background-color: ${(props) => (props.awaitingMatch ? '#f3f4f5' : '#ECF2EC')};
 
         .message {
           font-weight: 700;
           line-height: 24px;
+        }
+
+        &.awaiting {
+          color: #646464;
+          background-color: #f3f4f5;
+        }
+
+        &.accepted {
+          color: #408140;
+          background-color: #ecf2ec;
         }
       }
 

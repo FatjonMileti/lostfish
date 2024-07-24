@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 
 import { Avatar, Label, Modal } from '../../../components';
@@ -8,16 +8,14 @@ import { Icon } from '../../../components';
 import verified from '../../MyAccount/images/verified.svg';
 import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { CloseButton } from '../../../components';
+import { MatchedTenantType } from '../matches.type.ts';
 
 interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
   closeViewProfile: () => void;
-  criteria: any;
-  matchRate?: number;
-  awaitingMatch?: boolean;
-  matched?: boolean;
   likeTenant?: () => void;
   dislikeTenant?: () => void;
   disableLikeTenant?: boolean;
+  tenantMatch: MatchedTenantType;
 }
 
 export const ViewProfile = styled(
@@ -27,10 +25,7 @@ export const ViewProfile = styled(
     likeTenant = () => {},
     dislikeTenant = () => {},
     disableLikeTenant = false,
-    criteria,
-    matchRate,
-    awaitingMatch = false,
-    matched = false
+    tenantMatch
   }: ViewProfileProps) => {
     const {
       propertyType,
@@ -45,7 +40,9 @@ export const ViewProfile = styled(
       firstName,
       lastName,
       avatar
-    } = criteria;
+    } = tenantMatch.criteria;
+
+    const awaitingMatch = tenantMatch.chosen && !tenantMatch.matched;
 
     return (
       <Modal className={`view-profile-modal ${className}`} open={true} onBackdropClick={closeViewProfile}>
@@ -56,11 +53,20 @@ export const ViewProfile = styled(
           <CloseButton size='medium' onClick={closeViewProfile} />
         </div>
         <div>
-          {(awaitingMatch || matched) && (
-            <div className='match-request'>
-              <Icon icon={awaitingMatch ? 'watch' : 'like'} size={24} />
+          {awaitingMatch && (
+            <div className='match-request awaiting'>
+              <Icon icon='watch' size={24} />
               <Typography variant='body5' className='message'>
-                {awaitingMatch ? 'Match request sent' : 'You are perfectly matched with this tenant'}
+                Match request sent
+              </Typography>
+            </div>
+          )}
+
+          {tenantMatch.matched && (
+            <div className='match-request accepted'>
+              <Icon icon='like' size={24} />
+              <Typography variant='body5' className='message'>
+                You are perfectly matched with this tenant
               </Typography>
             </div>
           )}
@@ -85,7 +91,7 @@ export const ViewProfile = styled(
                   Match rate
                 </Typography>
                 <Typography variant='body4' className='percentage'>
-                  {matchRate}%
+                  {tenantMatch?.property.percentage}%
                 </Typography>
               </div>
             </div>
@@ -196,9 +202,9 @@ export const ViewProfile = styled(
               <div className='action-buttons'>
                 <Label variant='secondary' size='large' onClick={dislikeTenant}>
                   <Icon icon='dislike' size={24} />
-                  {matched ? 'Unmatch' : 'Dismiss'}
+                  {tenantMatch.matched ? 'Unmatch' : 'Dismiss'}
                 </Label>
-                {matched ? (
+                {tenantMatch.matched ? (
                   <Label variant='special' size='large' className='message-button' onClick={closeViewProfile}>
                     <Icon icon='email' size={24} />
                     Message
@@ -266,12 +272,20 @@ export const ViewProfile = styled(
         justify-content: center;
         align-items: center;
         gap: 8px;
-        color: ${(props) => (props.awaitingMatch ? '#646464' : '#408140')};
-        background-color: ${(props) => (props.awaitingMatch ? '#f3f4f5' : '#ECF2EC')};
 
         .message {
           font-weight: 700;
           line-height: 24px;
+        }
+
+        &.awaiting {
+          color: #646464;
+          background-color: #f3f4f5;
+        }
+
+        &.accepted {
+          color: #408140;
+          background-color: #ecf2ec;
         }
       }
 

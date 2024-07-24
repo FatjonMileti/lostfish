@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { Icon, Label, Typography } from '../../../../components';
 
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { MatchedTenantType } from '../../../Matches/matches.type.ts';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { ViewProfile } from '../../../Matches/MatchesTenants/ViewProfile.tsx';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedTenantType;
@@ -15,39 +16,58 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
   const navigate = useNavigate();
   const profileStore = useProfileStore();
 
+  const [perfectMatchToView, setPerfectMatchToView] = React.useState<MatchedTenantType | null>(null);
+
   const onMessageClick = () => {
     navigate(`/messages?matchId=${match._id}`);
   };
 
   return (
-    <div className={classNames('perfect-match', className)}>
-      <div className='left-content'>
-        <div className='texts-wrapper'>
-          <Typography variant='body1'>Good news! You got a perfect match</Typography>
-          <Typography variant='body4'>
-            Hey {profileStore.first_name}, you are now perfectly matched with{' '}
-            <b>{`${match.criteria.first_name}'s`} property</b>. Reach out and drop a message to the landlord
-            and when ready, make an offer and close the deal.
-          </Typography>
+    <>
+      <div className={classNames('perfect-match', className)}>
+        <div className='left-content'>
+          <div className='texts-wrapper'>
+            <Typography variant='body1'>Good news! You got a perfect match</Typography>
+            <Typography variant='body4'>
+              Hey {profileStore.first_name}, you are now perfectly matched with{' '}
+              <b>{`${match.tenant.first_name}'s`} property</b>. Reach out and drop a message to the landlord
+              and when ready, make an offer and close the deal.
+            </Typography>
+          </div>
+          <div className='action-buttons'>
+            {match.matched && (
+              <Label variant='secondary' inverted size='large' onClick={onMessageClick}>
+                <Icon icon='email' />
+                Message
+              </Label>
+            )}
+            {!match.matched && (
+              <Label variant='primary' inverted size='large' onClick={() => setPerfectMatchToView(match)}>
+                Property details
+              </Label>
+            )}
+          </div>
         </div>
-        <div className='action-buttons'>
-          <Label variant='secondary' inverted size='large' onClick={onMessageClick}>
-            <Icon icon='email' />
-            Message
-          </Label>
+        <div
+          className='right-content'
+          style={{ backgroundImage: `url(' ${getAvatarFormIndex(match.tenant.avatar)} ')` }}>
+          <div className='tenant-details-wrapper'>
+            <Typography
+              className='tenant-name'
+              variant='body3'>{`${match.tenant.first_name} ${match.tenant.last_name}`}</Typography>
+            <Typography variant='body5'></Typography>
+          </div>
         </div>
       </div>
-      <div
-        className='right-content'
-        style={{ backgroundImage: `url(' ${getAvatarFormIndex(match.tenant.avatar)} ')` }}>
-        <div className='tenant-details-wrapper'>
-          <Typography
-            className='tenant-name'
-            variant='body3'>{`${match.tenant.first_name} ${match.tenant.last_name}`}</Typography>
-          <Typography variant='body5'></Typography>
-        </div>
-      </div>
-    </div>
+      {perfectMatchToView && (
+        <ViewProfile
+          tenantMatch={perfectMatchToView}
+          closeViewProfile={() => setPerfectMatchToView(null)}
+          // dislikeTenant={() => dislikeTenant.mutate(tenantToView.matchId)}
+          disableLikeTenant
+        />
+      )}
+    </>
   );
 })`
   &.perfect-match {

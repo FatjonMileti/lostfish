@@ -22,7 +22,7 @@ import { useMatchedProperties } from './useMatchedProperties';
 import { useMatchesCount } from '../useMatchesCount';
 import { PropertiesReviewHeader } from './PropertiesReviewHeader';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
-import { SuggestedPropertyType } from '../matches.type';
+import { MatchedPropertyType } from '../matches.type';
 import { CloseButton } from '../../../components';
 import { Radio } from '../../../components';
 import { Select } from '../../../components/Select/Select';
@@ -32,7 +32,7 @@ import { Modal } from '../../../components';
 interface MyMatchesProperties extends HTMLAttributes<HTMLDivElement> {}
 
 export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) => {
-  const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
+  const [propertyToView, setPropertyToView] = React.useState<MatchedPropertyType | null>(null);
   const [filterMatchesModal, setFilterMatchesModal] = React.useState(false);
   const [filter, setFilter] = React.useState({
     withOffers: false,
@@ -42,9 +42,6 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     withOffers: false,
     matchRate: 20
   });
-  const [awaitingMatch, setAwaitingMatch] = React.useState(false);
-  const [matched, setMatched] = React.useState(false);
-  const [matchId, setMatchId] = React.useState('');
   const navigate = useNavigate();
   const userStore = useUserStore();
 
@@ -65,9 +62,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
     params: { chosen: true, disliked: false }
   });
 
-  const newChatWith = async ({ matchId }: { matchId: string }) => {
-    console.log('executed new chat with');
-
+  const newChatWith = async (matchId: string) => {
     navigate(`/messages?matchId=${matchId}`);
   };
 
@@ -182,9 +177,6 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     matched={propertyMatch.matched}
                     percentage={property.percentage}
                     onViewPropertyClick={() => {
-                      setAwaitingMatch(propertyMatch.chosen && !propertyMatch.matched);
-                      setMatched(propertyMatch.matched);
-                      setMatchId(propertyMatch._id);
                       setPropertyToView(propertyMatch);
                     }}
                     image={`${property?.property_images?.[0]?.link || ''}`}
@@ -192,13 +184,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
                     property={property}
                     awaitingMatch={propertyMatch.chosen && !propertyMatch.matched}
                     chatWith={() => {
-                      newChatWith({
-                        matchId: propertyMatch._id
-                      });
-                      // chatWith({
-                      //   userId: suggestion.property.created_by._id,
-                      //   propertyId: suggestion.property._id
-                      // });
+                      newChatWith(propertyMatch._id);
                     }}
                   />
                 );
@@ -214,15 +200,11 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           open={true}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
-          awaitingMatch={awaitingMatch}
-          matched={matched}
-          propertyToView={propertyToView}
+          propertyMatch={propertyToView}
           disableLikeProperty
           dislikeProperty={() => dislikeProperty.mutate({ matchId: propertyToView?.matchId || '' })}
           chatWith={() => {
-            newChatWith({
-              matchId
-            });
+            newChatWith(propertyToView.matchId);
           }}
         />
       )}
