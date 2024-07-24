@@ -53,7 +53,7 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
         <div className='content-wrapper'>
           <div className='section-header'>
             <div className='header-left-content'>
-              <Typography>My matches</Typography>
+              <Typography className='page-name'>My matches</Typography>
             </div>
 
             <div className='tabs-wrapper'>
@@ -131,7 +131,6 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
           display: grid;
           grid-template-columns: 1fr max-content 1fr;
           padding: 24px 36px;
-
           align-items: center;
           width: 100%;
           box-sizing: border-box;
@@ -146,7 +145,12 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
             display: flex;
             justify-content: flex-end;
           }
+
           .header-left-content {
+            .page-name {
+              font-weight: 600;
+              line-height: 56px;
+            }
           }
         }
       }

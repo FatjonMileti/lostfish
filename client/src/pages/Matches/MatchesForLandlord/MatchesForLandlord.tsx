@@ -42,7 +42,7 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
         <div className='content-wrapper'>
           <div className='section-header'>
             <div className='header-left-content'>
-              <Typography>My matches</Typography>
+              <Typography className='page-name'>My matches</Typography>
             </div>
 
             <div className='tabs-wrapper'>
@@ -60,10 +60,14 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
               />
             </div>
 
-            <Label variant='special' size='large' className='filters-button'>
-              <Icon icon='filter' />
-              Match options ({suggestedTenants.data?.length})
-            </Label>
+            <div className='header-right-content'>
+              {activeTab === ActiveTab.Potential && (
+                <Label variant='special' size='large' className='filters-button'>
+                  <Icon icon='filter' />
+                  Match options ({suggestedTenants.data?.length})
+                </Label>
+              )}
+            </div>
           </div>
           {activeTab === ActiveTab.Potential && <PotentialMatches />}
           {activeTab === ActiveTab.Perfect && <PerfectMatches />}
@@ -96,9 +100,9 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
         box-sizing: border-box;
 
         .section-header {
-          display: flex;
+          display: grid;
+          grid-template-columns: 1fr max-content 1fr;
           padding: 24px 36px;
-          justify-content: space-between;
           align-items: center;
           width: 100%;
           box-sizing: border-box;
@@ -107,6 +111,18 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
             display: flex;
             align-items: flex-start;
             gap: 8px;
+          }
+
+          .header-right-content {
+            display: flex;
+            justify-content: flex-end;
+          }
+
+          .header-left-content {
+            .page-name {
+              font-weight: 600;
+              line-height: 56px;
+            }
           }
         }
       }
