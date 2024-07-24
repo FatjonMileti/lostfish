@@ -68,6 +68,7 @@ export const Carousel = styled(({ className, indexStore, images }: CarouselProps
 
     display: grid;
     justify-items: center;
+    border-radius: 16px;
     box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.25);
 
     .slider-footer {

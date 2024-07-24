@@ -553,6 +553,7 @@ export const ViewProperty = styled(
               color: #184d6d;
               font-weight: 900;
               line-height: 48px;
+              font-family: Roobert, serif;
             }
 
             .section-details {
