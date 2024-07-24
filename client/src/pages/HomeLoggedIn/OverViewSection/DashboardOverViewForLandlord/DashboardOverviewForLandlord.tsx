@@ -1,71 +1,72 @@
-import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
-import classNames from 'classnames';
-import { Label, Typography } from '../../../../components';
-import manTakingSelfie from '../DashboardOverViewForTenant/start-matching-image.png';
+import { DefaultState } from '../DefaultState.tsx';
 
-interface DashboardOverviewForLandlordProps extends HTMLAttributes<HTMLDivElement> {}
-export const DashboardOverviewForLandlord = styled(({ className }: DashboardOverviewForLandlordProps) => {
+import React, { useState } from 'react';
+
+import { useProfileStore } from '../../../../globalState/profile.tsx';
+
+import { States } from '../DashboardOverview.tsx';
+import { Agreement } from '../Agreement.tsx';
+import { MatchesAwaiting } from './MatchesAwaiting.tsx';
+import { PerfectMatch } from './PerfectMatch.tsx';
+import { useMatchedTenants } from '../../../Matches/MatchesTenants/useMatchedTenants.tsx';
+import { MultiplePerfectMatches } from './MultiplePerfectMatches.tsx';
+import { useSuggestedTenants } from '../../../Suggestions/SugestionsTenants/useSuggestedTenants.tsx';
+
+interface DashboardOverviewForLandlordProps {}
+export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordProps) => {
+  const [state, setState] = useState<States>(States.MatchesAwaiting);
+
+  const profileStore = useProfileStore();
+
+  const matchedTenants = useMatchedTenants({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
+  const suggestedTenants = useSuggestedTenants({
+    params: { chosen: false, disliked: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
+  React.useEffect(() => {
+    if (matchedTenants.isFetched && suggestedTenants.isFetched) {
+      if (!profileStore.signed_transaction_agreement) {
+        setState(States.Agreement);
+        return;
+      }
+
+      if (matchedTenants.data?.length > 0) {
+        if (matchedTenants.data?.length === 1) {
+          setState(States.PerfectMatch);
+        } else {
+          setState(States.MultiplePerfectMatches);
+        }
+        return;
+      }
+
+      if (suggestedTenants.data.length > 0) {
+        setState(States.MatchesAwaiting);
+        return;
+      }
+
+      setState(States.Default);
+    }
+  }, [matchedTenants.isFetched, profileStore.signed_transaction_agreement]);
+
   return (
-    <div className={classNames('dashboard-overview-for-landlord', className)}>
-      <div className='left-content'>
-        <div className='texts-wrapper'>
-          <Typography variant='body1'>Welcome to Lostfish</Typography>
-          <Typography variant='body4'>
-            You’re in the best place to look for tenants or properties that match perfectly with each other.
-            Start a matching session and set your preferences and let the AI do the rest. We use algorithms to
-            ensure that all users find exactly what they want, skipping unnecessary conversations with agents
-            and making most of everyone’s time.
-          </Typography>
-        </div>
-        <Label className='start-matching-button' variant='special' size='large'>
-          Start matching
-        </Label>
-      </div>
-      <div className='right-content'></div>
-    </div>
+    <>
+      {state === States.Default && <DefaultState />}
+      {state === States.MatchesAwaiting && <MatchesAwaiting />}
+      {state === States.PerfectMatch && <PerfectMatch match={matchedTenants.data[0]} />}
+      {state === States.MultiplePerfectMatches && (
+        <MultiplePerfectMatches count={matchedTenants.data.length} match={matchedTenants.data[0]} />
+      )}
+      {state === States.Agreement && <Agreement />}
+      {/*{state === States.FinalDocs && <FinalDocs match={matchedProperties.data[0]} />}*/}
+    </>
   );
-})`
-  &.dashboard-overview-for-landlord {
-    display: flex;
-    width: 904px;
-    align-items: flex-start;
-    gap: 24px;
-    flex-shrink: 0;
-
-    border-radius: 16px;
-    background: #fff;
-    /* Shadow L */
-    box-shadow: 0px 4px 32px 0px rgba(13, 42, 56, 0.1);
-
-    .left-content {
-      display: flex;
-      padding: 48px;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 24px;
-      flex: 1 0 0;
-      align-self: stretch;
-
-      .start-matching-button {
-        width: 100%;
-      }
-
-      .texts-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-        align-self: stretch;
-      }
-    }
-
-    .right-content {
-      width: 440px;
-      height: 440px;
-      flex-shrink: 0;
-      background-image: url('${manTakingSelfie}');
-    }
-  }
-`;
+};

@@ -1,21 +1,85 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { Footer } from '../../Home/Footer';
-
 import { HeaderLoggedIn } from '../../PagesComponents/HeaderLoggedIn/HeaderLoggedIn.tsx';
-import { SuggestionsProperties } from '../../Suggestions/SuggestionsProperties/SuggestionsProperties.tsx';
+import { PotentialMatches } from './PotentialMatches.tsx';
+import { Icon, Label, SegmentControl, Typography } from '../../../components';
+import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria.tsx';
+import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
+import { PerfectMatches } from './PerfectMatches.tsx';
+import { useMatchedProperties } from '../MatchesProperties/useMatchedProperties.tsx';
+
+enum ActiveTab {
+  Perfect = 'Perfect',
+  Potential = 'Potential'
+}
 
 interface MatchesForTenantProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) => {
+  const [activeTab, setActiveTab] = React.useState(ActiveTab.Potential);
+
+  const globalSetCriteria = useGlobalSetCriteria();
+
+  const suggestedProperties = useSuggestedProperties({
+    params: { chosen: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
+  const matchedProperties = useMatchedProperties({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
+  const onMatchOptionsClick = () => {
+    globalSetCriteria.openSetCriteria({
+      afterSetCriteria: () => {
+        suggestedProperties.refetch();
+      }
+    });
+  };
   return (
     <div className={classNames('matches-for-tenant', className)}>
       <div className='header-and-content-wrapper'>
         <HeaderLoggedIn />
 
-        <SuggestionsProperties />
+        <div className='content-wrapper'>
+          <div className='section-header'>
+            <div className='header-left-content'>
+              <Typography>My matches</Typography>
+            </div>
+
+            <div className='tabs-wrapper'>
+              <SegmentControl
+                label='Potential matches'
+                active={activeTab === ActiveTab.Potential}
+                onClick={() => setActiveTab(ActiveTab.Potential)}
+                counter={
+                  (suggestedProperties.data?.length > 0 && suggestedProperties.data?.length) || undefined
+                }
+              />
+              <SegmentControl
+                label='Perfect matches'
+                active={activeTab === ActiveTab.Perfect}
+                onClick={() => setActiveTab(ActiveTab.Perfect)}
+                counter={(matchedProperties.data?.length > 0 && matchedProperties.data?.length) || undefined}
+              />
+            </div>
+
+            <Label variant='special' size='large' className='filters-button' onClick={onMatchOptionsClick}>
+              <Icon icon='filter' />
+              Match options ({suggestedProperties.data?.length})
+            </Label>
+          </div>
+          {activeTab === ActiveTab.Potential && <PotentialMatches />}
+          {activeTab === ActiveTab.Perfect && <PerfectMatches />}
+        </div>
       </div>
       <Footer />
     </div>
@@ -36,6 +100,27 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
 
       .header-logged-in {
         border: 1px solid #eee0d3;
+      }
+
+      .content-wrapper {
+        display: grid;
+        grid-template-rows: min-content auto;
+        box-sizing: border-box;
+
+        .section-header {
+          display: flex;
+          padding: 24px 36px;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          box-sizing: border-box;
+
+          .tabs-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+          }
+        }
       }
     }
   }

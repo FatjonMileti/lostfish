@@ -17,7 +17,7 @@ import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 
 import { ViewProperty } from './ViewProperty';
-import { PropertyCard } from '../../../components/PropertyCard';
+import { PropertyCard } from '../../../components';
 import { useMatchedProperties } from './useMatchedProperties';
 import { useMatchesCount } from '../useMatchesCount';
 import { PropertiesReviewHeader } from './PropertiesReviewHeader';

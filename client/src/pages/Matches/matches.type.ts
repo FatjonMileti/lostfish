@@ -47,4 +47,10 @@ export interface MatchedTenantType {
   unread_messages: number;
   matchId?: string;
   _id: string;
+  tenant: {
+    avatar: string;
+    first_name: string;
+    last_name: string;
+    _id: string;
+  };
 }

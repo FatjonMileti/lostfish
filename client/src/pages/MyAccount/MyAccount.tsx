@@ -47,9 +47,9 @@ export const submenus: SubMenuItem[] = [
   { icon: 'security', text: 'Privacy and sharing', link: '/privacy-and-sharing' },
 
   // { icon: 'layer', text: 'Dashboard', link: '' },
-  { icon: 'building', text: 'My Properties', link: '/properties' }
+  { icon: 'building', text: 'My Properties', link: '/properties' },
   // { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-  // { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' },
+  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' }
   // { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
   // { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
   // { icon: 'user', text: 'Solicitors', link: '/solicitors' }

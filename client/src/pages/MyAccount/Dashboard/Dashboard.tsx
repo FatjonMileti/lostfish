@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
 
 import { Typography } from '../../../components/Typography';
@@ -6,7 +6,6 @@ import { Button } from '../../../components/Button';
 import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
 import { useAgreement } from '../useAgreement';
 import hand from '../images/hand.png';
-import propertyImage from '../images/property.png';
 import { DashboardYourProperties } from './Dashboard.YourProperties';
 import { useProfileStore } from '../../../globalState/profile';
 

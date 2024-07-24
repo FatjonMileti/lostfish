@@ -5,7 +5,8 @@ export const mapTenant = ({
   percentage,
   matchId,
   property,
-  unread_messages
+  unread_messages,
+  tenant
 }: any) => ({
   id: criteria._id,
   criteria: mapCriteria(criteria),
@@ -15,7 +16,8 @@ export const mapTenant = ({
   percentage,
   matchId,
   unread_messages,
-  _id: matchId
+  _id: matchId,
+  tenant
 });
 
 export const mapCriteria = (criteria: any) => {

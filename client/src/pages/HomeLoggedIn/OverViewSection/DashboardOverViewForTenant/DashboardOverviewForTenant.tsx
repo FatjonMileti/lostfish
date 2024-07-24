@@ -1,13 +1,14 @@
-import { DefaultState } from './DefaultState.tsx';
+import { DefaultState } from '../DefaultState.tsx';
 import { MatchesAwaiting } from './MatchesAwaiting.tsx';
 import { States } from '../DashboardOverview.tsx';
 import { PerfectMatch } from './PerfectMatch.tsx';
 import { useMatchedProperties } from '../../../Matches/MatchesProperties/useMatchedProperties.tsx';
 import React, { useState } from 'react';
 import { MultiplePerfectMatches } from './MultiplePerfectMatches.tsx';
-import { Agreement } from './Agreement.tsx';
+import { Agreement } from '../Agreement.tsx';
 import { FinalDocs } from './FinalDocs.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { useSuggestedProperties } from '../../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
 
 interface DashboardOverviewForTenantProps {}
 export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) => {
@@ -22,8 +23,15 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
     }
   });
 
+  const suggestedProperties = useSuggestedProperties({
+    params: { disliked: false, chosen: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
   React.useEffect(() => {
-    if (matchedProperties.isFetched) {
+    if (matchedProperties.isFetched && suggestedProperties.isFetched) {
       if (!profileStore.signed_transaction_agreement) {
         setState(States.Agreement);
         return;
@@ -35,6 +43,11 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
         } else {
           setState(States.MultiplePerfectMatches);
         }
+        return;
+      }
+
+      if (suggestedProperties.data.length > 0) {
+        setState(States.MatchesAwaiting);
         return;
       }
 

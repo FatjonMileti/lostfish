@@ -2,14 +2,14 @@ import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-import { Label, ShowGlobalLoading, Typography } from '../../../../components';
-import agreementImage from './agreement-image.png';
-import { useProfileStore } from '../../../../globalState/profile.tsx';
-import axiosWithToken from '../../../../utils/axios.ts';
-import axios from '../../../../utils/axios.ts';
-import { useUserStore } from '../../../../globalState/user.tsx';
-import config from '../../../../config.ts';
-import { Role } from '../../../../enums.ts';
+import { Label, ShowGlobalLoading, Typography } from '../../../components';
+import agreementImage from './DashboardOverViewForTenant/agreement-image.png';
+import { useProfileStore } from '../../../globalState/profile.tsx';
+import axiosWithToken from '../../../utils/axios.ts';
+import axios from '../../../utils/axios.ts';
+import { useUserStore } from '../../../globalState/user.tsx';
+import config from '../../../config.ts';
+import { Role } from '../../../enums.ts';
 import { useMutation } from '@tanstack/react-query';
 
 interface AgreementProps extends HTMLAttributes<HTMLDivElement> {}

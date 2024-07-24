@@ -1,11 +1,18 @@
 import { styled } from '@mui/system';
 import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { Label, Typography } from '../../../../components';
-import manTakingSelfie from './start-matching-image.png';
+import { useNavigate } from 'react-router-dom';
+
+import { Label, Typography } from '../../../components';
+import manTakingSelfie from './DashboardOverViewForTenant/start-matching-image.png';
 
 interface DefaultStateProps extends HTMLAttributes<HTMLDivElement> {}
 export const DefaultState = styled(({ className }: DefaultStateProps) => {
+  const navigate = useNavigate();
+
+  const onStartMatchingClick = () => {
+    navigate('/matches');
+  };
   return (
     <div className={classNames('default-state', className)}>
       <div className='left-content'>
@@ -18,7 +25,11 @@ export const DefaultState = styled(({ className }: DefaultStateProps) => {
             and making most of everyone’s time.
           </Typography>
         </div>
-        <Label className='start-matching-button' variant='special' size='large'>
+        <Label
+          className='start-matching-button'
+          variant='special'
+          size='large'
+          onClick={onStartMatchingClick}>
           Start matching
         </Label>
       </div>

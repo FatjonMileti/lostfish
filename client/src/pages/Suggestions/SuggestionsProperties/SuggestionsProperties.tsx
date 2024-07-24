@@ -42,7 +42,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
     }
   });
 
-  console.log('suggestedProperties: ', suggestedProperties);
   const criteriaStore = useCriteriaStore();
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
 
@@ -218,7 +217,6 @@ export const SuggestionsProperties = styled(({ className }: SuggestionsPropertie
       {propertyToView && (
         <ViewProperty
           open={true}
-          starProperty={() => {}}
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyToView={propertyToView}
