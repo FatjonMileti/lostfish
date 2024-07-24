@@ -53,7 +53,7 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
 
       setState(States.Default);
     }
-  }, [matchedProperties.isFetched, profileStore.signed_transaction_agreement]);
+  }, [matchedProperties.isFetched, suggestedProperties.isFetched, profileStore.signed_transaction_agreement]);
 
   return (
     <>

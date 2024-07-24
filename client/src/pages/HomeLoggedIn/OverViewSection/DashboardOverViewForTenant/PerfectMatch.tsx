@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import { HTMLAttributes } from 'react';
+import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { Avatar, Icon, Label, Typography } from '../../../../components';
 
@@ -7,6 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { MatchedPropertyType } from '../../../Matches/matches.type.ts';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { ViewProperty } from '../../../Matches/MatchesProperties/ViewProperty.tsx';
+import { useMutation } from '@tanstack/react-query';
+import axios from '../../../../utils/axios.ts';
+import { useUserStore } from '../../../../globalState/user.tsx';
+import { useMatchedProperties } from '../../../Matches/MatchesProperties/useMatchedProperties.tsx';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedPropertyType;
@@ -14,6 +19,9 @@ interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
 export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
+  const userStore = useUserStore();
+
+  const [propertyToView, setPropertyToView] = React.useState<MatchedPropertyType | null>(null);
 
   const onMessageClick = () => {
     navigate(`/messages?matchId=${match._id}`);
@@ -23,66 +31,123 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
     navigate(`/messages?matchId=${match._id}`);
   };
 
-  return (
-    <div className={classNames('perfect-match', className)}>
-      <div className='left-content'>
-        <div className='texts-wrapper'>
-          <Typography variant='body1'>Good news! You got a perfect match</Typography>
-          <Typography variant='body4'>
-            Hey {profileStore.first_name}, you are now perfectly matched with{' '}
-            <b>{`${match.landlord.first_name}'s`} property</b>. Reach out and drop a message to the landlord
-            and when ready, make an offer and close the deal.
-          </Typography>
-        </div>
-        <div className='action-buttons'>
-          <Label variant='primary' inverted size='large' onClick={onMakeAnOfferClick}>
-            Make an offer
-          </Label>
-          <Label variant='secondary' inverted size='large' onClick={onMessageClick}>
-            <Icon icon='email' />
-            Message
-          </Label>
-        </div>
-      </div>
-      <div
-        className='right-content'
-        style={{ backgroundImage: `url(' ${match.property.property_images?.[0]?.link} ')` }}>
-        <div className='slide-header'>
-          <div className='header-left-content'>
-            <Avatar image={getAvatarFormIndex(match.landlord.avatar)} />
-            <div>
-              <Typography variant='body5'>{`${match.landlord.first_name} ${match.landlord.last_name}`}</Typography>
-            </div>
-          </div>
-        </div>
+  const matchedProperties = useMatchedProperties({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
 
-        <div className='slide-footer'>
-          <Typography className='property-name'>{match.property.title}</Typography>
-          <div className='property-details'>
-            <div className='detail'>
-              <Icon icon='location' />
-              <Typography variant='body5'>{match.property.area_of_interest}</Typography>
+  const dislikeProperty = useMutation({
+    mutationFn: (propertyId: string) => {
+      return axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
+        property: propertyId
+      });
+    },
+    onSuccess: () => {
+      if (propertyToView) {
+        setPropertyToView(null);
+      }
+      matchedProperties.refetch();
+    }
+  });
+
+  const likeProperty = useMutation({
+    mutationFn: (propertyId: string) => {
+      return axios(userStore.auth.access_token).post('/api/match/properties', {
+        property: propertyId
+      });
+    },
+    onSuccess: () => {
+      if (propertyToView) {
+        setPropertyToView(null);
+      }
+      matchedProperties.refetch();
+    }
+  });
+
+  return (
+    <>
+      <div className={classNames('perfect-match', className)}>
+        <div className='left-content'>
+          <div className='texts-wrapper'>
+            <Typography variant='body1'>Good news! You got a perfect match</Typography>
+            <Typography variant='body4'>
+              Hey {profileStore.first_name}, you are now perfectly matched with{' '}
+              <b>{`${match.landlord.first_name}'s`} property</b>. Reach out and drop a message to the landlord
+              and when ready, make an offer and close the deal.
+            </Typography>
+          </div>
+
+          <div className='action-buttons'>
+            {match.matched && (
+              <>
+                <Label variant='primary' inverted size='large' onClick={onMakeAnOfferClick}>
+                  Make an offer
+                </Label>
+                <Label variant='secondary' inverted size='large' onClick={onMessageClick}>
+                  <Icon icon='email' />
+                  Message
+                </Label>
+              </>
+            )}
+            {!match.matched && (
+              <Label variant='primary' inverted size='large' onClick={() => setPropertyToView(match)}>
+                Property details
+              </Label>
+            )}
+          </div>
+        </div>
+        <div
+          className='right-content'
+          style={{ backgroundImage: `url(' ${match.property.property_images?.[0]?.link} ')` }}>
+          <div className='slide-header'>
+            <div className='header-left-content'>
+              <Avatar image={getAvatarFormIndex(match.landlord.avatar)} />
+              <div>
+                <Typography variant='body5'>{`${match.landlord.first_name} ${match.landlord.last_name}`}</Typography>
+              </div>
             </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Typography variant='body5'>
-                £{match.property.budget.min_budget} - £{match.property.budget.max_budget}PCM
-              </Typography>
-            </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Icon icon='double-bed' />
-              <Typography variant='body5'>{match.property.room_details.numberOfBedrooms}</Typography>
-            </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Icon icon='bathtub' />
-              <Typography variant='body5'>{match.property.room_details.number_of_bathrooms}</Typography>
+          </div>
+
+          <div className='slide-footer'>
+            <Typography className='property-name'>{match.property.title}</Typography>
+            <div className='property-details'>
+              <div className='detail'>
+                <Icon icon='location' />
+                <Typography variant='body5'>{match.property.area_of_interest}</Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Typography variant='body5'>
+                  £{match.property.budget.min_budget} - £{match.property.budget.max_budget}PCM
+                </Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Icon icon='double-bed' />
+                <Typography variant='body5'>{match.property.room_details.numberOfBedrooms}</Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Icon icon='bathtub' />
+                <Typography variant='body5'>{match.property.room_details.number_of_bathrooms}</Typography>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {propertyToView && (
+        <ViewProperty
+          open={true}
+          closeModal={() => setPropertyToView(null)}
+          onBackdropClick={() => setPropertyToView(null)}
+          propertyToView={propertyToView}
+          dislikeProperty={() => dislikeProperty.mutate(propertyToView?.property._id)}
+          likeProperty={() => likeProperty.mutate(propertyToView?.property._id)}
+        />
+      )}
+    </>
   );
 })`
   &.perfect-match {

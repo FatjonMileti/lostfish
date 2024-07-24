@@ -14,7 +14,7 @@ import { useSuggestedTenants } from '../../../Suggestions/SugestionsTenants/useS
 
 interface DashboardOverviewForLandlordProps {}
 export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordProps) => {
-  const [state, setState] = useState<States>(States.MatchesAwaiting);
+  const [state, setState] = useState<States>(States.Default);
 
   const profileStore = useProfileStore();
 

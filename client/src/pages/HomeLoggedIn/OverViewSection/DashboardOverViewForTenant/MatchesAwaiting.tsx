@@ -22,8 +22,9 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
         <div className='texts-wrapper'>
           <Typography variant='body1'>Matches are waiting</Typography>
           <Typography variant='body4'>
-            Hey John, we’ve found <b>153 potential matches</b> for you that match your requirements. Out of
-            those, our algorithms indicate that there could be <b>24 perfect matches for you.</b>
+            Hey John, we’ve found <b>{suggestedProperties.data?.length} potential matches</b> for you that
+            match your requirements. Out of those, our algorithms indicate that there some of them could be{' '}
+            <b>perfect matches for you.</b>
           </Typography>
           <Typography variant='body4'>
             Click the button below to review them or find them in the Matches panel.
