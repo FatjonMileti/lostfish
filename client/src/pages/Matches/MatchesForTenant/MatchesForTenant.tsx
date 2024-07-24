@@ -44,6 +44,7 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
       }
     });
   };
+
   return (
     <div className={classNames('matches-for-tenant', className)}>
       <div className='header-and-content-wrapper'>
@@ -56,29 +57,48 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
             </div>
 
             <div className='tabs-wrapper'>
-              <SegmentControl
-                label='Potential matches'
-                active={activeTab === ActiveTab.Potential}
-                onClick={() => setActiveTab(ActiveTab.Potential)}
-                counter={
-                  (suggestedProperties.data?.length > 0 && suggestedProperties.data?.length) || undefined
-                }
-              />
-              <SegmentControl
-                label='Perfect matches'
-                active={activeTab === ActiveTab.Perfect}
-                onClick={() => setActiveTab(ActiveTab.Perfect)}
-                counter={(matchedProperties.data?.length > 0 && matchedProperties.data?.length) || undefined}
-              />
+              {suggestedProperties.isFetched && matchedProperties.isFetched && (
+                <>
+                  <SegmentControl
+                    label='Potential matches'
+                    active={activeTab === ActiveTab.Potential}
+                    onClick={() => setActiveTab(ActiveTab.Potential)}
+                    counter={
+                      (suggestedProperties.data?.length > 0 && suggestedProperties.data?.length) || undefined
+                    }
+                  />
+                  {matchedProperties.data?.length > 0 && (
+                    <SegmentControl
+                      label='Perfect matches'
+                      active={activeTab === ActiveTab.Perfect}
+                      onClick={() => setActiveTab(ActiveTab.Perfect)}
+                      counter={matchedProperties.data?.length}
+                    />
+                  )}
+                </>
+              )}
             </div>
 
-            <Label variant='special' size='large' className='filters-button' onClick={onMatchOptionsClick}>
-              <Icon icon='filter' />
-              Match options ({suggestedProperties.data?.length})
-            </Label>
+            <div className='header-right-content'>
+              {activeTab === ActiveTab.Potential && (
+                <Label
+                  variant='special'
+                  size='large'
+                  className='filters-button'
+                  onClick={onMatchOptionsClick}>
+                  <Icon icon='filter' />
+                  Match options ({suggestedProperties.data?.length})
+                </Label>
+              )}
+            </div>
           </div>
-          {activeTab === ActiveTab.Potential && <PotentialMatches />}
-          {activeTab === ActiveTab.Perfect && <PerfectMatches />}
+
+          {suggestedProperties.isFetched && matchedProperties.isFetched && (
+            <>
+              {activeTab === ActiveTab.Potential && <PotentialMatches />}
+              {activeTab === ActiveTab.Perfect && <PerfectMatches />}
+            </>
+          )}
         </div>
       </div>
       <Footer />
@@ -108,9 +128,10 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
         box-sizing: border-box;
 
         .section-header {
-          display: flex;
+          display: grid;
+          grid-template-columns: 1fr max-content 1fr;
           padding: 24px 36px;
-          justify-content: space-between;
+
           align-items: center;
           width: 100%;
           box-sizing: border-box;
@@ -119,6 +140,13 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
             display: flex;
             align-items: flex-start;
             gap: 8px;
+          }
+
+          .header-right-content {
+            display: flex;
+            justify-content: flex-end;
+          }
+          .header-left-content {
           }
         }
       }

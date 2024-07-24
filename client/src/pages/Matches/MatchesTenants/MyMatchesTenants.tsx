@@ -186,10 +186,6 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
                       newChatWith({
                         matchId: tenantMatch._id
                       });
-                      // chatWith({
-                      //   userId: tenant.criteria.tenantId,
-                      //   propertyId: tenant.property._id
-                      // });
                     }}
                   />
                 );
@@ -218,9 +214,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
     grid-template-rows: auto min-content;
     width: 100%;
 
-    background:
-      linear-gradient(180deg, #fffbf3 18.95%, #fff 100%),
-      lightgray 50% / cover no-repeat;
+    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
 
     .header-and-content-wrapper {
       min-height: 100vh;

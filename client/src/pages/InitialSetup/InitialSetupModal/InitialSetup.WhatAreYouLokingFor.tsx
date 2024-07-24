@@ -1,5 +1,4 @@
 import { styled } from '@mui/system';
-import React from 'react';
 
 import { Typography } from '../../../components/Typography';
 import { IconButton } from '../../../components/IconButton';
@@ -35,19 +34,17 @@ export const WhatAreYouLookingFor = styled(
                 active: lookingFor === LookingFor.LookingForAPlace
               })}
               onClick={() => {
-                onLookingForChange(LookingFor.LookingForAPlace)
+                onLookingForChange(LookingFor.LookingForAPlace);
               }}>
               <div className='button-and-text-wrapper'>
                 <Typography className='looking-for-text' variant='body4'>
                   I’m looking for a place to rent
                 </Typography>
-                <IconButton className='plus-button' inverted >
+                <IconButton className='plus-button' inverted>
                   <Icon icon='checked' size={24} color='white' />
                 </IconButton>
               </div>
-              <div
-                className={classNames('circle')}
-              >
+              <div className={classNames('circle')}>
                 <div className='intersection-first'></div>
               </div>
             </div>
@@ -59,9 +56,7 @@ export const WhatAreYouLookingFor = styled(
               onClick={() => {
                 onLookingForChange(LookingFor.OwnAPlace);
               }}>
-              <div
-                className={classNames('circle ')}
-                >
+              <div className={classNames('circle ')}>
                 <div
                   className='intersection'
                   onClick={() => {

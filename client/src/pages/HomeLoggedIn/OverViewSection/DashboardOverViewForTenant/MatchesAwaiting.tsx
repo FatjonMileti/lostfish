@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
   const suggestedProperties = useSuggestedProperties({
-    params: {},
+    params: { chosen: false },
     options: {
       refetchOnMount: true
     }

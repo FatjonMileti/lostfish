@@ -12,8 +12,6 @@ interface MenuItemProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const MenuItem = styled(({ className, label, active = false, icon, counter }: MenuItemProps) => {
-  console.log('counter: ', counter, 'typeofCounter: ', typeof counter);
-
   return (
     <div className={classNames('menu-item', className, { active })}>
       <Icon icon={icon} />

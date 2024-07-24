@@ -5,14 +5,12 @@ import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { Icon, Label, PropertyCard, Typography, ShowGlobalLoading } from '../../../components';
+import { Icon, Label, PropertyCard, ShowGlobalLoading } from '../../../components';
 import { ViewProperty } from '../MatchesProperties/ViewProperty.tsx';
 
 import axios from '../../../utils/axios';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-import { useCriteriaStore } from '../../../globalState/criteria';
-import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 import { useUserStore } from '../../../globalState/user';
 
 import { SuggestedPropertyType } from '../matches.type.ts';
@@ -27,14 +25,11 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
     }
   });
 
-  const criteriaStore = useCriteriaStore();
   const userStore = useUserStore();
   const navigate = useNavigate();
 
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
   const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
-
-  const globalSetCriteria = useGlobalSetCriteria();
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % matchedProperties.data?.length));
@@ -87,36 +82,6 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
       )}
       <div className={classNames('perfect-matches', className)}>
         <motion.div className='slides-wrapper'>
-          {!matchedProperties.isFetching && !matchedProperties.data.length && (
-            <div className='no-matches-card'>
-              <div className='title-description'>
-                <Icon icon='intersect' size={64} color='#E5155A' />
-                <Typography variant='body2' className='title'>
-                  Looking for more matches?
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  There are <span className='red-text'>28 available properties</span> that could be a perfect
-                  match for you if you are looking to adapt your{' '}
-                  <span className='black-text'>Budget Preferences.</span>
-                </Typography>
-              </div>
-              <Label
-                variant='secondary'
-                size='large'
-                className='action-button'
-                onClick={() =>
-                  globalSetCriteria.openSetCriteria({
-                    afterSetCriteria: () => {
-                      matchedProperties.refetch();
-                      criteriaStore.fetchCriteria(userStore.auth.access_token);
-                    }
-                  })
-                }>
-                Adjust match preferences
-              </Label>
-            </div>
-          )}
-
           {matchedProperties.data.map((matchedProperty, tenantIndex) => {
             const motionProps = {
               animate: {

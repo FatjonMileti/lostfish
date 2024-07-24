@@ -81,6 +81,15 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
     }
   });
 
+  const onAdjustMatchPreferencesClick = () => {
+    globalSetCriteria.openSetCriteria({
+      afterSetCriteria: () => {
+        suggestedProperties.refetch();
+        criteriaStore.fetchCriteria(userStore.auth.access_token);
+      }
+    });
+  };
+
   return (
     <>
       {(suggestedProperties.isFetching || likeProperty.isLoading || dislikeProperty.isLoading) && (
@@ -105,14 +114,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
                 variant='secondary'
                 size='large'
                 className='action-button'
-                onClick={() =>
-                  globalSetCriteria.openSetCriteria({
-                    afterSetCriteria: () => {
-                      suggestedProperties.refetch();
-                      criteriaStore.fetchCriteria(userStore.auth.access_token);
-                    }
-                  })
-                }>
+                onClick={onAdjustMatchPreferencesClick}>
                 Adjust match preferences
               </Label>
             </div>
@@ -184,8 +186,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
     justify-items: center;
     overflow-x: clip;
 
-      align-content: center;
-  }
+    align-content: center;
 
     .slides-wrapper {
       display: flex;
