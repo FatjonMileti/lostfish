@@ -13,8 +13,10 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
 import { useUserStore } from '../../../globalState/user';
 
-import { SuggestedPropertyType } from '../matches.type.ts';
+import { MatchedPropertyType } from '../matches.type.ts';
 import { useMatchedProperties } from '../MatchesProperties/useMatchedProperties.tsx';
+import { cancelMatchedProperty } from './cancelMatchedProperty.tsx';
+import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
 
 interface PerfectMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
@@ -25,11 +27,18 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
     }
   });
 
+  const suggestedProperties = useSuggestedProperties({
+    params: { chosen: false },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
   const userStore = useUserStore();
   const navigate = useNavigate();
 
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
-  const [propertyToView, setPropertyToView] = React.useState<SuggestedPropertyType | null>(null);
+  const [propertyToView, setPropertyToView] = React.useState<MatchedPropertyType | null>(null);
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % matchedProperties.data?.length));
@@ -55,11 +64,7 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
   });
 
   const dislikeProperty = useMutation({
-    mutationFn: ({ propertyId }: { propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
-        property: propertyId
-      });
-    },
+    mutationFn: cancelMatchedProperty,
     onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
@@ -68,6 +73,7 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
         previous();
       }
       matchedProperties.refetch();
+      suggestedProperties.refetch();
     }
   });
 
@@ -134,7 +140,12 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyMatch={propertyToView}
-          dislikeProperty={() => dislikeProperty.mutate({ propertyId: propertyToView?.property._id })}
+          dislikeProperty={() =>
+            dislikeProperty.mutate({
+              matchId: propertyToView.matchId,
+              access_token: userStore.auth.access_token
+            })
+          }
           likeProperty={() => likeProperty.mutate({ propertyId: propertyToView?.property._id })}
         />
       )}

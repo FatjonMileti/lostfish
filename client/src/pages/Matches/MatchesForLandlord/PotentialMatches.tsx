@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { TenantCard, ShowGlobalLoading, Icon, Label } from '../../../components';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { SuggestedTenantType } from '../matches.type.ts';
 import { ViewProfile } from '../MatchesTenants/ViewProfile.tsx';
@@ -15,6 +14,8 @@ import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModa
 
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants.tsx';
 import { useMatchedTenants } from '../MatchesTenants/useMatchedTenants.tsx';
+import { matchSuggestedTenant } from './matchSuggestedTenant.tsx';
+import { dismissSuggestedTenant } from './dismissSuggestedTenant.tsx';
 
 interface PotentialMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PotentialMatches = styled(({ className }: PotentialMatchesProps) => {
@@ -48,12 +49,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
   };
 
   const likeTenant = useMutation({
-    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/tenants', {
-        tenant: tenantId,
-        property: propertyId
-      });
-    },
+    mutationFn: matchSuggestedTenant,
     onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
@@ -67,12 +63,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
   });
 
   const dislikeTenant = useMutation({
-    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/dislikes/tenants', {
-        tenant: tenantId,
-        property: propertyId
-      });
-    },
+    mutationFn: dismissSuggestedTenant,
     onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
@@ -137,6 +128,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
           closeViewProfile={() => setTenantToView(null)}
           likeTenant={() => {
             likeTenant.mutate({
+              access_token: userStore.auth.access_token,
               propertyId: tenantToView.property._id,
               tenantId: tenantToView.criteria.tenantId
             });
@@ -144,7 +136,8 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
           dislikeTenant={() => {
             dislikeTenant.mutate({
               propertyId: tenantToView.property._id,
-              tenantId: tenantToView.criteria.tenantId
+              tenantId: tenantToView.criteria.tenantId,
+              access_token: userStore.auth.access_token
             });
           }}
         />

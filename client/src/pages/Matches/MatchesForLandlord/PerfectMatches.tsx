@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { TenantCard, ShowGlobalLoading, Icon, Label } from '../../../components';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { MatchedTenantType } from '../matches.type.ts';
 import { ViewProfile } from '../MatchesTenants/ViewProfile.tsx';
@@ -15,11 +14,20 @@ import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModa
 
 import { useMatchedTenants } from '../MatchesTenants/useMatchedTenants.tsx';
 import { useNavigate } from 'react-router-dom';
+import { cancelMatchedTenant } from './cancelMatchedTenant.tsx';
+import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants.tsx';
 
 interface PerfectMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
   const matchedTenants = useMatchedTenants({
     params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
+
+  const suggestedTenants = useSuggestedTenants({
+    params: { chosen: false, disliked: false },
     options: {
       refetchOnMount: true
     }
@@ -38,31 +46,8 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
     activeSlide >= 1 && setActiveSlide((activeSlide) => activeSlide - 1);
   };
 
-  const likeTenant = useMutation({
-    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/tenants', {
-        tenant: tenantId,
-        property: propertyId
-      });
-    },
-    onSuccess: () => {
-      if (tenantToView) {
-        setTenantToView(null);
-      }
-      if (matchedTenants.data.length - 1 === activeSlide && matchedTenants.data.length > 1) {
-        previous();
-      }
-      matchedTenants.refetch();
-    }
-  });
-
   const dislikeTenant = useMutation({
-    mutationFn: ({ tenantId, propertyId }: { tenantId: string; propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/dislikes/tenants', {
-        tenant: tenantId,
-        property: propertyId
-      });
-    },
+    mutationFn: cancelMatchedTenant,
     onSuccess: () => {
       if (tenantToView) {
         setTenantToView(null);
@@ -71,6 +56,7 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
         previous();
       }
       matchedTenants.refetch();
+      suggestedTenants.refetch();
     }
   });
 
@@ -80,9 +66,7 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
 
   return (
     <>
-      {(matchedTenants.isFetching || dislikeTenant.isLoading || likeTenant.isLoading) && (
-        <ShowGlobalLoading />
-      )}
+      {(matchedTenants.isFetching || dislikeTenant.isLoading) && <ShowGlobalLoading />}
       <div className={classNames('perfect-matches', className)}>
         <motion.div className='slides-wrapper'>
           {matchedTenants.data.map((tenant, tenantIndex) => {
@@ -136,16 +120,10 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
         <ViewProfile
           tenantMatch={tenantToView}
           closeViewProfile={() => setTenantToView(null)}
-          likeTenant={() => {
-            likeTenant.mutate({
-              propertyId: tenantToView.property._id,
-              tenantId: tenantToView.criteria.tenantId
-            });
-          }}
           dislikeTenant={() => {
             dislikeTenant.mutate({
-              propertyId: tenantToView.property._id,
-              tenantId: tenantToView.criteria.tenantId
+              access_token: userStore.auth.access_token,
+              matchId: tenantToView.matchId
             });
           }}
         />

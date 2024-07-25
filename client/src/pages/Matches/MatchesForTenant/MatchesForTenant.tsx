@@ -67,14 +67,15 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
                       (suggestedProperties.data?.length > 0 && suggestedProperties.data?.length) || undefined
                     }
                   />
-                  {matchedProperties.data?.length > 0 && (
-                    <SegmentControl
-                      label='Perfect matches'
-                      active={activeTab === ActiveTab.Perfect}
-                      onClick={() => setActiveTab(ActiveTab.Perfect)}
-                      counter={matchedProperties.data?.length}
-                    />
-                  )}
+
+                  <SegmentControl
+                    label='Perfect matches'
+                    active={activeTab === ActiveTab.Perfect}
+                    onClick={() => setActiveTab(ActiveTab.Perfect)}
+                    counter={
+                      (matchedProperties.data?.length > 0 && matchedProperties.data?.length) || undefined
+                    }
+                  />
                 </>
               )}
             </div>

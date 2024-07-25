@@ -9,7 +9,6 @@ import { Icon, Label, PropertyCard, Typography, ShowGlobalLoading } from '../../
 import { ViewProperty } from '../MatchesProperties/ViewProperty.tsx';
 
 import { useUserStore } from '../../../globalState/user';
-import axios from '../../../utils/axios';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { useCriteriaStore } from '../../../globalState/criteria';
 import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
@@ -17,6 +16,8 @@ import { useGlobalSetCriteria } from '../../SetCriteria/GlobalSetCriteria';
 import { SuggestedPropertyType } from '../matches.type.ts';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
 import { useMatchedProperties } from '../MatchesProperties/useMatchedProperties.tsx';
+import { matchSuggestedProperty } from './matchSuggestedProperty.tsx';
+import { dismissSuggestedProperty } from './dismissSuggestedProperty.tsx';
 
 interface PotentialMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PotentialMatches = styled(({ className }: PotentialMatchesProps) => {
@@ -47,11 +48,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
   };
 
   const likeProperty = useMutation({
-    mutationFn: ({ propertyId }: { propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/properties', {
-        property: propertyId
-      });
-    },
+    mutationFn: matchSuggestedProperty,
     onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
@@ -65,11 +62,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
   });
 
   const dislikeProperty = useMutation({
-    mutationFn: ({ propertyId }: { propertyId: string }) => {
-      return axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
-        property: propertyId
-      });
-    },
+    mutationFn: dismissSuggestedProperty,
     onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
@@ -170,8 +163,18 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyMatch={propertyToView}
-          dislikeProperty={() => dislikeProperty.mutate({ propertyId: propertyToView?.property._id })}
-          likeProperty={() => likeProperty.mutate({ propertyId: propertyToView?.property._id })}
+          dislikeProperty={() =>
+            dislikeProperty.mutate({
+              propertyId: propertyToView?.property._id,
+              access_token: userStore.auth.access_token
+            })
+          }
+          likeProperty={() =>
+            likeProperty.mutate({
+              propertyId: propertyToView?.property._id,
+              access_token: userStore.auth.access_token
+            })
+          }
         />
       )}
     </>
