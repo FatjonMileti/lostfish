@@ -2,23 +2,19 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { IRoom } from '../../messages.interface';
 import classNames from 'classnames';
-import { Label } from '../../../../components/Label';
-import { Icon } from '../../../../components/Icon';
-import { Typography } from '../../../../components/Typography';
-import { Avatar } from '../../../../components/Avatar';
+import { Avatar, Icon, Label, ShowGlobalLoading, Typography } from '../../../../components';
 import moment from 'moment/moment';
 import { getAvatarFormIndex } from '../../../HomeLoggedIn/avatars';
 import { useUserStore } from '../../../../globalState/user';
 import { ViewProfile } from '../../../Matches/MatchesTenants/ViewProfile';
-import { MatchedTenantType } from '../../../Matches/matches.type';
-import { mapCriteria } from '../../../Matches/MatchesTenants/serializers';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ApiOfferDocument } from '../MatchDetailsProperty/MatchDetailsproperty.ReviewOfferModal';
 import axios from '../../../../utils/axios';
 import { ReviewOfferModal } from './MatchDetailsTenant.ReviewOfferModal';
 
 import { Documents } from '../../Documents/Documents';
-import { ShowGlobalLoading } from '../../../../components';
+import { MatchedTenantType } from '../../../Matches/matches.type.ts';
+import { mapTenant } from '../../../Matches/MatchesTenants/serializers.ts';
 
 interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
@@ -26,8 +22,7 @@ interface MatchDetailsTenantProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: MatchDetailsTenantProps) => {
-  const [tenantToView, setTenantToView] = React.useState<Partial<MatchedTenantType> | null>();
-  const [matchRate, setMatchRate] = React.useState<number | undefined>(undefined);
+  const [tenantToView, setTenantToView] = React.useState<MatchedTenantType | null>(null);
 
   const [reviewOfferModalVisibility, setReviewOfferModalVisibility] = React.useState(false);
 
@@ -89,16 +84,6 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
     }
   });
 
-  const viewProfile = () => {
-    setTenantToView({
-      criteria: mapCriteria({
-        ...room.tenant_match?.criteria,
-        created_by: room.tenant_match?.tenant
-      }),
-      matchId: room.tenant_match?._id
-    });
-  };
-
   const unmatchTenant = useMutation({
     mutationFn: (matchId: string) => {
       return axios(userStore.auth.access_token).patch(`/api/match/${matchId}/unmatched`);
@@ -111,17 +96,27 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
     }
   });
 
-  const getMatchById = async (id: any) => {
-    return await axios(userStore.auth.access_token).get<{ number: number }>(`/api/match/${id}`);
-  };
-
-  React.useEffect(() => {
-    if (tenantToView?.matchId) {
-      getMatchById(tenantToView.matchId).then((response) => {
-        setMatchRate(response?.data?.property?.percentage);
-      });
+  const matchTenantQuery = useQuery({
+    queryKey: ['tenantMatch', room.tenant_match?._id],
+    queryFn: async () => {
+      const { data } = await axios(userStore.auth.access_token).get<MatchedTenantType>(
+        `/api/match/${room.tenant_match?._id}`
+      );
+      return mapTenant(data);
+    },
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+    onError: (err) => {
+      console.log(err);
     }
-  }, [tenantToView]);
+  });
+
+  const viewProfile = () => {
+    if (matchTenantQuery.data) {
+      setTenantToView(matchTenantQuery.data);
+    }
+  };
 
   return (
     <>
@@ -131,7 +126,7 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
           'offer-accepted': offerQuery?.data?.accepted?.status,
           unmatched: room.tenant_match?.unmatched
         })}>
-        {unmatchTenant.isLoading && <ShowGlobalLoading />}
+        {(unmatchTenant.isLoading || matchTenantQuery.isFetching) && <ShowGlobalLoading />}
         <div className={`tenant-details ${className}`}>
           <Avatar image={avatar} />
 
@@ -153,7 +148,7 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
             </Label>
             {tenantToView && (
               <ViewProfile
-                criteria={tenantToView.criteria}
+                tenantMatch={tenantToView}
                 closeViewProfile={() => setTenantToView(null)}
                 dislikeTenant={() => {
                   if (tenantToView?.matchId) {
@@ -161,8 +156,6 @@ export const MatchDetailsTenant = styled(({ className, room, fetchChatRooms }: M
                   }
                 }}
                 disableLikeTenant
-                matchRate={matchRate}
-                matched={true}
               />
             )}
 

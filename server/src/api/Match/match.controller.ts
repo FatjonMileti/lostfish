@@ -381,6 +381,7 @@ export class MatchController {
           matches.docs[i].criteria,
           matches.docs[i].property
         );
+        matches.docs[i].percentage = parseInt(percentage.toFixed(0), 10);
         matches.docs[i].property.percentage = parseInt(percentage.toFixed(0), 10);
         matches.docs[i].matchId = currentMatch._id;
 
@@ -523,12 +524,29 @@ export class MatchController {
       const currentMatch: any = match;
       const criteria = await criteriaService.findByUserId(currentMatch.tenant._id);
 
-      const percentage = this.suggestionService.calculateSimilarity(
-        criteria,
-        currentMatch.property
-      );
+      const percentage = this.suggestionService.calculateSimilarity(criteria, currentMatch.property);
 
       currentMatch.property.percentage = parseInt(percentage.toFixed(0), 10);
+      currentMatch.percentage = parseInt(percentage.toFixed(0), 10);
+      currentMatch.criteria = criteria;
+
+      if (currentMatch.type === MatchingType.PROPERTY) {
+        const matched = await this.matchService.getMatchByQuery({
+          type: MatchingType.USER,
+          tenant: currentMatch.tenant._id.toString(),
+          property: currentMatch.property._id.toString(),
+          chosen: true
+        });
+        currentMatch.matched = !!matched;
+      } else {
+        const matched = await this.matchService.getMatchByQuery({
+          type: MatchingType.PROPERTY,
+          landlord: currentMatch.landlord._id.toString(),
+          property: currentMatch.property._id.toString(),
+          chosen: true
+        });
+        currentMatch.matched = !!matched;
+      }
 
       await MatchLog.create({ user: res.locals.user_id, action: LogAction.Read, ref: matchId, info: match });
       return res.status(200).json(currentMatch);

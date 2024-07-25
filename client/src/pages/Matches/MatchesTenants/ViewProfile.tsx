@@ -8,14 +8,23 @@ import { Icon } from '../../../components';
 import verified from '../../MyAccount/images/verified.svg';
 import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import { CloseButton } from '../../../components';
-import { MatchedTenantType } from '../matches.type.ts';
+
+import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.types.ts';
+
+export interface TenantMatchData {
+  chosen: boolean;
+  matched?: boolean;
+  criteria: any;
+  property: ApiPropertyDocumentType;
+  percentage: number;
+}
 
 interface ViewProfileProps extends HTMLAttributes<HTMLDivElement> {
   closeViewProfile: () => void;
   likeTenant?: () => void;
   dislikeTenant?: () => void;
   disableLikeTenant?: boolean;
-  tenantMatch: MatchedTenantType;
+  tenantMatch: TenantMatchData;
 }
 
 export const ViewProfile = styled(
@@ -91,7 +100,7 @@ export const ViewProfile = styled(
                   Match rate
                 </Typography>
                 <Typography variant='body4' className='percentage'>
-                  {tenantMatch?.property.percentage}%
+                  {tenantMatch.percentage}%
                 </Typography>
               </div>
             </div>

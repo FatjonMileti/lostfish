@@ -46,6 +46,7 @@ export interface MatchedTenantType {
   matched: boolean;
   unread_messages: number;
   matchId: string;
+  percentage: number;
   _id: string;
   tenant: {
     avatar: string;

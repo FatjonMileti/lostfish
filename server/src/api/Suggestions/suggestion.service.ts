@@ -334,6 +334,7 @@ export default class SuggestionService {
     return {
       criteria: item,
       property: propertyWithPercentage,
+      percentage,
       chosen: matchTenant?.chosen ?? false,
       disliked: matchTenant?.disliked ?? false,
       matchId: matchTenant?._id ?? undefined
