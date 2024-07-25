@@ -15,6 +15,7 @@ export interface SuggestedTenantType {
   id: string;
   criteria: any;
   property: ApiPropertyDocumentType | any;
+  percentage: number;
   chosen: boolean;
   matched: boolean;
   unread_messages: number;
