@@ -9,7 +9,7 @@ import { TenantCard, ShowGlobalLoading, Icon, Label } from '../../../components'
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
-import { MatchedTenantType, SuggestedTenantType } from '../matches.type.ts';
+import { MatchedTenantType } from '../matches.type.ts';
 import { ViewProfile } from '../MatchesTenants/ViewProfile.tsx';
 import { EditPropertyModal } from '../../Properties/NewProperty/EditPropertyModal';
 
@@ -26,14 +26,11 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
   });
 
   const [activeSlide, setActiveSlide] = React.useState<number>(0);
-  const [tenantToView, setTenantToView] = React.useState<SuggestedTenantType | null>(null);
+  const [tenantToView, setTenantToView] = React.useState<MatchedTenantType | null>(null);
   const [propertyToEdit, setPropertyToEdit] = React.useState<string | undefined>();
 
   const navigate = useNavigate();
   const userStore = useUserStore();
-
-  const suggestedTenant: MatchedTenantType = matchedTenants.data[activeSlide];
-  const matchedProperty = suggestedTenant?.property;
 
   const next = () =>
     setActiveSlide((activeSlide) => Math.abs((activeSlide + 1) % matchedTenants.data?.length));
@@ -137,8 +134,7 @@ export const PerfectMatches = styled(({ className }: PerfectMatchesProps) => {
 
       {tenantToView && (
         <ViewProfile
-          criteria={tenantToView.criteria}
-          matchRate={matchedProperty.percentage}
+          tenantMatch={tenantToView}
           closeViewProfile={() => setTenantToView(null)}
           likeTenant={() => {
             likeTenant.mutate({
