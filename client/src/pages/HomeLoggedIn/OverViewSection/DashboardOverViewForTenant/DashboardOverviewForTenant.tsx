@@ -24,7 +24,7 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
   });
 
   const suggestedProperties = useSuggestedProperties({
-    params: { disliked: false, chosen: false },
+    params: { chosen: false },
     options: {
       refetchOnMount: true
     }
