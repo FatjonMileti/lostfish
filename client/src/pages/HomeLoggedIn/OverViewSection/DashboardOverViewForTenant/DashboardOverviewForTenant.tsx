@@ -53,13 +53,15 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
 
       setState(States.Default);
     }
-  }, [matchedProperties.isFetched, suggestedProperties.isFetched, profileStore.signed_transaction_agreement]);
+  }, [matchedProperties.data, suggestedProperties.data, profileStore.signed_transaction_agreement]);
 
   return (
     <>
       {state === States.Default && <DefaultState />}
       {state === States.MatchesAwaiting && <MatchesAwaiting />}
-      {state === States.PerfectMatch && <PerfectMatch match={matchedProperties.data[0]} />}
+      {state === States.PerfectMatch && matchedProperties.data[0] && (
+        <PerfectMatch match={matchedProperties.data[0]} />
+      )}
       {state === States.MultiplePerfectMatches && (
         <MultiplePerfectMatches count={matchedProperties.data.length} match={matchedProperties.data[0]} />
       )}

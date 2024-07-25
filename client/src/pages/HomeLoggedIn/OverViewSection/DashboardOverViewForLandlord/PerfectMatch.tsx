@@ -1,13 +1,17 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import classNames from 'classnames';
-import { Icon, Label, Typography } from '../../../../components';
+import { Icon, Label, ShowGlobalLoading, Typography } from '../../../../components';
 
 import { useNavigate } from 'react-router-dom';
 import { MatchedTenantType } from '../../../Matches/matches.type.ts';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
 import { ViewProfile } from '../../../Matches/MatchesTenants/ViewProfile.tsx';
+import { useMutation } from '@tanstack/react-query';
+import { cancelMatchedTenant } from '../../../Matches/MatchesForLandlord/cancelMatchedTenant.tsx';
+import { useMatchedTenants } from '../../../Matches/MatchesTenants/useMatchedTenants.tsx';
+import { useUserStore } from '../../../../globalState/user.tsx';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedTenantType;
@@ -15,15 +19,33 @@ interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
 export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
+  const userStore = useUserStore();
 
   const [perfectMatchToView, setPerfectMatchToView] = React.useState<MatchedTenantType | null>(null);
 
+  const matchedTenants = useMatchedTenants({
+    params: { chosen: true },
+    options: {
+      refetchOnMount: true
+    }
+  });
   const onMessageClick = () => {
     navigate(`/messages?matchId=${match._id}`);
   };
 
+  const dislikeTenant = useMutation({
+    mutationFn: cancelMatchedTenant,
+    onSuccess: () => {
+      if (perfectMatchToView) {
+        setPerfectMatchToView(null);
+      }
+      matchedTenants.refetch();
+    }
+  });
+
   return (
     <>
+      {dislikeTenant.isLoading && <ShowGlobalLoading />}
       <div className={classNames('perfect-match', className)}>
         <div className='left-content'>
           <div className='texts-wrapper'>
@@ -63,7 +85,12 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
         <ViewProfile
           tenantMatch={perfectMatchToView}
           closeViewProfile={() => setPerfectMatchToView(null)}
-          // dislikeTenant={() => dislikeTenant.mutate(tenantToView.matchId)}
+          dislikeTenant={() =>
+            dislikeTenant.mutate({
+              access_token: userStore.auth.access_token,
+              matchId: perfectMatchToView.matchId
+            })
+          }
           disableLikeTenant
         />
       )}

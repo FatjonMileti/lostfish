@@ -12,6 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from '../../../../utils/axios.ts';
 import { useUserStore } from '../../../../globalState/user.tsx';
 import { useMatchedProperties } from '../../../Matches/MatchesProperties/useMatchedProperties.tsx';
+import { cancelMatchedProperty } from '../../../Matches/MatchesForTenant/cancelMatchedProperty.tsx';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedPropertyType;
@@ -39,11 +40,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
   });
 
   const dislikeProperty = useMutation({
-    mutationFn: (propertyId: string) => {
-      return axios(userStore.auth.access_token).post('/api/match/dislikes/properties', {
-        property: propertyId
-      });
-    },
+    mutationFn: cancelMatchedProperty,
     onSuccess: () => {
       if (propertyToView) {
         setPropertyToView(null);
@@ -143,7 +140,12 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
           closeModal={() => setPropertyToView(null)}
           onBackdropClick={() => setPropertyToView(null)}
           propertyMatch={propertyToView}
-          dislikeProperty={() => dislikeProperty.mutate(propertyToView?.property._id)}
+          dislikeProperty={() =>
+            dislikeProperty.mutate({
+              access_token: userStore.auth.access_token,
+              matchId: propertyToView.matchId
+            })
+          }
           likeProperty={() => likeProperty.mutate(propertyToView?.property._id)}
         />
       )}

@@ -55,13 +55,15 @@ export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordPro
 
       setState(States.Default);
     }
-  }, [matchedTenants.isFetched, suggestedTenants.isFetched, profileStore.signed_transaction_agreement]);
+  }, [matchedTenants.data, suggestedTenants.data, profileStore.signed_transaction_agreement]);
 
   return (
     <>
       {state === States.Default && <DefaultState />}
       {state === States.MatchesAwaiting && <MatchesAwaiting />}
-      {state === States.PerfectMatch && <PerfectMatch match={matchedTenants.data[0]} />}
+      {state === States.PerfectMatch && matchedTenants.data[0] && (
+        <PerfectMatch match={matchedTenants.data[0]} />
+      )}
       {state === States.MultiplePerfectMatches && (
         <MultiplePerfectMatches count={matchedTenants.data.length} match={matchedTenants.data[0]} />
       )}
