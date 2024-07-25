@@ -1,6 +1,4 @@
-import { Button } from '../../../components/Button';
-import { Icon } from '../../../components/Icon';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import config from '../../../config';
 import { LoginSocialGoogle, IResolveParams } from 'reactjs-social-login';
 import { SocialAccountButton } from '../../../components/SocialAccountButton';

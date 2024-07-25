@@ -1,10 +1,8 @@
 import { styled } from '@mui/system';
 import { Button, ButtonProps } from '../../../components/Button';
 import { Icon } from '../../../components/Icon';
-import React from 'react';
 import classNames from 'classnames';
 import axios from 'axios';
-import { useUserStore } from '../../../globalState/user';
 import config from '../../../config';
 
 interface UseMyLocationProps extends ButtonProps {
@@ -15,7 +13,6 @@ interface UseMyLocationProps extends ButtonProps {
 }
 
 export const UseMyLocation = styled(({ className, onLocation = () => {} }: UseMyLocationProps) => {
-  const userStore = useUserStore();
   const getLocation = async () => {
     const options = {
       enableHighAccuracy: true,

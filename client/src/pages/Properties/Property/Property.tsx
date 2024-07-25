@@ -2,15 +2,8 @@ import { styled } from '@mui/system';
 import { HTMLProps, MouseEventHandler } from 'react';
 import classNames from 'classnames';
 
-import { Typography, Button, Icon, Label } from '../../../components';
+import { Typography, Icon, Label } from '../../../components';
 
-import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import { Slider } from './Slider';
-
-import { ApiPropertyDocumentType, AreaUnitType } from '../NewProperty/property.types';
-import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
-import { Skeleton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import axios from '../../../utils/axios.ts';
 import { useUserStore } from '../../../globalState/user.tsx';
 
@@ -45,7 +38,6 @@ export const Property = styled(
     name,
     status,
     viewDetails,
-    images,
     location,
     budget,
     roomsDetails,

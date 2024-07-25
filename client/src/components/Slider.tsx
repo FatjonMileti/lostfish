@@ -1,6 +1,5 @@
 import { styled } from '@mui/system';
 
-import React from 'react';
 import MuiSlider, { SliderProps as MuiSliderProps } from '@mui/material/Slider';
 import classNames from 'classnames';
 

@@ -1,7 +1,6 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowButton } from '../../../components/ArrowButton';
 import { Icon } from '../../../components/Icon';
 import { RoundAction } from '../../../components/RoundAction.tsx';
 

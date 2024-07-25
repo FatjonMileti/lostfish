@@ -3,8 +3,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { Modal, ModalProps } from '../../../components/Modal';
-import { Typography } from '../../../components/Typography';
-import { CloseButton } from '../../../components/CloseButton';
+import { Typography } from '../../../components';
+import { CloseButton } from '../../../components';
 
 import { WhatAreYouLookingFor } from '../../InitialSetup/InitialSetupModal/InitialSetup.WhatAreYouLokingFor';
 import { CreteAccountOrSignIn } from './CreteAccountOrSignIn';
@@ -40,19 +40,9 @@ export const StartMatchingWithoutAccountModal = styled(
   }: StartMatchingWithoutAccountModalProps) => {
     const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
 
-    const [visibility, setVisibility] = visibilityStore;
+    const [visibility] = visibilityStore;
 
     const [step, setStep] = React.useState(0);
-
-    React.useEffect(() => {
-      setStep(0);
-    }, [visibility]);
-
-    const [state, setState] = React.useState<{
-      lookingFor?: LookingForType;
-    }>({
-      lookingFor: criteriaWithoutAccountStore.criteria.looking_for
-    });
 
     const onLookingForChange = (lookingFor: LookingForType) => {
       criteriaWithoutAccountStore.setCriteria({

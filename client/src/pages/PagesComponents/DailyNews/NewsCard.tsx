@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { News } from './DailyNews.tsx';
 import { Label } from '../../../components/Label.tsx';
@@ -10,7 +10,7 @@ interface NewsCardProps extends HTMLAttributes<HTMLDivElement> {
   news: News;
 }
 
-export const NewsCard = styled(({ className, news }: NewsCardProps) => {
+export const NewsCard = styled(({ className }: NewsCardProps) => {
   return (
     <div className={classNames('news-card', className)}>
       <div className='image-cover'></div>

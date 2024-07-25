@@ -1,6 +1,3 @@
-import React from 'react';
-import { Button } from '../../../components/Button';
-import { Icon } from '../../../components/Icon';
 import config from '../../../config';
 import { SocialAccountButton } from '../../../components/SocialAccountButton';
 
@@ -20,7 +17,7 @@ function getTwitterOauthUrl() {
   return `${rootUrl}?${qs}`;
 }
 
-export const LoginWithTwitter = (props: any) => {
+export const LoginWithTwitter = ({}: any) => {
   const goTo = () => {
     const url = getTwitterOauthUrl();
     window.location.href = url;

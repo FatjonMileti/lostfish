@@ -30,7 +30,7 @@ export const ImageUpload = styled(
       const files: File[] = [];
       if (e.dataTransfer.items) {
         // Use DataTransferItemList interface to access the file(s)
-        [...e.dataTransfer.items].forEach((item, i) => {
+        [...e.dataTransfer.items].forEach((item) => {
           // If dropped items aren't files, reject them
           if (item.kind === 'file') {
             const file = item.getAsFile();
@@ -41,7 +41,7 @@ export const ImageUpload = styled(
         });
       } else {
         // Use DataTransfer interface to access the file(s)
-        [...e.dataTransfer.files].forEach((file, i) => {
+        [...e.dataTransfer.files].forEach((file) => {
           files.push(file);
         });
       }

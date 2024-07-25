@@ -15,7 +15,7 @@ export const Tabs = styled(
     className,
     children,
     value,
-    onChange = (i: any) => {},
+    onChange = () => {},
     variant = 'primary',
     rounded = false,
     ...otherProps

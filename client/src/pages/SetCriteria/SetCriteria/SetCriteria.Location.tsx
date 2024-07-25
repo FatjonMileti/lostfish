@@ -1,13 +1,13 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import classNames from 'classnames';
 
-import { Label } from '../../../components/Label';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
+import { Label } from '../../../components';
+import { Typography } from '../../../components';
+import { Icon } from '../../../components';
 import { Select } from '../../../components/Select/Select';
-import { TextField } from '../../../components/TextField';
+import { TextField } from '../../../components';
 
 import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
 import { UseMyLocation } from './UseMyLocation';

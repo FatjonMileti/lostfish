@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { FrequentlyAskedQuestion } from './components/HelpAndSuport.FrequentlyAskedQuestion';
 import { Button } from '../../components/Button';

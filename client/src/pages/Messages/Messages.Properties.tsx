@@ -1,7 +1,7 @@
 import { styled } from '@mui/system';
 import classNames from 'classnames';
 import React, { HTMLAttributes } from 'react';
-import { Typography } from '../../components/Typography';
+import { Typography } from '../../components';
 import { motion, MotionProps } from 'framer-motion';
 import axios from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
@@ -37,7 +37,7 @@ export const MessagesProperties = styled(
             <Property
               key={propertyIndex}
               image={property.property_images[0]?.link}
-              onClick={(e) => {
+              onClick={() => {
                 if (selectedPropertyId === property._id) {
                   setSelectedPropertyId('');
                   onPropertySelect('');

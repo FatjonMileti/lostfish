@@ -2,7 +2,6 @@ import { styled } from '@mui/system';
 import { Modal, ModalProps } from '../../../../components/Modal';
 import { Typography } from '../../../../components/Typography';
 import { CloseButton } from '../../../../components/CloseButton';
-import React from 'react';
 import classNames from 'classnames';
 import { Label } from '../../../../components/Label';
 import { IRoom } from '../../messages.interface';

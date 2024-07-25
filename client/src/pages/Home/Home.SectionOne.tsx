@@ -2,7 +2,6 @@ import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
-import { Button } from '../../components/Button';
 import { Label } from '../../components/Label';
 import rightContentImg from './home.section1.png';
 import classNames from 'classnames';

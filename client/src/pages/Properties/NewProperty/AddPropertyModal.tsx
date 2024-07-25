@@ -1,5 +1,5 @@
 import { styled } from '@mui/system';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 
 import { usePropertyForm } from './usePropertyForm';
 import { ApiPropertyDocumentType } from './property.types';

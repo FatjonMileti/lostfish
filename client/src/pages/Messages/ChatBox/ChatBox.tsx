@@ -20,173 +20,167 @@ export interface ChatBoxProps extends HTMLAttributes<HTMLDivElement> {
   updateList?: (data: any) => void;
 }
 
-export const ChatBox = styled(
-  ({ className, updateList, room, user_id, messages, socket, closeDeal = () => {} }: ChatBoxProps) => {
-    const [currentMessage, setCurrentMessage] = useState('');
-    const [messageList, setMessageList] = useState<IMessageItem[]>([]);
+export const ChatBox = styled(({ className, updateList, room, user_id, messages, socket }: ChatBoxProps) => {
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [messageList, setMessageList] = useState<IMessageItem[]>([]);
 
-    const isAuthor = room.author._id === user_id;
+  const isAuthor = room.author._id === user_id;
 
-    const conversationBoxRef = React.useRef<HTMLDivElement>(null);
+  const conversationBoxRef = React.useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-      setMessageList(
-        messages.filter((item: any) => item.hasOwnProperty('author') && item.hasOwnProperty('participant'))
-      );
-    }, [messages]);
-
-    useEffect(() => {
-      if (socket) {
-        socket.on('receive_message', (data: any) => {
-          setMessageList((list: IMessageItem[]) => [...list, data]);
-        });
-
-        return () => {
-          socket.off('receive_message');
-        };
-      }
-    }, [socket]);
-
-    React.useEffect(() => {
-      if (conversationBoxRef.current) {
-        conversationBoxRef.current;
-        conversationBoxRef.current.scrollTop = conversationBoxRef.current.scrollHeight;
-      }
-    }, [messageList]);
-
-    const avatarKeyById = {
-      [room.author._id]: room.author.avatar,
-      [room.participant._id]: room.participant.avatar
-    };
-
-    const sendMessage = async () => {
-      if (!currentMessage) {
-        return;
-      }
-
-      await _sendMessage({ message: currentMessage });
-
-      setCurrentMessage('');
-    };
-
-    const _sendMessage = async ({ message }: { message: string }) => {
-      const messageBody: IMessageBody = {
-        room_id: room._id,
-        message,
-        sender: user_id
-      };
-
-      const messageItem: IMessageItem = {
-        ...messageBody,
-        participant: !isAuthor ? user_id : room.participant._id,
-        author: isAuthor ? room.author : room.participant,
-        time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
-        sender: isAuthor ? room.author : room.participant
-      };
-
-      if (!room.hasOwnProperty('last_message')) {
-        room.last_message = {
-          message: ''
-        };
-      }
-
-      if (socket) await socket.emit('send_message', messageBody);
-
-      messageItem.isCurrentUser = true;
-
-      setMessageList((prevMessages: IMessageItem[]) => [...prevMessages, messageItem]);
-
-      room.last_message = {
-        message: currentMessage
-      };
-
-      room.unseen_messages = 0;
-      updateList && updateList(room);
-    };
-
-    return (
-      <div className={`chat-box ${className}`}>
-        <div className='conversation'>
-          <div className='messages-list' ref={conversationBoxRef}>
-            {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
-              const authorId = messageContent?.sender?._id;
-
-              const fromMe = authorId === user_id;
-
-              const isLastMessageFromAuthor =
-                messageList.findLastIndex((m: any) => m.sender._id === authorId) === messageIndex;
-
-              const isFirstInGroup =
-                !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.sender?._id !== authorId;
-
-              const inMiddleOfGroup =
-                messageList[messageIndex - 1]?.sender?._id === authorId &&
-                messageList[messageIndex + 1]?.sender?._id === authorId;
-
-              const lastInGroup =
-                messageList[messageIndex - 1]?.sender?._id === authorId &&
-                (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
-
-              const avatarKey = avatarKeyById[authorId];
-              const avatar = getAvatarFormIndex(avatarKey);
-
-              return (
-                <div
-                  className={classNames('message', {
-                    'from-me': fromMe,
-                    'from-you': !fromMe,
-                    last: isLastMessageFromAuthor,
-                    'first-in-group': isFirstInGroup,
-                    'in-middle-of-group': inMiddleOfGroup,
-                    'last-in-group': lastInGroup
-                  })}
-                  key={messageIndex}>
-                  <Avatar
-                    image={avatar}
-                    className={classNames({
-                      lostfish: avatarKey === 'lostfish'
-                    })}
-                  />
-
-                  <Typography variant='body5' className='text'>
-                    {messageContent.message}
-                  </Typography>
-                </div>
-              );
-            })}
-          </div>
-
-          <SuggestedMessages
-            room={room}
-            sendMessage={_sendMessage}
-            lastMessage={messageList.slice(-1)?.[0]}
-          />
-        </div>
-        <div className='write-box'>
-          <TextField
-            autoComplete='off'
-            placeholder='Type your message here...'
-            // endAdornment={
-            //   <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
-            //     <Icon icon='attach' color='#184D6D' size={18} />
-            //   </IconButton>
-            // }
-            value={currentMessage}
-            onChange={(event) => {
-              setCurrentMessage(event.target.value);
-            }}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && sendMessage();
-            }}
-          />
-          <Button className='send-button' size='medium' onClick={sendMessage}>
-            Send
-          </Button>
-        </div>
-      </div>
+  useEffect(() => {
+    setMessageList(
+      messages.filter((item: any) => item.hasOwnProperty('author') && item.hasOwnProperty('participant'))
     );
-  }
-)`
+  }, [messages]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('receive_message', (data: any) => {
+        setMessageList((list: IMessageItem[]) => [...list, data]);
+      });
+
+      return () => {
+        socket.off('receive_message');
+      };
+    }
+  }, [socket]);
+
+  React.useEffect(() => {
+    if (conversationBoxRef.current) {
+      conversationBoxRef.current;
+      conversationBoxRef.current.scrollTop = conversationBoxRef.current.scrollHeight;
+    }
+  }, [messageList]);
+
+  const avatarKeyById = {
+    [room.author._id]: room.author.avatar,
+    [room.participant._id]: room.participant.avatar
+  };
+
+  const sendMessage = async () => {
+    if (!currentMessage) {
+      return;
+    }
+
+    await _sendMessage({ message: currentMessage });
+
+    setCurrentMessage('');
+  };
+
+  const _sendMessage = async ({ message }: { message: string }) => {
+    const messageBody: IMessageBody = {
+      room_id: room._id,
+      message,
+      sender: user_id
+    };
+
+    const messageItem: IMessageItem = {
+      ...messageBody,
+      participant: !isAuthor ? user_id : room.participant._id,
+      author: isAuthor ? room.author : room.participant,
+      time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes(),
+      sender: isAuthor ? room.author : room.participant
+    };
+
+    if (!room.hasOwnProperty('last_message')) {
+      room.last_message = {
+        message: ''
+      };
+    }
+
+    if (socket) await socket.emit('send_message', messageBody);
+
+    messageItem.isCurrentUser = true;
+
+    setMessageList((prevMessages: IMessageItem[]) => [...prevMessages, messageItem]);
+
+    room.last_message = {
+      message: currentMessage
+    };
+
+    room.unseen_messages = 0;
+    updateList && updateList(room);
+  };
+
+  return (
+    <div className={`chat-box ${className}`}>
+      <div className='conversation'>
+        <div className='messages-list' ref={conversationBoxRef}>
+          {messageList.map((messageContent: IMessageItem, messageIndex: number) => {
+            const authorId = messageContent?.sender?._id;
+
+            const fromMe = authorId === user_id;
+
+            const isLastMessageFromAuthor =
+              messageList.findLastIndex((m: any) => m.sender._id === authorId) === messageIndex;
+
+            const isFirstInGroup =
+              !messageList[messageIndex - 1] || messageList[messageIndex - 1]?.sender?._id !== authorId;
+
+            const inMiddleOfGroup =
+              messageList[messageIndex - 1]?.sender?._id === authorId &&
+              messageList[messageIndex + 1]?.sender?._id === authorId;
+
+            const lastInGroup =
+              messageList[messageIndex - 1]?.sender?._id === authorId &&
+              (!messageList[messageIndex + 1] || messageList[messageIndex + 1]?.sender?._id !== authorId);
+
+            const avatarKey = avatarKeyById[authorId];
+            const avatar = getAvatarFormIndex(avatarKey);
+
+            return (
+              <div
+                className={classNames('message', {
+                  'from-me': fromMe,
+                  'from-you': !fromMe,
+                  last: isLastMessageFromAuthor,
+                  'first-in-group': isFirstInGroup,
+                  'in-middle-of-group': inMiddleOfGroup,
+                  'last-in-group': lastInGroup
+                })}
+                key={messageIndex}>
+                <Avatar
+                  image={avatar}
+                  className={classNames({
+                    lostfish: avatarKey === 'lostfish'
+                  })}
+                />
+
+                <Typography variant='body5' className='text'>
+                  {messageContent.message}
+                </Typography>
+              </div>
+            );
+          })}
+        </div>
+
+        <SuggestedMessages room={room} sendMessage={_sendMessage} lastMessage={messageList.slice(-1)?.[0]} />
+      </div>
+      <div className='write-box'>
+        <TextField
+          autoComplete='off'
+          placeholder='Type your message here...'
+          // endAdornment={
+          //   <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
+          //     <Icon icon='attach' color='#184D6D' size={18} />
+          //   </IconButton>
+          // }
+          value={currentMessage}
+          onChange={(event) => {
+            setCurrentMessage(event.target.value);
+          }}
+          onKeyPress={(event) => {
+            event.key === 'Enter' && sendMessage();
+          }}
+        />
+        <Button className='send-button' size='medium' onClick={sendMessage}>
+          Send
+        </Button>
+      </div>
+    </div>
+  );
+})`
   &.chat-box {
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.1));
     border-radius: 12px;
