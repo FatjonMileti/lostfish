@@ -1,27 +1,30 @@
 import { styled } from '@mui/system';
 import React, { HTMLAttributes } from 'react';
-import { ShowGlobalLoading } from '../../components/ShowGlobalLoading.tsx';
-import { useProfileStore } from '../../globalState/profile.tsx';
-import { useUserStore } from '../../globalState/user.tsx';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios from '../../utils/axios.ts';
+
+import { ShowGlobalLoading } from '../../components';
+import { Avatar } from '../../components';
+import { Icon } from '../../components';
+import { InfoCard } from './components/InfoCard.tsx';
 import { Typography } from '../../components';
 import { Button } from '../../components';
 import { TextField } from '../../components';
 import { Textarea } from '../../components/Textarea.tsx';
+
+import { useProfileStore } from '../../globalState/profile.tsx';
+import { useUserStore } from '../../globalState/user.tsx';
+import axios from '../../utils/axios.ts';
 import { avatars } from '../HomeLoggedIn/avatars.tsx';
-import { Avatar } from '../../components';
-import { Icon } from '../../components';
-import { InfoCard } from './components/InfoCard.tsx';
+import { useMutation } from '@tanstack/react-query';
 
 const userSchema = yup.object().shape({
   first_name: yup.string().required('First name is required'),
   last_name: yup.string().required('Last name is required'),
   email: yup.string().required('Email is required'),
   phone: yup.string(),
-  description: yup.string().transform((value) => value || undefined),
+  description: yup.string(),
   avatar: yup.string()
 });
 
@@ -35,70 +38,51 @@ interface AccountDetails {
 }
 
 export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
-  const [loading, setLoading] = React.useState(false);
-
   const profileStore = useProfileStore();
+  const userStore = useUserStore();
 
-  const { userDetails, auth } = useUserStore();
+  const accountDetails = useProfileStore(({ first_name, last_name, email, phone, description, avatar }) => ({
+    first_name,
+    last_name,
+    email,
+    phone,
+    description,
+    avatar
+  }));
 
   const accountDetailsForm = useForm<AccountDetails>({
     resolver: yupResolver(userSchema),
-    defaultValues: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      description: '',
-      avatar: profileStore.avatar || undefined
-    },
+    defaultValues: accountDetails,
     mode: 'all'
   });
 
   React.useEffect(() => {
-    accountDetailsForm.watch();
-    loadProfile();
-  }, []);
+    accountDetailsForm.reset(accountDetails);
+  }, [JSON.stringify(accountDetails)]);
 
-  React.useEffect(() => {
-    accountDetailsForm.setValue('first_name', profileStore.first_name);
-    accountDetailsForm.setValue('last_name', profileStore.last_name);
-    accountDetailsForm.setValue('email', profileStore.email);
-    accountDetailsForm.setValue('phone', profileStore.phone);
-    accountDetailsForm.setValue('description', profileStore.description);
-    accountDetailsForm.setValue('avatar', profileStore.avatar || '');
-  }, [profileStore]);
-
-  const loadProfile = async () => {
-    setLoading(true);
-    try {
-      await profileStore.fetchProfile(auth.access_token);
-    } catch (err) {
-      console.log(err);
-      throw err;
-    } finally {
-      setLoading(false);
+  const accountDetailsMutation = useMutation(
+    async (data: AccountDetails) => {
+      return await axios(userStore.auth.access_token).patch(
+        '/api/user/' + userStore.userDetails.user_id,
+        data
+      );
+    },
+    {
+      onSuccess: () => {
+        profileStore.fetchProfile(userStore.auth.access_token);
+      },
+      onError: (err) => {
+        console.log(err);
+      }
     }
-  };
-
-  const onSubmit = async (data: any) => {
-    setLoading(true);
-
-    data.have_pets = data.have_pets === 'Yes';
-    try {
-      await axios(auth.access_token).patch('/api/user/' + userDetails.user_id, data);
-      await loadProfile();
-    } catch (err) {
-      console.log(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  );
 
   return (
     <>
-      <form onSubmit={accountDetailsForm.handleSubmit(onSubmit)} className={`account-details ${className}`}>
-        {loading && <ShowGlobalLoading />}
+      {accountDetailsMutation.isLoading && <ShowGlobalLoading />}
+      <form
+        onSubmit={accountDetailsForm.handleSubmit((data) => accountDetailsMutation.mutate(data))}
+        className={`account-details ${className}`}>
         <div className='account-details-header'>
           <Typography variant='body2' className='section-title'>
             Account details
@@ -107,7 +91,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
             type='submit'
             size='medium'
             className='submit-button'
-            disabled={!accountDetailsForm.formState.isValid}>
+            disabled={!accountDetailsForm.formState.isValid || !accountDetailsForm.formState.isDirty}>
             Save changes
           </Button>
         </div>

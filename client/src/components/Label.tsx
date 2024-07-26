@@ -25,6 +25,8 @@ export const Label = styled(
   }: LabelProps) => {
     return (
       <div
+        tabIndex={0}
+        role='button'
         className={classNames(className, 'label', `size-${size}`, `variant-${variant}`, {
           active,
           inverted,

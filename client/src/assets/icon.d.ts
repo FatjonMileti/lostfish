@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "dot"
   | "bell"
   | "remind"
   | "completed-badge"
