@@ -6,7 +6,6 @@ import { UseFormReturn } from 'react-hook-form';
 
 import { Modal, ModalProps } from '../../components/Modal';
 import { Typography } from '../../components/Typography';
-import { CloseButton } from '../../components/CloseButton';
 import { Label } from '../../components/Label';
 import { Icon } from '../../components/Icon';
 
@@ -16,6 +15,7 @@ import { SetCriteriaBudget } from './SetCriteria/SetCriteria.Budged';
 import { SetCriteriaHouseDetails } from './SetCriteria/SetCriteria.HouseDetails';
 
 import { CriteriaFormType } from './criteria.types';
+import { RoundAction } from '../../components/RoundAction.tsx';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details'];
 
@@ -49,8 +49,8 @@ export const SetCriteriaModal = styled(
           <div className='title-and-button-wrapper'>
             <Typography variant='body2'>Match preferences</Typography>
 
-            <CloseButton
-              size='large'
+            <RoundAction
+              icon='close'
               onClick={async () => {
                 onBack();
               }}

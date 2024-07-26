@@ -16,6 +16,7 @@ import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSugg
 import { useMatchedTenants } from '../MatchesTenants/useMatchedTenants.tsx';
 import { matchSuggestedTenant } from './matchSuggestedTenant.tsx';
 import { dismissSuggestedTenant } from './dismissSuggestedTenant.tsx';
+import { NoMatchesCard } from '../NoMatchesCard.tsx';
 
 interface PotentialMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PotentialMatches = styled(({ className }: PotentialMatchesProps) => {
@@ -81,6 +82,11 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
         <ShowGlobalLoading />
       )}
       <div className={classNames('potential-matches', className)}>
+        <div>
+          {!suggestedTenants.isFetching && !suggestedTenants.data.length && (
+            <NoMatchesCard className='no-matches' onHandleClick={null} />
+          )}
+        </div>
         <motion.div className='slides-wrapper'>
           {suggestedTenants.data.map((tenant, tenantIndex) => {
             const { criteria: tenantCriteria } = tenant;
@@ -160,27 +166,23 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
 })`
   &.potential-matches {
     position: relative;
-    min-height: calc(100vh - 112px);
     display: grid;
-    grid-template-rows: auto min-content;
+    grid-template-rows: auto min-content min-content;
     row-gap: 32px;
     box-sizing: border-box;
     justify-items: center;
     overflow-x: clip;
-    align-content: center;
+
+    .no-matches {
+      padding: 24px 36px;
+      box-sizing: border-box;
+    }
 
     .slides-wrapper {
       display: flex;
       column-gap: 24px;
       width: 440px;
       box-sizing: border-box;
-
-      .no-matches {
-        display: grid;
-        align-items: center;
-        justify-items: center;
-        width: 100%;
-      }
     }
 
     .matches-slider-footer {

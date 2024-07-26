@@ -11,10 +11,10 @@ import { NearestThings } from './ViewProperty.NearestThings';
 import { avatars } from '../../HomeLoggedIn/avatars';
 
 import { AreaUnit } from '../../Properties/NewProperty/property.constants';
-import { CloseButton } from '../../../components';
 import { SuggestedPropertyType } from '../matches.type';
 import { Avatar, Label } from '../../../components';
 import verified from '../../MyAccount/images/verified.svg';
+import { RoundAction } from '../../../components/RoundAction.tsx';
 
 interface ViewPropertyModalProps extends ModalProps {
   propertyMatch: SuggestedPropertyType;
@@ -74,7 +74,7 @@ export const ViewProperty = styled(
           <Typography variant='body2' className='modal-title'>
             Match details
           </Typography>
-          <CloseButton size='medium' onClick={closeModal} />
+          <RoundAction icon='close' onClick={closeModal} />
         </div>
         <div>
           {awaitingMatch && (

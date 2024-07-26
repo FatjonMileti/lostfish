@@ -15,6 +15,7 @@ import { Furnished, OutsideSpace, PropertyType } from './property.constants';
 import { OtherSpecificPropertyFeature } from '../../SetCriteria/criteria.types';
 import { useUserStore } from '../../../globalState/user';
 import { ShowGlobalLoading } from '../../../components/ShowGlobalLoading';
+import { RoundAction } from '../../../components/RoundAction.tsx';
 
 export interface EditPropertyModalProps extends HTMLAttributes<HTMLDivElement> {
   showStore: [boolean, (show: boolean) => void];
@@ -207,7 +208,7 @@ export const EditPropertyModal = styled(
         {loadingProperty && <ShowGlobalLoading />}
 
         <div className='header'>
-          <Typography variant='body2'>Add property</Typography>
+          <Typography variant='body2'>Edit property</Typography>
           <div className='right-side'>
             {propertyId && (
               <Button
@@ -218,7 +219,7 @@ export const EditPropertyModal = styled(
                 Delete property
               </Button>
             )}
-            <CloseButton className='exit-button' onClick={() => setModalVisibility(false)} />
+            <RoundAction icon='close' onClick={() => setModalVisibility(false)} />
           </div>
         </div>
         <PropertyForm
@@ -283,12 +284,6 @@ export const EditPropertyModal = styled(
         .delete-button {
           color: #e5155a;
           border-color: #e5155a;
-        }
-
-        .exit-button {
-          padding: 16px;
-          width: 56px;
-          height: 56px;
         }
       }
     }

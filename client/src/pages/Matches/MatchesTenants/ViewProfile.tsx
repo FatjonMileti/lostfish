@@ -7,9 +7,8 @@ import { Icon } from '../../../components';
 
 import verified from '../../MyAccount/images/verified.svg';
 import { avatars, getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-import { CloseButton } from '../../../components';
-
 import { ApiPropertyDocumentType } from '../../Properties/NewProperty/property.types.ts';
+import { RoundAction } from '../../../components/RoundAction.tsx';
 
 export interface TenantMatchData {
   chosen: boolean;
@@ -59,7 +58,7 @@ export const ViewProfile = styled(
           <Typography variant='body2' className='modal-title'>
             Match details
           </Typography>
-          <CloseButton size='medium' onClick={closeViewProfile} />
+          <RoundAction icon='close' onClick={closeViewProfile} />
         </div>
         <div>
           {awaitingMatch && (

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 
-import { Icon, Label, PropertyCard, Typography, ShowGlobalLoading } from '../../../components';
+import { Icon, Label, PropertyCard, ShowGlobalLoading } from '../../../components';
 
 import { ViewProperty } from '../MatchesProperties/ViewProperty.tsx';
 
@@ -18,6 +18,7 @@ import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/
 import { useMatchedProperties } from '../MatchesProperties/useMatchedProperties.tsx';
 import { matchSuggestedProperty } from './matchSuggestedProperty.tsx';
 import { dismissSuggestedProperty } from './dismissSuggestedProperty.tsx';
+import { NoMatchesCard } from '../NoMatchesCard.tsx';
 
 interface PotentialMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PotentialMatches = styled(({ className }: PotentialMatchesProps) => {
@@ -91,26 +92,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
       <div className={classNames('potential-matches', className)}>
         <motion.div className='slides-wrapper'>
           {!suggestedProperties.isFetching && !suggestedProperties.data.length && (
-            <div className='no-matches-card'>
-              <div className='title-description'>
-                <Icon icon='intersect' size={64} color='#E5155A' />
-                <Typography variant='body2' className='title'>
-                  Looking for more matches?
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  There are <span className='red-text'>28 available properties</span> that could be a perfect
-                  match for you if you are looking to adapt your{' '}
-                  <span className='black-text'>Budget Preferences.</span>
-                </Typography>
-              </div>
-              <Label
-                variant='secondary'
-                size='large'
-                className='action-button'
-                onClick={onAdjustMatchPreferencesClick}>
-                Adjust match preferences
-              </Label>
-            </div>
+            <NoMatchesCard onHandleClick={onAdjustMatchPreferencesClick} />
           )}
 
           {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
@@ -198,56 +180,6 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
       height: 540px;
       box-sizing: border-box;
       align-items: center;
-
-      .no-matches-card {
-        padding: 64px;
-        width: 672px;
-        height: 452px;
-        box-sizing: border-box;
-        border-radius: 12px;
-        flex-shrink: 0;
-        display: grid;
-        justify-items: center;
-        row-gap: 48px;
-
-        border: 2px solid #eee0d3;
-        background: #f7f1e7;
-        /* Nav Shadow */
-        box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
-
-        .title-description {
-          display: grid;
-          justify-items: center;
-          row-gap: 24px;
-
-          .title,
-          .description {
-            text-align: center;
-          }
-
-          .description {
-            .red-text,
-            .black-text {
-              font-weight: 700;
-            }
-            .red-text {
-              color: #e5155a;
-            }
-            .black-text {
-              color: #000;
-            }
-          }
-
-          .title {
-            .highlighted {
-              color: #e5155a;
-            }
-          }
-        }
-        .action-button {
-          padding: 20px 32px;
-        }
-      }
     }
 
     .matches-slider-footer {
