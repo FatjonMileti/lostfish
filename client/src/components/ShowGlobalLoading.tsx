@@ -1,7 +1,7 @@
 import { styled } from '@mui/system';
 import { LoadingMatch } from './LoadingMatch';
 import React, { HTMLAttributes } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
 
 import { create } from 'zustand';
@@ -54,17 +54,29 @@ export const ShowGlobalLoading = () => {
   return null;
 };
 
+export const animation = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: {
+    duration: 0.5
+  }
+};
+
 export const GlobalLoading = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const backdropStore = useBackdropStore();
 
-  return Object.values(backdropStore.ids).length > 0
-    ? createPortal(
-        <motion.div className={className}>
-          <LoadingMatch />
-        </motion.div>,
-        document.body
-      )
-    : null;
+  return createPortal(
+    <>
+      <AnimatePresence>
+        {Object.values(backdropStore.ids).length > 0 && (
+          <motion.div className={className} {...animation}>
+            <LoadingMatch />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>,
+    document.body
+  );
 })`
   & {
     position: fixed;
