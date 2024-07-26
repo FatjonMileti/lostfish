@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Label, Typography } from '../../../../components';
 import { useSuggestedProperties } from '../../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
 import { useNavigate } from 'react-router-dom';
+import { useProfileStore } from '../../../../globalState/profile.tsx';
 
 interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {}
 export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
@@ -14,6 +15,8 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
     }
   });
 
+  const profileStore = useProfileStore();
+
   const navigate = useNavigate();
 
   return (
@@ -22,8 +25,9 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
         <div className='texts-wrapper'>
           <Typography variant='body1'>Matches are waiting</Typography>
           <Typography variant='body4'>
-            Hey John, we’ve found <b>{suggestedProperties.data?.length} potential matches</b> for you that
-            match your requirements. Out of those, our algorithms indicate that there some of them could be{' '}
+            Hey {profileStore.first_name}, we’ve found{' '}
+            <b>{suggestedProperties.data?.length} potential matches</b> for you that match your requirements.
+            Out of those, our algorithms indicate that there some of them could be{' '}
             <b>perfect matches for you.</b>
           </Typography>
           <Typography variant='body4'>
