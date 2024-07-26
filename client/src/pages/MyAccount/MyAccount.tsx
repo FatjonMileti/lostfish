@@ -178,9 +178,8 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       display: grid;
       grid-template-rows: min-content auto;
 
-      .header {
-        border-bottom: 1px solid #f3f4f5;
-        box-sizing: border-box;
+      .header-logged-in {
+        border-bottom-color: #f3f4f5;
       }
 
       .container-account {

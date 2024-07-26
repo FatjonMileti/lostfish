@@ -90,10 +90,6 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
       grid-template-rows: min-content auto;
       box-sizing: border-box;
 
-      .header-logged-in {
-        border: 1px solid #eee0d3;
-      }
-
       .content-wrapper {
         display: grid;
         grid-template-rows: min-content auto;

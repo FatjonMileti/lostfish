@@ -15,7 +15,6 @@ import axios from '../../../utils/axios';
 import { useUserStore } from '../../../globalState/user';
 import { useMatchesCount } from '../useMatchesCount';
 import { useMatchedTenants } from './useMatchedTenants';
-import { TenantsReviewHeader } from './TenantsReviewHeader';
 import { useSuggestedTenants } from '../../Suggestions/SugestionsTenants/useSuggestedTenants';
 import { MatchedTenantType } from '../matches.type';
 import { useMutation } from '@tanstack/react-query';
@@ -133,13 +132,7 @@ export const MyMatchesTenants = styled(({ className }: MyMatchesTenants) => {
           </div>
         </FilterMatchesModal>
         <div className='header-and-content-wrapper'>
-          <HeaderLoggedIn
-            middleContent={
-              <>
-                <TenantsReviewHeader />
-              </>
-            }
-          />
+          <HeaderLoggedIn />
           <div className='content-wrapper'>
             <div className='content-header'>
               <div className='header-left-content'>

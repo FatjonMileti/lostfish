@@ -20,7 +20,6 @@ import { ViewProperty } from './ViewProperty';
 import { PropertyCard } from '../../../components';
 import { useMatchedProperties } from './useMatchedProperties';
 import { useMatchesCount } from '../useMatchesCount';
-import { PropertiesReviewHeader } from './PropertiesReviewHeader';
 import { useSuggestedProperties } from '../../Suggestions/SuggestionsProperties/useSuggestedProperties';
 import { MatchedPropertyType } from '../matches.type';
 import { CloseButton } from '../../../components';
@@ -139,13 +138,7 @@ export const MyMatchesProperties = styled(({ className }: MyMatchesProperties) =
           </div>
         </FilterMatchesModal>
         <div className='header-and-content-wrapper'>
-          <HeaderLoggedIn
-            middleContent={
-              <>
-                <PropertiesReviewHeader />
-              </>
-            }
-          />
+          <HeaderLoggedIn />
           <div className='content-wrapper'>
             <div className='content-header'>
               <div className='header-left-content'>

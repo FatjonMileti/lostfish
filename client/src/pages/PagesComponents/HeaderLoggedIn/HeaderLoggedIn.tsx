@@ -1,107 +1,74 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { styled } from '@mui/system';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { useProfileStore } from '../../../globalState/profile.tsx';
 import { useNotificationsStore } from '../../../globalState/notifications.ts';
-// import { MatchesIcon } from '../../../components/MatchesIcon.tsx';
-// import { MessagesIcon } from '../../../components/MessagesIcon.tsx';
 import { AccountWidget } from '../../../components/AccountWidget/AccountWidget.tsx';
 import { NotificationsIcon } from '../../../components';
-
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars.tsx';
-
-import lostfishLogoColored from '../../../assets/svg/lostfishLogoWithColorAndText.svg';
 import { Role } from '../../../enums.ts';
-// import { useMatchesCount } from '../../Matches/useMatchesCount.tsx';
 import { MenuItem } from './MenuItem.tsx';
 
-export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  middleContent?: ReactElement;
-}
+import lostfishLogoColored from '../../../assets/svg/lostfishLogoWithColorAndText.svg';
 
-export const HeaderLoggedIn = styled(
-  ({
-    className
-  }: // middleContent
-  HeaderProps) => {
-    const navigate = useNavigate();
-    const profileStore = useProfileStore();
-    const notificationsStore = useNotificationsStore();
-    const location = useLocation();
+export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-    // const matchesCount = useMatchesCount({
-    //   params: { chosen: true, disliked: false },
-    //   options: {
-    //     refetchOnMount: true
-    //   }
-    // });
+export const HeaderLoggedIn = styled(({ className }: HeaderProps) => {
+  const navigate = useNavigate();
+  const profileStore = useProfileStore();
+  const notificationsStore = useNotificationsStore();
+  const location = useLocation();
 
-    return (
-      <div className={classNames('header-logged-in', className)}>
-        <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
+  return (
+    <div className={classNames('header-logged-in', className)}>
+      <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
+      <div className='middle-part'>
+        <div className='navigation'>
+          <NavLink to='/'>
+            {({ isActive }) => <MenuItem label='Dashboard' icon='layer' active={isActive} />}
+          </NavLink>
 
-        <div className='middle-part'>
-          <div className='navigation'>
-            <NavLink to='/'>
-              {({ isActive }) => <MenuItem label='Dashboard' icon='layer' active={isActive} />}
-            </NavLink>
+          <NavLink to='/matches'>
+            {({ isActive }) => <MenuItem label='Matches' icon='like' active={isActive} />}
+          </NavLink>
 
-            <NavLink to='/matches'>
-              {({ isActive }) => <MenuItem label='Matches' icon='like' active={isActive} />}
-            </NavLink>
-
-            <NavLink to='/messages'>
-              {({ isActive }) => (
-                <MenuItem
-                  label='Messages'
-                  icon='email'
-                  active={isActive}
-                  counter={notificationsStore.unreadMessages}
-                />
-              )}
-            </NavLink>
-
-            {profileStore.role === Role.Landlord && (
-              <NavLink to='/my-properties'>
-                {({ isActive }) => <MenuItem label='Properties' icon='building' active={isActive} />}
-              </NavLink>
+          <NavLink to='/messages'>
+            {({ isActive }) => (
+              <MenuItem
+                label='Messages'
+                icon='email'
+                active={isActive}
+                counter={notificationsStore.unreadMessages}
+              />
             )}
-          </div>
+          </NavLink>
 
-          {/*{middleContent || null}*/}
-        </div>
-
-        <div className='right-part'>
-          <div className='matches-and-messages-buttons-wrapper'>
-            {/*<MatchesIcon*/}
-            {/*  onClick={() => navigate('/my-matches')}*/}
-            {/*  counter={matchesCount.data?.number || undefined}*/}
-            {/*  actioned={location.pathname === '/my-matches'}*/}
-            {/*/>*/}
-
-            {/*<MessagesIcon*/}
-            {/*  counter={notificationsStore.unreadMessages || undefined}*/}
-            {/*  onClick={() => navigate('/messages')}*/}
-            {/*  actioned={location.pathname === '/messages'}*/}
-            {/*/>*/}
-
-            <NotificationsIcon
-              counter={notificationsStore.unreadMessages || undefined}
-              onClick={() => navigate('/messages')}
-              actioned={location.pathname === '/messages'}
-            />
-          </div>
-
-          <div className='avatar-and-match-score-wrapper'>
-            <AccountWidget avatar={getAvatarFormIndex(profileStore.avatar)} />
-          </div>
+          {profileStore.role === Role.Landlord && (
+            <NavLink to='/my-properties'>
+              {({ isActive }) => <MenuItem label='Properties' icon='building' active={isActive} />}
+            </NavLink>
+          )}
         </div>
       </div>
-    );
-  }
-)`
+
+      <div className='right-part'>
+        <div className='matches-and-messages-buttons-wrapper'>
+          <NotificationsIcon
+            counter={notificationsStore.unreadMessages || undefined}
+            onClick={() => navigate('/messages')}
+            actioned={location.pathname === '/messages'}
+          />
+        </div>
+
+        <div className='avatar-and-match-score-wrapper'>
+          <AccountWidget avatar={getAvatarFormIndex(profileStore.avatar)} />
+        </div>
+      </div>
+    </div>
+  );
+})`
   &.header-logged-in {
     align-items: center;
 
@@ -111,6 +78,8 @@ export const HeaderLoggedIn = styled(
     display: grid;
     grid-template-columns: auto auto auto;
     justify-content: space-between;
+
+    border: 1px solid #eee0d3;
 
     .logo {
       height: 42px;

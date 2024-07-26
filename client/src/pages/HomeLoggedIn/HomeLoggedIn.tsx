@@ -43,10 +43,6 @@ export const HomeLoggedIn = styled(({ className }: React.HTMLAttributes<HTMLDivE
     grid-template-rows: min-content auto min-content;
     box-sizing: border-box;
 
-    .header-logged-in {
-      border: 1px solid #eee0d3;
-    }
-
     .container {
       display: grid;
       box-sizing: border-box;
