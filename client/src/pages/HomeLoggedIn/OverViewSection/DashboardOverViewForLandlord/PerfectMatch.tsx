@@ -12,11 +12,13 @@ import { useMutation } from '@tanstack/react-query';
 import { cancelMatchedTenant } from '../../../Matches/MatchesForLandlord/cancelMatchedTenant.tsx';
 import { useMatchedTenants } from '../../../Matches/MatchesTenants/useMatchedTenants.tsx';
 import { useUserStore } from '../../../../globalState/user.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedTenantType;
+  motionProps?: MotionProps;
 }
-export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => {
+export const PerfectMatch = styled(({ className, match, motionProps = {} }: PerfectMatchProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
   const userStore = useUserStore();
@@ -46,7 +48,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
   return (
     <>
       {dislikeTenant.isLoading && <ShowGlobalLoading />}
-      <div className={classNames('perfect-match', className)}>
+      <motion.div className={classNames('perfect-match', className)} {...motionProps}>
         <div className='left-content'>
           <div className='texts-wrapper'>
             <Typography variant='body1'>Good news! You got a perfect match</Typography>
@@ -80,7 +82,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
             <Typography variant='body5'></Typography>
           </div>
         </div>
-      </div>
+      </motion.div>
       {perfectMatchToView && (
         <ViewProfile
           tenantMatch={perfectMatchToView}

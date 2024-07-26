@@ -5,9 +5,12 @@ import { Label, Typography } from '../../../../components';
 import { useSuggestedProperties } from '../../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
-interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {}
-export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
+interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {
+  motionProps?: MotionProps;
+}
+export const MatchesAwaiting = styled(({ className, motionProps = {} }: MatchesAwaitingProps) => {
   const suggestedProperties = useSuggestedProperties({
     params: { chosen: false },
     options: {
@@ -20,7 +23,7 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className={classNames('matches-awaiting', className)}>
+    <motion.div className={classNames('matches-awaiting', className)} {...motionProps}>
       <div className='left-content'>
         <div className='texts-wrapper'>
           <Typography variant='body1'>Matches are waiting</Typography>
@@ -50,7 +53,7 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
             })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 })`
   &.matches-awaiting {

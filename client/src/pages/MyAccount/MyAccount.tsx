@@ -20,9 +20,6 @@ import { ImproveTrustScoreModal } from '../PagesComponents/ImproveTrustScoreModa
 import { SetCriteria } from '../SetCriteria/SetCriteria/SetCriteria';
 import { Properties } from './Properties/Properties.tsx';
 import { Solicitors } from './Solicitors';
-import { Role } from '../../enums';
-import { TenantsReviewHeader } from '../Matches/MatchesTenants/TenantsReviewHeader';
-import { PropertiesReviewHeader } from '../Matches/MatchesProperties/PropertiesReviewHeader';
 import { AccountItem } from '../../components';
 import { IconProps } from '../../components/Icon.tsx';
 import { AccountDetails } from './AccountDetails.tsx';
@@ -99,14 +96,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
       />
       <div className={`my-account-page ${className}`}>
         <div className='header-and-content-wrapper'>
-          <HeaderLoggedIn
-            middleContent={
-              <>
-                {profileStore.role === Role.Landlord && <TenantsReviewHeader />}
-                {profileStore.role === Role.Tenant && <PropertiesReviewHeader />}
-              </>
-            }
-          />
+          <HeaderLoggedIn />
           <div className='container-account'>
             <div className='left-menu'>
               <div className='menu-header'>

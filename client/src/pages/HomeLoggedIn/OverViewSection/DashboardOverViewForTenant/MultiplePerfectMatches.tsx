@@ -8,80 +8,84 @@ import { Avatar, Icon, Label, Typography } from '../../../../components';
 import { MatchedPropertyType } from '../../../Matches/matches.type.ts';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
 interface MultiplePerfectMatchesProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedPropertyType;
   count: number;
+  motionProps?: MotionProps;
 }
-export const MultiplePerfectMatches = styled(({ className, match, count }: MultiplePerfectMatchesProps) => {
-  const navigate = useNavigate();
-  const profileStore = useProfileStore();
+export const MultiplePerfectMatches = styled(
+  ({ className, match, count, motionProps = {} }: MultiplePerfectMatchesProps) => {
+    const navigate = useNavigate();
+    const profileStore = useProfileStore();
 
-  const onReviewPerfectMatchesClick = () => {
-    navigate('/matches');
-  };
+    const onReviewPerfectMatchesClick = () => {
+      navigate('/matches');
+    };
 
-  return (
-    <div className={classNames('perfect-match', className)}>
-      <div className='left-content'>
-        <div className='texts-wrapper'>
-          <Typography variant='body1'>Amazing! You got {count} perfect matches</Typography>
-          <Typography variant='body4'>
-            Hey {profileStore.first_name}, you are now perfectly matched with{' '}
-            <b>{`${match.landlord.first_name}'s`} property</b>. Reach out and drop a message to the landlord
-            and when ready, make an offer and close the deal.
-          </Typography>
+    return (
+      <motion.div className={classNames('perfect-match', className)} {...motionProps}>
+        <div className='left-content'>
+          <div className='texts-wrapper'>
+            <Typography variant='body1'>Amazing! You got {count} perfect matches</Typography>
+            <Typography variant='body4'>
+              Hey {profileStore.first_name}, you are now perfectly matched with{' '}
+              <b>{`${match.landlord.first_name}'s`} property</b>. Reach out and drop a message to the landlord
+              and when ready, make an offer and close the deal.
+            </Typography>
+          </div>
+
+          <Label
+            className='review-matches-button'
+            variant='special'
+            size='large'
+            onClick={onReviewPerfectMatchesClick}>
+            Review perfect matches
+          </Label>
         </div>
+        <div
+          className='right-content'
+          style={{ backgroundImage: `url(' ${match.property.property_images?.[0]?.link} ')` }}>
+          <div className='slide-header'>
+            <div className='header-left-content'>
+              <Avatar image={getAvatarFormIndex(match.landlord.avatar)} />
+              <div>
+                <Typography variant='body5'>{`${match.landlord.first_name} ${match.landlord.last_name}`}</Typography>
+              </div>
+            </div>
+          </div>
 
-        <Label
-          className='review-matches-button'
-          variant='special'
-          size='large'
-          onClick={onReviewPerfectMatchesClick}>
-          Review perfect matches
-        </Label>
-      </div>
-      <div
-        className='right-content'
-        style={{ backgroundImage: `url(' ${match.property.property_images?.[0]?.link} ')` }}>
-        <div className='slide-header'>
-          <div className='header-left-content'>
-            <Avatar image={getAvatarFormIndex(match.landlord.avatar)} />
-            <div>
-              <Typography variant='body5'>{`${match.landlord.first_name} ${match.landlord.last_name}`}</Typography>
+          <div className='slide-footer'>
+            <Typography className='property-name'>{match.property.title}</Typography>
+            <div className='property-details'>
+              <div className='detail'>
+                <Icon icon='location' />
+                <Typography variant='body5'>{match.property.area_of_interest}</Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Typography variant='body5'>
+                  £{match.property.budget.min_budget} - £{match.property.budget.max_budget}PCM
+                </Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Icon icon='double-bed' />
+                <Typography variant='body5'>{match.property.room_details.numberOfBedrooms}</Typography>
+              </div>
+              <span className='dot'>•</span>
+              <div className='detail'>
+                <Icon icon='bathtub' />
+                <Typography variant='body5'>{match.property.room_details.number_of_bathrooms}</Typography>
+              </div>
             </div>
           </div>
         </div>
-
-        <div className='slide-footer'>
-          <Typography className='property-name'>{match.property.title}</Typography>
-          <div className='property-details'>
-            <div className='detail'>
-              <Icon icon='location' />
-              <Typography variant='body5'>{match.property.area_of_interest}</Typography>
-            </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Typography variant='body5'>
-                £{match.property.budget.min_budget} - £{match.property.budget.max_budget}PCM
-              </Typography>
-            </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Icon icon='double-bed' />
-              <Typography variant='body5'>{match.property.room_details.numberOfBedrooms}</Typography>
-            </div>
-            <span className='dot'>•</span>
-            <div className='detail'>
-              <Icon icon='bathtub' />
-              <Typography variant='body5'>{match.property.room_details.number_of_bathrooms}</Typography>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-})`
+      </motion.div>
+    );
+  }
+)`
   &.perfect-match {
     display: grid;
     grid-template-columns: 1fr 1fr;

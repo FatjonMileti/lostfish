@@ -11,6 +11,9 @@ import { PerfectMatch } from './PerfectMatch.tsx';
 import { useMatchedTenants } from '../../../Matches/MatchesTenants/useMatchedTenants.tsx';
 import { MultiplePerfectMatches } from './MultiplePerfectMatches.tsx';
 import { useSuggestedTenants } from '../../../Suggestions/SugestionsTenants/useSuggestedTenants.tsx';
+import { AnimatePresence } from 'framer-motion';
+import { FinalDocs } from './FinalDocs.tsx';
+import { motionPropsAnimatePresence } from '../OverViewSection.tsx';
 
 interface DashboardOverviewForLandlordProps {}
 export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordProps) => {
@@ -59,16 +62,24 @@ export const DashboardOverviewForLandlord = ({}: DashboardOverviewForLandlordPro
 
   return (
     <>
-      {state === States.Default && <DefaultState />}
-      {state === States.MatchesAwaiting && <MatchesAwaiting />}
-      {state === States.PerfectMatch && matchedTenants.data[0] && (
-        <PerfectMatch match={matchedTenants.data[0]} />
-      )}
-      {state === States.MultiplePerfectMatches && (
-        <MultiplePerfectMatches count={matchedTenants.data.length} match={matchedTenants.data[0]} />
-      )}
-      {state === States.Agreement && <Agreement />}
-      {/*{state === States.FinalDocs && <FinalDocs match={matchedProperties.data[0]} />}*/}
+      <AnimatePresence>
+        {state === States.Default && <DefaultState motionProps={motionPropsAnimatePresence} />}
+        {state === States.MatchesAwaiting && <MatchesAwaiting motionProps={motionPropsAnimatePresence} />}
+        {state === States.PerfectMatch && matchedTenants.data[0] && (
+          <PerfectMatch match={matchedTenants.data[0]} motionProps={motionPropsAnimatePresence} />
+        )}
+        {state === States.MultiplePerfectMatches && (
+          <MultiplePerfectMatches
+            count={matchedTenants.data.length}
+            match={matchedTenants.data[0]}
+            motionProps={motionPropsAnimatePresence}
+          />
+        )}
+        {state === States.Agreement && <Agreement />}
+        {state === States.FinalDocs && (
+          <FinalDocs match={matchedTenants.data[0]} motionProps={motionPropsAnimatePresence} />
+        )}
+      </AnimatePresence>
     </>
   );
 };

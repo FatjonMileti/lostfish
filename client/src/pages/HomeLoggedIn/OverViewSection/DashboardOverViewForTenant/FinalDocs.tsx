@@ -7,11 +7,13 @@ import { Avatar, Label, Typography } from '../../../../components';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { MatchedPropertyType } from '../../../Matches/matches.type.ts';
+import { motion, MotionProps } from 'framer-motion';
 
 interface FinalDocsProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedPropertyType;
+  motionProps?: MotionProps;
 }
-export const FinalDocs = styled(({ className, match }: FinalDocsProps) => {
+export const FinalDocs = styled(({ className, match, motionProps = {} }: FinalDocsProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
 
@@ -20,7 +22,7 @@ export const FinalDocs = styled(({ className, match }: FinalDocsProps) => {
   };
 
   return (
-    <div className={classNames('final-docs', className)}>
+    <motion.div className={classNames('final-docs', className)} {...motionProps}>
       <div className='left-content'>
         <div className='texts-wrapper'>
           <Typography variant='body1'>You’re almost there!</Typography>
@@ -43,7 +45,7 @@ export const FinalDocs = styled(({ className, match }: FinalDocsProps) => {
         <Avatar image={getAvatarFormIndex(profileStore.avatar)} />
         <Avatar image={match.property.property_images?.[0]?.link} />
       </div>
-    </div>
+    </motion.div>
   );
 })`
   &.final-docs {

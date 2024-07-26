@@ -6,9 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import { useSuggestedTenants } from '../../../Suggestions/SugestionsTenants/useSuggestedTenants.tsx';
 import { getAvatarFormIndex } from '../../avatars.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
-interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {}
-export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
+interface MatchesAwaitingProps extends HTMLAttributes<HTMLDivElement> {
+  motionProps?: MotionProps;
+}
+export const MatchesAwaiting = styled(({ className, motionProps = {} }: MatchesAwaitingProps) => {
   const suggestedTenants = useSuggestedTenants({
     params: { chosen: false, disliked: false },
     options: {
@@ -24,7 +27,7 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
   };
 
   return (
-    <div className={classNames('matches-awaiting', className)}>
+    <motion.div className={classNames('matches-awaiting', className)} {...motionProps}>
       <div className='left-content'>
         <div className='texts-wrapper'>
           <Typography variant='body1'>Matches are waiting</Typography>
@@ -55,7 +58,7 @@ export const MatchesAwaiting = styled(({ className }: MatchesAwaitingProps) => {
             })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 })`
   &.matches-awaiting {

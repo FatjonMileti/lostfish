@@ -4,6 +4,14 @@ import classNames from 'classnames';
 import { DashboardOverview } from './DashboardOverview.tsx';
 import { GetNoticed } from './GetNoticed.tsx';
 
+export const motionPropsAnimatePresence = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: {
+    duration: 1
+  }
+};
+
 interface OverViewSectionProps extends HTMLAttributes<HTMLDivElement> {}
 export const OverViewSection = styled(({ className }: OverViewSectionProps) => {
   return (

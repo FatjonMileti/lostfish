@@ -13,11 +13,13 @@ import axios from '../../../../utils/axios.ts';
 import { useUserStore } from '../../../../globalState/user.tsx';
 import { useMatchedProperties } from '../../../Matches/MatchesProperties/useMatchedProperties.tsx';
 import { cancelMatchedProperty } from '../../../Matches/MatchesForTenant/cancelMatchedProperty.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
 interface PerfectMatchProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedPropertyType;
+  motionProps?: MotionProps;
 }
-export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => {
+export const PerfectMatch = styled(({ className, match, motionProps = {} }: PerfectMatchProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
   const userStore = useUserStore();
@@ -65,7 +67,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
 
   return (
     <>
-      <div className={classNames('perfect-match', className)}>
+      <motion.div className={classNames('perfect-match', className)} {...motionProps}>
         <div className='left-content'>
           <div className='texts-wrapper'>
             <Typography variant='body1'>Good news! You got a perfect match</Typography>
@@ -133,7 +135,7 @@ export const PerfectMatch = styled(({ className, match }: PerfectMatchProps) => 
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
       {propertyToView && (
         <ViewProperty
           open={true}

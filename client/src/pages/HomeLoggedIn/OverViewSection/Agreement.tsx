@@ -11,9 +11,12 @@ import { useUserStore } from '../../../globalState/user.tsx';
 import config from '../../../config.ts';
 import { Role } from '../../../enums.ts';
 import { useMutation } from '@tanstack/react-query';
+import { motion, MotionProps } from 'framer-motion';
 
-interface AgreementProps extends HTMLAttributes<HTMLDivElement> {}
-export const Agreement = styled(({ className }: AgreementProps) => {
+interface AgreementProps extends HTMLAttributes<HTMLDivElement> {
+  motionProps?: MotionProps;
+}
+export const Agreement = styled(({ className, motionProps = {} }: AgreementProps) => {
   const profileStore = useProfileStore();
   const userSore = useUserStore();
 
@@ -60,7 +63,7 @@ export const Agreement = styled(({ className }: AgreementProps) => {
   return (
     <>
       {agreementMutation.isLoading && <ShowGlobalLoading />}
-      <div className={classNames('agreement', className)}>
+      <motion.div className={classNames('agreement', className)} {...motionProps}>
         <div className='left-content'>
           <div className='texts-wrapper'>
             <Typography variant='body1'>Sign the transaction agreement to rent</Typography>
@@ -91,7 +94,7 @@ export const Agreement = styled(({ className }: AgreementProps) => {
           )}
         </div>
         <div className='right-content'></div>
-      </div>
+      </motion.div>
     </>
   );
 })`

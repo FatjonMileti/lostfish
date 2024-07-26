@@ -8,52 +8,56 @@ import { Label, Typography } from '../../../../components';
 import { MatchedTenantType } from '../../../Matches/matches.type.ts';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
 import { getAvatarFormIndex } from '../../avatars.tsx';
+import { motion, MotionProps } from 'framer-motion';
 
 interface MultiplePerfectMatchesProps extends HTMLAttributes<HTMLDivElement> {
   match: MatchedTenantType;
   count: number;
+  motionProps?: MotionProps;
 }
-export const MultiplePerfectMatches = styled(({ className, match, count }: MultiplePerfectMatchesProps) => {
-  const navigate = useNavigate();
-  const profileStore = useProfileStore();
+export const MultiplePerfectMatches = styled(
+  ({ className, match, count, motionProps = {} }: MultiplePerfectMatchesProps) => {
+    const navigate = useNavigate();
+    const profileStore = useProfileStore();
 
-  const onReviewPerfectMatchesClick = () => {
-    navigate('/matches');
-  };
+    const onReviewPerfectMatchesClick = () => {
+      navigate('/matches');
+    };
 
-  return (
-    <div className={classNames('perfect-match', className)}>
-      <div className='left-content'>
-        <div className='texts-wrapper'>
-          <Typography variant='body1'>Amazing! You got {count} perfect matches</Typography>
-          <Typography variant='body4'>
-            Hey {profileStore.first_name}, you are now perfectly matched with{' '}
-            <b>{`${match.tenant.first_name}'s`} property</b>. Reach out and drop a message to the landlord and
-            when ready, make an offer and close the deal.
-          </Typography>
+    return (
+      <motion.div className={classNames('perfect-match', className)} {...motionProps}>
+        <div className='left-content'>
+          <div className='texts-wrapper'>
+            <Typography variant='body1'>Amazing! You got {count} perfect matches</Typography>
+            <Typography variant='body4'>
+              Hey {profileStore.first_name}, you are now perfectly matched with{' '}
+              <b>{`${match.tenant.first_name}'s`} property</b>. Reach out and drop a message to the landlord
+              and when ready, make an offer and close the deal.
+            </Typography>
+          </div>
+
+          <Label
+            className='review-matches-button'
+            variant='special'
+            size='large'
+            onClick={onReviewPerfectMatchesClick}>
+            Review perfect matches
+          </Label>
         </div>
-
-        <Label
-          className='review-matches-button'
-          variant='special'
-          size='large'
-          onClick={onReviewPerfectMatchesClick}>
-          Review perfect matches
-        </Label>
-      </div>
-      <div
-        className='right-content'
-        style={{ backgroundImage: `url(' ${getAvatarFormIndex(match.tenant.avatar)} ')` }}>
-        <div className='tenant-details-wrapper'>
-          <Typography
-            className='tenant-name'
-            variant='body3'>{`${match.tenant.first_name} ${match.tenant.last_name}`}</Typography>
-          <Typography variant='body5'></Typography>
+        <div
+          className='right-content'
+          style={{ backgroundImage: `url(' ${getAvatarFormIndex(match.tenant.avatar)} ')` }}>
+          <div className='tenant-details-wrapper'>
+            <Typography
+              className='tenant-name'
+              variant='body3'>{`${match.tenant.first_name} ${match.tenant.last_name}`}</Typography>
+            <Typography variant='body5'></Typography>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-})`
+      </motion.div>
+    );
+  }
+)`
   &.perfect-match {
     display: grid;
     grid-template-columns: 1fr 1fr;

@@ -9,6 +9,7 @@ import { Agreement } from '../Agreement.tsx';
 import { FinalDocs } from './FinalDocs.tsx';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
 import { useSuggestedProperties } from '../../../Suggestions/SuggestionsProperties/useSuggestedProperties.tsx';
+import { motionPropsAnimatePresence } from '../OverViewSection.tsx';
 
 interface DashboardOverviewForTenantProps {}
 export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) => {
@@ -57,16 +58,22 @@ export const DashboardOverviewForTenant = ({}: DashboardOverviewForTenantProps) 
 
   return (
     <>
-      {state === States.Default && <DefaultState />}
-      {state === States.MatchesAwaiting && <MatchesAwaiting />}
+      {state === States.Default && <DefaultState motionProps={motionPropsAnimatePresence} />}
+      {state === States.MatchesAwaiting && <MatchesAwaiting motionProps={motionPropsAnimatePresence} />}
       {state === States.PerfectMatch && matchedProperties.data[0] && (
-        <PerfectMatch match={matchedProperties.data[0]} />
+        <PerfectMatch match={matchedProperties.data[0]} motionProps={motionPropsAnimatePresence} />
       )}
       {state === States.MultiplePerfectMatches && (
-        <MultiplePerfectMatches count={matchedProperties.data.length} match={matchedProperties.data[0]} />
+        <MultiplePerfectMatches
+          count={matchedProperties.data.length}
+          match={matchedProperties.data[0]}
+          motionProps={motionPropsAnimatePresence}
+        />
       )}
-      {state === States.Agreement && <Agreement />}
-      {state === States.FinalDocs && <FinalDocs match={matchedProperties.data[0]} />}
+      {state === States.Agreement && <Agreement motionProps={motionPropsAnimatePresence} />}
+      {state === States.FinalDocs && (
+        <FinalDocs match={matchedProperties.data[0]} motionProps={motionPropsAnimatePresence} />
+      )}
     </>
   );
 };

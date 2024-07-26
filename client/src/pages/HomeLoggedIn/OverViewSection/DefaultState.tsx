@@ -5,16 +5,19 @@ import { useNavigate } from 'react-router-dom';
 
 import { Label, Typography } from '../../../components';
 import manTakingSelfie from './DashboardOverViewForTenant/start-matching-image.png';
+import { motion, MotionProps } from 'framer-motion';
 
-interface DefaultStateProps extends HTMLAttributes<HTMLDivElement> {}
-export const DefaultState = styled(({ className }: DefaultStateProps) => {
+interface DefaultStateProps extends HTMLAttributes<HTMLDivElement> {
+  motionProps?: MotionProps;
+}
+export const DefaultState = styled(({ className, motionProps = {} }: DefaultStateProps) => {
   const navigate = useNavigate();
 
   const onStartMatchingClick = () => {
     navigate('/matches');
   };
   return (
-    <div className={classNames('default-state', className)}>
+    <motion.div className={classNames('default-state', className)} {...motionProps}>
       <div className='left-content'>
         <div className='texts-wrapper'>
           <Typography variant='body1'>Welcome to Lostfish</Typography>
@@ -34,7 +37,7 @@ export const DefaultState = styled(({ className }: DefaultStateProps) => {
         </Label>
       </div>
       <div className='right-content'></div>
-    </div>
+    </motion.div>
   );
 })`
   &.default-state {
