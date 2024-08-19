@@ -7,7 +7,7 @@ import { useProfileStore } from '../../../globalState/profile';
 import { useUserStore } from '../../../globalState/user';
 import { AnimatePresence } from 'framer-motion';
 
-import { SelectAvatar } from './InitialSetup.SelectAvatar';
+// import { SelectAvatar } from './InitialSetup.SelectAvatar';
 import { WhatAreYouLookingFor } from './InitialSetup.WhatAreYouLokingFor';
 import { AddProperty } from './InitialSetup.AddProperty';
 import { SetCriteria } from './InitialSetup.SetCriteria';
@@ -45,7 +45,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     avatar: string;
     lookingFor?: LookingForType;
   }>({
-    avatar: '0',
+    avatar: '',
     lookingFor: criteriaWithoutAccountStore.criteria.looking_for
   });
 
@@ -71,13 +71,13 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     }
   };
 
-  const onAvatarNext = () => {
-    setStep((step) => step + 1);
-  };
-
-  const setAvatar = (avatar: string) => {
-    setState((state) => ({ ...state, avatar }));
-  };
+  // const onAvatarNext = () => {
+  //   setStep((step) => step + 1);
+  // };
+  //
+  // const setAvatar = (avatar: string) => {
+  //   setState((state) => ({ ...state, avatar }));
+  // };
 
   const onLookingForChange = (lookingFor: LookingForType) => {
     setState((state) => ({ ...state, lookingFor }));
@@ -103,13 +103,13 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
         <AnimatePresence>
           {
             [
-              <SelectAvatar
-                key='SelectAvatar'
-                {...animationProps}
-                avatar={state.avatar}
-                setAvatar={setAvatar}
-                onNext={onAvatarNext}
-              />,
+              // <SelectAvatar
+              //   key='SelectAvatar'
+              //   {...animationProps}
+              //   avatar={state.avatar}
+              //   setAvatar={setAvatar}
+              //   onNext={onAvatarNext}
+              // />,
               <WhatAreYouLookingFor
                 key='whatAreYouLookingFor'
                 {...animationProps}

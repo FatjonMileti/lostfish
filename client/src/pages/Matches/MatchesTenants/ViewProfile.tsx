@@ -51,7 +51,6 @@ export const ViewProfile = styled(
     } = tenantMatch.criteria;
 
     const awaitingMatch = tenantMatch.chosen && !tenantMatch.matched;
-
     return (
       <Modal className={`view-profile-modal ${className}`} open={true} onBackdropClick={closeViewProfile}>
         <div className='modal-header'>
@@ -80,13 +79,13 @@ export const ViewProfile = styled(
           )}
         </div>
         <div className='modal-content'>
-          <div
-            className='avatar-side'
-            style={{ backgroundImage: `url(${getAvatarFormIndex(avatar)})` }}></div>
+          <div className='avatar-side' style={{ backgroundImage: `url(${getAvatarFormIndex(avatar)})` }}>
+            {!avatar && <Icon icon='user' size={240} className='user-icon' />}
+          </div>
           <div className='details-side'>
             <div className='header'>
               <div className='header-left'>
-                <Avatar image={avatars[avatar].image} />
+                <Avatar image={avatars[avatar]?.image} />
                 <div className='tenant-name-wrapper'>
                   <Typography variant='body3' className='tenant-name'>
                     {`${firstName} ${lastName}`}
@@ -308,6 +307,7 @@ export const ViewProfile = styled(
         }
 
         .avatar-side {
+          display: grid;
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
@@ -317,6 +317,12 @@ export const ViewProfile = styled(
           ${(props) => props.theme.breakpoints.down('laptop')} {
             order: 0;
             height: 732px;
+          }
+
+          background-color: #f7f1e7;
+
+          .user-icon {
+            place-self: center;
           }
         }
 
