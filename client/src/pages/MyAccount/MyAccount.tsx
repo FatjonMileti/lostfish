@@ -37,7 +37,7 @@ interface SubMenuItem {
 }
 
 export const submenus: SubMenuItem[] = [
-  { icon: 'account', text: 'Account details', link: '/account-details' },
+  { icon: 'account', text: 'My Bio', link: '/my-bio' },
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
@@ -53,7 +53,7 @@ export const submenus: SubMenuItem[] = [
 ];
 
 export const tenantSubmenu: SubMenuItem[] = [
-  { icon: 'account', text: 'Account details', link: '/account-details' },
+  { icon: 'account', text: 'My Bio', link: '/my-bio' },
   { icon: 'wallet', text: 'Plan and payment', link: '/plan-and-payment' },
   { icon: 'lock-key', text: 'Security details', link: '/security-details' },
   { icon: 'megaphone', text: 'Communication settings', link: '/communication-settings' },
@@ -145,7 +145,7 @@ export const MyAccount = styled(({ className }: HTMLAttributes<HTMLDivElement>) 
             <div className='right-content'>
               <Routes>
                 <Route path='/' element={<Dashboard />} />
-                <Route path='/account-details' element={<AccountDetails />} />
+                <Route path='/my-bio' element={<AccountDetails />} />
                 <Route path='/plan-and-payment' element={<PlanAndPayment />} />
                 <Route path='/security-details' element={<SecurityDetails />} />
                 <Route path='/communication-settings' element={<CommunicationSettings />} />

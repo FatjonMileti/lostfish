@@ -85,7 +85,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
         className={`account-details ${className}`}>
         <div className='account-details-header'>
           <Typography variant='body2' className='section-title'>
-            Account details
+            My Bio
           </Typography>
           <Button
             type='submit'

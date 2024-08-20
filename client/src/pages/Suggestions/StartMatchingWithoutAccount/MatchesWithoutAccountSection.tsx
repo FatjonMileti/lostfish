@@ -12,8 +12,8 @@ import { PropertyCard } from '../../../components';
 import { useSuggestedPropertiesWithoutAccount } from './useSuggestedPropertiesWithoutAccount';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-import { useCriteriaStore } from '../../../globalState/criteria';
 import backgroundImg from '../../Home/forest.jpeg';
+import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount.ts';
 
 interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElement> {
   onCreateAccountClick: () => any;
@@ -22,15 +22,15 @@ interface MatchesWithoutAccountSectionProps extends HTMLAttributes<HTMLDivElemen
 export const MatchesWithoutAccountSection = styled(
   ({ className, onCreateAccountClick }: MatchesWithoutAccountSectionProps) => {
     const suggestedProperties = useSuggestedPropertiesWithoutAccount();
-    const criteriaStore = useCriteriaStore();
+    const criteriaStore = useCriteriaWithoutAccountStore();
 
     return (
       <div className={classNames('matches-without-account-section', className)}>
         {suggestedProperties.isFetching && <ShowGlobalLoading />}
         <div className='section-header'>
           <Typography className='matching-with'>
-            Matching with{' '}
-            <span className='address'>properties in {criteriaStore.criteria.area_of_interest}</span>
+            Matching with
+            <span className='address'> properties in {criteriaStore.criteria.area_of_interest}</span>
           </Typography>
           {suggestedProperties.data.length === 0 ? (
             <Typography variant='body5' className='sub-title'>
