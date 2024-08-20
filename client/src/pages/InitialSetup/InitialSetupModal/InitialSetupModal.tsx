@@ -21,6 +21,7 @@ import { LookingFor, Transaction } from '../../SetCriteria/criteria.contants';
 import { refreshToken } from '../../Login/SessionMaintainer';
 import { LookingForType } from '../../SetCriteria/criteria.types';
 import { useCriteriaWithoutAccountStore } from '../../../globalState/useCriteriaWithoutAccount';
+import { useNavigate } from 'react-router-dom';
 
 interface InitialSetupModalProps extends ModalProps {}
 
@@ -38,6 +39,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
 
   const profileStore = useProfileStore();
   const userStore = useUserStore();
+  const navigate = useNavigate();
 
   const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
 
@@ -126,6 +128,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                       await refreshToken(true);
                       useCriteriaWithoutAccountStore.persist.clearStorage();
                       setOpen(false);
+                      navigate('/matches');
                     }}
                     onBack={() => setStep((step) => step - 1)}
                   />
@@ -139,6 +142,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
                       await refreshToken(true);
                       useCriteriaWithoutAccountStore.persist.clearStorage();
                       setOpen(false);
+                      navigate('/matches');
                     }}
                     onBack={() => setStep((step) => step - 1)}
                   />
