@@ -148,7 +148,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
           onBack={() => setEditPropertyId(undefined)}
           afterStartMatching={() => {
             setEditPropertyId(undefined);
-            navigate('/');
+            navigate('/matches');
           }}
         />
       )}
@@ -158,6 +158,7 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         afterSave={() => {
           setShowNewPropertyModal(false);
           propertiesQuery.refetch();
+          navigate('/matches');
         }}
         onBack={() => setEditPropertyId(undefined)}
       />
