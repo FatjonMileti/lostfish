@@ -159,7 +159,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
                   render={({ field }) => (
                     <div className='setup-avatar'>
                       {avatars.map(({ image }, avatarIndex) => {
-                        const active = avatarIndex === Number(field.value || '');
+                        const active = avatarIndex === Number(field.value);
                         return (
                           <Avatar
                             image={image}
