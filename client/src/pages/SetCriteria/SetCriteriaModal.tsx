@@ -16,6 +16,7 @@ import { SetCriteriaHouseDetails } from './SetCriteria/SetCriteria.HouseDetails'
 
 import { CriteriaFormType } from './criteria.types';
 import { RoundAction } from '../../components/RoundAction.tsx';
+import { useCriteriaWithoutAccountStore } from '../../globalState/useCriteriaWithoutAccount.ts';
 
 const tabLabels = ['Location', 'House type', 'Budget', 'House details'];
 
@@ -35,9 +36,14 @@ interface SetCriteriaModalProps extends ModalProps {
 }
 export const SetCriteriaModal = styled(
   ({ className, onBack, form, onStartMatchingClick, showTabs = false, ...rest }: SetCriteriaModalProps) => {
+    const criteriaWithoutAccountStore = useCriteriaWithoutAccountStore();
     const [step, setStep] = React.useState(0);
     React.useEffect(() => {
-      setStep(0);
+      if (Object.keys(criteriaWithoutAccountStore.criteria).length > 1) {
+        setStep(3);
+      } else {
+        setStep(0);
+      }
     }, [rest.open]);
 
     return (

@@ -51,6 +51,12 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
     lookingFor: criteriaWithoutAccountStore.criteria.looking_for
   });
 
+  React.useEffect(() => {
+    if (Object.keys(criteriaWithoutAccountStore.criteria).length) {
+      onLookingForNext();
+    }
+  }, []);
+
   const onLookingForNext = async () => {
     setLoading(true);
     try {
@@ -58,7 +64,7 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
         avatar: state.avatar
       });
       await axios(userStore.auth.access_token).post('/api/criteria', {
-        looking_for: state.lookingFor,
+        looking_for: state.lookingFor || 'I’m looking for a place',
         transaction_type_string: Transaction.Rent
       });
 
