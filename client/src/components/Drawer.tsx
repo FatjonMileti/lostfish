@@ -64,7 +64,7 @@ export const Drawer = styled(
     position: fixed;
     inset: 0;
     z-index: 99;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(2px);
 
     .drawer-body {
@@ -72,8 +72,8 @@ export const Drawer = styled(
       right: 0;
       top: 0;
       bottom: 0;
-      width: 50vw;
-      min-width: 720px;
+      width: 33vw;
+      min-width: 476px;
       background: white;
       overflow-y: auto;
     }

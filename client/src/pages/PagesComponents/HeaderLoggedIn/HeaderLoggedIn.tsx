@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { useProfileStore } from '../../../globalState/profile.tsx';
@@ -12,6 +12,7 @@ import { Role } from '../../../enums.ts';
 import { MenuItem } from './MenuItem.tsx';
 
 import lostfishLogoColored from '../../../assets/svg/lostfishLogoWithColorAndText.svg';
+import { NotificationsDrawer } from '../../Notifications/NotificationsDrawer.tsx';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -19,7 +20,8 @@ export const HeaderLoggedIn = styled(({ className }: HeaderProps) => {
   const navigate = useNavigate();
   const profileStore = useProfileStore();
   const notificationsStore = useNotificationsStore();
-  const location = useLocation();
+
+  const [isNotificationsDrawerOpen, setNotificationsDrawerOpen] = React.useState(false);
 
   return (
     <div className={classNames('header-logged-in', className)}>
@@ -57,10 +59,10 @@ export const HeaderLoggedIn = styled(({ className }: HeaderProps) => {
         <div className='matches-and-messages-buttons-wrapper'>
           <NotificationsIcon
             counter={notificationsStore.unreadMessages || undefined}
-            onClick={() => navigate('/messages')}
-            actioned={location.pathname === '/messages'}
+            onClick={() => setNotificationsDrawerOpen(true)}
           />
         </div>
+        <NotificationsDrawer open={isNotificationsDrawerOpen} setOpen={setNotificationsDrawerOpen} />
 
         <div className='avatar-and-match-score-wrapper'>
           <AccountWidget avatar={getAvatarFormIndex(profileStore.avatar)} />
