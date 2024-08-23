@@ -64,10 +64,13 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
 
       <div className='details'>
         <Typography variant='body4' className='property'>
-          {fullName}
+          {fullName === 'Lostfish Agent' ? 'Lostfish' : fullName}
         </Typography>
         <Typography variant='body6'>
-          {room.last_message?.created_at && moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}
+          {fullName === 'Lostfish Agent'
+            ? 'Always a perfect match'
+            : room.last_message?.created_at &&
+              moment(room.last_message.created_at).format('dddd, MMMM Do YYYY')}
         </Typography>
       </div>
     </div>
@@ -98,7 +101,7 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
 
         &.lostfish {
           background-size: 32px 32px;
-          background-color: #184d6d;
+          background-color: #b4263b;
         }
       }
 

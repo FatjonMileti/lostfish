@@ -9,6 +9,7 @@ import { Avatar } from '../../../components/Avatar';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import classNames from 'classnames';
 import { SuggestedMessages } from './SuggestedMessages';
+import { Icon, IconButton } from '../../../components';
 
 export interface ChatBoxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
@@ -132,8 +133,8 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             return (
               <div
                 className={classNames('message', {
-                  'from-me': fromMe,
-                  'from-you': !fromMe,
+                  'from-me': !fromMe,
+                  'from-you': fromMe,
                   last: isLastMessageFromAuthor,
                   'first-in-group': isFirstInGroup,
                   'in-middle-of-group': inMiddleOfGroup,
@@ -155,17 +156,17 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
           })}
         </div>
 
-        <SuggestedMessages room={room} sendMessage={_sendMessage} lastMessage={messageList.slice(-1)?.[0]} />
+        {/*<SuggestedMessages room={room} sendMessage={_sendMessage} lastMessage={messageList.slice(-1)?.[0]} />*/}
       </div>
       <div className='write-box'>
         <TextField
           autoComplete='off'
           placeholder='Write your message'
-          // endAdornment={
-          //   <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
-          //     <Icon icon='attach' color='#184D6D' size={18} />
-          //   </IconButton>
-          // }
+          endAdornment={
+            <IconButton size='large' noBackground style={{ border: '1px solid  #184D6D' }}>
+              <Icon icon='attach' color='#184D6D' size={24} />
+            </IconButton>
+          }
           value={currentMessage}
           onChange={(event) => {
             setCurrentMessage(event.target.value);
@@ -174,7 +175,7 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             event.key === 'Enter' && sendMessage();
           }}
         />
-        <Button className='send-button' size='medium' onClick={sendMessage}>
+        <Button className='send-button' size='large' onClick={sendMessage}>
           Send
         </Button>
       </div>
@@ -185,7 +186,7 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
     filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.1));
     border-radius: 12px;
     display: grid;
-    grid-template-rows: auto 80px;
+    grid-template-rows: auto 88px;
     overflow-y: auto;
 
     .conversation {
@@ -239,12 +240,17 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
 
             &.lostfish {
               background-size: 12px 12px;
-              background-color: #184d6d;
+              background-color: #e5155a;
             }
           }
 
           .text {
-            padding: 12px;
+            color: #0d2a38;
+            background-color: #f3f4f5;
+            font-weight: 500;
+            line-height: 24px;
+            padding: 16px;
+            border-radius: 16px 16px 16px 0px;
           }
 
           &.from-you {
@@ -339,17 +345,18 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
     }
 
     .write-box {
-      height: 80px;
+      height: 88px;
 
       background: white;
       box-shadow: 0px 4px 48px 0px rgba(0, 0, 0, 0.04);
 
       display: grid;
       grid-template-columns: auto min-content;
-      align-items: flex-start;
-      padding: 16px 24px;
+      align-items: center;
+      padding: 16px;
       gap: 16px;
       box-sizing: border-box;
+      border-top: 1px solid #e7e7e7;
 
       border-bottom-left-radius: 12px;
       border-bottom-right-radius: 12px;
