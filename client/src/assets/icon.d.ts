@@ -1,4 +1,5 @@
 export type IconNames = 
+  | "fast-message"
   | "dot"
   | "bell"
   | "remind"

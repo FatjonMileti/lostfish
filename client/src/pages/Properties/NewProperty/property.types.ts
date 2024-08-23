@@ -81,6 +81,7 @@ export interface ApiPropertyDocumentType {
   radius: string;
   description: string;
   title: string;
+  percentage?: number | string;
   asset_address: {
     latitude?: number;
     longitude?: number;

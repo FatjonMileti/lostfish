@@ -160,7 +160,7 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
       <div className='write-box'>
         <TextField
           autoComplete='off'
-          placeholder='Type your message here...'
+          placeholder='Write your message'
           // endAdornment={
           //   <IconButton noBackground style={{ border: '2px solid  #184D6D' }}>
           //     <Icon icon='attach' color='#184D6D' size={18} />

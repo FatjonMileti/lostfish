@@ -79,14 +79,13 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
     padding: 16px;
     align-items: center;
     box-sizing: border-box;
-    background-color: white;
-    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
+    border-radius: 4px 0 0 4px;
     cursor: pointer;
-    border: 2px solid white;
 
     &.active {
-      border: 2px solid #c4b1a3;
+      border-radius: 4px 0 0 4px;
+      border-left: 4px solid #184d6d;
+      background: #f3f4f5;
     }
 
     .avatar-and-unseen-messages-wrapper {

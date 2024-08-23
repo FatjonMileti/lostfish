@@ -205,18 +205,16 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
             <div className='container'>
               <div className='chats'>
                 <div className='chats-header'>
-                  <Typography variant='body2'>My messages</Typography>
-
-                  <Typography variant='body5'>
-                    Here you can find all your conversations with your matches or Lostfish representatives
+                  <Typography variant='body1' className='chats-header-title'>
+                    My messages
                   </Typography>
                 </div>
 
-                <MessagesProperties
-                  onPropertySelect={(propertyId) => {
-                    setFilterByProperty(propertyId);
-                  }}
-                />
+                {/*<MessagesProperties*/}
+                {/*  onPropertySelect={(propertyId) => {*/}
+                {/*    setFilterByProperty(propertyId);*/}
+                {/*  }}*/}
+                {/*/>*/}
 
                 <div className='conversations-list'>
                   {conversations.map((row: IRoom, rowIndex: number) => {
@@ -288,7 +286,9 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     grid-template-rows: auto min-content;
     position: relative;
 
-    background: linear-gradient(180deg, #fffbf3 18.95%, #fff 100%), lightgray 50% / cover no-repeat;
+    background:
+      linear-gradient(180deg, #fffbf3 18.95%, #fff 100%),
+      lightgray 50% / cover no-repeat;
 
     .header-and-content-wrapper {
       min-height: 100vh;
@@ -331,7 +331,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
 
     .chats {
       display: grid;
-      grid-template-rows: min-content min-content auto;
+      grid-template-rows: min-content auto;
       row-gap: 24px;
       height: 100%;
       overflow-y: auto;
@@ -339,6 +339,12 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
       .chats-header {
         display: grid;
         row-gap: 12px;
+
+        .chats-header-title {
+          color: #0d2a38;
+          font-weight: 600;
+          line-height: 56px;
+        }
       }
 
       .conversations-list {

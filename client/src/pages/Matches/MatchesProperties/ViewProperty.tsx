@@ -89,7 +89,7 @@ export const ViewProperty = styled(
             <div className='match-request accepted'>
               <Icon icon={'like'} size={24} />
               <Typography variant='body5' className='message'>
-                You are perfectly matched with this tenant
+                You are perfectly matched with this property
               </Typography>
             </div>
           )}
