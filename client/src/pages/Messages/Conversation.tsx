@@ -66,7 +66,7 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
         <Typography variant='body4' className='property'>
           {fullName === 'Lostfish Agent' ? 'Lostfish' : fullName}
         </Typography>
-        <Typography variant='body6'>
+        <Typography variant='body6' style={{ color: '#A7A7A7' }}>
           {fullName === 'Lostfish Agent'
             ? 'Always a perfect match'
             : room.last_message?.created_at &&

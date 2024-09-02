@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
 import { Label, ShowGlobalLoading, Typography } from '../../../components';
-import agreementImage from './DashboardOverViewForTenant/agreement-image.png';
+import agreementImage from './DashboardOverViewForTenant/pierre.png';
 import { useProfileStore } from '../../../globalState/profile.tsx';
 import axiosWithToken from '../../../utils/axios.ts';
 import axios from '../../../utils/axios.ts';
@@ -138,6 +138,8 @@ export const Agreement = styled(({ className, motionProps = {} }: AgreementProps
       height: 440px;
       background-size: cover;
       background-image: url('${agreementImage}');
+      background-repeat: no-repeat;
+      background-position: center;
 
       display: flex;
       gap: 10px;

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useNavigate } from 'react-router-dom';
 
 import { Label, Typography } from '../../../components';
-import manTakingSelfie from './DashboardOverViewForTenant/start-matching-image.png';
+import pierre from './DashboardOverViewForTenant/pierre.png';
 import { motion, MotionProps } from 'framer-motion';
 
 interface DefaultStateProps extends HTMLAttributes<HTMLDivElement> {
@@ -79,7 +79,10 @@ export const DefaultState = styled(({ className, motionProps = {} }: DefaultStat
       width: 440px;
       height: 440px;
       flex-shrink: 0;
-      background-image: url('${manTakingSelfie}');
+      background-image: url('${pierre}');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
     }
   }
 `;

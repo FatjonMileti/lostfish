@@ -82,7 +82,7 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
     display: grid;
     grid-template-rows: auto min-content;
     width: 100%;
-    background: linear-gradient(180deg, #fffbf3 13.21%, #fff 51.66%), #fff;
+    //background: linear-gradient(180deg, #fffbf3 13.21%, #fff 51.66%), #fff;
 
     .header-and-content-wrapper {
       min-height: 100vh;

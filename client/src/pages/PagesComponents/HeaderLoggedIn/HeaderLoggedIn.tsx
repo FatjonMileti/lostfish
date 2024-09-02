@@ -11,7 +11,7 @@ import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars.tsx';
 import { Role } from '../../../enums.ts';
 import { MenuItem } from './MenuItem.tsx';
 
-import lostfishLogoColored from '../../../assets/svg/lostfishLogoWithColorAndText.svg';
+import lostfishLogoColored from '../../../assets/svg/lostfishLogo.svg';
 import { NotificationsDrawer } from '../../Notifications/NotificationsDrawer.tsx';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {}

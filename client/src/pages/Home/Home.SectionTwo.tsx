@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { Typography } from '../../components/Typography';
 
-import image from './jumping.png';
+import image from './video_screenshot.png';
 import multimedia from './start.svg';
 
 export const SectionTwo = styled(
@@ -16,9 +16,9 @@ export const SectionTwo = styled(
             <div className='multimedia'>
               <div className='icon'></div>
             </div>
-            <Typography variant='body3' className='video-title'>
-              How Lostfish uses AI to find your perfect match
-            </Typography>
+            {/*<Typography variant='body3' className='video-title'>*/}
+            {/*  How Lostfish uses AI to find your perfect match*/}
+            {/*</Typography>*/}
           </div>
         </div>
         <div className='title'>
@@ -75,7 +75,7 @@ export const SectionTwo = styled(
       gap: 48px;
 
       border-radius: 16px;
-      background: linear-gradient(180deg, rgba(13, 42, 56, 0) 0%, rgba(13, 42, 56, 0.75) 100%), url(${image});
+      background: url(${image});
       max-width: 1136px;
       width: 100%;
       background-repeat: no-repeat;

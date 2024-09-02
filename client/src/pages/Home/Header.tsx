@@ -2,8 +2,8 @@ import React from 'react';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
-import lostfishLogoColored from '../../assets/svg/lostfishLogoWithColorAndText.svg';
-import { Label } from '../../components/Label';
+import lostfishLogoColored from '../../assets/svg/lostfishLogo.svg';
+import { Label } from '../../components';
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   onSigInClick?: () => void;

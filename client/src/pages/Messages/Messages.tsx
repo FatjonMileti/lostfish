@@ -24,6 +24,7 @@ import noMessages from './noMessages.png';
 import { Footer } from '../Home/Footer';
 
 import { MatchDetails } from './MatchDetails/MatchDetails';
+import { LostfishAssistance } from './LostfishAssistance.tsx';
 
 export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const userStore = useUserStore();
@@ -266,7 +267,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
                   {/*<DocumentsTest room={room} />*/}
                 </>
               ) : (
-                <div />
+                <LostfishAssistance room={room} />
               )}
             </div>
           )}

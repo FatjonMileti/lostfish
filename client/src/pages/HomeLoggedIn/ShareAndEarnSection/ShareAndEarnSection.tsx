@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Icon } from '../../../components/Icon.tsx';
 import { Typography } from '../../../components/Typography.tsx';
 import { Label } from '../../../components/Label.tsx';
-import backgroundImage from './share-and-earn.jpeg';
+import backgroundImage from './gradient .png';
 
 export const ShareAndEarnSection = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const code: string = 'LF18249-UKND128';

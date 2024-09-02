@@ -6,7 +6,7 @@ import { Icon } from '../../../components/Icon';
 
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 
-import imLookingForPlace from './lookingForAPlaceToRent.png';
+import imLookingForPlace from './lostfish_house_.jpg';
 import classNames from 'classnames';
 import { LookingFor } from '../../SetCriteria/criteria.contants';
 import { Label } from '../../../components/Label';
