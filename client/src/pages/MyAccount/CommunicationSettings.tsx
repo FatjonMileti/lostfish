@@ -11,6 +11,7 @@ import axios from '../../utils/axios';
 import { useUserStore } from '../../globalState/user';
 import { UserNotifications } from './user.interface.ts';
 import { useProfileStore } from '../../globalState/profile.tsx';
+import GirlOnPhone from './images/girl on phone.png';
 
 const userNotificationSchema = yup.object().shape({
   email_updates: yup.boolean(),
@@ -174,6 +175,7 @@ export const CommunicationSettings = styled(({ className }: HTMLAttributes<HTMLD
               title='Why enable desktop notifications?'
               description='With desktop notifications enabled you will get notified instantly once you have a match, you receive a message or Lostfish updates directly from your account.'
             />
+            <img src={GirlOnPhone} alt='girl on phone' className='girl-on-phone' />
           </div>
         </div>
       </form>
@@ -263,6 +265,14 @@ export const CommunicationSettings = styled(({ className }: HTMLAttributes<HTMLD
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
+
+        .girl-on-phone {
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 300px;
+          height: 300px;
+        }
       }
     }
   }

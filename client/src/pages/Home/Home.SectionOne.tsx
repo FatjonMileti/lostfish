@@ -3,7 +3,7 @@ import React, { HTMLAttributes } from 'react';
 import { Typography } from '../../components/Typography';
 import { Icon } from '../../components/Icon';
 import { Label } from '../../components/Label';
-import rightContentImg from './home.section1.png';
+import rightContentImg from './pierre.png';
 import classNames from 'classnames';
 
 import backgroundImg from './forest.jpeg';

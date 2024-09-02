@@ -10,6 +10,7 @@ import { useProfileStore } from '../../globalState/profile';
 import { ShowGlobalLoading } from '../../components';
 import { DocumentsView } from './components/DocumentsView';
 import { useAgreement } from './useAgreement';
+import ShakeHands from './images/shake hands image.png';
 
 export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDivElement>) => {
   const [documents, setDocuments] = React.useState<IUser_Documents[]>([]);
@@ -116,6 +117,9 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
           </div>
         </div>
       </div>
+      <div className='right-part'>
+        <img src={ShakeHands} alt='' className='shake-hands' />
+      </div>
     </div>
   );
 })`
@@ -139,6 +143,21 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
           background-color: #f3f4f5;
           border-radius: 8px;
         }
+      }
+    }
+
+    .right-part {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+
+      .shake-hands {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 300px;
+        height: 300px;
       }
     }
   }

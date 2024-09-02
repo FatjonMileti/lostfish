@@ -46,7 +46,7 @@ export const submenus: SubMenuItem[] = [
   // { icon: 'layer', text: 'Dashboard', link: '' },
   { icon: 'building', text: 'My Properties', link: '/properties' },
   // { icon: 'settings', text: 'Account settings', link: '/account-settings' },
-  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' }
+  { icon: 'file', text: 'Transaction agreement', link: '/transaction-agreement' }
   // { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
   // { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
   // { icon: 'user', text: 'Solicitors', link: '/solicitors' }
@@ -62,7 +62,7 @@ export const tenantSubmenu: SubMenuItem[] = [
   // { icon: 'layer', text: 'Dashboard', link: '' },
   // { icon: 'settings', text: 'Account settings', link: '/account-settings' },
   // { icon: 'research', text: 'Refine your search', link: '/refine-your-search' },
-  { icon: 'security', text: 'Transaction agreement', link: '/transaction-agreement' }
+  { icon: 'file', text: 'Transaction agreement', link: '/transaction-agreement' }
   // { icon: 'file', text: 'Terms & Conditions', link: '/terms-and-conditions' },
   // { icon: 'support', text: 'Help & Support', link: '/help-and-support' },
   // { icon: 'user', text: 'Solicitors', link: '/solicitors' }
