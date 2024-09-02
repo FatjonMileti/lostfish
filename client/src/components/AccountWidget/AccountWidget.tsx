@@ -27,7 +27,7 @@ export const AccountWidget = styled(({ className, avatar }: AccountWidgetProps) 
 
   return (
     <div className={classNames('account-widget', className, { opened })}>
-      <NavLink to={'/my-account/account-details'}>
+      <NavLink to={'/my-account/my-bio'}>
         <Avatar className='profile-button' image={avatar} />
       </NavLink>
       <Icon
@@ -50,7 +50,9 @@ export const AccountWidget = styled(({ className, avatar }: AccountWidgetProps) 
     border-radius: 28px;
     padding-right: 12px;
     box-sizing: border-box;
-    transition: outline-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    transition:
+      outline-color 0.2s ease-in-out,
+      background-color 0.2s ease-in-out;
 
     &.opened {
       background-color: white;
