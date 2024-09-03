@@ -20,7 +20,7 @@ export const Avatar = styled(({ className, children, image, ...rest }: AvatarPro
     width: 45px;
     border-radius: 50%;
     aspect-ratio: 1/1;
-    background-image: url('${(props) => props.image}');
+    background-image: url("'${(props) => props.image}'");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
