@@ -20,6 +20,14 @@ import { ApiOfferDocument, ReviewOfferModal } from './MatchDetailsproperty.Revie
 import { Documents } from '../../Documents/Documents';
 import { MatchedPropertyType } from '../../../Matches/matches.type.ts';
 import { ViewProperty } from '../../../Matches/MatchesProperties/ViewProperty.tsx';
+import { MakeAnOffer } from './MakeAnOffer.tsx';
+import { ReviewOffer } from './ReviewOffer.tsx';
+import { AcceptedOffer } from './AcceptedOffer.tsx';
+import { Step } from '../../../../components/Step.tsx';
+import { DocumentType } from '../../../MyAccount/user.interface.ts';
+import { useProfileStore } from '../../../../globalState/profile.tsx';
+import { useNavigate } from 'react-router-dom';
+import config from '../../../../config.ts';
 interface MatchDetailsPropertyProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
   fetchChatRooms: () => any;
@@ -28,11 +36,17 @@ interface MatchDetailsPropertyProps extends HTMLAttributes<HTMLDivElement> {
 export const MatchDetailsProperty = styled(
   ({ className, room, fetchChatRooms }: MatchDetailsPropertyProps) => {
     const userStore = useUserStore();
+    const profileStore = useProfileStore();
+    const navigate = useNavigate();
+    const { auth, userDetails } = useUserStore();
+
     const [offerModalVisibility, setOfferModalVisibility] = React.useState(false);
 
     const [reviewOfferModalVisibility, setReviewOfferModalVisibility] = React.useState(false);
 
     const [propertyToView, setPropertyToView] = React.useState(null);
+
+    const [showDocuments, setShowDocuments] = React.useState<boolean | undefined>(false);
 
     const avatarKey = room.property_match?.landlord.avatar;
 
@@ -41,6 +55,10 @@ export const MatchDetailsProperty = styled(
     const fullName = `${room.property_match?.landlord?.first_name} ${room.property_match?.landlord?.last_name}`;
 
     const property = room.property;
+
+    const isIdVerified = !!profileStore.documents?.find((d) => d.type === DocumentType['Proof of ID']);
+
+    const otherUser = room.participant._id === userDetails.user_id ? room.author : room.participant;
 
     const offerQuery = useQuery<ApiOfferDocument>({
       queryKey: ['offer', room.tenant_match?._id],
@@ -112,6 +130,37 @@ export const MatchDetailsProperty = styled(
     matchedProperty.matched = true;
     matchedProperty.property.percentage = property?.percentage || 34;
 
+    const onVerifyIdClick = () => {
+      navigate('/my-account/security-details');
+    };
+
+    const onSignTransactionAgreement = () => {
+      navigate('/my-account/transaction-agreement');
+    };
+
+    const getEnvelopes = useQuery({
+      queryKey: ['get-envelopes', room.property._id, otherUser._id],
+      queryFn: async () => {
+        return await axios(auth.access_token).get(`${config.apiUrl}/api/docusign/envelope`, {
+          params: {
+            document_type: 'Rent Contract',
+            property: room.property._id,
+            participant: otherUser._id,
+            getDataFor: userDetails.role
+          }
+        });
+      },
+      enabled: false,
+      onSuccess: (data) => {
+        const envelope = data.data.docs[0];
+        if (envelope.signed_by_landlord && envelope.signed_by_tenant) {
+          setShowDocuments(undefined);
+        } else {
+          setShowDocuments(true);
+        }
+      }
+    });
+
     return (
       <>
         {offerQuery.isFetching && <ShowGlobalLoading />}
@@ -129,45 +178,87 @@ export const MatchDetailsProperty = styled(
                 </Typography>
               </div>
             </div>
-            <div className='offer-section-wrapper'>
-              <div className='offer-section'>
-                <div className='section-title'>
-                  <Icon icon='fast-message' size={24} />
+            {offerQuery.data === null && <MakeAnOffer setOfferModalVisibility={setOfferModalVisibility} />}
+            {offerQuery.data && !offerQuery.data?.accepted.status && (
+              <ReviewOffer setReviewOfferModalVisibility={setReviewOfferModalVisibility} />
+            )}
+            {offerQuery.data && offerQuery.data?.accepted.status && <AcceptedOffer />}
+            <div className='divider' />
+            {(offerQuery.data && offerQuery.data?.accepted.status && (
+              <>
+                {!showDocuments && showDocuments !== undefined && (
+                  <div>
+                    <Step
+                      title='Verify your ID'
+                      description='In order to continue with the process you need to verify your ID.'
+                      state={isIdVerified ? 'filled' : 'default'}
+                      cta={
+                        <Label size='medium' variant='primary' onClick={onVerifyIdClick}>
+                          Verify ID
+                        </Label>
+                      }
+                    />
+                    <Step
+                      title='Sign the transaction agreement'
+                      description='In order to generate the final documents, you first need to sign the transaction agreement.'
+                      state={
+                        isIdVerified
+                          ? !profileStore.signed_transaction_agreement
+                            ? 'default'
+                            : 'filled'
+                          : 'inactive'
+                      }
+                      cta={
+                        <Label size='medium' variant='primary' onClick={onSignTransactionAgreement}>
+                          Sign agreement
+                        </Label>
+                      }
+                    />
+                    <Step
+                      title='Sign the final documents'
+                      description='The final step of your perfect match journey. All documents will be automatically generated and you can digitally sign them.'
+                      state={!profileStore.signed_transaction_agreement ? 'inactive' : 'default'}
+                      lastStep
+                      cta={
+                        <Label size='medium' variant='special' onClick={() => getEnvelopes.refetch()}>
+                          Sign final documents
+                        </Label>
+                      }
+                    />
+                  </div>
+                )}
+                {showDocuments && <Documents room={room} />}
+              </>
+            )) || (
+              <div className='match-section-wrapper'>
+                <div className='match-section'>
                   <Typography variant='body4' className='title'>
-                    Make an offer
+                    About your match
+                  </Typography>
+                  <Typography variant='body4' className='description'>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                    ut labor...
                   </Typography>
                 </div>
-                <Typography variant='body4' className='description'>
-                  You can chat with your match before and after you make an offer. Once accepted, the terms of
-                  the offer can’t be changed.
-                </Typography>
+                <Label variant='secondary' onClick={() => setPropertyToView(matchedProperty)}>
+                  Match details
+                </Label>
               </div>
-              <Label
-                variant='special'
-                size='large'
-                className='offer-button'
-                onClick={() => setOfferModalVisibility(true)}>
-                Make an offer
-              </Label>
-            </div>
-            <div className='divider' />
-            <div className='match-section-wrapper'>
-              <div className='match-section'>
-                <Typography variant='body4' className='title'>
-                  About your match
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                  labor...
-                </Typography>
-              </div>
-              <Label variant='secondary' onClick={() => setPropertyToView(matchedProperty)}>
-                Match details
-              </Label>
-            </div>
+            )}
           </div>
           <div className='buttons'>
-            <Label variant='tertiary'>Get help</Label>
+            {offerQuery.data === null && <Label variant='tertiary'>Get help</Label>}
+            {offerQuery.data && (
+              <Label
+                variant='tertiary'
+                onClick={() => {
+                  if (room.property_match?._id) {
+                    unmatchProperty.mutate(room.property_match?._id);
+                  }
+                }}>
+                Unmatch
+              </Label>
+            )}
             <Label variant='tertiary'>Report user</Label>
           </div>
         </div>
@@ -236,37 +327,6 @@ export const MatchDetailsProperty = styled(
             font-weight: 500;
             line-height: 20px;
           }
-        }
-      }
-
-      .offer-section-wrapper {
-        display: grid;
-        gap: 16px;
-
-        .offer-section {
-          display: grid;
-          gap: 16px;
-
-          .section-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            .title {
-              font-size: 18px;
-              font-weight: 900;
-              color: #0d2a38;
-            }
-          }
-
-          .description {
-            color: #0d2a38;
-            font-weight: 500;
-          }
-        }
-
-        .offer-button {
-          width: 100%;
         }
       }
 

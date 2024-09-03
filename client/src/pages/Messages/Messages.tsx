@@ -287,9 +287,7 @@ export const Messages = styled(({ className }: HTMLAttributes<HTMLDivElement>) =
     grid-template-rows: auto min-content;
     position: relative;
 
-    background:
-      linear-gradient(180deg, #fffbf3 18.95%, #fff 100%),
-      lightgray 50% / cover no-repeat;
+    background: linear-gradient(180deg, #fffbf3 13.21%, #fff 51.66%), #fff;
 
     .header-and-content-wrapper {
       min-height: 100vh;

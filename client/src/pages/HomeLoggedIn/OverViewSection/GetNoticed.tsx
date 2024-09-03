@@ -17,7 +17,7 @@ export const GetNoticed = styled(({ className }: GetNoticedProps) => {
   const isIdVerified = !!profileStore.documents?.find((d) => d.type === DocumentType['Proof of ID']);
 
   const onFillBioClick = () => {
-    navigate('/my-account/account-details');
+    navigate('/my-account/my-bio');
   };
 
   const onVerifyIdClick = () => {

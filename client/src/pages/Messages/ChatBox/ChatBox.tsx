@@ -133,8 +133,8 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             return (
               <div
                 className={classNames('message', {
-                  'from-me': !fromMe,
-                  'from-you': fromMe,
+                  'from-me': fromMe,
+                  'from-you': !fromMe,
                   last: isLastMessageFromAuthor,
                   'first-in-group': isFirstInGroup,
                   'in-middle-of-group': inMiddleOfGroup,
@@ -154,6 +154,12 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
               </div>
             );
           })}
+          {messageList.length === 0 && (
+            <Typography variant='body5' className='chat-info'>
+              Amazing news Nancy and John! You are now matched with each other. <br /> Use the chat below to
+              communicate or the panel on the right to start sealing the deal.
+            </Typography>
+          )}
         </div>
 
         {/*<SuggestedMessages room={room} sendMessage={_sendMessage} lastMessage={messageList.slice(-1)?.[0]} />*/}
@@ -260,7 +266,7 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             }
           }
 
-          &.from-me {
+          &.from-you {
             justify-self: flex-start;
 
             .text {
@@ -297,7 +303,7 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             }
           }
 
-          &.from-you {
+          &.from-me {
             justify-self: flex-end;
 
             .text {
@@ -340,6 +346,13 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
               visibility: visible;
             }
           }
+        }
+
+        .chat-info {
+          color: #a7a7a7;
+          font-size: 12px;
+          font-weight: 500;
+          text-align: center;
         }
       }
     }

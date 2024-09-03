@@ -24,6 +24,7 @@ export const Step = styled(({ className, title, description, state, lastStep = f
       <div className='left-part'>
         {state === State.filled && <Icon className='filled-icon' icon='checked' size={16} />}
         {state === State.default && <Icon className='default-icon' icon='dot' size={12} />}
+        {state === State.inactive && <Icon className='default-icon' icon='dot' size={12} />}
         <div className='line' />
       </div>
 
@@ -62,6 +63,9 @@ export const Step = styled(({ className, title, description, state, lastStep = f
     }
 
     &.state-inactive {
+      * {
+        color: #646464;
+      }
     }
 
     .filled-icon {

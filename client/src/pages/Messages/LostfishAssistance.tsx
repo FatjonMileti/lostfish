@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'react';
 import { styled } from '@mui/system';
-import { Avatar, Typography } from '../../components';
+import { Avatar, Icon, Label, Typography } from '../../components';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars.tsx';
 import { useUserStore } from '../../globalState/user.tsx';
 
@@ -11,7 +11,6 @@ export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HT
 
   const avatar = getAvatarFormIndex(avatarKey);
 
-  console.log(room);
   return room && !room?.property ? (
     <div className={`lostfish-assistance ${className}`}>
       <div className='section'>
@@ -21,9 +20,33 @@ export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HT
             Lostfish
           </Typography>
         </div>
+        <Typography variant='body4' className='description'>
+          Our goal is to revolutionise the property industry by using technology and data to empower and
+          inform customers in the buying, selling, and renting process.
+        </Typography>
       </div>
-      <div>aaa</div>
-      <div>aaa</div>
+      <div className='line' />
+      <div className='section'>
+        <div className='icon-title-wrapper'>
+          <Icon icon='help' />
+          <Typography variant='body4' className='title'>
+            Assistance
+          </Typography>
+        </div>
+        <Typography variant='body4' className='description'>
+          In case you need assistance you can write a message in our chat or reach out to a Lostfish
+          representative over phone using the contact below
+        </Typography>
+      </div>
+      <div className='buttons'>
+        <Label variant='secondary' size='large'>
+          <Icon icon='phone' />
+          Call a representative
+        </Label>
+        <Label variant='secondary' size='large'>
+          Frequently asked questions
+        </Label>
+      </div>
     </div>
   ) : (
     <div />
@@ -37,6 +60,7 @@ export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HT
     box-sizing: border-box;
     align-content: flex-start;
     height: 100%;
+    //background-color: #fff;
 
     .section {
       display: grid;
@@ -51,6 +75,41 @@ export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HT
           background-size: 32px 32px;
           background-color: #b4263b;
         }
+
+        .title {
+          color: #0d2a38;
+          font-weight: 900;
+        }
+      }
+
+      .icon-title-wrapper {
+        display: flex;
+        gap: 8px;
+
+        .title {
+          color: #0d2a38;
+          font-weight: 900;
+          font-size: 18px;
+        }
+      }
+
+      .description {
+        color: #0d2a38;
+        font-weight: 500;
+      }
+    }
+
+    .line {
+      background-color: #e7e7e7;
+      height: 1px;
+    }
+
+    .buttons {
+      display: grid;
+      gap: 16px;
+
+      .label {
+        width: 100%;
       }
     }
   }
