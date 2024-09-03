@@ -7,11 +7,11 @@ export interface AvatarProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   image?: string;
   children?: ReactNode;
 }
-export const Avatar = styled(({ className, children, ...rest }: AvatarProps) => {
+export const Avatar = styled(({ className, children, image, ...rest }: AvatarProps) => {
   return (
     <motion.div className={`avatar ${className}`} {...rest}>
       {children}
-      {!rest.image && <Icon icon='user' className='user-icon' />}
+      {!image && <Icon icon='user' className='user-icon' />}
     </motion.div>
   );
 })`

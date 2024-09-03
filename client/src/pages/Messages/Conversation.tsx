@@ -25,6 +25,8 @@ export const Conversation = styled(({ joinRoom, room: room, className, active }:
 
   const avatar = getAvatarFormIndex(avatarKey);
 
+  console.log({ avatarKey, avatar });
+
   const fullName =
     userStore.userDetails?.user_id === room?.author?._id
       ? `${room.participant?.first_name} ${room.participant?.last_name}`
