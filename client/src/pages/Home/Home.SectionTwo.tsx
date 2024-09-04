@@ -14,7 +14,7 @@ export const SectionTwo = styled(
         <div className='section-content'>
           <div className='content'>
             <div className='multimedia'>
-              <div className='icon'></div>
+              <div className='icon' style={{ backgroundImage: `url("${multimedia}")` }}></div>
             </div>
             {/*<Typography variant='body3' className='video-title'>*/}
             {/*  How Lostfish uses AI to find your perfect match*/}
@@ -103,7 +103,7 @@ export const SectionTwo = styled(
           .icon {
             width: 1.5em;
             height: 1.5em;
-            background-image: url(${multimedia});
+            //background-image: url(${multimedia});
             background-repeat: no-repeat;
             background-size: cover;
           }
