@@ -9,7 +9,7 @@ export const AcceptedOffer = styled(({ className }: AcceptedOfferProps) => {
     <div className={`offer-section-wrapper ${className}`}>
       <div className='offer-section'>
         <div className='section-title'>
-          <Icon icon='fast-message' size={24} />
+          <Icon icon='tick' size={24} />
           <Typography variant='body4' className='title'>
             Awesome news!
           </Typography>

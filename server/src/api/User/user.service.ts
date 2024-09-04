@@ -269,8 +269,11 @@ const createUser = async (req: Request, res: Response) => {
         participant,
         author,
         sender: agentUser._id,
-        message: 'Hey John, welcome to Lostfish! We`re happy you choose to find a perfect match and not waste time with unnecessary listings. To get started you have to initiate a match finding. We recommend that you fill out all details in order to make the algorithm learn from your choices and show you curated listings based on your needs. Any questions you have you can write them in this chat and our AI will answer you instantly. Are you ready to start your journey with Lostfish?'
+        message: 'Hey ' + savedUser.first_name + ', welcome to Lostfish! We`re happy you choose to find a perfect match and not waste time with unnecessary listings. To get started you have to initiate a match finding. We recommend that you fill out all details in order to make the algorithm learn from your choices and show you curated listings based on your needs. Any questions you have you can write them in this chat and our AI will answer you instantly. Are you ready to start your journey with Lostfish?'
       };
+
+      // console.log(message.participant)
+
       const newMessage = await MessageModel.create(message);
 
       await notificationSender.notifyUser({

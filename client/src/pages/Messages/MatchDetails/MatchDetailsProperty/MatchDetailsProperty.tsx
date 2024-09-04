@@ -28,6 +28,7 @@ import { DocumentType } from '../../../MyAccount/user.interface.ts';
 import { useProfileStore } from '../../../../globalState/profile.tsx';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../../config.ts';
+import { CompletedAllSteps } from './ComplettedAllSteps.tsx';
 interface MatchDetailsPropertyProps extends HTMLAttributes<HTMLDivElement> {
   room: IRoom;
   fetchChatRooms: () => any;
@@ -150,7 +151,7 @@ export const MatchDetailsProperty = styled(
           }
         });
       },
-      enabled: false,
+      enabled: isIdVerified && profileStore.signed_transaction_agreement,
       onSuccess: (data) => {
         const envelope = data.data.docs[0];
         if (envelope.signed_by_landlord && envelope.signed_by_tenant) {
@@ -182,7 +183,12 @@ export const MatchDetailsProperty = styled(
             {offerQuery.data && !offerQuery.data?.accepted.status && (
               <ReviewOffer setReviewOfferModalVisibility={setReviewOfferModalVisibility} />
             )}
-            {offerQuery.data && offerQuery.data?.accepted.status && <AcceptedOffer />}
+            {offerQuery.data && offerQuery.data?.accepted.status && showDocuments !== undefined && (
+              <AcceptedOffer />
+            )}
+            {showDocuments === undefined && (
+              <CompletedAllSteps seePropertyDetails={() => setPropertyToView(matchedProperty)} />
+            )}
             <div className='divider' />
             {(offerQuery.data && offerQuery.data?.accepted.status && (
               <>

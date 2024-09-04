@@ -3,8 +3,13 @@ import { styled } from '@mui/system';
 import { Avatar, Icon, Label, Typography } from '../../components';
 import { getAvatarFormIndex } from '../HomeLoggedIn/avatars.tsx';
 import { useUserStore } from '../../globalState/user.tsx';
+import { IRoom } from './messages.interface.ts';
 
-export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HTMLDivElement>) => {
+interface LostfishAssistanceProps extends HTMLAttributes<HTMLDivElement> {
+  room: IRoom;
+}
+
+export const LostfishAssistance = styled(({ className, room }: LostfishAssistanceProps) => {
   const userStore = useUserStore();
   const avatarKey =
     userStore.userDetails?.user_id === room?.author?._id ? room?.participant?.avatar : room?.author?.avatar;
@@ -39,10 +44,12 @@ export const LostfishAssistance = styled(({ className, room }: HTMLAttributes<HT
         </Typography>
       </div>
       <div className='buttons'>
-        <Label variant='secondary' size='large'>
-          <Icon icon='phone' />
-          Call a representative
-        </Label>
+        <a href='tel:+123456789' style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Label variant='secondary' size='large'>
+            <Icon icon='phone' />
+            Call a representative
+          </Label>
+        </a>
         <Label variant='secondary' size='large'>
           Frequently asked questions
         </Label>

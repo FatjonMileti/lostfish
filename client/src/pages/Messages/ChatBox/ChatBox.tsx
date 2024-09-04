@@ -9,7 +9,8 @@ import { Avatar } from '../../../components/Avatar';
 import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
 import classNames from 'classnames';
 import { SuggestedMessages } from './SuggestedMessages';
-import { Icon, IconButton } from '../../../components';
+import { Icon, IconButton, Label } from '../../../components';
+import { useNavigate } from 'react-router-dom';
 
 export interface ChatBoxProps extends HTMLAttributes<HTMLDivElement> {
   username: string;
@@ -24,6 +25,7 @@ export interface ChatBoxProps extends HTMLAttributes<HTMLDivElement> {
 export const ChatBox = styled(({ className, updateList, room, user_id, messages, socket }: ChatBoxProps) => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [messageList, setMessageList] = useState<IMessageItem[]>([]);
+  const navigate = useNavigate();
 
   const isAuthor = room.author._id === user_id;
 
@@ -148,16 +150,43 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
                   })}
                 />
 
-                <Typography variant='body5' className='text'>
-                  {messageContent.message}
-                </Typography>
+                {messageList.length === 1 && avatarKey === 'lostfish' ? (
+                  <div className='lostfish-message'>
+                    <div className='lostfish-message-content'>
+                      <Typography variant='body4' className='lostfish-text'>
+                        Hey {room.participant.first_name}, welcome to Lostfish!
+                      </Typography>
+                      <Typography variant='body4' className='lostfish-text'>
+                        We’re happy you choose to find a perfect match and not waste time with unnecessary
+                        listings. To get started you have to initiate a match finding. We recommend that you
+                        fill out all details in order to make the algorithm learn from your choices and show
+                        you curated listings based on your needs.
+                      </Typography>
+                      <Typography variant='body4' className='lostfish-text'>
+                        Any questions you have you can write them in this chat and our AI will answer you
+                        instantly.
+                      </Typography>
+                      <Typography variant='body4' className='lostfish-text'>
+                        Are you ready to start your journey with Lostfish?
+                      </Typography>
+                    </div>
+                    <Label variant='special' onClick={() => navigate('/matches')}>
+                      Start matching
+                    </Label>
+                  </div>
+                ) : (
+                  <Typography variant='body5' className='text'>
+                    {messageContent.message}
+                  </Typography>
+                )}
               </div>
             );
           })}
           {messageList.length === 0 && (
             <Typography variant='body5' className='chat-info'>
-              Amazing news Nancy and John! You are now matched with each other. <br /> Use the chat below to
-              communicate or the panel on the right to start sealing the deal.
+              Amazing news {room.author.first_name} and {room.participant.first_name}! You are now matched
+              with each other. <br /> Use the chat below to communicate or the panel on the right to start
+              sealing the deal.
             </Typography>
           )}
         </div>
@@ -250,6 +279,30 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
             }
           }
 
+          .lostfish-message {
+            display: grid;
+            gap: 16px;
+            padding: 16px;
+            width: 100%;
+            height: 360px;
+            background-color: #f3f4f5;
+            color: rgba(13, 42, 56, 1);
+            border-radius: 16px 16px 16px 16px;
+
+            .lostfish-message-content {
+              display: grid;
+              gap: 16px;
+              align-content: flex-start;
+              padding: 16px;
+
+              .lostfish-text {
+                color: rgba(13, 42, 56, 1);
+                font-weight: 500;
+                font-size: 14px;
+              }
+            }
+          }
+
           .text {
             color: #0d2a38;
             background-color: #f3f4f5;
@@ -260,18 +313,15 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
           }
 
           &.from-you {
-            grid-template-columns: auto min-content;
-            .avatar {
-              order: 2;
-            }
+            grid-template-columns: min-content auto;
           }
 
           &.from-you {
             justify-self: flex-start;
 
             .text {
-              background-color: #f7f1e7;
-              color: rgba(13, 42, 56, 1);
+              background-color: #f3f4f5;
+              color: #0d2a38;
               border-radius: 16px 16px 16px 16px;
             }
 
@@ -300,6 +350,13 @@ export const ChatBox = styled(({ className, updateList, room, user_id, messages,
               .text {
                 border-top-left-radius: 0;
               }
+            }
+          }
+
+          &.from-me {
+            grid-template-columns: auto min-content;
+            .avatar {
+              order: 2;
             }
           }
 
