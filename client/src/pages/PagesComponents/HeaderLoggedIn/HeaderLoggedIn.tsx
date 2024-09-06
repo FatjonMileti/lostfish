@@ -23,6 +23,8 @@ export const HeaderLoggedIn = styled(({ className }: HeaderProps) => {
 
   const [isNotificationsDrawerOpen, setNotificationsDrawerOpen] = React.useState(false);
 
+  console.log(notificationsStore.unreadMessages);
+
   return (
     <div className={classNames('header-logged-in', className)}>
       <img className='logo' src={lostfishLogoColored} alt='Lostfish logo' onClick={() => navigate('/')} />
@@ -40,7 +42,7 @@ export const HeaderLoggedIn = styled(({ className }: HeaderProps) => {
             {({ isActive }) => (
               <MenuItem
                 label='Messages'
-                icon='email'
+                icon={notificationsStore.unreadMessages > 0 ? 'message-filled' : 'email'}
                 active={isActive}
                 counter={notificationsStore.unreadMessages}
               />
