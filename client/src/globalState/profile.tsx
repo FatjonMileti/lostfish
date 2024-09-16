@@ -22,7 +22,7 @@ interface ProfileBase {
   transaction_agreement_link: string | undefined;
   documents: IUser_Documents[];
   trust_score: number;
-  has_completed_initial_setup: boolean;
+  has_completed_initial_setup: boolean | undefined;
   notification: UserNotifications;
 }
 
@@ -51,7 +51,7 @@ const profileInitialState: ProfileBase = {
   address: '',
   martial_status: '',
   have_pets: '',
-  has_completed_initial_setup: false,
+  has_completed_initial_setup: undefined,
 
   notification: {
     email_updates: false,

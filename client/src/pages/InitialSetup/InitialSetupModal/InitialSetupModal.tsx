@@ -60,12 +60,13 @@ export const InitialSetupModal = styled(({ className }: InitialSetupModalProps) 
   const onLookingForNext = async () => {
     setLoading(true);
     try {
-      await axios(userStore.auth.access_token).patch('/api/user/' + userStore.userDetails.user_id, {
-        avatar: state.avatar
-      });
       await axios(userStore.auth.access_token).post('/api/criteria', {
         looking_for: state.lookingFor || 'I’m looking for a place',
         transaction_type_string: Transaction.Rent
+      });
+
+      await axios(userStore.auth.access_token).patch('/api/user/' + userStore.userDetails.user_id, {
+        avatar: state.avatar
       });
 
       profileStore.setAvatar(state.avatar);

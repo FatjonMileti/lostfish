@@ -18,7 +18,7 @@ export const HomeLoggedIn = styled(({ className }: React.HTMLAttributes<HTMLDivE
     return <MyDashboard />;
   }
 
-  if (!profileStore.has_completed_initial_setup) {
+  if (profileStore.has_completed_initial_setup === false ) {
     return <InitialSetupModal />;
   }
 
