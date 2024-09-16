@@ -3,7 +3,8 @@ import React from 'react';
 
 import { Typography } from '../../components/Typography.tsx';
 
-import { LostfishFullLogoBlack } from '../../components/LostfishLogo/LostfishLogo.ts';
+import LostfishFullLogoBlack from '../../assets/svg/lostfishLogo.svg';
+
 import { Link } from '../../components/Link.tsx';
 
 export const Footer = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
