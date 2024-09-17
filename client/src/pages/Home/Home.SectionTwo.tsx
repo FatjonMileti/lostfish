@@ -27,11 +27,10 @@ export const SectionTwo = styled(
             to reimagine the real estate industry.
           </Typography>
           <Typography variant='body4' className='description'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua.
+            Our revolutionary new platform takes the stress out of finding selling or renting
+            a home powered by AI it perfectly matches buyers and tenants with their dream homes.
             <br />
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
+            From start to finish guides everyone through the process with ease delivering a calm and efficient experience. Saving your time money and hassle.
           </Typography>
         </div>
       </div>
@@ -52,7 +51,7 @@ export const SectionTwo = styled(
 
     .title {
       display: grid;
-      justify-self: center;
+      justify-items: center;
       gap: 24px;
 
       .perfect-match {

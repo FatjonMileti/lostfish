@@ -8,11 +8,12 @@ import { IconButton } from '../../components';
 
 interface FaqComponentProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
-  descriptionForTenants: string;
-  descriptionForLandlords: string;
+  descriptionForTenants?: string;
+  descriptionForLandlords?: string;
+  description?: string;
 }
 export const FaqComponent = styled(
-  ({ className, title, descriptionForTenants, descriptionForLandlords }: FaqComponentProps) => {
+  ({ className, title, descriptionForTenants, descriptionForLandlords, description }: FaqComponentProps) => {
     const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
     const toggleDescription = () => {
@@ -20,12 +21,12 @@ export const FaqComponent = styled(
     };
 
     return (
-      <div className={`faq-component ${className}`}>
+      <div className={`faq-component ${className}`} onClick={toggleDescription}>
         <div className='title-and-button-wrapper'>
           <Typography variant='body3' className='title'>
             {title}
           </Typography>
-          <IconButton size='small' onClick={toggleDescription}>
+          <IconButton size='small'>
             <Icon icon={isDescriptionVisible ? 'chevron-up' : 'chevron-down'} size={24} />
           </IconButton>
         </div>
@@ -38,13 +39,22 @@ export const FaqComponent = styled(
             animate={{ opacity: isDescriptionVisible ? 1 : 0 }}
             transition={{ duration: 0.3 }}
             className='descriptions'>
-            <Typography variant='body4' className='text'>
-              <span className='for-user-type'>For Tenants: </span>
-              {descriptionForTenants}
-            </Typography>
-            <Typography variant='body4' className='text'>
-              <span className='for-user-type'>For Landlords: </span> {descriptionForLandlords}
-            </Typography>
+            {descriptionForTenants && (
+              <Typography variant='body4' className='text'>
+                <span className='for-user-type'>For Tenants: </span>
+                {descriptionForTenants}
+              </Typography>
+            )}
+            {descriptionForLandlords && (
+              <Typography variant='body4' className='text'>
+                <span className='for-user-type'>For Landlords: </span> {descriptionForLandlords}
+              </Typography>
+            )}
+            {description && (
+              <Typography variant='body4' className='text'>
+                {description}
+              </Typography>
+            )}
           </motion.div>
         </motion.div>
       </div>
@@ -56,6 +66,7 @@ export const FaqComponent = styled(
     align-items: center;
     padding: 16px 0px;
     border-bottom: 1px solid #e7e7e7;
+    cursor: pointer;
 
     .title-and-button-wrapper {
       display: flex;
@@ -64,7 +75,7 @@ export const FaqComponent = styled(
       gap: 24px;
 
       .title {
-        font-weight: 900;
+        font-weight: 700;
         line-height: 32px;
       }
 

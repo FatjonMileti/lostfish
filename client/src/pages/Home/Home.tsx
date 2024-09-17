@@ -17,6 +17,7 @@ import { StartMatchingWithoutAccount } from '../Suggestions/StartMatchingWithout
 import HomeCirclesSection from './Home.CirclesSection.tsx';
 import { ValpalSection } from '../PagesComponents/ValpalSection/Home.ValpalSection.tsx';
 import { useCriteriaWithoutAccountStore } from '../../globalState/useCriteriaWithoutAccount.ts';
+import { ColoredCards } from './Home.ColoredCards';
 
 export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const [showStartMatching, setShowStartMatching] = React.useState(false);
@@ -86,10 +87,10 @@ export const Home = styled(({ className }: React.HTMLAttributes<HTMLDivElement>)
                 />
 
                 <SectionTwo ref={section2Ref} />
-                <HomeCirclesSection />
+                {/*<HomeCirclesSection />*/}
+                <ColoredCards onCreateAccountClick={onCreateAccountClick} />
                 <FaqSection />
                 <ValpalSection />
-                {/*<ColoredCards onCreateAccountClick={onCreateAccountClick} />*/}
 
                 {/*<DailyNews />*/}
                 <DailyNewss />

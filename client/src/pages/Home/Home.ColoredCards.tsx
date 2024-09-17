@@ -25,45 +25,48 @@ export const ColoredCards = styled(
             <div className='image image-1'>
               <div className='content'>
                 <Typography variant='body3' className='title'>
-                  What really is AI?
+                  Let us know what you’re looking for
                 </Typography>
                 <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
+                  Whether buying renting or selling answer a few quick ques- tions on our user-friendly
+                  platform and let our cutting edge AI guide you effortlessly on your journey to finding the
+                  perfect match.
                 </Typography>
               </div>
             </div>
             <div className='image image-2'>
               <div className='content'>
                 <Typography variant='body3' className='title'>
-                  Why AI?
+                  AI matching
                 </Typography>
                 <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
-                </Typography>
-                <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
+                  Our AI scours every new property listing as soon as it hits the market notifying you
+                  instantly when a perfect match is found no spam no irrelevant emails just smart targeted
+                  results.
                 </Typography>
               </div>
             </div>
             <div className='image image-3'>
               <div className='content'>
                 <Typography variant='body3' className='title'>
-                  How to get started
+                  Transparent, fast and easy
                 </Typography>
                 <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
+                  Our platform partners with leading online professionals including mortgage companies and
+                  solicitors to offer fast cost-effective solutions empowering you to be In control every step
+                  of the way.
+                </Typography>
+              </div>
+            </div>
+            <div className='image image-4'>
+              <div className='content'>
+                <Typography variant='body3' className='title'>
+                  Move in with confidence
                 </Typography>
                 <Typography variant='body4' className='description'>
-                  Our goal is to increase transparency and trust in the process to achieve the best results
-                  for customers in a quick, calm, and informed manner.
+                  Every Customer on our platform is prequalified insuring a process defined by transparency
+                  and efficiency with clear timelines and seamless management. You can confidently plan your
+                  move and look forward to picking up the keys to your dream home without stress….
                 </Typography>
               </div>
             </div>
@@ -103,31 +106,39 @@ export const ColoredCards = styled(
 
     .images {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       align-items: flex-start;
       gap: 24px;
 
       .image-1 {
-        background-image: url(${image1});
+        //background-image: url(${image1});
 
         .content {
-          background: linear-gradient(180deg, rgba(229, 21, 90, 0.8) 0%, rgba(13, 42, 56, 0.8) 80%);
+          //background: linear-gradient(180deg, rgba(229, 21, 90, 0.8) 0%, rgba(13, 42, 56, 0.8) 80%);
+          background-color: #c0daff;
         }
       }
 
       .image-2 {
-        background-image: url(${image2});
+        //background-image: url(${image2});
 
         .content {
-          background: linear-gradient(180deg, rgba(192, 218, 255, 0.8) 0%, rgba(13, 42, 56, 0.8) 75%);
+          //background: linear-gradient(180deg, rgba(192, 218, 255, 0.8) 0%, rgba(13, 42, 56, 0.8) 75%);
+          background-color: #a7a7a7;
         }
       }
 
       .image-3 {
-        background-image: url(${image3});
+        //background-image: url(${image3});
 
         .content {
-          background: linear-gradient(180deg, rgba(24, 77, 109, 0.8) 0%, rgba(13, 42, 56, 0.8) 70%);
+          //background: linear-gradient(180deg, rgba(24, 77, 109, 0.8) 0%, rgba(13, 42, 56, 0.8) 70%);
+          background-color: #fff;
+        }
+      }
+      .image-4 {
+        .content {
+          background-color: springgreen;
         }
       }
 
@@ -146,13 +157,13 @@ export const ColoredCards = styled(
           border-radius: 12px;
 
           .title {
-            color: #fff;
-            font-weight: 600;
+            //color: #fff;
+            //font-weight: 400;
           }
 
           .description {
-            color: #fff;
-            font-weight: 400;
+            //color: #fff;
+            //font-weight: 400;
           }
         }
       }

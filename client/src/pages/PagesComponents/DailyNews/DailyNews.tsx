@@ -100,7 +100,7 @@ export const DailyNewss = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       }
 
       .section-title {
-        font-weight: 900;
+        font-weight: 700;
         font-family: Roobert, serif;
         color: #0d2a38;
       }

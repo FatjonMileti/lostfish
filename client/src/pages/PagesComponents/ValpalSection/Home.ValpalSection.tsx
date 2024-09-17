@@ -94,7 +94,8 @@ export const ValpalSection = styled(({ className }: HTMLAttributes<HTMLDivElemen
           gap: 8px;
 
           .title {
-            font-weight: 900;
+            font-weight: 700;
+              text-align: center;
           }
           .description {
             font-weight: 500;
