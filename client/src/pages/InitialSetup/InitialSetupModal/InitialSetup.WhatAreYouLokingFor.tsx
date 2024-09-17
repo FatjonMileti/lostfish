@@ -4,8 +4,8 @@ import { Typography } from '../../../components/Typography';
 import { IconButton } from '../../../components/IconButton';
 import { Icon } from '../../../components/Icon';
 
-import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
-
+// import { getAvatarFormIndex } from '../../HomeLoggedIn/avatars';
+import pierre from '../../MyAccount/images/pierre at desk cream.png'
 import imLookingForPlace from './lostfish_house_.jpg';
 import classNames from 'classnames';
 import { LookingFor } from '../../SetCriteria/criteria.contants';
@@ -252,7 +252,7 @@ export const WhatAreYouLookingFor = styled(
               background-position: center;
               background-size: cover;
               position: relative;
-              background-image: url(${getAvatarFormIndex('0')});
+              background-image: url(${pierre});
               ${(props) => props.theme.breakpoints.down('laptop')} {
                 background-size: 134%;
                 background-position-y: -56%;
