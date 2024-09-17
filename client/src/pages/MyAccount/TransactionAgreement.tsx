@@ -91,8 +91,13 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
   };
 
   return (
-    <div className={`transaction-agreement ${className}`}>
+
+    <div className={`transaction-agreement-section ${className}`}>
       {loading && <ShowGlobalLoading />}
+      <Typography variant='body2' className='transaction-agreement'>
+        Transaction Agreement
+      </Typography>
+      <div className='section-wrapper'>
       <div className='body-content'>
         <DocumentsView documents={documents} handleFileChange={handleFileChange} />
 
@@ -120,45 +125,60 @@ export const TransactionAgreement = styled(({ className }: HTMLAttributes<HTMLDi
       <div className='right-part'>
         <img src={ShakeHands} alt='' className='shake-hands' />
       </div>
+      </div>
     </div>
   );
 })`
-  &.transaction-agreement {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 24px;
-    .body-content {
+  &.transaction-agreement-section {
       display: grid;
-      row-gap: 32px;
-      .section {
-        display: grid;
-        row-gap: 16px;
+      gap: 40px;
 
-        .title {
-          color: #a7a7a7;
-        }
-        .note {
-          padding: 12px;
-          color: #646464;
-          background-color: #f3f4f5;
-          border-radius: 8px;
-        }
+      .transaction-agreement {
+          color: #0d2a38;
+          font-weight: 600;
+          line-height: 48px;
       }
-    }
+      
+      .section-wrapper {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          column-gap: 24px;
 
-    .right-part {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
+          .body-content {
+              display: grid;
+              row-gap: 32px;
 
-      .shake-hands {
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 300px;
-        height: 300px;
+              .section {
+                  display: grid;
+                  row-gap: 16px;
+
+                  .title {
+                      color: #a7a7a7;
+                  }
+
+                  .note {
+                      padding: 12px;
+                      color: #646464;
+                      background-color: #f3f4f5;
+                      border-radius: 8px;
+                  }
+              }
+          }
+
+          .right-part {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 8px;
+
+              .shake-hands {
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  width: 340px;
+                  height: 300px;
+              }
+          }
       }
-    }
   }
 `;

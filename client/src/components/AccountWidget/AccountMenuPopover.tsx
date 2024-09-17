@@ -114,7 +114,7 @@ export const AccountMenuPopover = styled(
           align-self: stretch;
           .name {
             color: #0d2a38;
-            font-weight: 900;
+            font-weight: 700;
           }
         }
 

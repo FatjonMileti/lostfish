@@ -258,7 +258,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
 
         .id-details {
           display: grid;
-          grid-template-columns: auto min-content;
+          //grid-template-columns: auto min-content;
           padding: 24px;
           gap: 16px;
           align-items: center;
@@ -291,7 +291,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
 
           .title {
             color: #0d2a38;
-            font-weight: 900;
+            font-weight: 600;
           }
 
           .content {
@@ -384,7 +384,7 @@ export const SecurityDetails = styled(({ className }: HTMLAttributes<HTMLDivElem
         gap: 16px;
 
         .device-history {
-          font-weight: 900;
+          font-weight: 600;
           color: #0d2a38;
         }
 

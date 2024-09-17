@@ -80,7 +80,7 @@ export const Property = styled(
         <Slider images={images} />
         <div className='details'>
           <div className='description-header'>
-            <Typography variant='body6' className='status'>
+            <Typography variant='body6' className={classNames(`status`, {published: propertyStatusMap[status] === propertyStatusMap.Live})}>
               {propertyStatusMap[status] || status}
             </Typography>
 
@@ -257,6 +257,11 @@ export const Property = styled(
           color: white;
           font-weight: 700;
         }
+          
+          .published {
+              background: #E5155A;
+          }
+          
         .potential-matches-list {
           display: flex;
 

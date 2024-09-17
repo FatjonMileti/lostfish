@@ -24,7 +24,7 @@ export const Switch = styled(
 
       & + .MuiSwitch-track {
         opacity: 1;
-        background-color: #eee0d3;
+        background-color: #c0daff;
       }
 
       & .MuiSwitch-thumb {

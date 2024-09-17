@@ -222,7 +222,8 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
         align-items: center;
 
         .add-property-button {
-          padding: 12px 20px;
+           background-color: #E5155A;
+            padding: 12px 20px;
         }
       }
 

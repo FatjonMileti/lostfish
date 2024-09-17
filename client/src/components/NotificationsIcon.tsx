@@ -16,7 +16,7 @@ export const NotificationsIcon = styled(
           counter
         })}
         {...rest}>
-        <Icon icon='bell' />
+        <Icon icon='bell'/>
         {counter && <div className='counter'>{counter}</div>}
       </div>
     );
@@ -30,7 +30,7 @@ export const NotificationsIcon = styled(
     display: grid;
     align-items: center;
     justify-content: center;
-    outline: 1px solid #eee0d3;
+    outline: 1px solid #184d6d;
     box-sizing: border-box;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
@@ -38,7 +38,7 @@ export const NotificationsIcon = styled(
     .icon {
       width: 24px;
       height: 24px;
-      color: #c4b1a3;
+      color: #184d6d;
     }
 
     .counter {
@@ -62,20 +62,20 @@ export const NotificationsIcon = styled(
     }
 
     &:hover {
-      outline-color: #c4b1a3;
+      outline-color: #184d6d;
     }
 
     &.actioned {
-      border-color: #0d2a38;
+      border-color: #184d6d;
       background-color: white;
 
       .icon {
-        color: #0d2a38;
+        color: #184d6d;
       }
 
       &:hover {
         background-color: #eee0d3;
-        border-color: #eee0d3;
+        border-color:  #184d6d;
         .icon {
           color: #184d6d;
         }

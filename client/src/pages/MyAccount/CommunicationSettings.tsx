@@ -222,7 +222,7 @@ export const CommunicationSettings = styled(({ className }: HTMLAttributes<HTMLD
 
           .title {
             color: #0d2a38;
-            font-weight: 900;
+            font-weight: 600;
           }
 
           .notification-list {
@@ -246,7 +246,7 @@ export const CommunicationSettings = styled(({ className }: HTMLAttributes<HTMLD
                 .notification-title {
                   color: #0d2a38;
                   font-size: 18px;
-                  font-weight: 900;
+                  font-weight: 600;
                 }
 
                 .notification-description {

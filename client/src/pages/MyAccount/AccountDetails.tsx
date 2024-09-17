@@ -232,7 +232,7 @@ export const AccountDetails = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
         .title {
           color: #0d2a38;
-          font-weight: 900;
+          font-weight: 600;
         }
 
         .personal-details-form {

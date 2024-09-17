@@ -119,7 +119,7 @@ export const PrivacyAndSharing = styled(({ className }: HTMLAttributes<HTMLDivEl
 
       .section-title {
         color: #0d2a38;
-        font-weight: 900;
+        font-weight: 600;
       }
 
       .section {
@@ -137,7 +137,7 @@ export const PrivacyAndSharing = styled(({ className }: HTMLAttributes<HTMLDivEl
           .title {
             color: #0d2a38;
             font-size: 18px;
-            font-weight: 900;
+            font-weight: 600;
           }
 
           .description {

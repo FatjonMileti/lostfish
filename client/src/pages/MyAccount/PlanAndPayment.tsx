@@ -137,7 +137,7 @@ export const PlanAndPayment = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
         .title {
           color: #0d2a38;
-          font-weight: 900;
+          font-weight: 600;
         }
 
         .current-plan {
@@ -232,11 +232,12 @@ export const PlanAndPayment = styled(({ className }: HTMLAttributes<HTMLDivEleme
 
             .credit-card-wrapper {
               display: grid;
-              grid-template-columns: min-content min-content;
-              justify-content: space-between;
+              //grid-template-columns: min-content min-content;
+              //justify-content: space-between;
               padding: 24px;
               border-radius: 8px;
               background-color: #f3f4f5;
+                gap: 16px;
 
               .credit-card {
                 display: flex;
