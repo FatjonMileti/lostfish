@@ -7,7 +7,7 @@ export const PropertyType = {
   // Detached: 'Detached',
   // SemiDetached: 'Semi-Detached',
   // Terraced: 'Terraced',
-  Flats: 'Flats',
+  Flats: 'Apartment',
   // Bungalows: 'Bungalows',
   // ParkHomes: 'Park homes',
   // FarmsLand: 'Farms/Land',
@@ -21,6 +21,7 @@ export const Floor = {
   Penthouse: 'Penthouse'
 } as const;
 export const Parking = {
+  All: 'All',
   Garage: 'Garage',
   OffStreet: 'Off street',
   OnStreet: 'On street'
@@ -52,10 +53,11 @@ export const AreaUnit = {
 } as const;
 
 export const Condition = {
-  NewlyRefurbished: 'Newly refurbished',
-  Good: 'Good',
-  WouldDoSomeWork: 'Would do some work',
-  wouldDoAProject: 'Would do a project'
+  All: 'All',
+  Furnished: 'Furnished',
+  Unfurnished: 'Unfurnished',
+  PartiallyFurnished: 'Partially furnished',
+  NoPreference: 'No preference'
 } as const;
 
 export const propertyFormSchema: ObjectSchema<PropertyFormType> = yup.object().shape({

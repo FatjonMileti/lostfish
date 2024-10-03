@@ -112,14 +112,14 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 ))}
               </Select>
 
-              <Select label='Condition' {...form.register('houseDetails.condition')}>
-                <option></option>
-                {Object.values(Condition).map((style, styleIndex) => (
-                  <option value={style} key={styleIndex}>
-                    {style}
-                  </option>
-                ))}
-              </Select>
+              {/*<Select label='Condition' {...form.register('houseDetails.condition')}>*/}
+              {/*  <option></option>*/}
+              {/*  {Object.values(Condition).map((style, styleIndex) => (*/}
+              {/*    <option value={style} key={styleIndex}>*/}
+              {/*      {style}*/}
+              {/*    </option>*/}
+              {/*  ))}*/}
+              {/*</Select>*/}
 
               <Select label='Parking' {...form.register('houseDetails.parking')}>
                 <option></option>
@@ -129,6 +129,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                   </option>
                 ))}
               </Select>
+              <div></div>
 
               <div className='slider-wrapper'>
                 <Typography variant='body6' className='slider-label'>
@@ -142,11 +143,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       return (
                         <Slider
                           value={[field?.value?.min, field?.value?.max]}
-                          min={
-                            form.getValues('houseDetails.preferredSize.unit') === AreaUnit.SquareFoot
-                              ? 1000
-                              : 100
-                          }
+                          min={0}
                           max={
                             form.getValues('houseDetails.preferredSize.unit') === AreaUnit.SquareFoot
                               ? 10000
@@ -205,7 +202,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       return (
                         <Slider
                           value={[field?.value?.min, field?.value?.max]}
-                          min={form.getValues('houseDetails.garden.unit') === AreaUnit.SquareFoot ? 200 : 20}
+                          min={0}
                           max={
                             form.getValues('houseDetails.garden.unit') === AreaUnit.SquareFoot ? 1000 : 100
                           }
@@ -290,6 +287,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                   </div>
                 ))(uuid())
               )}
+              <div></div>
 
               <div className='slider-wrapper'>
                 <Typography variant='body6' className='slider-label'>

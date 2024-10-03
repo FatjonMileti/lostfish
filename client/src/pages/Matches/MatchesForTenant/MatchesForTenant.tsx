@@ -69,7 +69,7 @@ export const MatchesForTenant = styled(({ className }: MatchesForTenantProps) =>
                   />
 
                   <SegmentControl
-                    label='Perfect matches'
+                    label='Saved matches'
                     active={activeTab === ActiveTab.Perfect}
                     onClick={() => setActiveTab(ActiveTab.Perfect)}
                     counter={

@@ -54,13 +54,14 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
               <option value='10'>10 mi</option>
               <option value='50'>50 mi</option>
             </Select>
+          </div>
             <UseMyLocation
               onLocation={({ formattedAddress, location }) => {
                 form.setValue('areaOfInterest', formattedAddress);
                 form.setValue('location', location);
               }}
             />
-          </div>
+
         </div>
         <div className='section moving-preferences-section'>
           <Typography className='section-title' variant='body4'>
@@ -190,7 +191,7 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
 
     .sections {
       display: grid;
-      row-gap: 48px;
+      row-gap: 80px;
       .section {
         display: grid;
         row-gap: 16px;
@@ -202,12 +203,20 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
     }
 
     .property-location-section {
+        display: grid;
+        row-gap: 36px;
+        
       .section-content {
         display: grid;
         grid-template-columns: 2fr 1fr;
+          align-items: center;
         column-gap: 24px;
         row-gap: 36px;
       }
+        
+        .use-my-location-button {
+            justify-self: center;
+        }
     }
     .moving-preferences-section {
       .section-content {
@@ -229,10 +238,11 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
 
           :hover {
             border: 1px solid #eee0d3;
+            background-color: #c0daff;
           }
           &.active {
-            background-color: #eee0d3;
-            border-color: #eee0d3;
+            background-color: #c0daff;
+            border-color: #c0daff;
           }
         }
       }

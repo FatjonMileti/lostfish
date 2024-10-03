@@ -24,6 +24,7 @@ export const LookingFor = {
 } as const;
 
 export const HomeStyle = {
+  All: 'All',
   Modern: 'Modern',
   Period: 'Period'
 } as const;
@@ -53,7 +54,7 @@ export const PropertyPreference = {
 export const House = {
   Detached: 'Detached',
   SemiDetached: 'Semi-Detached',
-  FarmsLand: 'Farms/Land'
+  // FarmsLand: 'Farms/Land'
 } as const;
 
 export const Transaction = {
@@ -78,8 +79,8 @@ export const WhenDoYouWantToMove = {
   ThisWeek: 'This week',
   AsSoonAsPossible: 'As soon as possible',
   ThisMonth: 'This month',
-  ImNotInARush: 'I’m not in a rush',
-  IWantToTakeMyTime: 'I want to take my time'
+  // ImNotInARush: 'I’m not in a rush',
+  ImNotInARush: 'Over a month'
 } as const;
 
 export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().shape({

@@ -283,6 +283,7 @@ export const SetCriteria = styled(({ onNext, onBack }: SetCriteriaProps) => {
 
   return (
     <SetCriteriaModal
+      showTabs={true}
       open={true}
       onBack={onBack}
       onBackdropClick={onBack}

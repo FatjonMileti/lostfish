@@ -9,11 +9,12 @@ import { Slider } from '../../../components/Slider';
 import { TextField } from '../../../components/TextField';
 import { Icon } from '../../../components/Icon';
 import { Label } from '../../../components/Label';
-import { Tab, Tabs } from '../../../components/Tab';
+// import { Tab, Tabs } from '../../../components/Tab';
 import { Select } from '../../../components/Select/Select';
 
 import { BudgetFor, ContractDetail, CreditScore } from '../criteria.contants';
 import { CriteriaFormType } from '../criteria.types';
+import ThirdfortLogo from './Thirdfort.png'
 
 interface SetCriteriaBudgetProps extends HTMLMotionProps<'div'> {
   form: UseFormReturn<CriteriaFormType>;
@@ -33,7 +34,6 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
             Budget (pcm)
           </Typography>
 
-          <div className='section-content'>
             <div className='slider-wrapper'>
               <Typography variant='body6' className='slider-label'>
                 Budget
@@ -53,6 +53,7 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
               />
             </div>
 
+          <div className='budget-for'>
             <Select label='Budget for:' {...form.register('budgetFor')}>
               {Object.values(BudgetFor).map((bf, bfIndex) => (
                 <option key={bfIndex} value={bf}>
@@ -62,26 +63,26 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
             </Select>
           </div>
         </div>
-        <div className='section contract-details-section'>
-          <Typography className='section-title' variant='body4'>
-            Contract details
-          </Typography>
-          <div className='section-content'>
-            {Object.values(ContractDetail).map((contractDetail, contractDetailIndex) => {
-              const active = form.getValues('contractDetails')[contractDetail];
-              return (
-                <div key={contractDetailIndex}>
-                  <Label
-                    active={active}
-                    onClick={() => form.setValue(`contractDetails.${contractDetail}`, !active)}>
-                    {contractDetail}
-                    {active && <Icon icon='close' size={16} />}
-                  </Label>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/*<div className='section contract-details-section'>*/}
+        {/*  <Typography className='section-title' variant='body4'>*/}
+        {/*    Contract details*/}
+        {/*  </Typography>*/}
+        {/*  <div className='section-content'>*/}
+        {/*    {Object.values(ContractDetail).map((contractDetail, contractDetailIndex) => {*/}
+        {/*      const active = form.getValues('contractDetails')[contractDetail];*/}
+        {/*      return (*/}
+        {/*        <div key={contractDetailIndex}>*/}
+        {/*          <Label*/}
+        {/*            active={active}*/}
+        {/*            onClick={() => form.setValue(`contractDetails.${contractDetail}`, !active)}>*/}
+        {/*            {contractDetail}*/}
+        {/*            {active && <Icon icon='close' size={16} />}*/}
+        {/*          </Label>*/}
+        {/*        </div>*/}
+        {/*      );*/}
+        {/*    })}*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         <div className='section deposit-details-section'>
           <Typography className='section-title' variant='body4'>
@@ -97,32 +98,33 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
           </div>
         </div>
 
-        <div className='section credit-score-section'>
-          <Typography className='section-title' variant='body4'>
-            Credit score
-          </Typography>
-          <div className='section-content'>
-            <Tabs
-              value={Object.values(CreditScore).indexOf(form.getValues('creditScore'))}
-              onChange={(i: number) => {
-                form.setValue('creditScore', Object.values(CreditScore)[i]);
-              }}
-              rounded
-              variant='tertiary'>
-              <Tab label='Excellent' />
-              <Tab label='Good' />
-              <Tab label='Fair' />
-            </Tabs>
+        {/*<div className='section credit-score-section'>*/}
+        {/*  <Typography className='section-title' variant='body4'>*/}
+        {/*    Credit score*/}
+        {/*  </Typography>*/}
+        {/*  <div className='section-content'>*/}
+        {/*    <Tabs*/}
+        {/*      value={Object.values(CreditScore).indexOf(form.getValues('creditScore'))}*/}
+        {/*      onChange={(i: number) => {*/}
+        {/*        form.setValue('creditScore', Object.values(CreditScore)[i]);*/}
+        {/*      }}*/}
+        {/*      rounded*/}
+        {/*      variant='tertiary'>*/}
+        {/*      <Tab label='Excellent' />*/}
+        {/*      <Tab label='Good' />*/}
+        {/*      <Tab label='Fair' />*/}
+        {/*    </Tabs>*/}
 
-            <div className='note'>
-              <Typography>
-                <span className='span-note'>Note:</span>{' '}
-                <span className='underline-note'>Checking your credit report</span> with a CRA is free and
-                doesn’t affect your credit score.
-              </Typography>
-            </div>
-          </div>
-        </div>
+        {/*    <div className='note'>*/}
+        {/*      <Typography>*/}
+        {/*        <span className='span-note'>Note:</span>{' '}*/}
+        {/*        <span className='underline-note'>Checking your credit report</span> with a CRA is free and*/}
+        {/*        doesn’t affect your credit score.*/}
+        {/*      </Typography>*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+        <a href='https://www.thirdfort.com/' target="_blank"><img src={ThirdfortLogo} alt='Thirdfort Logo' className='thirdfort-logo'/></a>
       </div>
     </motion.div>
   );
@@ -135,14 +137,13 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
 
     .sections {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      //grid-template-columns: 1fr 1fr;
       row-gap: 48px;
       column-gap: 32px;
-
+      justify-items: center;
       .section {
         display: grid;
         row-gap: 16px;
-        align-content: flex-start;
 
         .section-title {
           color: #646464;
@@ -152,13 +153,17 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
       .deposit-details-section {
         .section-content {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
+            width: 230px;
+          //grid-template-columns: 1fr 1fr 1fr;
           column-gap: 24px;
           row-gap: 24px;
         }
       }
 
       .budget-section {
+          display: grid;
+          gap: 24px;
+          min-width: 480px;
         .section-content {
           display: grid;
           grid-template-columns: 2fr 1fr;
@@ -174,6 +179,10 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
             }
           }
         }
+          .budget-for {
+              width: 230px;
+              justify-self: center;
+          }
       }
 
       .contract-details-section {
@@ -241,6 +250,10 @@ export const SetCriteriaBudget = styled(({ className, form, ...rest }: SetCriter
           }
         }
       }
+        
+        .thirdfort-logo {
+            max-width: 480px;
+        }
     }
   }
 `;

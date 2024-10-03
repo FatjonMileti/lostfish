@@ -53,7 +53,7 @@ export const MatchesForLandlord = styled(({ className }: MatchesForLandlordProps
                 counter={(suggestedTenants.data?.length > 0 && suggestedTenants.data?.length) || undefined}
               />
               <SegmentControl
-                label='Perfect matches'
+                label='Saved matches'
                 active={activeTab === ActiveTab.Perfect}
                 onClick={() => setActiveTab(ActiveTab.Perfect)}
                 counter={(matchedTenants.data?.length > 0 && matchedTenants.data?.length) || undefined}

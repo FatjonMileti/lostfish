@@ -438,6 +438,10 @@ export default class SuggestionService {
           matchingCriteria++;
           matchLog['house_details.parking'] = true;
         }
+        if (property.parking_details && clientCriteria.house_details.parking === 'All') {
+          matchingCriteria++;
+          matchLog['house_details.parking'] = true;
+        }
       }
 
       // Preferred size
