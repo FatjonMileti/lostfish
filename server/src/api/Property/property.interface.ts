@@ -226,7 +226,7 @@ export interface PropertyDocument extends Document {
     outside_space: OutsideSpace[];
   };
   house_details: {
-    house_type?: House;
+    house_type?: House[];
   };
   parking_details?: ParkingDetails;
   asset_attribute: any[];
@@ -240,7 +240,7 @@ export interface PropertyDocument extends Document {
   };
   parking_spot: number;
   epc_rating: string;
-  condition: string;
+  condition?: string;
   floor_size: number;
   floor_size_unit: FloorSizeUnit;
   property_features: PropertyFeatures[];
