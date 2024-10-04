@@ -124,7 +124,10 @@ export type CriteriaFormType = {
 export type DistanceUnitType = ObjectValues<typeof DistanceUnit>;
 
 export type DistanceType = {
-  value?: number;
+  value?: {
+    min?: number,
+    max?: number
+  };
   unit: DistanceUnitType;
 };
 
@@ -191,8 +194,6 @@ export type ApiCriteriaDocumentType = {
     };
     number_of_bathrooms: Range;
     number_of_bedrooms: Range;
-
-    // floor: number;
     lift: boolean;
     security: boolean;
     parking_space: boolean;
@@ -209,10 +210,23 @@ export type ApiCriteriaDocumentType = {
   specific_property_features: string[];
   parking_details: ParkingType[];
 
-  distance_from_underground: DistanceType;
-  distance_from_schools: DistanceType;
-  distance_from_high_street: DistanceType;
-  distance_from_gym: DistanceType;
+  distance_from_underground: {
+    value: Range;
+    unit: DistanceUnitType;
+  };
+  distance_from_schools: {
+    value: Range;
+    unit: DistanceUnitType;
+  };
+  distance_from_high_street: {
+    value: Range;
+    unit: DistanceUnitType;
+  };
+  distance_from_gym: {
+    value: Range;
+    unit: DistanceUnitType;
+  };
+
   outside_space: OutsideSpaceType[];
   budget: Range;
   deposit_amount?: number;
@@ -224,3 +238,4 @@ export type ApiCriteriaDocumentType = {
   looking_for: LookingForType;
   moving_time?: WhenDoYouWantToMoveType;
 };
+

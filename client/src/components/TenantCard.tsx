@@ -41,14 +41,20 @@ export const TenantCard = styled(
 
         <div className='action-buttons'>
           <div className='tenant-details'>
-            <Typography variant='body4' className='tenant-name'>
+            {!matched && !awaitingMatch && (
+              <Typography variant='body4' className='tenant-match-percentage'>
+                {percentage ?? '34'}% Match rate
+              </Typography>
+            )}
+
+            <Typography variant='body2' className='tenant-name'>
               {name}
             </Typography>
 
             {awaitingMatch && (
               <div className='awaiting-match'>
                 <Icon icon='watch' />
-                <Typography className='awaiting-match-text' variant='body5'>
+                <Typography className='awaiting-match-text' variant='body3'>
                   Awaiting match
                 </Typography>
               </div>
@@ -59,16 +65,10 @@ export const TenantCard = styled(
                 <Typography variant='body5'>Matched</Typography>
               </div>
             )}
-
-            {!matched && !awaitingMatch && (
-              <Typography variant='body4' className='tenant-match-percentage'>
-                {percentage ?? '34'}% Match rate
-              </Typography>
-            )}
           </div>
           {!matched && (
             <Label
-              size='medium'
+              size='large'
               variant='secondary'
               className='view-profile-button'
               onClick={onViewProfileClick}>
@@ -92,6 +92,7 @@ export const TenantCard = styled(
     display: grid;
     row-gap: 24px;
     height: auto;
+    min-height: 452px;
     flex-shrink: 0;
     align-content: space-between;
     opacity: 0.5;
@@ -126,8 +127,8 @@ export const TenantCard = styled(
 
     .avatar {
       position: relative;
-      width: 324px;
-      height: 324px;
+      width: 280px;
+      height: 280px;
       overflow: hidden;
       flex-shrink: 0;
       cursor: pointer;
@@ -165,6 +166,7 @@ export const TenantCard = styled(
         .awaiting-match {
           display: flex;
           column-gap: 4px;
+            align-items: center;
           color: #a7a7a7;
           .awaiting-match-text {
             font-weight: 700;
@@ -205,6 +207,10 @@ export const TenantCard = styled(
           height: 20px !important;
         }
       }
+        
+        .label {
+            flex: 1;
+        }
     }
   }
 `;

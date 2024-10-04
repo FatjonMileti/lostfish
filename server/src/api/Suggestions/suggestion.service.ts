@@ -612,13 +612,13 @@ export default class SuggestionService {
       if (clientCriteria.distance_from_underground?.unit === DistanceUnit.mi) {
         if (
           property.distance_from_underground.value <=
-          clientCriteria.distance_from_underground.value * 1.6
+          clientCriteria.distance_from_underground.value.min * 1.6
         ) {
           matchingCriteria++;
           matchLog['distance_from_underground'] = true;
         }
       } else {
-        if (property.distance_from_underground.value <= clientCriteria.distance_from_underground.value) {
+        if (property.distance_from_underground.value <= clientCriteria.distance_from_underground.value.min) {
           matchingCriteria++;
           matchLog['distance_from_underground'] = true;
         }
@@ -628,12 +628,12 @@ export default class SuggestionService {
     // Distance from school
     if (clientCriteria.distance_from_schools?.value && property.distance_from_schools?.value) {
       if (clientCriteria.distance_from_schools?.unit === DistanceUnit.mi) {
-        if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value * 1.6) {
+        if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value.min * 1.6) {
           matchingCriteria++;
           matchLog['distance_from_schools'] = true;
         }
       } else {
-        if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value) {
+        if (property.distance_from_schools.value <= clientCriteria.distance_from_schools.value.min) {
           matchingCriteria++;
           matchLog['distance_from_schools'] = true;
         }
@@ -643,12 +643,12 @@ export default class SuggestionService {
     // Distance from gym
     if (clientCriteria.distance_from_gym?.value && property.distance_from_gym?.value) {
       if (clientCriteria.distance_from_gym?.unit === DistanceUnit.mi) {
-        if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value * 1.6) {
+        if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value.min * 1.6) {
           matchingCriteria++;
           matchLog['distance_from_gym'] = true;
         }
       } else {
-        if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value) {
+        if (property.distance_from_gym.value <= clientCriteria.distance_from_gym.value.min) {
           matchingCriteria++;
           matchLog['distance_from_gym'] = true;
         }
@@ -660,13 +660,13 @@ export default class SuggestionService {
       if (clientCriteria.distance_from_high_street?.unit === DistanceUnit.mi) {
         if (
           property.distance_from_high_street.value <=
-          clientCriteria.distance_from_high_street.value * 1.6
+          clientCriteria.distance_from_high_street.value.min * 1.6
         ) {
           matchingCriteria++;
           matchLog['distance_from_high_street'] = true;
         }
       } else {
-        if (property.distance_from_high_street.value <= clientCriteria.distance_from_high_street.value) {
+        if (property.distance_from_high_street.value <= clientCriteria.distance_from_high_street.value.min) {
           matchingCriteria++;
           matchLog['distance_from_high_street'] = true;
         }

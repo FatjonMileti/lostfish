@@ -24,7 +24,7 @@ export const useCriteriaForm = (): UseFormReturn<CriteriaFormType> => {
         propertyPurpose: undefined,
         preferredSize: {
           size: {
-            min: 400,
+            min: 0,
             max: 4000
           },
           unit: AreaUnit.SquareFoot
@@ -45,14 +45,14 @@ export const useCriteriaForm = (): UseFormReturn<CriteriaFormType> => {
         houseType: undefined,
         preferredSize: {
           size: {
-            min: 1000,
+            min: 0,
             max: 10000
           },
           unit: AreaUnit.SquareFoot
         },
         garden: {
           size: {
-            min: 200,
+            min: 0,
             max: 1000
           },
           unit: AreaUnit.SquareFoot
@@ -98,20 +98,34 @@ export const useCriteriaForm = (): UseFormReturn<CriteriaFormType> => {
         Object.values(SpecificPropertyFeature).map((spf) => [spf, false])
       ),
       distanceFromUnderground: {
-        value: undefined,
-        unit: DistanceUnit.Km
+        value: {
+          min: 0,
+          max: 20
+        },
+        unit: DistanceUnit.Km,
+      
       },
       distanceFromSchools: {
-        value: undefined,
-        unit: DistanceUnit.Km
+        value: {
+          min: 0,
+          max: 20
+        },
+        unit: DistanceUnit.Km,
+      
       },
       distanceFromHighStreet: {
-        value: undefined,
-        unit: DistanceUnit.Km
+        value: {
+          min: 0,
+          max: 20
+        },
+        unit: DistanceUnit.Km,
       },
       distanceFromGym: {
-        value: undefined,
-        unit: DistanceUnit.Km
+        value: {
+          min: 0,
+          max: 20
+        },
+        unit: DistanceUnit.Km,
       }
     },
     resolver: yupResolver(criteriaFormSchema),

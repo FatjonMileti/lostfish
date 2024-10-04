@@ -181,7 +181,8 @@ export const Property = styled(
         line-height: 24px;
 
         &.published {
-          background-color: #408140;
+          background-color: #E5155A;
+            border-radius: 50px;
           color: #fff;
         }
 
@@ -238,9 +239,10 @@ export const Property = styled(
       }
       .footer {
         display: grid;
-        grid-template-columns: auto min-content;
+        //grid-template-columns: auto min-content;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
 
         .published {
           color: #646464;

@@ -9,7 +9,7 @@ import {
   Floor,
   PropertyCondition,
   PropertyType,
-  Range
+  Range, DistanceUnit
 } from '../Property/property.interface';
 
 export enum LookingForEnum {
@@ -65,7 +65,6 @@ export interface CriteriaDocument extends Document {
     };
     number_of_bathrooms: Range;
     number_of_bedrooms: Range;
-
     lift: boolean;
     security: boolean;
     parking_space: boolean;
@@ -83,21 +82,22 @@ export interface CriteriaDocument extends Document {
   parking_details: ParkingDetails[];
 
   distance_from_underground: {
-    value: number;
-    unit: string;
+    value: Range;
+    unit: DistanceUnit;
   };
   distance_from_schools: {
-    value: number;
-    unit: string;
+    value: Range;
+    unit: DistanceUnit;
   };
   distance_from_high_street: {
-    value: number;
-    unit: string;
+    value: Range;
+    unit: DistanceUnit;
   };
   distance_from_gym: {
-    value: number;
-    unit: string;
+    value: Range;
+    unit: DistanceUnit;
   };
+
   outside_space: OutsideSpace[];
   budget: Range;
   deposit_amount: string;
@@ -113,3 +113,4 @@ export interface CriteriaDocument extends Document {
   created_at: Date;
   created_by?: ObjectId | string;
 }
+

@@ -22,7 +22,7 @@ import {
   PropertyType
 } from '../../Properties/NewProperty/property.constants';
 import { AreaUnitType } from '../../Properties/NewProperty/property.types';
-import { PropertyPreferenceType, CriteriaFormType } from '../criteria.types';
+import { PropertyPreferenceType, CriteriaFormType, OtherSpecificPropertyFeature } from '../criteria.types';
 
 interface SetCriteriaHouseTypeProps extends HTMLMotionProps<'div'> {
   form: UseFormReturn<CriteriaFormType>;
@@ -45,36 +45,6 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
     <motion.div className={classNames('set-criteria-house-type', className)} {...rest}>
       <Typography variant='body2'>What kind of property are you searching for?</Typography>
       <div className='sections'>
-        <div className='section property-class-section'>
-          <Typography className='section-title' variant='body4'>
-            Property class
-          </Typography>
-          <div className='section-content'>
-            {
-              <>
-                {Object.values(PropertyPreference).map(
-                  (propertyPreference: PropertyPreferenceType, propertyPreferenceIndex: number) =>
-                    ((id: string) => (
-                      <div className='tabs-wrapper' key={propertyPreferenceIndex}>
-                        <label htmlFor={id}>{propertyPreference}:</label>
-                        <Tabs
-                          id={id}
-                          variant='tertiary'
-                          rounded
-                          value={form.getValues('propertyClass')[propertyPreference] ? 0 : 1}
-                          onChange={(i: number) => {
-                            form.setValue(`propertyClass.${propertyPreference}`, !i);
-                          }}>
-                          <Tab label='Include' />
-                          <Tab label='Exclude' />
-                        </Tabs>
-                      </div>
-                    ))(React.useId())
-                )}
-              </>
-            }
-          </div>
-        </div>
 
         <div className='section property-type-section'>
           <Typography className='section-title' variant='body4'>
@@ -102,9 +72,9 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
             <Typography className='section-title' variant='body4'>
               House Details
             </Typography>
-            <div className='section-content'>
-              <Select label='Home style' {...form.register('houseDetails.homeStyle')}>
-                <option></option>
+            <div className="section-content">
+              <Select label="Home style" {...form.register('houseDetails.homeStyle')}>
+                <option>No preference</option>
                 {Object.values(HomeStyle).map((style, styleIndex) => (
                   <option value={style} key={styleIndex}>
                     {style}
@@ -112,31 +82,86 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 ))}
               </Select>
 
-              {/*<Select label='Condition' {...form.register('houseDetails.condition')}>*/}
-              {/*  <option></option>*/}
-              {/*  {Object.values(Condition).map((style, styleIndex) => (*/}
-              {/*    <option value={style} key={styleIndex}>*/}
-              {/*      {style}*/}
-              {/*    </option>*/}
-              {/*  ))}*/}
-              {/*</Select>*/}
+              <Select label='Condition' {...form.register('houseDetails.condition')}>
+                <option>No preference</option>
+                {Object.values(Condition).map((style, styleIndex) => (
+                  <option value={style} key={styleIndex}>
+                    {style}
+                  </option>
+                ))}
+              </Select>
 
-              <Select label='Parking' {...form.register('houseDetails.parking')}>
-                <option></option>
+              <Select label="Parking" {...form.register('houseDetails.parking')}>
+                <option>No preference</option>
                 {Object.values(Parking).map((pType, pTypeIndex) => (
                   <option value={pType} key={pTypeIndex}>
                     {pType}
                   </option>
                 ))}
               </Select>
-              <div></div>
+            </div>
 
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
+            <div className="rooms-details">
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
+                  Bedrooms
+                </Typography>
+                <Slider
+                  value={[
+                    form.getValues('houseDetails.nrOfBedrooms')?.min,
+                    form.getValues('houseDetails.nrOfBedrooms')?.max
+                  ]}
+                  min={1}
+                  max={5}
+                  step={1}
+                  onChange={(_, value) => {
+                    if (Array.isArray(value)) {
+                      form.setValue('houseDetails.nrOfBedrooms', {
+                        min: value[0],
+                        max: value[1]
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value}
+                  size="small"
+                />
+              </div>
+
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
+                  Bathrooms
+                </Typography>
+                <Slider
+                  value={[
+                    form.getValues('houseDetails.nrOfBathrooms')?.min,
+                    form.getValues('houseDetails.nrOfBathrooms')?.max
+                  ]}
+                  min={1}
+                  max={4}
+                  step={1}
+                  onChange={(_, value) => {
+                    if (Array.isArray(value)) {
+                      form.setValue('houseDetails.nrOfBathrooms', {
+                        min: value[0],
+                        max: value[1]
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value}
+                  size="small"
+                />
+              </div>
+            </div>
+
+            <div className="sliders-wrapper">
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
                   Preferred size
                 </Typography>
 
-                <div className='slider-unit-wrapper'>
+                <div className="slider-unit-wrapper">
                   <Controller
                     control={form.control}
                     render={({ field }) => {
@@ -158,13 +183,13 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                               });
                             }
                           }}
-                          valueLabelDisplay='on'
+                          valueLabelDisplay="on"
                           valueLabelFormat={(value) => value?.toLocaleString()}
-                          size='small'
+                          size="small"
                         />
                       );
                     }}
-                    name='houseDetails.preferredSize.size'
+                    name="houseDetails.preferredSize.size"
                   />
                   <Select
                     value={form.getValues('houseDetails.preferredSize.unit')}
@@ -190,12 +215,12 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 </div>
               </div>
 
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
                   Garden
                 </Typography>
 
-                <div className='slider-unit-wrapper'>
+                <div className="slider-unit-wrapper">
                   <Controller
                     control={form.control}
                     render={({ field }) => {
@@ -217,13 +242,13 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
 
                             // field.onChange({ target: { value: Array.isArray(value) ? value : [value] } });
                           }}
-                          valueLabelDisplay='on'
+                          valueLabelDisplay="on"
                           valueLabelFormat={(value) => value?.toLocaleString()}
-                          size='small'
+                          size="small"
                         />
                       );
                     }}
-                    name='houseDetails.garden.size'
+                    name="houseDetails.garden.size"
                   />
                   <Select
                     value={form.getValues('houseDetails.garden.unit')}
@@ -248,8 +273,8 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 </div>
               </div>
 
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
                   Storeys
                 </Typography>
                 <Slider
@@ -268,18 +293,21 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       });
                     }
                   }}
-                  valueLabelDisplay='on'
+                  valueLabelDisplay="on"
                   valueLabelFormat={(value) => value}
-                  size='small'
+                  size="small"
                 />
               </div>
+            </div>
 
-              {Object.values(House).map((houseType, houseTypeIndex) =>
+
+            <div className='specific-property-features'>
+              {Object.values({ ...House, ...OtherSpecificPropertyFeature }).map((houseType, houseTypeIndex) =>
                 ((id: string) => (
-                  <div className='switch-wrapper' key={houseTypeIndex}>
+                  <div className="switch-wrapper" key={houseTypeIndex}>
                     <Switch
                       id={id}
-                      size='medium'
+                      size="medium"
                       {...form.register(`houseDetails.houseType.${houseType}`)}
                       checked={!!form.getValues('houseDetails.houseType')?.[houseType]}
                     />
@@ -287,71 +315,19 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                   </div>
                 ))(uuid())
               )}
-              <div></div>
-
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
-                  Bedrooms
-                </Typography>
-                <Slider
-                  value={[
-                    form.getValues('houseDetails.nrOfBedrooms')?.min,
-                    form.getValues('houseDetails.nrOfBedrooms')?.max
-                  ]}
-                  min={1}
-                  max={5}
-                  step={1}
-                  onChange={(_, value) => {
-                    if (Array.isArray(value)) {
-                      form.setValue('houseDetails.nrOfBedrooms', {
-                        min: value[0],
-                        max: value[1]
-                      });
-                    }
-                  }}
-                  valueLabelDisplay='on'
-                  valueLabelFormat={(value) => value}
-                  size='small'
-                />
-              </div>
-
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
-                  Bathrooms
-                </Typography>
-                <Slider
-                  value={[
-                    form.getValues('houseDetails.nrOfBathrooms')?.min,
-                    form.getValues('houseDetails.nrOfBathrooms')?.max
-                  ]}
-                  min={1}
-                  max={4}
-                  step={1}
-                  onChange={(_, value) => {
-                    if (Array.isArray(value)) {
-                      form.setValue('houseDetails.nrOfBathrooms', {
-                        min: value[0],
-                        max: value[1]
-                      });
-                    }
-                  }}
-                  valueLabelDisplay='on'
-                  valueLabelFormat={(value) => value}
-                  size='small'
-                />
-              </div>
             </div>
           </div>
+
         )}
 
-        {!!form.getValues('propertyType.Flats') && (
-          <div className='section flat-details-section'>
-            <Typography className='section-title' variant='body4'>
+        {!!form.getValues('propertyType.Apartment') && (
+          <div className="section flat-details-section">
+            <Typography className="section-title" variant="body4">
               Flat details
             </Typography>
 
-            <div className='section-content'>
-              <Select label='Flat style' {...form.register('flatDetails.propertyPurpose')}>
+            <div className="section-content">
+              <Select label="Flat style" {...form.register('flatDetails.propertyPurpose')}>
                 <option></option>
                 {Object.values(BuildPurpose).map((purpose, i) => (
                   <option value={purpose} key={i}>
@@ -360,7 +336,7 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 ))}
               </Select>
 
-              <Select label='Preferred floor' {...form.register('flatDetails.preferredFloor')}>
+              <Select label="Preferred floor" {...form.register('flatDetails.preferredFloor')}>
                 <option></option>
                 {Object.values(Floor).map((pf, pfIndex) => (
                   <option value={pf} key={pfIndex}>
@@ -368,22 +344,23 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                   </option>
                 ))}
               </Select>
+              <div></div>
 
-              <Select label='Condition' {...form.register('flatDetails.condition')}>
-                <option></option>
-                {Object.values(Condition).map((style, styleIndex) => (
-                  <option value={style} key={styleIndex}>
-                    {style}
-                  </option>
-                ))}
-              </Select>
+              {/*<Select label="Condition" {...form.register('flatDetails.condition')}>*/}
+              {/*  <option></option>*/}
+              {/*  {Object.values(Condition).map((style, styleIndex) => (*/}
+              {/*    <option value={style} key={styleIndex}>*/}
+              {/*      {style}*/}
+              {/*    </option>*/}
+              {/*  ))}*/}
+              {/*</Select>*/}
 
               {Object.values(OutsideSpace).map((space, spaceTypeIndex) =>
                 ((id: string) => (
-                  <div className='switch-wrapper' key={spaceTypeIndex}>
+                  <div className="switch-wrapper" key={spaceTypeIndex}>
                     <Switch
                       id={id}
-                      size='medium'
+                      size="medium"
                       {...form.register(`flatDetails.outsideSpace.${space}`)}
                       checked={!!form.getValues('flatDetails.outsideSpace')[space]}
                     />
@@ -392,11 +369,11 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 ))(uuid())
               )}
 
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
                   Preferred size
                 </Typography>
-                <div className='slider-unit-wrapper'>
+                <div className="slider-unit-wrapper">
                   <Slider
                     value={[
                       form.getValues('flatDetails.preferredSize.size')?.min,
@@ -416,9 +393,9 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                         });
                       }
                     }}
-                    valueLabelDisplay='on'
+                    valueLabelDisplay="on"
                     valueLabelFormat={(value) => value?.toLocaleString()}
-                    size='small'
+                    size="small"
                   />
 
                   <Select
@@ -444,8 +421,8 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                 </div>
               </div>
 
-              <div className='slider-wrapper'>
-                <Typography variant='body6' className='slider-label'>
+              <div className="slider-wrapper">
+                <Typography variant="body6" className="slider-label">
                   Bedrooms
                 </Typography>
                 <Slider
@@ -464,9 +441,9 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
                       });
                     }
                   }}
-                  valueLabelDisplay='on'
+                  valueLabelDisplay="on"
                   valueLabelFormat={(value) => value}
-                  size='small'
+                  size="small"
                 />
               </div>
 
@@ -558,8 +535,11 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
     justify-items: center;
 
     .sections {
+      width: 100%;
       row-gap: 48px;
       display: grid;
+      justify-items: center;
+      box-sizing: border-box;
       .section {
         display: grid;
         row-gap: 16px;
@@ -571,8 +551,9 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
       .property-type-section {
         .section-content {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          column-gap: 24px;
+          grid-template-columns: 1fr 1fr;
+          justify-content: space-between;
+          column-gap: 84px;
           row-gap: 24px;
 
           .switch-wrapper {
@@ -591,6 +572,11 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
       }
 
       .house-details-section {
+          display: grid;
+          gap: 24px;
+          justify-content: center;
+          row-gap: 48px;
+          width: 100%;
         .section-content {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
@@ -628,13 +614,67 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
           }
         }
       }
+        
+        .rooms-details {
+            display: flex;
+            justify-content: space-around;
+            gap: 24px;
+            
+            .slider-wrapper {
+                min-width: 180px;
+            }
+        }
+        
+        .sliders-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+
+            .slider-wrapper {
+                min-width: 200px;
+                display: grid;
+                row-gap: 4px;
+
+                .slider-label {
+                    font-weight: 600;
+                }
+
+                .slider-unit-wrapper {
+                    display: grid;
+                    grid-template-columns: auto 70px;
+                    column-gap: 8px;
+                    align-items: flex-end;
+                }
+            }
+        }
+        
+        .specific-property-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            column-gap: 24px;
+            row-gap: 24px;
+            padding-top: 24px;
+
+            .switch-wrapper {
+                display: flex;
+                column-gap: 8px;
+                align-items: center;
+                label {
+                    color: #0d2a38;
+                    font-weight: 400;
+                    font-size: 14px;
+                    line-height: 20px;
+                    font-family: 'Roobert', serif;
+                }
+            }
+        }
 
       .flat-details-section {
         .section-content {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
           column-gap: 24px;
-          row-gap: 24px;
+          row-gap: 36px;
 
           .switch-wrapper {
             display: flex;

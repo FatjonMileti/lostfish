@@ -18,7 +18,7 @@ import { CriteriaFormType } from './criteria.types';
 import { RoundAction } from '../../components/RoundAction.tsx';
 import { useCriteriaWithoutAccountStore } from '../../globalState/useCriteriaWithoutAccount.ts';
 
-const tabLabels = ['Location', 'House type', 'House details', 'Budget'];
+const tabLabels = ['Location', 'House type', 'Budget'];
 
 const animationProps = {
   initial: { opacity: 0 },
@@ -86,7 +86,7 @@ export const SetCriteriaModal = styled(
                 [
                   <SetCriteriaLocation key='SetCriteriaLocation' form={form} {...animationProps} />,
                   <SetCriteriaHouseType key='SetCriteriaHouseType' form={form} {...animationProps} />,
-                  <SetCriteriaHouseDetails key='SetCriteriaHouseDetails' form={form} {...animationProps} />,
+                  // <SetCriteriaHouseDetails key='SetCriteriaHouseDetails' form={form} {...animationProps} />,
                   <SetCriteriaBudget key='SetCriteriaBudget' form={form} {...animationProps} />,
                 ][step]
               }
@@ -107,11 +107,11 @@ export const SetCriteriaModal = styled(
               <Icon icon='arrow-left' /> Back
             </Label>
 
-            { step === 3 && (
+            { step === 2 && (
               <Label
               variant='special'
               size="large"
-              className={classNames('start-matching-button', { hide: step !== 3 })}
+              className={classNames('start-matching-button', { hide: step !== 2 })}
               onClick={onStartMatchingClick}>
               Find matches
             </Label>
@@ -120,7 +120,7 @@ export const SetCriteriaModal = styled(
             <Label
               variant='special'
               size='large'
-              className={classNames('next-button', { hide: step === 3 })}
+              className={classNames('next-button', { hide: step === 2 })}
               onClick={() => setStep((step) => step + 1)}>
               Next <Icon icon='arrow-right' />
             </Label>

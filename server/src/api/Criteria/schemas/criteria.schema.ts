@@ -156,19 +156,31 @@ const schema = new Schema<CriteriaDocument>({
   looking_for: { type: String, enum: LookingForEnum },
   moving_time: String,
   distance_from_underground: {
-    value: Number,
+    value: {
+      min: Number,
+      max: Number
+    },
     unit: String
   },
   distance_from_schools: {
-    value: Number,
+    value: {
+      min: Number,
+      max: Number
+    },
     unit: String
   },
   distance_from_high_street: {
-    value: Number,
+    value: {
+      min: Number,
+      max: Number
+    },
     unit: String
   },
   distance_from_gym: {
-    value: Number,
+    value: {
+      min: Number,
+      max: Number
+    },
     unit: String
   },
   edited_at: Date,

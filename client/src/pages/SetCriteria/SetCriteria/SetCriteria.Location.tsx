@@ -7,13 +7,16 @@ import { Label } from '../../../components';
 import { Typography } from '../../../components';
 import { Icon } from '../../../components';
 import { Select } from '../../../components/Select/Select';
-import { TextField } from '../../../components';
 
 import { AreaOfInterest } from '../../PagesComponents/AreaOfInterest';
 import { UseMyLocation } from './UseMyLocation';
 import { DistanceUnit, WhenDoYouWantToMove } from '../criteria.contants';
 import { CriteriaFormType, DistanceUnitType } from '../criteria.types';
-import { HTMLMotionProps, motion } from 'framer-motion';
+import { HTMLMotionProps, m, motion } from 'framer-motion';
+import { Slider } from '../../../components/Slider.tsx';
+import { AreaUnitType } from '../../Properties/NewProperty/property.types.ts';
+
+
 
 interface SetCriteriaLocationProps extends HTMLMotionProps<'div'> {
   form: UseFormReturn<CriteriaFormType>;
@@ -94,88 +97,237 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
           <Typography className='section-title' variant='body4'>
             Near things
           </Typography>
-          <div className='section-content'>
-            <div className='distance-wrapper'>
-              <TextField
-                placeholder='Enter the distance from underground'
-                {...form.register('distanceFromUnderground.value')}
-                label={
-                  <>
-                    <Icon className='area-icon' icon='metro' /> Distance from underground
-                  </>
-                }
-                error={!!form.formState.errors.area}
-                helperText={form.formState.errors.area?.message?.toString()}
-                type='number'
-              />
-              <Select {...form.register('distanceFromUnderground.unit')}>
-                {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
-                  <option value={unit} key={unitIndex}>
-                    {unit}
-                  </option>
-                ))}
-              </Select>
+          <div className="section-content">
+            <div className="slider-wrapper">
+              <div className="title-wrapper">
+                <Icon className="area-icon" icon="metro" />
+                <Typography variant="body6" className="slider-label">
+                  Distance from underground
+                </Typography>
+              </div>
+              <div className="slider-unit-wrapper">
+                <Slider
+                  value={[
+                    form.getValues('distanceFromUnderground.value')?.min,
+                    form.getValues('distanceFromUnderground.value')?.max
+                  ]}
+                  min={0}
+                  max={
+                    form.getValues('distanceFromUnderground.unit') === DistanceUnit.Mi ? 4000 : 400
+                  }
+                  step={1}
+                  onChange={(_, value) => {
+                    console.log('change', value);
+                    if (Array.isArray(value)) {
+                      form.setValue('distanceFromUnderground', {
+                        value: {
+                          min: value[0],
+                          max: value[1]
+                        }
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value?.toLocaleString()}
+                  size="small"
+                />
+
+                <Select
+                  value={form.getValues('distanceFromUnderground.unit')}
+                  onChange={(e) => {
+                    const unit = e.target.value as DistanceUnitType;
+                    const minSize = form.getValues('distanceFromUnderground.value.min');
+                    const maxSize = form.getValues('distanceFromUnderground.value.max');
+                    form.setValue('distanceFromUnderground.unit', unit);
+
+                    form.setValue('distanceFromUnderground', {
+                      value: {
+                        min: minSize,
+                        max: maxSize
+                      }
+                    });
+                  }}>
+                  {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                    <option value={unit} key={unitIndex}>
+                      {unit}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <div className='distance-wrapper'>
-              <TextField
-                placeholder='Enter the distance from scool'
-                {...form.register('distanceFromSchools.value')}
-                label={
-                  <>
-                    <Icon className='area-icon' icon='mortarboard' /> Distance from school
-                  </>
-                }
-                error={!!form.formState.errors.area}
-                helperText={form.formState.errors.area?.message?.toString()}
-                type='number'
-              />
-              <Select {...form.register('distanceFromSchools.unit')}>
-                {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
-                  <option value={unit} key={unitIndex}>
-                    {unit}
-                  </option>
-                ))}
-              </Select>
+
+            <div className="slider-wrapper">
+              <div className="title-wrapper">
+                <Icon className="area-icon" icon="mortarboard" />
+                <Typography variant="body6" className="slider-label">
+                  Distance from school
+                </Typography>
+              </div>
+              <div className="slider-unit-wrapper">
+                <Slider
+                  value={[
+                    form.getValues('distanceFromSchools.value')?.min,
+                    form.getValues('distanceFromSchools.value')?.max
+                  ]}
+                  min={0}
+                  max={
+                    form.getValues('distanceFromSchools.unit') === DistanceUnit.Km ? 4000 : 400
+                  }
+                  step={1}
+                  onChange={(_, value) => {
+                    console.log('change', value);
+                    if (Array.isArray(value)) {
+                      form.setValue('distanceFromSchools', {
+                        value: {
+                          min: value[0],
+                          max: value[1]
+                        }
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value?.toLocaleString()}
+                  size="small"
+                />
+
+                <Select
+                  value={form.getValues('distanceFromSchools.unit')}
+                  onChange={(e) => {
+                    const unit = e.target.value as AreaUnitType;
+                    const minSize = form.getValues('distanceFromSchools.value.min');
+                    const maxSize = form.getValues('distanceFromSchools.value.max');
+                    form.setValue('distanceFromSchools.unit', unit);
+
+                    form.setValue('distanceFromSchools', {
+                      value: {
+                        min: minSize,
+                        max: maxSize
+                      }
+                    });
+                  }}>
+                  {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                    <option value={unit} key={unitIndex}>
+                      {unit}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <div className='distance-wrapper'>
-              <TextField
-                placeholder='Enter the distance from high street'
-                {...form.register('distanceFromHighStreet.value')}
-                label={
-                  <>
-                    <Icon className='area-icon' icon='shopping' /> Distance from high street
-                  </>
-                }
-                error={!!form.formState.errors.area}
-                helperText={form.formState.errors.area?.message?.toString()}
-                type='number'
-              />
-              <Select {...form.register('distanceFromHighStreet.unit')}>
-                {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
-                  <option value={unit} key={unitIndex}>
-                    {unit}
-                  </option>
-                ))}
-              </Select>
+
+            <div className="slider-wrapper">
+              <div className="title-wrapper">
+                <Icon className="area-icon" icon="shopping" />
+                <Typography variant="body6" className="slider-label">
+                  Distance from high street
+                </Typography>
+              </div>
+              <div className="slider-unit-wrapper">
+                <Slider
+                  value={[
+                    form.getValues('distanceFromHighStreet.value')?.min,
+                    form.getValues('distanceFromHighStreet.value')?.max
+                  ]}
+                  min={0}
+                  max={
+                    form.getValues('distanceFromHighStreet.unit') === DistanceUnit.Km ? 4000 : 400
+                  }
+                  step={1}
+                  onChange={(_, value) => {
+                    console.log('change', value);
+                    if (Array.isArray(value)) {
+                      form.setValue('distanceFromHighStreet', {
+                        value: {
+                          min: value[0],
+                          max: value[1]
+                        }
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value?.toLocaleString()}
+                  size="small"
+                />
+
+                <Select
+                  value={form.getValues('distanceFromHighStreet.unit')}
+                  onChange={(e) => {
+                    const unit = e.target.value as AreaUnitType;
+                    const minSize = form.getValues('distanceFromHighStreet.value.min');
+                    const maxSize = form.getValues('distanceFromHighStreet.value.max');
+                    form.setValue('distanceFromHighStreet.unit', unit);
+
+                    form.setValue('distanceFromHighStreet', {
+                      value: {
+                        min: minSize,
+                        max: maxSize
+                      }
+                    });
+                  }}>
+                  {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                    <option value={unit} key={unitIndex}>
+                      {unit}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <div className='distance-wrapper'>
-              <TextField
-                placeholder='Enter the distance from Gym'
-                {...form.register('distanceFromGym.value')}
-                label={
-                  <>
-                    <Icon className='area-icon' icon='barbell' /> Distance from Gym
-                  </>
-                }
-                type='number'
-              />
-              <Select {...form.register('distanceFromGym.unit')}>
-                {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
-                  <option value={unit} key={unitIndex}>
-                    {unit}
-                  </option>
-                ))}
-              </Select>
+
+            <div className="slider-wrapper">
+              <div className="title-wrapper">
+                <Icon className="area-icon" icon="barbell" />
+                <Typography variant="body6" className="slider-label">
+                  Distance from Gym
+                </Typography>
+              </div>
+              <div className="slider-unit-wrapper">
+                <Slider
+                  value={[
+                    form.getValues('distanceFromGym.value')?.min,
+                    form.getValues('distanceFromGym.value')?.max
+                  ]}
+                  min={0}
+                  max={
+                    form.getValues('distanceFromGym.unit') === DistanceUnit.Km ? 4000 : 400
+                  }
+                  step={1}
+                  onChange={(_, value) => {
+                    console.log('change', value);
+                    if (Array.isArray(value)) {
+                      form.setValue('distanceFromGym', {
+                        value: {
+                          min: value[0],
+                          max: value[1]
+                        }
+                      });
+                    }
+                  }}
+                  valueLabelDisplay="on"
+                  valueLabelFormat={(value) => value?.toLocaleString()}
+                  size="small"
+                />
+
+                <Select
+                  value={form.getValues('distanceFromGym.unit')}
+                  onChange={(e) => {
+                    const unit = e.target.value as AreaUnitType;
+                    const minSize = form.getValues('distanceFromGym.min');
+                    const maxSize = form.getValues('distanceFromGym.max');
+                    form.setValue('distanceFromGym.unit', unit);
+
+                    form.setValue('distanceFromGym', {
+                      value: {
+                        min: minSize,
+                        max: maxSize
+                      }
+                    });
+                  }}>
+                  {Object.values(DistanceUnit).map((unit: DistanceUnitType, unitIndex: number) => (
+                    <option value={unit} key={unitIndex}>
+                      {unit}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
           </div>
         </div>
@@ -183,91 +335,121 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
     </motion.div>
   );
 })`
-  &.set-criteria-location-details {
-    display: grid;
-    row-gap: 48px;
-    justify-items: center;
-    align-content: center;
-
-    .sections {
-      display: grid;
-      row-gap: 80px;
-      .section {
+    &.set-criteria-location-details {
         display: grid;
-        row-gap: 16px;
+        row-gap: 48px;
+        justify-items: center;
+        align-content: center;
 
-        .section-title {
-          color: #646464;
+        .sections {
+            display: grid;
+            row-gap: 80px;
+
+            .section {
+                display: grid;
+                row-gap: 16px;
+
+                .section-title {
+                    color: #646464;
+                }
+            }
         }
-      }
-    }
 
-    .property-location-section {
-        display: grid;
-        row-gap: 36px;
-        
-      .section-content {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-          align-items: center;
-        column-gap: 24px;
-        row-gap: 36px;
-      }
-        
-        .use-my-location-button {
-            justify-self: center;
+        .property-location-section {
+            display: grid;
+            row-gap: 36px;
+
+            .section-content {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                align-items: center;
+                column-gap: 24px;
+                row-gap: 36px;
+            }
+
+            .use-my-location-button {
+                justify-self: center;
+            }
+        }
+
+        .moving-preferences-section {
+            .section-content {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+
+                .label {
+                    padding: 16px 24px;
+                    align-items: center;
+                    display: flex;
+                    column-gap: 8px;
+                    user-select: none;
+                    border: 1px solid #cfd5d5;
+                    background: #fff;
+                    color: #0d2a38;
+                    font-weight: 600;
+                    height: 56px;
+
+                    :hover {
+                        border: 1px solid #eee0d3;
+                        background-color: #c0daff;
+                    }
+
+                    &.active {
+                        background-color: #c0daff;
+                        border-color: #c0daff;
+                    }
+                }
+            }
+        }
+
+        .near-things-section {
+            .section-content {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                column-gap: 24px;
+                row-gap: 36px;
+
+                .distance-wrapper {
+                    display: grid;
+                    grid-template-columns: auto 70px;
+                    column-gap: 4px;
+                    align-items: flex-end;
+
+                    label {
+                        display: flex;
+                        align-items: center;
+                        column-gap: 4px;
+                    }
+                }
+
+                .slider-wrapper {
+                    display: grid;
+                    row-gap: 4px;
+                    align-content: space-between;
+
+                    .slider-label {
+                        font-weight: 600;
+                    }
+
+                    .slider-unit-wrapper {
+                        display: grid;
+                        grid-template-columns: auto 70px;
+                        column-gap: 8px;
+                        align-items: flex-end;
+                    }
+                    
+                    .title-wrapper {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        
+                        .icon {
+                            color: #646464;
+                        }
+                    }
+                }
+            }
         }
     }
-    .moving-preferences-section {
-      .section-content {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-
-        .label {
-          padding: 16px 24px;
-          align-items: center;
-          display: flex;
-          column-gap: 8px;
-          user-select: none;
-          border: 1px solid #cfd5d5;
-          background: #fff;
-          color: #0d2a38;
-          font-weight: 600;
-          height: 56px;
-
-          :hover {
-            border: 1px solid #eee0d3;
-            background-color: #c0daff;
-          }
-          &.active {
-            background-color: #c0daff;
-            border-color: #c0daff;
-          }
-        }
-      }
-    }
-
-    .near-things-section {
-      .section-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        column-gap: 24px;
-        row-gap: 36px;
-
-        .distance-wrapper {
-          display: grid;
-          grid-template-columns: auto 70px;
-          column-gap: 4px;
-          align-items: flex-end;
-
-          label {
-            display: flex;
-            align-items: center;
-            column-gap: 4px;
-          }
-        }
-      }
-    }
-  }
 `;
