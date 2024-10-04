@@ -23,7 +23,7 @@ import { NoMatchesCard } from '../NoMatchesCard.tsx';
 interface PotentialMatchesProps extends HTMLAttributes<HTMLDivElement> {}
 export const PotentialMatches = styled(({ className }: PotentialMatchesProps) => {
   const suggestedProperties = useSuggestedProperties({
-    params: { chosen: false },
+    params: { chosen: false, disliked: false },
     options: {
       refetchOnMount: true
     }
