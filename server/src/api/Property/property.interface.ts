@@ -35,6 +35,7 @@ export enum PropertyFeatures {
 }
 
 export enum ParkingDetails {
+  "No preference" ="No preference",
   All = 'All',
   Garage = 'Garage',
   OffStreet = 'Off street',
@@ -66,6 +67,7 @@ export enum BuildPurpose {
 }
 
 export enum HomeStyle {
+  "No preference" ="No preference",
   All = 'All',
   Modern = 'Modern',
   Period = 'Period'

@@ -66,7 +66,7 @@ const schema = new Schema<CriteriaDocument>({
     },
     condition: {
       type: String,
-      enum: ["New", "Good", "Average", "Needs renovation", "All"]
+      enum: ["New", "Good", "Average", "Needs renovation", "All", "No preference",]
     },
     parking: {
       type: String,
