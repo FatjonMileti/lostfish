@@ -172,10 +172,11 @@ export enum DistanceUnit {
 }
 
 export enum PropertyCondition {
-  NewlyRefurbished = 'Newly refurbished',
-  Good = 'Good',
-  WouldDoSomeWork = 'Would do some work',
-  wouldDoAProject = 'Would do a project'
+  All = 'All',
+  Furnished = 'Furnished',
+  Unfurnished = 'Unfurnished',
+  PartiallyFurnished = 'Partially furnished',
+  NoPreference = 'No preference'
 }
 
 export interface PropertyDocument extends Document {

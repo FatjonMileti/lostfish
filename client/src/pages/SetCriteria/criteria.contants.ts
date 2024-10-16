@@ -97,7 +97,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
   houseType: yup.object().shape({
     [House.Detached]: yup.boolean().required(),
     [House.SemiDetached]: yup.boolean().required(),
-    [House.FarmsLand]: yup.boolean().required(),
+    // [House.FarmsLand]: yup.boolean().required(),
   }),
   flatDetails: yup
     .object()
@@ -143,7 +143,7 @@ export const criteriaFormSchema: ObjectSchema<CriteriaFormType> = yup.object().s
     houseType: yup.object().shape({
       [House.Detached]: yup.boolean().required(),
       [House.SemiDetached]: yup.boolean().required(),
-      [House.FarmsLand]: yup.boolean().required(),
+      // [House.FarmsLand]: yup.boolean().required(),
     }),
     homeStyle: yup
       .string()

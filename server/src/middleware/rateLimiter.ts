@@ -16,7 +16,7 @@ const general: RateLimiterRedis = new RateLimiterRedis(<IRateLimiterRedisOptions
 
 export const generalLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await general.consume(req.ip, 1);
+    // await general.consume(req.ip, 1);
     return next();
   } catch (err) {
     res.set('Retry-After', Math.round((<IRateLimiterRes>err).msBeforeNext! / 1000).toString() || '1');
@@ -35,7 +35,7 @@ const login: RateLimiterRedis = new RateLimiterRedis(<IRateLimiterRedisOptions>{
 
 export const loginLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await login.consume(req.ip, 1);
+    // await login.consume(req.ip, 1);
     return next();
   } catch (err) {
     res.set('Retry-After', Math.round((<IRateLimiterRes>err).msBeforeNext! / 1000).toString() || '1');

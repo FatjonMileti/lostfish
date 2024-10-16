@@ -37,17 +37,7 @@ const schema = new Schema<CriteriaDocument>({
     house_type: [
       {
         type: [String],
-        enum: [
-          "Detached",
-          "Semi-Detached",
-          "Terraced",
-          "End of Terrace",
-          "Bungalow",
-          "Double glazing",
-          "Allows smoking",
-          "Allows pets",
-          "Close to public transport"
-        ],
+        enum: House,
       }
     ],
     home_style: {
@@ -66,7 +56,7 @@ const schema = new Schema<CriteriaDocument>({
     },
     condition: {
       type: String,
-      enum: ["New", "Good", "Average", "Needs renovation", "All", "No preference",]
+      enum: PropertyCondition
     },
     parking: {
       type: String,

@@ -37,14 +37,8 @@ export interface CriteriaDocument extends Document {
   property_type: PropertyType[];
 
   house_details: {
-    house_type?: {
-      type: [String],
-      required: true,
-    },
-    home_style?: {
-      type: String,
-      required: true,
-    },
+    house_type?: House[],
+    home_style?: HomeStyle,
     preferred_size: {
       size: Range;
       unit: FloorSizeUnit;

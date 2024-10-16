@@ -40,7 +40,7 @@ export const SetCriteriaModal = styled(
     const [step, setStep] = React.useState(0);
     React.useEffect(() => {
       if (Object.keys(criteriaWithoutAccountStore.criteria).length > 1) {
-        setStep(3);
+        setStep(2);
       } else {
         setStep(0);
       }

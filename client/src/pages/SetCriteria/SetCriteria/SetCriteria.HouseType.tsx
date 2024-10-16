@@ -16,7 +16,7 @@ import {
   AreaUnit,
   BuildPurpose,
   Condition,
-  Floor,
+  Floor, Furnished,
   OutsideSpace,
   Parking,
   PropertyType
@@ -40,6 +40,9 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
   React.useEffect(() => {
     form.watch();
   }, []);
+
+  const houseTypeIds = Object.values(House).map(() => uuid());
+  const specificPropertyFeatureIds = Object.values({...OtherSpecificPropertyFeature }).map(() => uuid());
 
   return (
     <motion.div className={classNames('set-criteria-house-type', className)} {...rest}>
@@ -302,19 +305,29 @@ export const SetCriteriaHouseType = styled(({ className, form, ...rest }: SetCri
 
 
             <div className='specific-property-features'>
-              {Object.values({ ...House, ...OtherSpecificPropertyFeature }).map((houseType, houseTypeIndex) =>
-                ((id: string) => (
-                  <div className="switch-wrapper" key={houseTypeIndex}>
-                    <Switch
-                      id={id}
-                      size="medium"
-                      {...form.register(`houseDetails.houseType.${houseType}`)}
-                      checked={!!form.getValues('houseDetails.houseType')?.[houseType]}
-                    />
-                    <label htmlFor={id}>{houseType}</label>
-                  </div>
-                ))(uuid())
-              )}
+              {Object.values(House).map((houseType, houseTypeIndex) => (
+                <div className="switch-wrapper" key={houseTypeIndex}>
+                  <Switch
+                    id={houseTypeIds[houseTypeIndex]}
+                    size="medium"
+                    {...form.register(`houseDetails.houseType.${houseType}`)}
+                    checked={!!form.getValues('houseDetails.houseType')?.[houseType]}
+                  />
+                  <label htmlFor={houseTypeIds[houseTypeIndex]}>{houseType}</label>
+                </div>
+              ))}
+
+              {Object.values({...OtherSpecificPropertyFeature }).map((specificPropertyFeature, specificPropertyFeatureIndex: number) => (
+                <div className='switch-wrapper' key={specificPropertyFeatureIndex}>
+                  <Switch
+                    id={specificPropertyFeatureIds[specificPropertyFeatureIndex]}
+                    size='medium'
+                    {...form.register(`specificPropertyFeatures.${specificPropertyFeature}`)}
+                    checked={!!form.getValues('specificPropertyFeatures')?.[specificPropertyFeature]}
+                  />
+                  <label htmlFor={specificPropertyFeatureIds[specificPropertyFeatureIndex]}>{specificPropertyFeature}</label>
+                </div>
+              ))}
             </div>
           </div>
 

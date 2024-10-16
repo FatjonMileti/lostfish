@@ -17,6 +17,14 @@ import { Slider } from '../../../components/Slider.tsx';
 import { AreaUnitType } from '../../Properties/NewProperty/property.types.ts';
 
 
+const toKilometer = (valueInMile: number): number => {
+  return valueInMile * 1.60934;
+};
+
+const toMile = (valueInKilometer: number): number => {
+  return valueInKilometer / 1.60934;
+};
+
 
 interface SetCriteriaLocationProps extends HTMLMotionProps<'div'> {
   form: UseFormReturn<CriteriaFormType>;
@@ -113,7 +121,7 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                   ]}
                   min={0}
                   max={
-                    form.getValues('distanceFromUnderground.unit') === DistanceUnit.Mi ? 4000 : 400
+                    form.getValues('distanceFromUnderground.unit') === DistanceUnit.Mi ? 20 : 30
                   }
                   step={1}
                   onChange={(_, value) => {
@@ -140,10 +148,12 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                     const maxSize = form.getValues('distanceFromUnderground.value.max');
                     form.setValue('distanceFromUnderground.unit', unit);
 
+                    const convertUnit = unit === DistanceUnit.Km ? toKilometer : toMile;
+
                     form.setValue('distanceFromUnderground', {
                       value: {
-                        min: minSize,
-                        max: maxSize
+                        min: convertUnit(minSize),
+                        max: convertUnit(maxSize)
                       }
                     });
                   }}>
@@ -171,7 +181,7 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                   ]}
                   min={0}
                   max={
-                    form.getValues('distanceFromSchools.unit') === DistanceUnit.Km ? 4000 : 400
+                    form.getValues('distanceFromSchools.unit') === DistanceUnit.Mi ? 20 : 30
                   }
                   step={1}
                   onChange={(_, value) => {
@@ -198,10 +208,12 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                     const maxSize = form.getValues('distanceFromSchools.value.max');
                     form.setValue('distanceFromSchools.unit', unit);
 
+                    const convertUnit = unit === DistanceUnit.Km ? toKilometer : toMile;
+
                     form.setValue('distanceFromSchools', {
                       value: {
-                        min: minSize,
-                        max: maxSize
+                        min: convertUnit(minSize),
+                        max: convertUnit(maxSize)
                       }
                     });
                   }}>
@@ -229,7 +241,7 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                   ]}
                   min={0}
                   max={
-                    form.getValues('distanceFromHighStreet.unit') === DistanceUnit.Km ? 4000 : 400
+                    form.getValues('distanceFromHighStreet.unit') === DistanceUnit.Mi ? 20 : 30
                   }
                   step={1}
                   onChange={(_, value) => {
@@ -256,10 +268,12 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                     const maxSize = form.getValues('distanceFromHighStreet.value.max');
                     form.setValue('distanceFromHighStreet.unit', unit);
 
+                    const convertUnit = unit === DistanceUnit.Km ? toKilometer : toMile;
+
                     form.setValue('distanceFromHighStreet', {
                       value: {
-                        min: minSize,
-                        max: maxSize
+                        min: convertUnit(minSize),
+                        max: convertUnit(maxSize)
                       }
                     });
                   }}>
@@ -287,7 +301,7 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                   ]}
                   min={0}
                   max={
-                    form.getValues('distanceFromGym.unit') === DistanceUnit.Km ? 4000 : 400
+                    form.getValues('distanceFromGym.unit') === DistanceUnit.Mi ? 20 : 30
                   }
                   step={1}
                   onChange={(_, value) => {
@@ -310,14 +324,16 @@ export const SetCriteriaLocation = styled(({ className, form, ...rest }: SetCrit
                   value={form.getValues('distanceFromGym.unit')}
                   onChange={(e) => {
                     const unit = e.target.value as AreaUnitType;
-                    const minSize = form.getValues('distanceFromGym.min');
-                    const maxSize = form.getValues('distanceFromGym.max');
+                    const minSize = form.getValues('distanceFromGym.value.min');
+                    const maxSize = form.getValues('distanceFromGym.value.max');
                     form.setValue('distanceFromGym.unit', unit);
+
+                    const convertUnit = unit === DistanceUnit.Km ? toKilometer : toMile;
 
                     form.setValue('distanceFromGym', {
                       value: {
-                        min: minSize,
-                        max: maxSize
+                        min: convertUnit(minSize),
+                        max: convertUnit(maxSize)
                       }
                     });
                   }}>
