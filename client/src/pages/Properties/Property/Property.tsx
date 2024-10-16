@@ -165,7 +165,7 @@ export const Property = styled(
     box-shadow: 0 4px 32px 0 rgba(13, 42, 56, 0.1);
 
     .property-image {
-      background-image: url(${(props) => props.images?.[0].link});
+      background-image: url(${(props) => props.images?.[0]?.link});
       background-size: cover;
       background-repeat: no-repeat;
       aspect-ratio: 1.48 / 1;
