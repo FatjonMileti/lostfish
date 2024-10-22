@@ -84,56 +84,56 @@ export const Properties = styled(({ className }: HTMLAttributes<HTMLDivElement>)
       <div className='header-and-content-wrapper'>
         <HeaderLoggedIn />
 
-        {propertiesQuery.isFetched && propertiesQuery?.data?.totalDocsUnfiltered !== 0 && (
-          <div className='page-body-wrapper'>
-            <div className='properties-header'>
-              <Typography variant='body1' className='page-title'>
-                My Properties
-              </Typography>
-              <div className='tabs-wrapper'>
-                <SegmentControl
-                  label='Published'
-                  active={activeTab === ActiveTab.Published}
-                  onClick={() => setActiveTab(ActiveTab.Published)}
-                />
-                <SegmentControl
-                  label='Drafts'
-                  active={activeTab === ActiveTab.Draft}
-                  onClick={() => setActiveTab(ActiveTab.Draft)}
-                />
-              </div>
-              <Label
-                size='large'
-                onClick={() => {
-                  setShowNewPropertyModal(true);
-                }}>
-                <Icon icon='plus' size={24} />
-                Add Property
-              </Label>
+        {/*{propertiesQuery.isFetched && propertiesQuery?.data?.totalDocsUnfiltered !== 0 && (*/}
+        <div className='page-body-wrapper'>
+          <div className='properties-header'>
+            <Typography variant='body1' className='page-title'>
+              My Properties
+            </Typography>
+            <div className='tabs-wrapper'>
+              <SegmentControl
+                label='Published'
+                active={activeTab === ActiveTab.Published}
+                onClick={() => setActiveTab(ActiveTab.Published)}
+              />
+              <SegmentControl
+                label='Drafts'
+                active={activeTab === ActiveTab.Draft}
+                onClick={() => setActiveTab(ActiveTab.Draft)}
+              />
             </div>
-
-            <div className='properties-list'>
-              {propertiesQuery?.data?.docs.map((p, pIndex: number) => (
-                <Property
-                  propertyId={p._id}
-                  key={pIndex}
-                  name={p.title}
-                  status={p.status_string}
-                  location={p.area_of_interest}
-                  budget={p.budget}
-                  roomsDetails={p.room_details}
-                  viewDetails={() => {
-                    setEditPropertyId(p._id);
-                  }}
-                  afterPublish={() => {
-                    setActiveTab(ActiveTab.Published);
-                  }}
-                  images={p.property_images || []}
-                />
-              ))}
-            </div>
+            <Label
+              size='large'
+              onClick={() => {
+                setShowNewPropertyModal(true);
+              }}>
+              <Icon icon='plus' size={24} />
+              Add Property
+            </Label>
           </div>
-        )}
+
+          <div className='properties-list'>
+            {propertiesQuery?.data?.docs.map((p, pIndex: number) => (
+              <Property
+                propertyId={p._id}
+                key={pIndex}
+                name={p.title}
+                status={p.status_string}
+                location={p.area_of_interest}
+                budget={p.budget}
+                roomsDetails={p.room_details}
+                viewDetails={() => {
+                  setEditPropertyId(p._id);
+                }}
+                afterPublish={() => {
+                  setActiveTab(ActiveTab.Published);
+                }}
+                images={p.property_images || []}
+              />
+            ))}
+          </div>
+        </div>
+        {/* )} */}
       </div>
 
       {editPropertyId && (
