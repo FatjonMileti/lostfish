@@ -364,10 +364,10 @@ export default class SuggestionService {
     const distance =
       getDistance(
         {
-          latitude: clientCriteria.asset_address.latitude ?? 0,
-          longitude: clientCriteria.asset_address.longitude ?? 0
+          latitude: clientCriteria?.asset_address?.latitude ?? 0,
+          longitude: clientCriteria?.asset_address?.longitude ?? 0
         },
-        { latitude: property.asset_address.latitude, longitude: property.asset_address.longitude }
+        { latitude: property?.asset_address?.latitude, longitude: property?.asset_address?.longitude }
       ) / 1000;
     const radius_in_km = Number(clientCriteria.radius) * 1.60934;
     if (radius_in_km >= distance) {
