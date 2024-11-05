@@ -238,6 +238,10 @@ export const WhatAreYouLookingFor = styled(
                 position: absolute;
                 border-radius: 50%;
                 clip-path: circle(50% at calc(100% + 37px) 50%);
+
+                ${(props) => props.theme.breakpoints.down('laptop')} {
+                  clip-path: circle(50% at 50% 113%);
+                }
               }
             }
 
