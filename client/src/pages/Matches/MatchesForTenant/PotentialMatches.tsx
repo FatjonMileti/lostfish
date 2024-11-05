@@ -38,7 +38,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
 
   const userStore = useUserStore();
 
-  const suggestedProperty: SuggestedPropertyType = suggestedProperties.data[activeSlide];
+  const suggestedProperty: SuggestedPropertyType = suggestedProperties?.data[activeSlide];
 
   const globalSetCriteria = useGlobalSetCriteria();
 
@@ -95,7 +95,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
             <NoMatchesCard onHandleClick={onAdjustMatchPreferencesClick} />
           )}
 
-          {suggestedProperties.data.map((propertySuggestion, tenantIndex) => {
+          {suggestedProperties.data?.map((propertySuggestion, tenantIndex) => {
             const { property } = propertySuggestion;
 
             return (
@@ -132,7 +132,7 @@ export const PotentialMatches = styled(({ className }: PotentialMatchesProps) =>
             variant='secondary'
             size='large'
             onClick={next}
-            disabled={activeSlide === suggestedProperties.data.length - 1}>
+            disabled={activeSlide === suggestedProperties.data?.length - 1}>
             Next
             <Icon icon='chevron-right' />
           </Label>
