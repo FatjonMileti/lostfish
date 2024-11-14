@@ -36,6 +36,7 @@ export const SectionTwo = styled(
             </div>
           ) : (
             <video
+              ref={videoRef}
               src={`${config.apiUrl}/api/video`}
               className='video-content'
               autoPlay
