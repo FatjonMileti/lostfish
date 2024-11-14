@@ -31,6 +31,7 @@ import AzureBlobService from './File/services/azure-blob.service';
 import { FileService } from './File/file.interface';
 import OfferService from './Offer/offer.service';
 import OfferModel from './Offer/offer.schema';
+import videoRouter from "./Video/video.router";
 
 const router: Router = Router();
 /**
@@ -104,4 +105,5 @@ router.use('/chat', authorize(), chatController.router);
 router.use('/map', mapController.router);
 router.use('/notification', authorize(), notificationController.router);
 router.use('/offer', authorize(), offerController.router);
+router.use('/video', videoRouter)
 export default router;

@@ -6,20 +6,52 @@ import { Typography } from '../../components/Typography';
 
 import image from './video_screenshot.png';
 import multimedia from './start.svg';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+
+const fetchVideo = async () => {
+  const response = await axios.get('http://localhost:3000/api/video', {
+    responseType: 'blob'
+  });
+  return URL.createObjectURL(response.data);
+};
 
 export const SectionTwo = styled(
   React.forwardRef<HTMLDivElement>(({ className }: HTMLAttributes<HTMLDivElement>, ref) => {
+    const [isPlaying, setIsPlaying] = React.useState(false);
+    const videoRef = React.useRef<HTMLVideoElement | null>(null);
+
+    const videoQuery = useQuery({
+      queryKey: ['video'],
+      queryFn: fetchVideo,
+      enabled: false
+    });
+
+    const handlePlayVideo = () => {
+      setIsPlaying(true);
+      videoQuery.refetch();
+    };
+
+    const handleStopVideo = () => {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+      setIsPlaying(false);
+    };
+
     return (
       <div className={classNames('home-section-two', className)} ref={ref}>
         <div className='section-content'>
-          <div className='content'>
-            <div className='multimedia'>
-              <div className='icon' style={{ backgroundImage: `url("${multimedia}")` }}></div>
+          {!isPlaying ? (
+            <div className='content' onClick={handlePlayVideo}>
+              <div className='multimedia'>
+                <div className='icon' style={{ backgroundImage: `url("${multimedia}")` }} />
+              </div>
             </div>
-            {/*<Typography variant='body3' className='video-title'>*/}
-            {/*  How Lostfish uses AI to find your perfect match*/}
-            {/*</Typography>*/}
-          </div>
+          ) : (
+            <video src={videoQuery.data} className='video-content' autoPlay onClick={handleStopVideo} />
+          )}
         </div>
         <div className='title'>
           <Typography variant='body2' className='perfect-match'>
@@ -27,10 +59,11 @@ export const SectionTwo = styled(
             to reimagine the real estate industry.
           </Typography>
           <Typography variant='body4' className='description'>
-            Our revolutionary new platform takes the stress out of finding selling or renting
-            a home powered by AI it perfectly matches buyers and tenants with their dream homes.
+            Our revolutionary new platform takes the stress out of finding selling or renting a home powered
+            by AI it perfectly matches buyers and tenants with their dream homes.
             <br />
-            From start to finish guides everyone through the process with ease delivering a calm and efficient experience. Saving your time money and hassle.
+            From start to finish guides everyone through the process with ease delivering a calm and efficient
+            experience. Saving your time money and hassle.
           </Typography>
         </div>
       </div>
@@ -72,21 +105,22 @@ export const SectionTwo = styled(
       display: grid;
       align-items: center;
       gap: 48px;
-
       border-radius: 16px;
-      background: url(${image});
       max-width: 1136px;
       width: 100%;
-      background-repeat: no-repeat;
       box-shadow: 0px 4px 32px 0px rgba(13, 42, 56, 0.1);
-      background-size: cover;
-      aspect-ratio: 1.77 / 1;
+      cursor: pointer;
 
       .content {
         display: flex;
         flex-direction: column;
         width: 100%;
         padding: 24px;
+        background: url(${image});
+        background-size: cover;
+        aspect-ratio: 1.77 / 1;
+        background-repeat: no-repeat;
+        border-radius: 16px;
         gap: 16px;
         box-sizing: border-box;
         justify-content: center;
@@ -112,6 +146,16 @@ export const SectionTwo = styled(
           color: #fff;
           font-weight: 900;
         }
+      }
+
+      .video-content {
+        display: flex;
+        width: 100%;
+        border-radius: 16px;
+        gap: 16px;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
       }
     }
   }
