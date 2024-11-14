@@ -8,9 +8,10 @@ import image from './video_screenshot.png';
 import multimedia from './start.svg';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import config from '../../config.ts';
 
 const fetchVideo = async () => {
-  const response = await axios.get('http://localhost:3000/api/video', {
+  const response = await axios.get(`${config.apiUrl}/api/video`, {
     responseType: 'blob'
   });
   return URL.createObjectURL(response.data);
