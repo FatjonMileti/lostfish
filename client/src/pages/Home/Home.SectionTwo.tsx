@@ -6,31 +6,15 @@ import { Typography } from '../../components/Typography';
 
 import image from './video_screenshot.png';
 import multimedia from './start.svg';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import config from '../../config.ts';
-
-const fetchVideo = async () => {
-  const response = await axios.get(`${config.apiUrl}/api/video`, {
-    responseType: 'blob'
-  });
-  return URL.createObjectURL(response.data);
-};
 
 export const SectionTwo = styled(
   React.forwardRef<HTMLDivElement>(({ className }: HTMLAttributes<HTMLDivElement>, ref) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const videoRef = React.useRef<HTMLVideoElement | null>(null);
 
-    const videoQuery = useQuery({
-      queryKey: ['video'],
-      queryFn: fetchVideo,
-      enabled: false
-    });
-
     const handlePlayVideo = () => {
       setIsPlaying(true);
-      videoQuery.refetch();
     };
 
     const handleStopVideo = () => {
@@ -51,7 +35,12 @@ export const SectionTwo = styled(
               </div>
             </div>
           ) : (
-            <video src={videoQuery.data} className='video-content' autoPlay onClick={handleStopVideo} />
+            <video
+              src={`${config.apiUrl}/api/video`}
+              className='video-content'
+              autoPlay
+              onClick={handleStopVideo}
+            />
           )}
         </div>
         <div className='title'>
